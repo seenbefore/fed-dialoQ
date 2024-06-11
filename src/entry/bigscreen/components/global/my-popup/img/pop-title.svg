@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="984px" height="8px" viewBox="0 0 984 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>线</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="台州小微金改--弹窗" transform="translate(-468.000000, -244.000000)">
+            <g id="线" transform="translate(468.000000, 244.000000)">
+                <line x1="3" y1="4" x2="976" y2="4" id="Line-2" stroke="#1E4AF5"></line>
+                <path d="M976,4 C976,1.790864 977.790864,0 980,0 C982.209136,0 984,1.790864 984,4 C984,6.209136 982.209136,8 980,8 C977.790864,8 976,6.209136 976,4 Z" id="Ellipse-6" fill="#1E49EF"></path>
+                <path d="M0,4 C0,1.790864 1.790864,0 4,0 C6.209136,0 8,1.790864 8,4 C8,6.209136 6.209136,8 4,8 C1.790864,8 0,6.209136 0,4 Z" id="Ellipse-7" fill="#1E49EF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

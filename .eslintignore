@@ -1,0 +1,9 @@
+/dist
+/public
+/src/libs
+*.html
+
+src/mock/data
+*.min.js
+**/auto
+src/entry/zlb-h5/scripts/utils/encryption/3des.js

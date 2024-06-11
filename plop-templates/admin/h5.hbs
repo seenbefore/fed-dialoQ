@@ -1,0 +1,22 @@
+<!-- {{ title }} -->
+<template>
+    <div class="sg-page {{ name }}">
+        
+    </div>
+</template>
+
+<script lang="tsx">
+import { Component, Vue, Prop } from 'vue-property-decorator'
+@Component({
+    name: '{{ name }}',
+    components: {},
+})
+export default class {{ name }} extends Vue {
+    mounted() {}
+}
+</script>
+
+<style lang="less" scoped>
+.{{name}} ::v-deep {
+}
+</style>

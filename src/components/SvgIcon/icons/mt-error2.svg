@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>失败</title>
+    <desc>Created with Sketch.</desc>
+    <g id="CI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="持续集成构建-构建过程-状态汇总" transform="translate(-148.000000, -414.000000)" fill="#FFFFFF">
+            <g id="编组备份-5" transform="translate(148.000000, 414.000000)">
+                <g id="编组-9">
+                    <g id="Content-/-CI-/-Status-/-Pass">
+                        <path d="M21,12 C21.5522847,12 22,12.4477153 22,13 L22,19 L28,19 C28.5522847,19 29,19.4477153 29,20 L29,21 C29,21.5522847 28.5522847,22 28,22 L22,22 L22,28 C22,28.5522847 21.5522847,29 21,29 L20,29 C19.4477153,29 19,28.5522847 19,28 L19,22 L13,22 C12.4477153,22 12,21.5522847 12,21 L12,20 C12,19.4477153 12.4477153,19 13,19 L19,19 L19,13 C19,12.4477153 19.4477153,12 20,12 L21,12 Z" id="形状结合" transform="translate(20.500000, 20.500000) rotate(-225.000000) translate(-20.500000, -20.500000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

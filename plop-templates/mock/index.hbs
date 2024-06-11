@@ -1,0 +1,46 @@
+import { mock } from 'mockjs'
+export default [
+    {
+        name: '{{url}}',
+        method: '{{method}}',
+        description: '{{description}}',
+        {{#if isList}}
+        onMock(opt, query, body) {
+            let { page = 1, pageSize, length } = body
+            page = page || 1
+            pageSize = pageSize || length || 10
+            return mock({
+                code: 0,
+                data: {
+                    [`list|${pageSize}`]: [
+                        {
+                            'id|+1': 0,
+                            name: '@name',
+                            nickName: '@cname',
+                            'status|1': [0, 1],
+                            'isAdmin|1': [0, 1],
+                        },
+                    ],
+                    pager: {
+                        page: page,
+                        pageSize: pageSize,
+                        total: 198,
+                    },
+                },
+                message: '请求提示',
+            })
+        },
+        {{else}}
+        onMock(opt, query, body) {
+            return mock({
+                code: 0,
+                data: {
+                    createDate: '@date("yyyy-MM-dd")',
+                    title: '@csentence(3, 5)',
+                },
+                message: '请求提示',
+            })
+        },
+        {{/if}}
+    },
+]

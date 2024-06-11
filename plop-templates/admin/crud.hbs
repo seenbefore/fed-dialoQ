@@ -1,0 +1,213 @@
+<!-- {{ title }} -->
+<template>
+    <div class="sg-page {{ name }}">
+        <el-card class="my-card">
+            <div slot="header" class="ic-row middle">
+                <div class="ic-col-flex-1 ic-row middle">
+                    <span class="ic-font-20 ic-bold ic-mr-4">{{title}}</span>
+                </div>
+            </div>
+            <section class="sg-card">
+                <sg-base-form ref="formRef" v-bind="formAttrs" v-model="formModel" @submit="refreshList" @reset="refreshList"></sg-base-form>
+                <sg-data-view ref="tableRef" v-bind="tableAttrs"></sg-data-view>
+            </section>
+        </el-card>
+    </div>
+</template>
+
+<script lang="tsx">
+import { FormColumn, FormRef, TableColumn, TableLoad, TableRef, FormRow } from '@/sharegood-ui'
+import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
+import { AnyType } from '@/@types'
+type FormModel = AnyType<{
+    name: string
+}>
+@Component({
+    name: '{{ name }}',
+    components: {},
+})
+export default class {{ name }} extends Vue {
+    mounted() {}
+    @Ref('formRef')
+    formRef!: FormRef
+    /**表单值 */
+    formModel = {} as FormModel
+    /**表单配置 */
+    get formAttrs() {
+        return {
+            span: 8,
+            fields: [
+                {
+                    tag: 'input',
+                    name: '柜员姓名',
+                    itemAttrs: {
+                        label: '柜员姓名',
+                    },
+                    attrs: {
+                        placeholder: '支持模糊查询',
+                    },
+                },
+                {
+                    tag: 'input',
+                    name: '柜员号',
+                    itemAttrs: {
+                        label: '柜员号',
+                    },
+                    attrs: {
+                        placeholder: '支持模糊查询',
+                    },
+                },
+                {
+                    tag: 'daterange',
+                    name: '[开始时间,结束时间]',
+                    itemAttrs: {
+                        label: '最近设置时间',
+                    },
+                    attrs: {
+                        value: [],
+                        startPlaceholder: '年/月/日',
+                        endPlaceholder: '年/月/日',
+                    },
+                },
+                {
+                    tag: 'select',
+                    name: '额度配置状态',
+                    itemAttrs: {
+                        label: '额度配置状态',
+                    },
+                    attrs: {
+                        options: [
+                            {
+                                label: '全部',
+                                value: '',
+                            },
+                        ],
+                    },
+                },
+                {
+                    tag: 'action',
+                    span: 24,
+                    buttons: [
+                        {
+                            isSubmit: true,
+                            text: '查询',
+                        },
+                        {
+                            isReset: true,
+                            text: '重置',
+                        },
+                    ],
+                },
+            ] as FormColumn[],
+        }
+    }
+
+    @Ref('tableRef')
+    tableRef!: TableRef
+    get tableAttrs() {
+        return {
+            border: false,
+            pagination: { pageSize: 10 },
+            tableHeaderSticky: {
+                scrollDom: () => document.querySelector('.{{ name }}'),
+            },
+            load: async (pageInfo: any) => {
+                const model: FormModel = this.formRef.getState()
+                const { ...rest } = model
+                const body = {
+                    ...pageInfo,
+                    ...rest,
+                }
+                console.log('load', body)
+
+                return { result: [{ 额度配置状态: '2' }, { 额度配置状态: '1' }, { 额度配置状态: '3' }], total: 100 }
+            },
+            columns: [
+                {
+                    label: '序号',
+                    prop: 'index',
+                    type: 'index',
+                    fixed: 'left',
+                },
+
+                {
+                    label: '操作',
+                    prop: 'action',
+                    width: '160px',
+                    fixed: 'left',
+                    align: 'left',
+                    render: (h, { row }) => {
+                        return (
+                            <div>
+                                <el-button
+                                    type="text"
+                                    onClick={() => {
+                                        console.log(1)
+                                    }}
+                                >
+                                    查看
+                                </el-button>
+                                <el-button type="text">编辑</el-button>
+                                <el-button type="text">下载</el-button>
+                            </div>
+                        )
+                    },
+                },
+                {
+                    label: '企业名称',
+                    prop: 'entname',
+                    width: '200px',
+                    render: (h, { row }) => {
+                        const { pripid, entname } = row
+                        return (
+                            <div>
+                                <el-button
+                                    type="text"
+                                    onClick={() => {
+                                        this.openNewPage('/market-customer/corporate-portrait/360-search/portrait-detail', { pripid })
+                                    }}
+                                >
+                                    {entname}
+                                </el-button>
+                            </div>
+                        )
+                    },
+                },
+                {
+                    label: '柜员姓名',
+                    prop: '柜员姓名',
+                    minWidth: '150px',
+                },
+                {
+                    label: '柜员号',
+                    prop: '柜员号',
+                    minWidth: '150px',
+                },
+                {
+                    label: '归属机构',
+                    prop: '归属机构',
+                    minWidth: '150px',
+                },
+                {
+                    label: '是否配置用信审批额度',
+                    renderHeader(h: any) {
+                        return [h('div', {}, ['是否配置']), h('div', {}, ['用信审批额度'])]
+                    },
+                    prop: '是否配置用信审批额度',
+                    minWidth: '150px',
+                },
+            ] as TableColumn[],
+        }
+    }
+
+    /**刷新数据 */
+    refreshList() {
+        this.tableRef.onLoad({ page: 1 })
+    }
+}
+</script>
+
+<style lang="less" scoped>
+.{{name}} ::v-deep {
+}
+</style>

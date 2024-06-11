@@ -1,0 +1,16 @@
+<template>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator'
+@Component({
+    components: {},
+})
+export default class App extends Vue {
+    async created() {}
+}
+</script>
+<style lang="less"></style>

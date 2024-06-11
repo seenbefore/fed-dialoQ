@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>common-icons/arrow-left</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Sprint" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Sprint-Overview" transform="translate(-246.000000, -65.000000)" fill="#0066FF" fill-rule="nonzero">
+            <g id="Header" transform="translate(220.000000, 49.000000)">
+                <g id="Back" transform="translate(20.000000, 10.000000)">
+                    <g id="Common-Icons/Arrow-Left" transform="translate(6.000000, 6.000000)">
+                        <path d="M13.7072,7.293 L9.7072,3.293 C9.31673468,2.90253468 8.68366532,2.90253468 8.2932,3.293 C7.90273468,3.68346532 7.90273468,4.31653468 8.2932,4.707 L10.5862,7 L10.5862,7 L3.0002,7 C2.44791,7 2.0002,7.44771 2.0002,8 C2.0002,8.55228 2.44792,9 3.0002,9 L10.5862,9 L8.2932,11.293 C7.90273468,11.6834653 7.90273468,12.3165347 8.2932,12.707 C8.68366532,13.0974653 9.31673468,13.0974653 9.7072,12.707 L13.7072,8.707 L13.7072,8.707 C14.0976,8.3165 14.0976,7.6835 13.7072,7.293 Z" id="Path" transform="translate(8.000100, 8.000000) scale(-1, 1) translate(-8.000100, -8.000000) "/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

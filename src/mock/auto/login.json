@@ -1,0 +1,24 @@
+{
+  "code": 200,
+  "message": "message",
+  "data": {
+    "realName": "data_realName",
+    "loginType": "data_loginType",
+    "username": "data_username",
+    "token": "data_token"
+  },
+  "errors": [
+    {
+      "field": "errors_0_field",
+      "info": "errors_0_info"
+    },
+    {
+      "field": "errors_1_field",
+      "info": "errors_1_info"
+    },
+    {
+      "field": "errors_2_field",
+      "info": "errors_2_info"
+    }
+  ]
+}

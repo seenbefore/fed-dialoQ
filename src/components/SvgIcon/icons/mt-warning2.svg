@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>中止</title>
+    <desc>Created with Sketch.</desc>
+    <g id="CI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="持续集成构建-构建过程-状态汇总" transform="translate(-148.000000, -354.000000)">
+            <g id="编组备份-3" transform="translate(147.000000, 354.000000)">
+                <g id="编组-7">
+                    <g id="编组-10" transform="translate(0.500000, 0.000000)">
+                        <circle id="椭圆形" stroke="#FFFFFF" stroke-width="3" cx="21" cy="20" r="8.5"></circle>
+                        <rect id="矩形" fill="#FFFFFF" x="16.5" y="18" width="9" height="3" rx="1"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

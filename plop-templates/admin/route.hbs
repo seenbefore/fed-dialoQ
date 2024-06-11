@@ -1,0 +1,17 @@
+const component = () => import(/* webpackChunkName: "{{ name }}Page1" */ './{{ componentFileName }}')
+
+export default {
+    path: '{{ path }}',
+    name: '{{ name }}',
+    component,
+    props: ({ query, params }) => ({ ...query, ...params }),
+    meta: {
+        bodyClass: '',
+        parent: '{{ parent }}',
+        title: '{{ title }}',
+        requireAuth: {{ requireAuth }},
+        keepAlive: {{ keepAlive }},
+        noCache: false,
+        activeMenu: '',
+    },
+}

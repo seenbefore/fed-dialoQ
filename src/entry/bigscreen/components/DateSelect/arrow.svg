@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="12px" viewBox="0 0 16 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>下啦</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="台州金融运行监测-大屏" transform="translate(-307.000000, -84.000000)" fill="#00FFFF">
+            <polygon id="下啦" transform="translate(315.000000, 90.000000) scale(1, -1) translate(-315.000000, -90.000000) " points="315 84 323 96 307 96"></polygon>
+        </g>
+    </g>
+</svg>

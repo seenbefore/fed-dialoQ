@@ -1,0 +1,18 @@
+<template>
+    <div class="sg-page {{ name }}">
+        <span>{{ name }} {{ title }}</span>
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator'
+@Component({
+    name: '{{ name }}',
+    components: {},
+})
+export default class {{ name }} extends Vue {
+    mounted() {}
+}
+</script>
+
+<style lang="less" scoped></style>

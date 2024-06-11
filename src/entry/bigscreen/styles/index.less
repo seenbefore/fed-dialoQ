@@ -1,0 +1,152 @@
+@import './font.less';
+@import './comp-reset.less';
+
+.el-table {
+    border: 1px solid rgba(1, 194, 255, 0.2);
+    border-bottom: none;
+    box-sizing: border-box;
+}
+.el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: hidden;
+}
+
+.sg-big-table {
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .el-table {
+        td {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+        }
+        th {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+        }
+        &::before {
+            background-color: #1a3674;
+        }
+        td,
+        th.is-leaf {
+            border-bottom-color: #284f9e;
+        }
+    }
+
+    .el-table--medium {
+        td,
+        th {
+            height: 30px;
+            padding: 0;
+        }
+    }
+}
+
+.sg-big-dialog {
+    .el-dialog__header {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .el-dialog__body {
+        // width: 812px;
+        // height: 600px;
+        // background: url('../assets/dialog/dialog-bg.png') no-repeat;
+        padding: 0 20px 20px;
+    }
+}
+
+.sg-pagination {
+    margin-top: 10px;
+}
+.el-pagination {
+    font-weight: 400;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 0;
+}
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .el-pager li {
+    background: rgba(10, 115, 255, 0.5);
+    color: #fff;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    color: #fff;
+    background-color: #0086ff;
+}
+.el-pagination.is-background .el-pager li {
+    margin: 0 1px;
+    border-radius: 0;
+}
+.btn-prev {
+    padding: 0 15px !important;
+    border-radius: 5px 0px 0px 5px !important;
+    margin: 0 1px !important;
+    &:after {
+        content: '上一页';
+        display: block;
+    }
+    .el-icon {
+        display: none !important;
+    }
+}
+.btn-next {
+    padding: 0 15px !important;
+    border-radius: 0px 5px 5px 0px !important;
+    margin: 0 1px !important;
+    &:after {
+        content: '下一页';
+        display: block;
+    }
+    .el-icon {
+        display: none !important;
+    }
+}
+
+.statis-class {
+    .text-item__content {
+        align-items: center;
+
+        .text-item--title {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .text-item__right {
+            .text-item--number {
+                > div {
+                    display: flex;
+                }
+                .my-countto-ref {
+                    font-weight: 700 !important;
+                    font-size: 22px;
+                    line-height: 22px;
+                }
+                .text-item--unit {
+                    color: #ffffff;
+                    font-size: 14px;
+                    line-height: 1;
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+}
+
+.select-popclass {
+    padding: 0;
+    border: 1px solid #00b0ff;
+    background-color: #1a3e69;
+    background-image: linear-gradient(180deg, rgba(0, 176, 255, 0.5) 0%, rgba(0, 176, 255, 0) 49%, rgba(0, 176, 255, 0.5) 100%);
+    color: #fff;
+    .el-popover__title {
+        display: none;
+    }
+    .popper__arrow {
+        display: none;
+    }
+}
+
+.my-pool-list-class .mplc-table .table-cell-class {
+    padding: 10px 10px !important;
+}

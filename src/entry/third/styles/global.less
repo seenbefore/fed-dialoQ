@@ -1,0 +1,105 @@
+.base-title {
+    font-size: 16px;
+    color: #333333;
+    letter-spacing: 0;
+    line-height: 16px;
+    font-weight: 600;
+}
+
+.base-line {
+    &:before {
+        display: block;
+        content: '';
+        width: 3px;
+        height: 15px;
+        background: #0797f3;
+        border-radius: 2px;
+        margin-right: 10px;
+    }
+}
+
+.base-dot {
+    &:before {
+        display: block;
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #0797f3;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
+}
+
+.flex-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.sg-title-before-line {
+    &:extend(.flex-align-center);
+    &:extend(.base-title);
+
+    &:before {
+        display: block;
+        content: '';
+        width: 3px;
+        height: 15px;
+        background: #0797f3;
+        border-radius: 2px;
+        margin-right: 10px;
+    }
+}
+
+.sg-title-before-dot {
+    &:extend(.flex-align-center);
+    &:extend(.base-title);
+
+    &:before {
+        display: block;
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: #0797f3;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
+}
+
+.dashed-10 {
+    position: absolute;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left, rgba(221, 221, 221, 1) 0%, rgba(221, 221, 221, 1) 50%, transparent 0%);
+    background-image: linear-gradient(to right, rgba(221, 221, 221, 1) 0%, rgba(221, 221, 221, 1) 50%, transparent 0%);
+    background-size: 10px 1px;
+    background-repeat: repeat-x;
+}
+
+// 渐变色虚线框
+.sg-dashed-top-10 {
+    position: relative;
+
+    &:before {
+        &:extend(.dashed-10);
+        left: 0;
+        top: 0;
+    }
+}
+
+.sg-dashed-bottom-10 {
+    position: relative;
+
+    &:after {
+        &:extend(.dashed-10);
+        left: 0;
+        bottom: 0;
+    }
+}
+
+.sg-hide-scrollbar {
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}

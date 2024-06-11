@@ -1,0 +1,38 @@
+#app {
+    // 主题色以及菜单等样式覆盖
+    --system-primary-color: #188dfb;
+}
+
+// .nav-back-button {
+//     display: inline-flex;
+//     align-items: center;
+//     flex-shrink: 0;
+//     justify-content: center;
+//     margin-right: 12px;
+//     width: 28px;
+//     height: 28px;
+//     border-radius: 50%;
+//     background: #fff;
+//     box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.08), 0 1px 4px 0 rgba(0, 0, 0, 0.08);
+//     cursor: pointer;
+// }
+.animation.spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

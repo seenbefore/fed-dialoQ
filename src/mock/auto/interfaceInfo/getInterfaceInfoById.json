@@ -1,0 +1,35 @@
+{
+  "code": 200,
+  "message": "message",
+  "data": {
+    "interfaceConfigDto": {
+      "columns": {
+        "key_0": {},
+        "key_1": {},
+        "key_2": {}
+      },
+      "search": {
+        "key_0": {},
+        "key_1": {},
+        "key_2": {}
+      }
+    },
+    "apiComment": "data_apiComment",
+    "apiId": "data_apiId",
+    "apiPath": "data_apiPath"
+  },
+  "errors": [
+    {
+      "field": "errors_0_field",
+      "info": "errors_0_info"
+    },
+    {
+      "field": "errors_1_field",
+      "info": "errors_1_info"
+    },
+    {
+      "field": "errors_2_field",
+      "info": "errors_2_info"
+    }
+  ]
+}

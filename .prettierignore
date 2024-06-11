@@ -1,0 +1,10 @@
+/dist
+/public
+/src/libs
+/docs/*.html
+
+*.html
+src/mock/data
+src/mock/auto
+*.min.js
+**/auto

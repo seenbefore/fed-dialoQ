@@ -1,0 +1,38 @@
+### 11
+GET http://192.168.1.200/api/v2/usercenter/user/switchUserOrg?deptCode=330800000000J031B000001&sysType=0
+content-type: application/json
+Authorization: GciBearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5MDQ4MjQ2IiwiYXVkIjoid2ViIiwiY3JlYXRlZCI6MTY2MjEyODcyNjA0NCwiYXBwSWQiOm51bGwsImlzcyI6ImljaW5mby5jbiIsImV4cCI6MTY2MjczMzUyNiwiZW1wbG95ZWVDb2RlIjoiR0VfNzFiNzM2NzY0YWM4NDUyNDkwMTdkZTY2MTMzMGUzMGYifQ.2c6k1T8CJXGSPD1rI7KB48p7oSjBymkKIMKgR3gzzWlKl7ssXiD-KHUjc6uMeYkeIyLk5cMuRUgNtsGURBVfxQ
+
+### 
+POST http://192.168.1.242:8081/interfaceInfo/getInterfaceInfoById
+content-type: application/json
+
+{
+    "apiId": "i_f26hh6ai250i0"
+}
+
+### 
+POST http://192.168.1.242:8081/interfaceInfo/getInterfaceInfoById
+content-type: application/json
+
+{
+    "apiId": "i_f28a0004e-38n"
+}
+
+
+### 
+POST http://192.168.1.242:8081/login
+content-type: application/json
+
+{
+    "loginType": "local",
+    "username":"1",
+    "password":"222"
+}
+
+### 
+GET http://192.168.1.200/api/v2/usercenter/user/readRsa
+
+###
+
+GET http://192.168.1.180:8081/sysDict/internal/list

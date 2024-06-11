@@ -1,0 +1,149 @@
+{
+  "id": "2510405",
+  "name": "浙企链（警示系统）",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "21309901",
+      "name": "查询",
+      "font_class": "chaxun",
+      "unicode": "e6c9",
+      "unicode_decimal": 59081
+    },
+    {
+      "icon_id": "21309902",
+      "name": "重置",
+      "font_class": "zhongzhi",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
+      "icon_id": "21308932",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e6c8",
+      "unicode_decimal": 59080
+    },
+    {
+      "icon_id": "21308921",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e6c7",
+      "unicode_decimal": 59079
+    },
+    {
+      "icon_id": "21228315",
+      "name": "验证码",
+      "font_class": "yanzhengma",
+      "unicode": "e6c4",
+      "unicode_decimal": 59076
+    },
+    {
+      "icon_id": "21228316",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e6c5",
+      "unicode_decimal": 59077
+    },
+    {
+      "icon_id": "21228317",
+      "name": "账号",
+      "font_class": "zhanghao",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    },
+    {
+      "icon_id": "21228256",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e6c2",
+      "unicode_decimal": 59074
+    },
+    {
+      "icon_id": "21226878",
+      "name": "决策分析",
+      "font_class": "juecefenxi",
+      "unicode": "e6b8",
+      "unicode_decimal": 59064
+    },
+    {
+      "icon_id": "21226879",
+      "name": "登记注册行为监管",
+      "font_class": "dengjizhucehangweijianguan",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "21226880",
+      "name": "公示信息管理",
+      "font_class": "gongshixinxiguanli",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
+    },
+    {
+      "icon_id": "21226881",
+      "name": "地方平台",
+      "font_class": "difangpingtai",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
+      "icon_id": "21226882",
+      "name": "数据中心",
+      "font_class": "shujuzhongxin",
+      "unicode": "e6bc",
+      "unicode_decimal": 59068
+    },
+    {
+      "icon_id": "21226883",
+      "name": "通知公告",
+      "font_class": "tongzhigonggao",
+      "unicode": "e6bd",
+      "unicode_decimal": 59069
+    },
+    {
+      "icon_id": "21226884",
+      "name": "信用惩戒与修复",
+      "font_class": "xinyongchengjieyuxiufu",
+      "unicode": "e6be",
+      "unicode_decimal": 59070
+    },
+    {
+      "icon_id": "21226885",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e6bf",
+      "unicode_decimal": 59071
+    },
+    {
+      "icon_id": "21226886",
+      "name": "信用名单管理",
+      "font_class": "xinyongmingdanguanli",
+      "unicode": "e6c0",
+      "unicode_decimal": 59072
+    },
+    {
+      "icon_id": "21226887",
+      "name": "信用风险管理",
+      "font_class": "xinyongfengxianguanli",
+      "unicode": "e6c1",
+      "unicode_decimal": 59073
+    },
+    {
+      "icon_id": "21226889",
+      "name": "信用社会化应用",
+      "font_class": "xinyongshehuihuayingyong",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
+      "icon_id": "21226518",
+      "name": "主体信用画像",
+      "font_class": "zhutixinyonghuaxiang",
+      "unicode": "e6b7",
+      "unicode_decimal": 59063
+    }
+  ]
+}

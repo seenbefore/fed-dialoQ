@@ -1,0 +1,750 @@
+<template>
+    <div class="sg-dataview-container sg-base-table" ref="wrap">
+        <el-row type="flex" class="sg-row no-print sg-data-view__bar" v-if="hasBar">
+            <slot name="bar-head">
+                <div class="sg-flex-1"></div>
+            </slot>
+            <slot name="bar">
+                <div class="sg-table-bar no-print">
+                    <el-select v-if="sortOptions && sortOptions.length" @change="onSortChange" v-model="sort" placeholder="请选择" class="sg-sort-select">
+                        <el-option v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                    <el-button-group>
+                        <el-button title="刷新" icon="el-icon-refresh" @click="handleReload"></el-button>
+                        <!-- <el-button icon="el-icon-s-grid"></el-button> -->
+                        <el-popover placement="bottom" width="160" v-model="operationVisible">
+                            <!-- <div>
+                                <el-checkbox :indeterminate="isIndeterminateColumn" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+                            </div> -->
+                            <el-checkbox-group class="sg-table-operation-wrap" v-model="operation" @change="onOperationChange">
+                                <el-checkbox v-for="item in operations" :label="item.value" :key="item.value">{{ item.label }}</el-checkbox>
+                            </el-checkbox-group>
+
+                            <el-button icon="el-icon-s-operation" slot="reference"></el-button>
+                        </el-popover>
+                    </el-button-group>
+                </div>
+            </slot>
+            <slot name="bar-foot"></slot>
+        </el-row>
+        <slot name="header"></slot>
+        <div class="sg-data-view__wrap sg-dataview-wrapper" ref="tableWrap">
+            <el-table
+                :id="printId"
+                class="sg-data-view__table sg-table-container"
+                v-loading="listLoading"
+                :data="dataSource"
+                style="width: 100%;"
+                :max-height="maxHeight$"
+                ref="table"
+                :border="border"
+                v-bind="$attrs"
+                v-on="$listeners"
+                @select="selectionChange"
+                @select-all="selectionChange"
+                @row-click="rowClickChange"
+                :load="treeLoad"
+                v-el-table-sticky-header="vElTableStickyHeaderConfig"
+            >
+                <data-column :columns="columns" :handle-select-able="handleSelectAble" :default-value="defaultValue" :disabled-tooltip-set="disabledTooltipSet">
+                    <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+                        <slot :name="name" v-bind="data"></slot>
+                    </template>
+                </data-column>
+                <div class="" slot="empty">
+                    <slot name="empty" v-if="!isVirgin">
+                        暂无数据
+                    </slot>
+                    <slot name="virgin" v-else>
+                        请先查询数据
+                    </slot>
+                </div>
+            </el-table>
+
+            <sg-pagination
+                ref="page"
+                v-if="ifRenderPage"
+                :total="total"
+                :page.sync="exPagination.page"
+                :limit.sync="exPagination.pageSize"
+                :page-sizes.sync="exPagination.pageSizes"
+                v-bind="exPagination"
+                @pagination="onLoad"
+                class="no-print sg-pagination-container sg-data-view__pagination"
+            >
+                <div class="sg-flex-1 no-print" slot="page-header">
+                    <slot name="page-header"></slot>
+                </div>
+
+                <span slot="page-body" class="sg-data-view__pager-action sg-base-table__pager-action">
+                    <span class="sg-pagination-index">
+                        当前
+                        <b v-text="firstIndex"></b>
+                        /
+                        <b v-text="lastIndex"></b>
+                        条
+                    </span>
+                    <span class="sg-pagination-pages">
+                        共
+                        <b v-text="pages"></b>
+                        页
+                    </span>
+                    <template v-for="(action, index) in exPageActionLayout">
+                        <template v-if="action.key === 'print'">
+                            <el-button :key="index" type="primary" style="margin-right:7px" class="sg-data-view__print" @click="handlePrint">{{ action.label }}</el-button>
+                        </template>
+                        <template v-else-if="action.key === 'export'">
+                            <sg-data-export class="sg-data-view__export" :key="index" :data="sgExportData" :columns="columns" :name="exportName" :label="action.label"></sg-data-export>
+                        </template>
+                    </template>
+                    <sg-data-export-all
+                        class="sg-data-view__export"
+                        v-show="exportAllItem.key"
+                        ref="exportAll"
+                        style="margin-left:7px"
+                        :columns="columns"
+                        :name="exportAllConfig.name || exportName"
+                        :load="exportAllConfig.load || load"
+                        :label="exportAllConfig.label || exportAllItem.label"
+                        :max-num="exportAllConfig.maxNum"
+                        :split-req-num="exportAllConfig.splitReqNum"
+                        :default-value="exportAllConfig.defaultValue"
+                    />
+
+                    <slot name="page-body"></slot>
+                </span>
+            </sg-pagination>
+        </div>
+    </div>
+</template>
+
+<script>
+import { addResizeListener, removeResizeListener } from '../../src/utils/resize-event'
+import printJS from 'print-js'
+import dataColumn from './data-column'
+function guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = (Math.random() * 16) | 0,
+            v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+    })
+}
+import _ from 'lodash'
+// 初始化溢出省略是否显示tooltip指令
+const initTooltip = (() => {
+    function handler(el, binding, vnode, oldVnode) {
+        const vm = vnode.context
+        const index = binding.value.$index
+        const field = binding.value.column.property
+        const boxHeight = el.offsetHeight
+        const textHeight = el.querySelector('span').offsetHeight
+        vm.$set(vm.disabledTooltipSet, `${field}-${index}`, textHeight > boxHeight ? false : true)
+    }
+    return { inserted: handler, update: handler }
+})()
+export default {
+    name: 'SgDataView',
+    components: {
+        dataColumn,
+    },
+    props: {
+        // 底部按钮布局
+        // pageActionLayout: {
+        //     type: Array,
+        //     default() {
+        //         return [
+        //             {
+        //                 key: 'print',
+        //                 label: '打印',
+        //             },
+        //             {
+        //                 key: 'export',
+        //                 label: '导出',
+        //             },
+        //         ]
+        //     },
+        // },
+        border: {
+            type: Boolean,
+            default: false,
+        },
+        // table操作栏
+        hasBar: {
+            type: Boolean,
+            default: false,
+        },
+        exportName: {
+            type: String,
+            default: '导出数据',
+        },
+        // 默认值
+        defaultValue: {
+            type: String,
+            default: '-',
+        },
+        // 排序
+        sortOptions: {
+            type: Array,
+            default() {
+                return []
+            },
+        },
+        // 列
+        columns: {
+            type: Array,
+            default() {
+                return []
+            },
+        },
+        // 第一次是否自动请求
+        auto: {
+            type: Boolean,
+            default: true,
+        },
+        // 是否需要分页
+        pageVisible: {
+            type: Boolean,
+            default: true,
+        },
+        // 分页配置
+        pagination: {
+            type: Object,
+            default() {
+                return {}
+            },
+        },
+        // 数据请求
+        load: {
+            type: Function,
+            default() {
+                return []
+            },
+        },
+        // 数据请求
+        treeLoad: {
+            type: Function,
+            default() {
+                return []
+            },
+        },
+
+        handleSelectAble: {
+            type: Function,
+            default() {
+                return true
+            },
+        },
+        paramsSerializer: {
+            type: Function,
+            default: null,
+        },
+        // 选中初始化的key
+        idKey: {
+            type: String,
+            default: '',
+        },
+        // 选中初始化s数据对象[{name:1}]
+        multipleSelectionAll: {
+            type: Array,
+            default() {
+                return []
+            },
+        },
+        // 是否自动计算高度
+        isAutoHeight: {
+            type: Boolean,
+            default: false,
+        },
+        // id class
+        resizeTarget: {
+            type: String,
+            default: '',
+        },
+        resizeBottomHeight: {
+            type: Number,
+            default: 50,
+        },
+        resizeMinHeight: {
+            type: Number,
+            default: 200,
+        },
+        // 只有一页时是否隐藏
+        hideOnSinglePage: {
+            type: Boolean,
+            default: false,
+        },
+
+        // table最大高度
+        maxHeight: {
+            type: [Number, String],
+            default: null,
+        },
+        // 导出全部配置项
+        exportAllConfig: {
+            type: Object,
+            default: () => ({}),
+        },
+        /**表头吸附 */
+        tableHeaderSticky: {
+            type: [Boolean, Object],
+            default: false,
+        },
+        /**
+         * 允许勾选导出(传入 acrossPage, 则表示允许跨页勾选导出)
+         * 跨页勾选，必须设置idKey
+         */
+        allowCheckExport: {
+            type: [Boolean, String],
+            default: false,
+        },
+        /**
+         * 用户自定义锁列的列数 (除序号列和选择列(即type为selection、index)的前N列)
+         * 不支持多级表头
+         */
+        customLockColumn: {
+            type: [Number],
+            default: 0,
+        },
+    },
+    data() {
+        return {
+            disabledTooltipSet: {}, // 禁用tooltip标识集合
+            multipleSelectionAll$: [...this.multipleSelectionAll], // 所有选中的数据包含跨页数据
+            multipleSelection: [], // 当前页选中的数据
+            printId: `table-${guid()}`,
+            exportData: [], // 导出数据
+            sortParams: {},
+            sort: '', // 默认排序值
+            operationVisible: false, // 列
+            tableHeight: null,
+            isVirgin: true,
+            total: 0,
+            listLoading: false,
+            dataSource: [],
+            myColumns: [],
+            operations: [],
+            operation: [],
+            pages: 0,
+            firstIndex: 0,
+            lastIndex: 0,
+        }
+    },
+    computed: {
+        vElTableStickyHeaderConfig() {
+            const { tableHeaderSticky } = this
+            if (typeof tableHeaderSticky === 'boolean') {
+                return {
+                    disabled: !tableHeaderSticky,
+                }
+            }
+            return {
+                /**滚动容器dom获取函数 */
+                // scrollDom: () => document.querySelector('.app-main-box .sg-page'),
+                /**禁用 */
+                // disabled: false,
+                ...(tableHeaderSticky || {}),
+            }
+        },
+        exportAllItem() {
+            const target = this.exPageActionLayout.find(item => item.key === 'exportAll') || {}
+
+            return target
+        },
+        maxHeight$() {
+            return this.maxHeight || this.tableHeight || null
+        },
+        // dataSourcePath {}
+        dataSourcePath() {
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+
+            if (this.$attrs.dataSourcePath) {
+                return this.$attrs.dataSourcePath
+            }
+            if (DataViewConfig.dataSourcePath) {
+                return DataViewConfig.dataSourcePath
+            }
+            return null
+        },
+        dataSourceResultName() {
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+
+            if (this.$attrs.dataSourceResultName) {
+                return this.$attrs.dataSourceResultName
+            }
+            if (DataViewConfig.dataSourceResultName) {
+                return DataViewConfig.dataSourceResultName
+            }
+            return null
+        },
+        dataSourceTotalName() {
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+
+            if (this.$attrs.dataSourceTotalName) {
+                return this.$attrs.dataSourceTotalName
+            }
+            if (DataViewConfig.dataSourceTotalName) {
+                return DataViewConfig.dataSourceTotalName
+            }
+            return null
+        },
+        exPageActionLayout() {
+            const defaults = [
+                {
+                    key: 'print',
+                    label: '打印',
+                },
+                {
+                    key: 'export',
+                    label: '导出',
+                },
+            ]
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+
+            if (this.$attrs.pageActionLayout) {
+                return this.$attrs.pageActionLayout
+            }
+            if (this.$attrs['page-action-layout']) {
+                return this.$attrs['page-action-layout']
+            }
+            if (DataViewConfig.pageActionLayout) {
+                return DataViewConfig.pageActionLayout
+            }
+            return defaults
+        },
+        ifRenderPage() {
+            if (this.pageVisible === false) {
+                return false
+            }
+            if (this.pages <= 1 && this.hideOnSinglePage) {
+                return false
+            }
+            return true
+        },
+        myParamsSerializer() {
+            const CONFIG = this.$ShareGood || {}
+            const DataViewConfig = CONFIG.DataView || {}
+
+            const paramsSerializer = this.paramsSerializer || DataViewConfig.paramsSerializer
+            return paramsSerializer
+        },
+        exAttrs() {
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+            const attrs = this.$attrs || {}
+
+            const defaults = {
+                border: true,
+                fit: true,
+            }
+            return {
+                ...defaults,
+                ...DataViewConfig,
+                ...attrs,
+            }
+        },
+        exPagination() {
+            const config = this.$ShareGood || {}
+            const DataViewConfig = config.DataView || {}
+            const PageConfig = DataViewConfig.pagination || {}
+            const myPageConfig = this.pagination || {}
+
+            const result = {
+                pageSize: 20,
+                visible: true,
+                page: 1,
+                pageSizes: [10, 20, 50, 100],
+                layout: 'total, sizes, prev, pager, next, jumper',
+                ...PageConfig,
+                ...myPageConfig,
+            }
+            // console.log('exPagination', result)
+            return result
+        },
+        sgExportData() {
+            if (this.allowCheckExport === 'acrossPage' && this.multipleSelectionAll$.length) {
+                return this.multipleSelectionAll$
+            }
+            if (this.allowCheckExport && this.multipleSelection.length) {
+                return this.multipleSelection
+            }
+            return this.exportData
+        },
+    },
+    directives: { initTooltip },
+    created() {
+        this.myColumns = [...this.columns]
+        this.operations = this.columns
+            .map(item => {
+                if (item.prop) {
+                    return {
+                        checked: true,
+                        label: item.label,
+                        value: item.prop,
+                    }
+                } else {
+                    return null
+                }
+            })
+            .filter(item => item)
+
+        this.operation = this.operations.map(item => item.value)
+
+        this.auto && this.onLoad({})
+    },
+    mounted() {
+        if (this.isAutoHeight) {
+            // if (this.resizeTarget) {
+            //     const resizeTarget = this.resizeTarget
+            //     const dom = document.querySelector(resizeTarget)
+            //     dom && addResizeListener(dom, this.resize)
+            //     this.$nextTick(() => {
+            //         this.resize()
+            //     })
+            // } else {
+            //     const dom = document.body
+            //     addResizeListener(dom, this.resize)
+            //     this.$nextTick(() => {
+            //         this.resize()
+            //     })
+            // }
+            const dom = document.body
+            addResizeListener(dom, this.resize)
+            this.$nextTick(() => {
+                this.resize()
+            })
+        }
+    },
+    beforeDestroy() {
+        if (this.isAutoHeight) {
+            const dom = document.body
+            removeResizeListener(dom, this.resize)
+        }
+    },
+    methods: {
+        exportAll() {
+            this.$refs.exportAll.onExportAll()
+        },
+        resize() {
+            const H = window.innerHeight
+            const resizeMinHeight = this.resizeMinHeight
+            const pageHeight = this.$refs.page?.$el?.offsetHeight ?? 0
+            const tableHeader = this.$refs.tableWrap.querySelector('.el-table__header-wrapper')
+            const tableHeaderHeight = tableHeader.offsetHeight
+            const tableWrapHeight = this.$refs.tableWrap.getBoundingClientRect().top
+            const resizeBottomHeight = this.resizeBottomHeight
+            const height = H - tableWrapHeight - resizeBottomHeight - pageHeight
+            this.tableHeight = Math.max(resizeMinHeight, height)
+            console.log(
+                `[resize] height:${height}resizeBottomHeight:${resizeBottomHeight}  windowHeight:${H} paginationHeight:${pageHeight} tableHeaderHeight:${tableHeaderHeight} tableWrapHeight:${tableWrapHeight}`,
+            )
+        },
+        // 数据加载完后处理是否需要勾选数据
+        handleSelection(dataSource) {
+            this.multipleSelection = []
+            this.$refs.table.clearSelection()
+            const multipleSelectionAll = this.multipleSelectionAll$
+            const idKey = this.idKey
+            const idKeys = multipleSelectionAll.map(item => item[idKey]).filter(item => item)
+
+            dataSource.forEach((item, index) => {
+                if (idKeys.includes(item[idKey])) {
+                    this.$refs.table.toggleRowSelection(item, true)
+                }
+            })
+        },
+        // 合并当前页和之前的页面选中数据
+        persistSelection() {
+            // 标识当前行的唯一键的名称
+            const rowKey = this.idKey
+
+            const dataSource = this.dataSource || []
+            const multipleSelectionAll = this.multipleSelectionAll$
+            const multipleSelectionAllIds = multipleSelectionAll.map(item => item[rowKey])
+            const multipleSelection = this.multipleSelection
+            const selectedRowKeys = multipleSelection.map(item => item[rowKey])
+            multipleSelection.forEach(item => {
+                if (multipleSelectionAllIds.indexOf(item[rowKey]) === -1) {
+                    multipleSelectionAll.push(item)
+                }
+            })
+
+            const noSelectedRowKeys = dataSource
+                .map(row => {
+                    if (!selectedRowKeys.includes(row[rowKey])) {
+                        return row[rowKey]
+                    } else {
+                        return null
+                    }
+                })
+                .filter(item => item)
+
+            for (let i = multipleSelectionAll.length - 1; i >= 0; i--) {
+                if (noSelectedRowKeys.includes(multipleSelectionAll[i][rowKey])) {
+                    multipleSelectionAll.splice(i, 1) //执行后aa.length会减一
+                }
+            }
+            this.multipleSelectionAll$ = multipleSelectionAll
+
+            this.$emit('selection-change-all', multipleSelectionAll)
+            return multipleSelectionAll
+        },
+        // 人工选择单选和全选
+        selectionChange(val) {
+            this.multipleSelection = val
+            this.persistSelection()
+        },
+        // 清除所有分页勾选数据
+        clearAllSelection() {
+            this.multipleSelectionAll$ = []
+            this.multipleSelection = []
+            this.$emit('selection-change-all', [])
+            this.$refs.table.clearSelection()
+        },
+        // 整行点击事件
+        rowClickChange(option) {
+            this.$emit('row-click-change', option)
+        },
+        //
+        handlePrint(id) {
+            id = typeof id === 'string' ? id : this.printId
+            console.log('handlePrint', id)
+            printJS({
+                printable: id,
+                type: 'html',
+                //properties: [
+                //    { field: 'name', displayName: '姓名', columnSize:`50%`},
+                //    { field: 'sex', displayName: '性别',columnSize:`50%`},
+                //],
+                // header: `<p class="custom-p"> 名单 </p>`,
+                // style: '#printCons {width: 600px;} .no-print{width: 0px} .itemText1 { width: 200px } .itemText2 { width: 200px } .itemText3 { width: 200px } .itemText4 { width: 200px }',
+                // gridHeaderStyle:'font-size:12px; padding:3px; border:1px solid; font-weight: 100; text-align:left;',
+                // gridStyle:'font-size:12px; padding:3px; border:1px solid; text-align:left;',
+                // repeatTableHeader: true,
+                // scanStyles:true,
+                targetStyles: ['*'],
+                ignoreElements: ['no-print'],
+            })
+        },
+        // 排序
+        onSortChange(val) {
+            const target = this.sortOptions.filter(item => item.value === val)[0]
+            const { key, value } = target
+            const params = {
+                page: 1,
+            }
+            this.sortParams[key] = value
+
+            this.onLoad(params)
+        },
+        // 刷新
+        handleReload() {
+            this.onLoad()
+        },
+        onOperationChange(val) {
+            this.columns = this.myColumns
+                .map(item => {
+                    if (val.indexOf(item.prop) > -1 || item.type === 'selection') {
+                        return item
+                    } else {
+                        return null
+                    }
+                })
+                .filter(item => item)
+        },
+
+        scrollTop() {
+            this.$nextTick(() => {
+                try {
+                    const $el = this.$refs.table.$el,
+                        $wrap = $el.getElementsByClassName('el-table__body-wrapper')[0]
+                    $wrap && ($wrap.scrollTop = 0)
+                } catch (e) {
+                    console.log(e)
+                }
+            })
+        },
+        // 加载数据
+        onLoad(params = {}, options = {}) {
+            let page = params.page
+            const paramsSerializer = this.myParamsSerializer
+            params.pageSize = params.pageSize || this.exPagination.pageSize
+            if (page) {
+                this.exPagination.page = page
+            } else {
+                page = this.exPagination.page
+                params.page = page
+            }
+            if (options.loading !== false) {
+                this.listLoading = true
+            }
+
+            const pageSize$ = params.pageSize
+            const page$ = page
+
+            Object.assign(params, this.sortParams)
+
+            params = paramsSerializer ? paramsSerializer(params) : params
+
+            let promise = this.load(params)
+            if (!promise.then) {
+                promise = Promise.resolve(promise)
+            }
+            const pages = this.pages
+            promise
+                .then(res => {
+                    const body = this.dataSourcePath ? _.get(res, this.dataSourcePath) : res
+                    const total = this.dataSourceTotalPath ? _.get(body, this.dataSourceTotalPath) : body?.total ?? 0
+                    const result = this.dataSourceResultPath ? _.get(body, this.dataSourceResultPath) : body?.result || body?.data || []
+                    // 新增$index字段来支持翻页序号自增
+                    result.forEach((item, index) => {
+                        item.$index = (page - 1) * pageSize$ + index + 1
+                    })
+                    this.dataSource = [...result]
+                    this.exportData = [...result]
+
+                    this.total = +total || 0
+                    if (this.total) {
+                        this.pages = Math.ceil(this.total / pageSize$)
+                        this.firstIndex = (page$ - 1) * pageSize$ + 1
+                        this.lastIndex = this.pages === page$ ? this.total : page$ * pageSize$
+                    } else {
+                        this.pages = 0
+                        this.firstIndex = 0
+                        this.lastIndex = 0
+                    }
+
+                    this.listLoading = false
+                    this.isVirgin = false
+                    this.$nextTick(() => {
+                        if (this.idKey) {
+                            this.handleSelection(this.dataSource)
+                        }
+                        if (options.scrollTop !== false) {
+                            this.scrollTop()
+                        }
+
+                        // 当删除数据时 分页数变小则重新请求
+                        if (this.pages < pages && this.pages !== 0) {
+                            this.onLoad({
+                                ...params,
+                                page: params.page - 1,
+                            })
+                        }
+                    })
+                })
+                .catch(err => {
+                    console.error('[data-view load]', err)
+                    // this.dataSource = []
+                    // this.total = 0
+                    this.listLoading = false
+                    this.isVirgin = false
+                    this.scrollTop()
+                })
+        },
+    },
+}
+</script>

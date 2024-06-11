@@ -1,0 +1,11 @@
+{
+    "code": 200,
+    "message": "调用成功",
+    "errors": [],
+    "data": {
+        "applicationTypeList": null,
+        "applicationMenuTreeDTOList": null,
+        "user": null,
+        "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNTE1NzAwNjE4OF8iLCJhdWQiOiJ3ZWIiLCJjcmVhdGVkIjoxNjYyMTA3MzU3MzI4LCJhcHBJZCI6bnVsbCwiaXNzIjoiaWNpbmZvLmNuIiwiZXhwIjoxNjYyNzEyMTU3fQ.5gwR6lsRuMcEEr2UKR_xMstf5OgvIjalPHbKkyh4eoIfGsPsmgiFNfKU_nzNIonuNDsb-WdeQGEbd3P3SS0zEw"
+    }
+}

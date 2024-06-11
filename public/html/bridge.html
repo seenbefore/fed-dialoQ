@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    </head>
+    <body></body>
+    <script>
+        const bc = new BroadcastChannel('BC')
+        // 接收到父级消息则向同源兄弟tab发送消息
+        window.addEventListener('message', function(e) {
+            console.log('[接受父级消息]', e.data, e)
+            bc.postMessage(e.data)
+        })
+        // 接收到同源兄弟tab信息则向父级通知消息
+        bc.onmessage = function(e) {
+            console.log('[接受同源消息]', e.data, e)
+            window.parent.postMessage(e.data, '*')
+        }
+    </script>
+</html>

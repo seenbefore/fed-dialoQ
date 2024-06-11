@@ -1,0 +1,110 @@
+/**
+ * 表单组件（外层统一加一个 html 选择器以提升优先级）
+ */
+
+/* 表单 */
+
+.sg-data-form .el-date-editor.el-input,
+.sg-data-form .el-date-editor.el-input__inner {
+    width: 100%;
+}
+.sg-data-form .el-form-item__label {
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+}
+
+.sg-form-item__label {
+    width: 100%;
+    overflow: hidden;
+    text-align: right;
+    text-overflow: ellipsis;
+}
+.sg-data-form .el-form-item {
+    display: flex;
+}
+
+.sg-data-form .el-form-item__content {
+    flex: 1;
+    /* display: flex; */
+    margin-left: 0 !important;
+}
+
+.sg-data-form .el-row {
+    flex-wrap: wrap;
+}
+.sg-data-form .el-form-item__label {
+    white-space: nowrap;
+}
+.sg-data-form .el-input,
+.sg-data-form .el-select,
+.sg-data-form .el-autocomplete,
+.sg-data-form .el-cascader {
+    width: 100%;
+}
+.el-select .el-loading-mask {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.el-select .el-loading-spinner {
+    transform: scale(0.5);
+}
+.sg-data-form .sg-form-row {
+    margin-bottom: 0;
+}
+.sg-data-form .sg-form-field {
+    width: 100%;
+}
+.sg-data-form-action {
+    text-align: center;
+}
+.sg-data-form-field {
+    width: 100%;
+}
+.sg-data-form-field.inline {
+    display: flex;
+}
+.sg-data-form-field .suffix,
+.sg-form-field .suffix {
+    display: inline-flex;
+    padding-left: 10px;
+    margin-top: 1px;
+    line-height: 1;
+    align-items: center;
+}
+.sg-form--label-top .sg-form-item {
+    display: block;
+    width: 100%;
+}
+.sg-form--label-top .el-form-item__label {
+    float: none;
+}
+
+.sg-data-form-footer {
+    text-align: center;
+}
+.sg-data-form .el-button {
+    vertical-align: top;
+}
+
+.sg-range {
+    display: flex;
+}
+.sg-range__input {
+    flex: 1;
+}
+.sg-range__gap {
+    width: 30px;
+    text-align: center;
+}
+
+.sg-help-icon {
+    margin-left: 6px;
+}
+.sg-help-tooltip {
+    max-width: 240px;
+}
+
+.sg-data-form-container + .sg-dataview-container,
+.sg-data-form-container + .sg-base-table {
+    margin-top: 8px;
+}

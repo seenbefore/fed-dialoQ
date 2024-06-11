@@ -1,0 +1,657 @@
+.ic-btn {
+    position: relative;
+    display: inline-block;
+    box-shadow: none;
+    text-decoration: none;
+    text-align: center;
+    text-transform: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    transition: all 0.1s linear;
+    line-height: 1;
+    cursor: pointer;
+}
+.ic-btn + .ic-btn {
+    margin-left: 7px;
+}
+.ic-btn [class*='ic-icon'] + span {
+    margin-left: 5px;
+}
+.ic-btn span + [class*='ic-icon'] {
+    margin-left: 5px;
+}
+.ic-btn:after {
+    text-align: center;
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.1s linear;
+}
+
+.ic-btn:before {
+    content: '';
+    height: 100%;
+    width: 0;
+}
+
+.ic-btn .ic-icon,
+.ic-btn:before {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ic-btn > .ic-btn-helper {
+    text-decoration: inherit;
+}
+
+.ic-btn {
+    // medium
+    border-radius: 6px;
+    padding: 0 12px;
+    height: 32px;
+    font-size: 14px;
+    border-width: 1px;
+    > div,
+    > span,
+    > .ic-btn-helper {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    &.hover,
+    &:hover {
+        box-shadow: none;
+    }
+    &.medium {
+        border-radius: 6px;
+        padding: 0 12px;
+        height: 32px;
+        font-size: 14px;
+        border-width: 1px;
+    }
+    // &.small {
+    //     border-radius: 0;
+    //     padding: 0;
+    //     height: 16px;
+    //     font-size: 12px;
+    //     border-width: 0;
+    // }
+    &.large {
+        border-radius: 6px;
+        padding: 0 16px;
+        height: 36px;
+        font-size: 16px;
+        border-width: 1px;
+    }
+
+    &.normal {
+        color: var(--ic-normal);
+        border-style: solid;
+        background: var(--ic-normal-background);
+        border-color: var(--ic-normal-border);
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: var(--ic-normal-visited);
+            background: var(--ic-normal-visited-background);
+            border-color: var(--ic-normal-visited-border);
+            text-decoration: none;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: var(--ic-normal-hover);
+            background: var(--ic-normal-hover-background);
+            border-color: var(--ic-normal-hover-border);
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: var(--ic-normal-active);
+            background: var(--ic-normal-active-background);
+            border-color: var(--ic-normal-active-border);
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: var(--ic-normal-disabled);
+            background: var(--ic-normal-disabled-background);
+            border-color: var(--ic-normal-disabled-border);
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-normal-disabled-visited);
+                background: var(--ic-normal-disabled-visited-background);
+                border-color: var(--ic-normal-disabled-visited-border);
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: var(--ic-normal-disabled-hover);
+                background: var(--ic-normal-disabled-hover-background);
+                border-color: var(--ic-normal-disabled-hover-border);
+                text-decoration: none;
+            }
+        }
+    }
+    &.primary {
+        color: #fff;
+        border-style: solid;
+        background: var(--ic-primary);
+        border-color: transparent;
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: #fff;
+            background: var(--ic-primary-hover);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: #fff;
+            background: var(--ic-primary-active);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: #fff;
+            background: var(--ic-primary-disabled);
+            border-color: var(--ic-primary-disabled);
+            &.visited,
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: #fff;
+                background: var(--ic-primary-disabled);
+                border-color: var(--ic-primary-disabled);
+                text-decoration: none;
+            }
+        }
+
+        &.plain {
+            color: var(--ic-primary);
+            border-style: solid;
+            background: #fff;
+            border-color: var(--ic-primary);
+
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-primary);
+            }
+
+            &.hover,
+            &:focus,
+            &:hover {
+                color: var(--ic-primary);
+                background: var(--ic-primary-plain-hover);
+                border-color: var(--ic-primary);
+                text-decoration: none;
+            }
+            &.active,
+            &:active {
+                color: var(--ic-primary);
+                background: var(--ic-primary-plain-active);
+                border-color: var(--ic-primary);
+                text-decoration: none;
+            }
+            &.disabled,
+            &[disabled] {
+                cursor: not-allowed;
+                color: var(--ic-primary-plain-disabled);
+                background: #fff;
+                border-color: var(--ic-primary-plain-disabled);
+                &.visited,
+                &:link,
+                &:visited {
+                    color: var(--ic-primary);
+                }
+
+                &.active,
+                &.hover,
+                &:active,
+                &:focus,
+                &:hover {
+                    color: var(--ic-primary-plain-disabled);
+                    background: #fff;
+                    border-color: var(--ic-primary-plain-disabled);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+    &.success {
+        color: #fff;
+        border-style: solid;
+        background: var(--ic-success);
+        border-color: transparent;
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: #fff;
+            background: var(--ic-success-hover);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: #fff;
+            background: var(--ic-success-active);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: #fff;
+            background: var(--ic-success-disabled);
+            border-color: var(--ic-success-disabled);
+            &.visited,
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: #fff;
+                background: var(--ic-success-disabled);
+                border-color: var(--ic-success-disabled);
+                text-decoration: none;
+            }
+        }
+
+        &.plain {
+            color: var(--ic-success);
+            border-style: solid;
+            background: #fff;
+            border-color: var(--ic-success);
+
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-success);
+            }
+
+            &.hover,
+            &:focus,
+            &:hover {
+                color: var(--ic-success);
+                background: var(--ic-success-plain-hover);
+                border-color: var(--ic-success);
+                text-decoration: none;
+            }
+            &.active,
+            &:active {
+                color: var(--ic-success);
+                background: var(--ic-success-plain-active);
+                border-color: var(--ic-success);
+                text-decoration: none;
+            }
+            &.disabled,
+            &[disabled] {
+                cursor: not-allowed;
+                color: var(--ic-success-plain-disabled);
+                background: #fff;
+                border-color: var(--ic-success-plain-disabled);
+                &.visited,
+                &:link,
+                &:visited {
+                    color: var(--ic-success);
+                }
+
+                &.active,
+                &.hover,
+                &:active,
+                &:focus,
+                &:hover {
+                    color: var(--ic-success-plain-disabled);
+                    background: #fff;
+                    border-color: var(--ic-success-plain-disabled);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+    &.info {
+        color: #fff;
+        border-style: solid;
+        background: var(--ic-info);
+        border-color: transparent;
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: #fff;
+            background: var(--ic-info-hover);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: #fff;
+            background: var(--ic-info-active);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: #fff;
+            background: var(--ic-info-disabled);
+            border-color: var(--ic-info-disabled);
+            &.visited,
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: #fff;
+                background: var(--ic-info-disabled);
+                border-color: var(--ic-info-disabled);
+                text-decoration: none;
+            }
+        }
+
+        &.plain {
+            color: var(--ic-info);
+            border-style: solid;
+            background: #fff;
+            border-color: var(--ic-info);
+
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-info);
+            }
+
+            &.hover,
+            &:focus,
+            &:hover {
+                color: var(--ic-info);
+                background: var(--ic-info-plain-hover);
+                border-color: var(--ic-info);
+                text-decoration: none;
+            }
+            &.active,
+            &:active {
+                color: var(--ic-info);
+                background: var(--ic-info-plain-active);
+                border-color: var(--ic-info);
+                text-decoration: none;
+            }
+            &.disabled,
+            &[disabled] {
+                cursor: not-allowed;
+                color: var(--ic-info-plain-disabled);
+                background: #fff;
+                border-color: var(--ic-info-plain-disabled);
+                &.visited,
+                &:link,
+                &:visited {
+                    color: var(--ic-info);
+                }
+
+                &.active,
+                &.hover,
+                &:active,
+                &:focus,
+                &:hover {
+                    color: var(--ic-info-plain-disabled);
+                    background: #fff;
+                    border-color: var(--ic-info-plain-disabled);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+    &.danger {
+        color: #fff;
+        border-style: solid;
+        background: var(--ic-danger);
+        border-color: transparent;
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: #fff;
+            background: var(--ic-danger-hover);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: #fff;
+            background: var(--ic-danger-active);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: #fff;
+            background: var(--ic-danger-disabled);
+            border-color: var(--ic-danger-disabled);
+            &.visited,
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: #fff;
+                background: var(--ic-danger-disabled);
+                border-color: var(--ic-danger-disabled);
+                text-decoration: none;
+            }
+        }
+        &.plain {
+            color: var(--ic-danger);
+            border-style: solid;
+            background: #fff;
+            border-color: var(--ic-danger);
+
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-danger);
+            }
+
+            &.hover,
+            &:focus,
+            &:hover {
+                color: var(--ic-danger);
+                background: var(--ic-danger-plain-hover);
+                border-color: var(--ic-danger);
+                text-decoration: none;
+            }
+            &.active,
+            &:active {
+                color: var(--ic-danger);
+                background: var(--ic-danger-plain-active);
+                border-color: var(--ic-danger);
+                text-decoration: none;
+            }
+            &.disabled,
+            &[disabled] {
+                cursor: not-allowed;
+                color: var(--ic-danger-plain-disabled);
+                background: #fff;
+                border-color: var(--ic-danger-plain-disabled);
+                &.visited,
+                &:link,
+                &:visited {
+                    color: var(--ic-danger);
+                }
+
+                &.active,
+                &.hover,
+                &:active,
+                &:focus,
+                &:hover {
+                    color: var(--ic-danger-plain-disabled);
+                    background: #fff;
+                    border-color: var(--ic-danger-plain-disabled);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+    &.warning {
+        color: #fff;
+        border-style: solid;
+        background: var(--ic-warning);
+        border-color: transparent;
+
+        &.visited,
+        &:link,
+        &:visited {
+            color: #fff;
+        }
+
+        &.hover,
+        &:focus,
+        &:hover {
+            color: #fff;
+            background: var(--ic-warning-hover);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.active,
+        &:active {
+            color: #fff;
+            background: var(--ic-warning-active);
+            border-color: transparent;
+            text-decoration: none;
+        }
+        &.disabled,
+        &[disabled] {
+            cursor: not-allowed;
+            color: #fff;
+            background: var(--ic-warning-disabled);
+            border-color: var(--ic-warning-disabled);
+            &.visited,
+            &:link,
+            &:visited {
+                color: #fff;
+            }
+
+            &.active,
+            &.hover,
+            &:active,
+            &:focus,
+            &:hover {
+                color: #fff;
+                background: var(--ic-warning-disabled);
+                border-color: var(--ic-warning-disabled);
+                text-decoration: none;
+            }
+        }
+
+        &.plain {
+            color: var(--ic-warning);
+            border-style: solid;
+            background: #fff;
+            border-color: var(--ic-warning);
+
+            &.visited,
+            &:link,
+            &:visited {
+                color: var(--ic-warning);
+            }
+
+            &.hover,
+            &:focus,
+            &:hover {
+                color: var(--ic-warning);
+                background: var(--ic-warning-plain-hover);
+                border-color: var(--ic-warning);
+                text-decoration: none;
+            }
+            &.active,
+            &:active {
+                color: var(--ic-warning);
+                background: var(--ic-warning-plain-active);
+                border-color: var(--ic-warning);
+                text-decoration: none;
+            }
+            &.disabled,
+            &[disabled] {
+                cursor: not-allowed;
+                color: var(--ic-warning-plain-disabled);
+                background: #fff;
+                border-color: var(--ic-warning-plain-disabled);
+                &.visited,
+                &:link,
+                &:visited {
+                    color: var(--ic-warning);
+                }
+
+                &.active,
+                &.hover,
+                &:active,
+                &:focus,
+                &:hover {
+                    color: var(--ic-warning-plain-disabled);
+                    background: #fff;
+                    border-color: var(--ic-warning-plain-disabled);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}

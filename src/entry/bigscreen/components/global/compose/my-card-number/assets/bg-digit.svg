@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="31px" viewBox="0 0 20 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>翻牌器</title>
+    <defs>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="95.4772649%" gradientTransform="translate(0.500000,0.500000),scale(1.000000,0.608344),rotate(90.000000),translate(-0.500000,-0.500000)" id="radialGradient-1">
+            <stop stop-color="#2896A7" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#20DDEF" stop-opacity="0.222301136" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首屏888888" transform="translate(-1559.000000, -448.000000)" stroke-width="0.6">
+            <g id="编组-7" transform="translate(1441.000000, 379.000000)">
+                <g id="编组-4" transform="translate(119.000000, 47.000000)">
+                    <g id="翻牌器" transform="translate(0.000000, 22.000000)">
+                        <rect id="矩形" stroke-opacity="0.48942854" stroke="#48BEEB" fill="url(#radialGradient-1)" x="0.3" y="0.3" width="17.6503209" height="29.4"></rect>
+                        <g id="编组-74" transform="translate(0.091154, 0.361446)" stroke="#19DAF8">
+                            <polyline id="路径-72" points="2.59788549 0 0 0 0 2.11361293"></polyline>
+                            <polyline id="路径-72备份-2" transform="translate(1.298943, 28.526686) scale(1, -1) translate(-1.298943, -28.526686) " points="2.59788549 27.4698795 0 27.4698795 0 29.5834924"></polyline>
+                            <polyline id="路径-72备份" transform="translate(16.994219, 1.056806) scale(-1, 1) translate(-16.994219, -1.056806) " points="18.2931615 0 15.695276 0 15.695276 2.11361293"></polyline>
+                            <polyline id="路径-72备份-3" transform="translate(16.994219, 28.526686) scale(-1, -1) translate(-16.994219, -28.526686) " points="18.2931615 27.4698795 15.695276 27.4698795 15.695276 29.5834924"></polyline>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
