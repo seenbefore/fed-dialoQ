@@ -1,19 +1,21 @@
 <template>
     <div class="square">
         <MyNav></MyNav>
-
+        <MySecretary></MySecretary>
         <router-view :key="key"></router-view>
         <footer></footer>
     </div>
 </template>
 
 <script lang="ts">
+import MyNav from '@library/components/my-nav/index.vue'
+import MySecretary from '@library/components/my-secretary/index.vue'
 import { Component, Vue } from 'vue-property-decorator'
-import MyNav from '@/entry/library/components/my-nav/index.vue'
 
 @Component({
     components: {
         MyNav,
+        MySecretary,
     },
 })
 export default class Index extends Vue {

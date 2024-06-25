@@ -247,7 +247,7 @@ export default class Index extends Vue {
         return [...userStore.topMenus.slice(0, this.maxVisibleMenuCount)]
     }
     topMenuOptions = {
-        'background-color': 'var(--system-header-background)',
+        'background-color': 'var(--color-primary)',
         'text-color': '#fff',
         'active-text-color': '#fff',
     }
@@ -369,7 +369,7 @@ export default class Index extends Vue {
         .el-submenu .el-submenu__title {
             height: 50px;
             line-height: 50px;
-            background-color: var(--system-header-background) !important;
+            background-color: var(--color-primary) !important;
         }
     }
 }

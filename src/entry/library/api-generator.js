@@ -19,7 +19,7 @@ async function main() {
             request: 'http.request',
             prepend: `
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"`,
+import http from "@library/scripts/http"`,
             optionsType: 'ExAxiosRequestConfig',
             dataDescription: '要提交给服务器的数据',
             optionsDescription: '附加选项',

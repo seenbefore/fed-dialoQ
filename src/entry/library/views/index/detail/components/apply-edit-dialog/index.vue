@@ -10,11 +10,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { FormRow } from '@/sharegood-ui'
-import { save } from '@/entry/library/api/auto/component/use'
-import { getProjectList } from '@/entry/library/api/auto/component'
-import { save as saveUrl } from '@/entry/library/api/auto/component/url'
+import { getProjectList } from '@library/api/auto/component'
+import { save as saveUrl } from '@library/api/auto/component/url'
+import { save } from '@library/api/auto/component/use'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 const API = {
     save,
     saveUrl,

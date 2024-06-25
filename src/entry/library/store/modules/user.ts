@@ -72,11 +72,11 @@ export default class MyModule extends VuexModule {
      */
     ThirdLogin() {
         return new Promise(resolve => {
-            const redirect = encodeURIComponent(location.href)
+            const redirect = process.env.NODE_ENV === 'development' ? `${location.origin}/login-free` : ''
             // 蜻蜓云效
             //location.href = `http://192.168.1.147:3001/login?redirect=${redirect}`
             // 仓颉扫码
-            location.href = `https://cangjie.icinfo.cn/login-library`
+            location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
             resolve('')
         })
     }

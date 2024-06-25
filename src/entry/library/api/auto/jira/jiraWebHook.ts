@@ -2,8 +2,8 @@
  * @file API：/jira/jiraWebHook
  */
 
+import http from "@library/scripts/http"
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"
 
 /**
  * 行政执法催处理及高优先级问题.

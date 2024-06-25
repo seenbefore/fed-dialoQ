@@ -35,7 +35,7 @@ my-badge + my-text-item
 ```bash
 
 # 图标文件的路径，根据当前的项目路径进行修改
-@/entry/bigscreen/assets/base-svg/
+@bigScreen/assets/base-svg/
 
 ```
 

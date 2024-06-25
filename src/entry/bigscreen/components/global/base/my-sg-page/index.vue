@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import TitleBg from '@/entry/bigscreen/components/TitleBg/index.vue'
-import DateSelect from '@/entry/bigscreen/components/DateSelect/index.vue'
+import DateSelect from '@bigScreen/components/DateSelect/index.vue'
+import TitleBg from '@bigScreen/components/TitleBg/index.vue'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
     name: 'MySgPage',

@@ -28,8 +28,6 @@ module.exports = {
         tagsView: true,
         // 后台板式 两种 layout-vertical layout-common
         layout: 'layout-common',
-        // 选定主题 theme-light
-        theme: '',
     },
     user: {
         // 设置一级菜单为顶部菜单

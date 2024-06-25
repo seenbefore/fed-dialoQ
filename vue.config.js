@@ -8,6 +8,7 @@ const VUE_APP_ENTRY = process.env.VUE_APP_ENTRY || 'src'
 const pages = require('./build/entry').pages
 const page = pages[VUE_APP_ENTRY]
 const OutputJSPlugin = require('./build/OutputJSPlugin')
+const { setAlias } = require('./build/alias')
 const entry = {
     pages: {
         [VUE_APP_ENTRY]: page,
@@ -211,17 +212,12 @@ module.exports = () => {
         },
 
         chainWebpack: config => {
-            config.resolve.alias.set('@icinfo-ui', path.resolve(__dirname, './packages'))
+            setAlias(config)
             /// 多页面处理
             Object.keys(entry.pages).forEach(key => {
                 config.plugins.delete(`prefetch-${key}`)
 
                 config.plugin('html-' + key).tap(args => {
-                    // if (isDev) {
-                    //     args[0].cdn = staticResourceMap['dev'].cdn
-                    // } else {
-                    //     args[0].cdn = staticResourceMap['build'].cdn
-                    // }
                     args[0].cdn = staticResource.cdn
                     return args
                 })

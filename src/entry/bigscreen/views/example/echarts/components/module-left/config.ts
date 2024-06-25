@@ -1,6 +1,6 @@
-import { configAxisY, getSeriesBar, getEchartAxisConfig } from '@/entry/bigscreen/scripts/echarts/config'
-import { setLinearGradient } from '@/entry/bigscreen/scripts/echarts/utils'
-import { ILayout } from '@/entry/bigscreen/types/index'
+import { configAxisY, getEchartAxisConfig, getSeriesBar } from '@bigScreen/scripts/echarts/config'
+import { setLinearGradient } from '@bigScreen/scripts/echarts/utils'
+import { ILayout } from '@bigScreen/types'
 
 /**
  * 模块布局配置项

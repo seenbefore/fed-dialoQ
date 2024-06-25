@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 export interface OptionItem {
     label: string
@@ -27,7 +26,7 @@ export interface OptionItem {
     name: 'MyRadio',
     components: {},
 })
-export default class MyRadio extends UseGenerate {
+export default class MyRadio extends Vue {
     /**当前输入的值 */
     @Prop({ type: [Number, String, Boolean], default: false })
     value!: number | string | boolean

@@ -37,7 +37,7 @@
             align-items: center;
             padding: 0 20px;
             height: 100%;
-            background-color: var(--system-header-background);
+            background-color: var(--color-primary);
             color: var(--system-header-text-color);
 
             .menu-icon {
@@ -158,7 +158,7 @@
                         }
                         .sg-data-view__wrap {
                             display: flex;
-                            overflow-y: auto;
+                            overflow-y: hidden;
                             flex: 1;
                             flex-direction: column;
                             height: 100%;
@@ -305,13 +305,13 @@
                 height: var(--system-menu-height);
                 line-height: var(--system-menu-height);
                 &.is-active {
-                    background-color: var(--system-primary-color) !important;
+                    background-color: var(--color-primary) !important;
                     color: var(--system-primary-text-color) !important;
                     i {
                         color: var(--system-primary-text-color) !important;
                     }
                     &:hover {
-                        background-color: var(--system-primary-color) !important;
+                        background-color: var(--color-primary) !important;
                         color: var(--system-primary-text-color) !important;
                     }
                 }
@@ -326,17 +326,17 @@
                 &.is-active {
                     > .el-submenu__title,
                     > .el-submenu__title i {
-                        color: var(--system-menu-submenu-active-color) !important;
+                        color: var(--color-primary) !important;
                         font-weight: 600;
                     }
                 }
                 .el-menu-item {
                     background-color: var(--system-menu-children-background) !important;
                     &.is-active {
-                        background-color: var(--system-primary-color) !important;
+                        background-color: var(--color-primary) !important;
                         color: var(--system-primary-text-color) !important;
                         &:hover {
-                            background-color: var(--system-primary-color) !important;
+                            background-color: var(--color-primary) !important;
                             color: var(--system-primary-text-color) !important;
                         }
                     }
@@ -450,7 +450,7 @@
 }
 // 纵向布局 左 菜单 右 导航+内容
 .app-wrapper.layout-vertical {
-    --system-header-background: #fff;
+    --color-primary: #fff;
     --system-header-text-color: #333;
 
     .sidebar-logo {
@@ -517,151 +517,3 @@
         height: calc(100% - var(--system-header-height));
     }
 }
-
-// 白色主题
-// .app-wrapper.theme-light {
-//     .app-navbar {
-//         .app-container {
-//             background-color: var(--system-header-background);
-//             color: #fff;
-//         }
-//     }
-//     // 侧边栏
-//     .app-sidebar {
-//         // 背景色
-//         background-color: #fff;
-//         box-shadow: 1px 1px 10px 0px rgba(0, 0, 0, 0.3);
-//         // top: 0;
-//         // z-index: 102;
-
-//         .el-scrollbar__view {
-//             // 一级菜单
-//             > .el-menu {
-//                 > div {
-//                     > a {
-//                         .el-menu-item {
-//                             background-color: #fff !important;
-//                             // font-weight: bold;
-//                             &:hover {
-//                                 background-color: #fff !important;
-//                             }
-//                         }
-//                         .el-menu-item.is-active {
-//                             background-color: #fff !important;
-//                             color: #2064ef !important;
-//                             > .sub-el-icon {
-//                                 color: #2064ef !important;
-//                             }
-//                         }
-//                     }
-
-//                     > .el-submenu {
-//                         > .el-submenu__title {
-//                             background-color: #fff !important;
-//                             // font-weight: bold;
-//                             > .el-submenu__icon-arrow {
-//                                 // display: none;
-//                             }
-//                         }
-//                         &:hover {
-//                             background-color: #fff !important;
-//                         }
-//                         // 二级菜单
-//                         > .el-menu {
-//                             > div {
-//                                 > .el-submenu {
-//                                     &.is-opened {
-//                                         > .el-submenu__title {
-//                                             .el-submenu__icon-arrow {
-//                                                 transform: rotateZ(0deg);
-//                                             }
-//                                         }
-//                                     }
-//                                     > .el-submenu__title {
-//                                         background-color: #f7f7f7 !important;
-//                                     }
-//                                     // 三级菜单
-//                                     > .el-menu {
-//                                         > div {
-//                                             > .el-submenu {
-//                                                 > .el-submenu__title {
-//                                                     background-color: #f0f0f0 !important;
-//                                                 }
-//                                                 // 四级菜单
-//                                                 > .el-menu {
-//                                                     > div {
-//                                                         > .el-submenu {
-//                                                             > .el-submenu__title {
-//                                                                 background-color: #e5e5e5 !important;
-//                                                             }
-//                                                             // 五级菜单
-//                                                             > .el-menu {
-//                                                                 > div {
-//                                                                     > .el-submenu {
-//                                                                         > .el-submenu__title {
-//                                                                             background-color: #d4d4d4 !important;
-//                                                                         }
-//                                                                     }
-//                                                                     > a {
-//                                                                         .el-menu-item {
-//                                                                             background-color: #d4d4d4 !important;
-//                                                                         }
-//                                                                         .el-menu-item.is-active {
-//                                                                             background-color: #4e7fff !important;
-//                                                                             color: #fff !important;
-//                                                                         }
-//                                                                     }
-//                                                                 }
-//                                                             }
-//                                                         }
-//                                                         > a {
-//                                                             .el-menu-item {
-//                                                                 background-color: #e5e5e5 !important;
-//                                                             }
-//                                                             .el-menu-item.is-active {
-//                                                                 background-color: #4e7fff !important;
-//                                                                 color: #fff !important;
-//                                                             }
-//                                                         }
-//                                                     }
-//                                                 }
-//                                             }
-//                                             > a {
-//                                                 .el-menu-item {
-//                                                     background-color: #f0f0f0 !important;
-//                                                 }
-//                                                 .el-menu-item.is-active {
-//                                                     background-color: #4e7fff !important;
-//                                                     color: #fff !important;
-//                                                 }
-//                                             }
-//                                         }
-//                                     }
-//                                 }
-//                                 > a {
-//                                     .el-menu-item {
-//                                         background-color: #f7f7f7 !important;
-//                                     }
-//                                     .el-menu-item.is-active {
-//                                         background-color: #4e7fff !important;
-//                                         color: #fff !important;
-//                                     }
-//                                 }
-//                             }
-//                         }
-//                     }
-
-//                     > .is-active {
-//                         > .el-submenu__title {
-//                             background-color: #f3f9ff !important;
-//                             color: #2064ef !important;
-//                             .sub-el-icon {
-//                                 color: #2064ef;
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }

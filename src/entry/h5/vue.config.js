@@ -10,6 +10,7 @@ const isDev = process.env.VUE_APP_ENV === 'dev'
 const VUE_APP_ENTRY = process.env.VUE_APP_ENTRY || 'src'
 const pages = require('../../../build/entry').pages
 const page = pages[VUE_APP_ENTRY]
+const { setAlias } = require('../../../build/alias.js')
 const entry = {
     pages: {
         [VUE_APP_ENTRY]: page,
@@ -96,6 +97,7 @@ module.exports = {
     chainWebpack: config => {
         const types = ['vue-modules', 'vue', 'normal-modules', 'normal']
         types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)))
+        setAlias(config)
         // 多页面处理
         Object.keys(entry.pages).forEach(key => {
             config.plugins.delete(`prefetch-${key}`)
@@ -130,33 +132,6 @@ module.exports = {
             .end()
             .use('svgo-loader')
             .loader('svgo-loader')
-
-        // /* @H5.vant */
-        // const vant = config.module
-        //     .rule('less')
-        //     .oneOf('vant')
-        //     .before('vue-modules')
-        //     .test(/[\\/]node_modules[\\/]vant[\\/]/)
-        // config.module
-        //     .rule('less')
-        //     .oneOf('normal')
-        //     .toConfig()
-        //     .use.forEach(({ __useName, loader, options = {} }) => {
-        //         const ops = _.cloneDeep(options)
-        //         if (__useName === 'less-loader') {
-        //             delete ops.globalVars
-        //             ops.modifyVars = {
-        //                 hack: `true; @import '${path.join(
-        //                     __dirname,
-        //                     '../../../',
-        //                     './src/vant/vars.less',
-        //                 )}'`,
-        //             }
-        //         }
-        //         vant.use(__useName)
-        //             .loader(loader)
-        //             .options(ops)
-        //     })
 
         if (process.env.VUE_APP_GZIP === 'true') {
             const productionGzipExtensions = ['js', 'css']

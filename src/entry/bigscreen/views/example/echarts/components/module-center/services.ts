@@ -1,5 +1,4 @@
-import { createRandomNumber } from '@/entry/bigscreen/scripts/utils/index'
-import { mock, ITestDataConfig } from '@/entry/bigscreen/scripts/utils/service-utils'
+import { mock } from '@bigScreen/scripts/utils/service-utils'
 
 export const getSingleLineData = async () => {
     const data = {

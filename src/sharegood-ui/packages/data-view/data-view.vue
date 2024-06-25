@@ -694,6 +694,7 @@ export default {
                 promise = Promise.resolve(promise)
             }
             const pages = this.pages
+            const Total = this.total
             promise
                 .then(res => {
                     const body = this.dataSourcePath ? _.get(res, this.dataSourcePath) : res
@@ -728,7 +729,7 @@ export default {
                         }
 
                         // 当删除数据时 分页数变小则重新请求
-                        if (this.pages < pages && this.pages !== 0) {
+                        if (this.pages < pages && this.pages !== 0 && this.total !== Total) {
                             this.onLoad({
                                 ...params,
                                 page: params.page - 1,

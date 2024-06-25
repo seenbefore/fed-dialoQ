@@ -1,5 +1,5 @@
+import { Field } from '@h5/components/global/app-form/index.vue'
 import { CustomFormatFields } from '../index'
-import { Field } from '@/entry/h5/components/global/app-form/index.vue'
 
 export class TestCustomFormatFields extends CustomFormatFields {
     public format(): Field[] {

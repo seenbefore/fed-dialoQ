@@ -19,6 +19,7 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import './plugins/video/index'
 
 // 自定义字体大小
 const Size = Quill.import('attributors/style/size')
@@ -60,7 +61,7 @@ const toolbarOptions = [
     [{ color: [] }, { background: [] }], // dropdown with defaults from theme
     //[{ font: fonts }],
     [{ align: [] }],
-    ['link', 'image'],
+    ['link', 'image', 'video'],
     //['link', 'image', 'video'],
     ['clean'], // remove formatting button
 ]
@@ -85,6 +86,10 @@ export default {
                             color: 'white',
                         },
                         modules: ['Resize', 'DisplaySize', 'Toolbar'],
+                    },
+                    video: {
+                        httpRequest: this.uploadConfig?.httpRequest ?? this.uploadConfig?.['http-request'],
+                        ...this.videoConfig,
                     },
                     toolbar: {
                         container: toolbarOptions, // 工具栏
@@ -120,6 +125,34 @@ export default {
         disabled: {
             type: Boolean,
             default: false,
+        },
+        /**视频配置 */
+        videoConfig: {
+            type: Object,
+            default: () => ({
+                // 示例
+                // 插入视频默认宽度，不传默认600
+                // width: 300,
+                // 插入视频默认高度，不传默认auto
+                // height: 169,
+                // 视频上传请求, 不传默认共用uploadConfig.httpRequest
+                // httpRequest: async (data: any) => {
+                //     // return 'http://www.w3school.com.cn/example/html5/mov_bbb.mp4'
+                //     const resp = await portalUploadAutoType(
+                //         { file: data.file },
+                //         {
+                //             exApiHooks: ['uploadFile'],
+                //             exShowLoading: false,
+                //             // 上传进度
+                //             onUploadProgress(event) {
+                //                 data.file.percent = Math.round((event.loaded / event.total) * 100)
+                //                 data.onProgress(data.file)
+                //             },
+                //         },
+                //     )
+                //     return resp.data.url
+                // },
+            }),
         },
     },
 

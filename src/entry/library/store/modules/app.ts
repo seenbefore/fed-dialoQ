@@ -1,5 +1,5 @@
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import { InternalDictListVO } from '@/entry/library/api/auto/sysDict/internal'
+import { InternalDictListVO } from '@library/api/auto/sysDict/internal'
+import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
 const state = {
     community: {} as any,

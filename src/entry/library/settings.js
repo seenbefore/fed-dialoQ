@@ -1,6 +1,6 @@
 module.exports = {
     key: 'library',
-    title: '汇信科技·资产库',
+    title: '门户',
     keywords: '',
     description: '',
     filename: 'index.html',

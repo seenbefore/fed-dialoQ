@@ -17,11 +17,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { Notify, Toast } from 'vant'
+import AppForm, { GroupField } from '@h5/components/global/app-form/index.vue'
+import http from '@h5/scripts/http'
 import { isMobile } from 'icinfo-util'
-import { http } from '@/entry/devops/scripts/http'
-import AppForm, { GroupField } from '@/entry/h5/components/global/app-form/index.vue'
+import { Notify, Toast } from 'vant'
+import { Component, Vue } from 'vue-property-decorator'
 
 // 常量
 const CONFIGCONST: any = {

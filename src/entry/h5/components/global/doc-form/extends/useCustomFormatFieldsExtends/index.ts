@@ -1,6 +1,6 @@
+import { Field } from '@h5/components/global/app-form/index.vue'
+import DocForm from '@h5/components/global/doc-form/index.vue'
 import { IDocParams } from '../../request'
-import { Field } from '@/entry/h5/components/global/app-form/index.vue'
-import DocForm from '@/entry/h5/components/global/doc-form/index.vue'
 
 export abstract class CustomFormatFields {
     constructor(public fields: Field[], public docParams: IDocParams, public instance: DocForm) {}

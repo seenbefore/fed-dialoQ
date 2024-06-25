@@ -1,4 +1,4 @@
-import { appStore } from '@/entry/h5/store/useStore'
+import { appStore } from '@h5/store/useStore'
 import axios from 'axios'
 import { getURLParameters } from 'icinfo-util'
 import { get } from 'lodash'

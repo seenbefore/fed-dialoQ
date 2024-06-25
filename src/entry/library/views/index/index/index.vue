@@ -99,17 +99,16 @@
             <CardList :title="'连接器'" :value="{ plabel: '连接器', order: 'recommend' }" :page-size="8" :has-page="false"></CardList>
             <CardList :title="'标准规范'" :value="{ plabel: '标准规范', order: 'recommend' }" :page-size="8" :has-page="false"></CardList>
         </main>
-        <PublishButton></PublishButton>
+        <!-- <PublishButton></PublishButton> -->
     </div>
 </template>
 
 <script lang="tsx">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
-import { ComboGroupDict } from '@/entry/library/scripts/dict/combo_group'
-import { userStore } from '@/entry/library/store/useStore'
+import { userStore } from '@library/store/useStore'
+import CardList from '@library/views/community/components/CardList/index.vue'
+import PublishButton from '@library/views/community/components/PublishButton/index.vue'
 import moment from 'moment'
-import CardList from '@/entry/library/views/community/components/CardList/index.vue'
-import PublishButton from '@/entry/library/views/community/components/PublishButton/index.vue'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
     components: {

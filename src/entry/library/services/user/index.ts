@@ -1,5 +1,5 @@
+import http from '@library/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from '@/entry/library/scripts/http'
 export interface Result<T> {
     /**
      * 返回编码.200=成功

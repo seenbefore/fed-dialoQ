@@ -201,22 +201,6 @@ export default class RegionTree extends Vue {
                 .el-breadcrumb__separator {
                     color: #666;
                 }
-
-                .el-tabs__header {
-                    margin-bottom: 0;
-                    .el-tabs__nav-wrap {
-                        .el-tabs__active-bar,
-                        &::after {
-                            display: none;
-                        }
-                        .el-tabs__item {
-                            padding: 0;
-                            height: 20px;
-                            line-height: 20px;
-                            color: #333;
-                        }
-                    }
-                }
             }
         }
     }

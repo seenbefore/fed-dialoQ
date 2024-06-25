@@ -9,8 +9,7 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import loading from '../../directives/v-loading'
 import { dfsTreeSomeFirst } from '../../service'
 
@@ -25,7 +24,7 @@ export interface OptionItem {
     components: {},
     directives: { loading },
 })
-export default class SelectPicker extends UseGenerate {
+export default class SelectPicker extends Vue {
     /**当前输入的值 */
     @Prop({ type: [Number, String], default: '' })
     value!: string | number

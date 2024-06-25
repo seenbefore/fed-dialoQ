@@ -1,5 +1,5 @@
-import { createRandomNumber } from '@/entry/bigscreen/scripts/utils/index'
-import { mock, ITestDataConfig } from '@/entry/bigscreen/scripts/utils/service-utils'
+import { createRandomNumber } from '@bigScreen/scripts/utils'
+import { ITestDataConfig, mock } from '@bigScreen/scripts/utils/service-utils'
 
 /**
  * 接口数据一

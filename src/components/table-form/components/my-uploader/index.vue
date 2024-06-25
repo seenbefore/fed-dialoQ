@@ -1,10 +1,9 @@
 <script lang="ts">
-import { Component, Watch } from 'vue-property-decorator'
 import BaseUploader from '@/sharegood-ui/packages/base-uploader/src/index.vue'
 import { CreateElement } from 'vue'
-import BaseForm from '../base-form/index.vue'
-// import { downloadFile } from '@/entry/pc/scripts/utils'
+import { Component, Watch } from 'vue-property-decorator'
 import { FileProp } from '../../types'
+import BaseForm from '../base-form/index.vue'
 @Component({
     name: 'MyUploader',
     components: {},

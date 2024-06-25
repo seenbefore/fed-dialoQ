@@ -16,7 +16,7 @@ export default class FormatExample extends CustomFormatModel {
 
     /*
      * $attrs 的属性都是从 app-form 中传递过来的
-     * @See: @/entry/h5/components/global/app-form/index.vue
+     * @See: @h5/components/global/app-form/index.vue
      *  */
     public get required() {
         // return !!this.$attrs.required

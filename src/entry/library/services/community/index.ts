@@ -1,5 +1,5 @@
+import http from '@library/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from '@/entry/library/scripts/http'
 export interface Result<T> {
     /**
      * 返回编码.200=成功
@@ -172,6 +172,35 @@ export function unpublish(
 ) {
     return http.request<Result<any>>({
         url: '/community/unpublish', // 假设这是处理下架操作的服务器端点
+        method: 'POST', // 假设下架操作是通过POST方法发送的
+        data,
+        ...options,
+    })
+}
+
+/**
+ * 扫描统计
+ * @param data 要提交给服务器的数据
+ * @param data.rule 规则内容
+ * @param options 附加选项
+ */
+export function stat(
+    data: {
+        /** 规则 */
+        rule: string
+        /**
+         * 组件标题
+         */
+        title: string
+        /**
+         * 并发数
+         */
+        limit?: number
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/community/stat', // 假设这是处理下架操作的服务器端点
         method: 'POST', // 假设下架操作是通过POST方法发送的
         data,
         ...options,

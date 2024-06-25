@@ -27,16 +27,15 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
 import { Toast } from 'vant'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { isOrNotCompressPic } from '../../service/index'
 
 @Component({
     name: 'MyUploader',
     components: {},
 })
-export default class MyUploader extends UseGenerate {
+export default class MyUploader extends Vue {
     /**当前输入的值 */
     @Prop({ default: () => [] })
     value!: any[]

@@ -1,0 +1,59 @@
+:root {
+    // 主题色
+    --system-primary-text-color: #fff; // 主题色作为背景色时使用
+
+    // 菜单颜色相关
+    --system-menu-width: 200px;
+    --system-menu-text-color: #333;
+    --system-menu-background: #fff;
+    --system-menu-children-background: #f5f5f5;
+    --system-menu-hover-background: transparent;
+    --system-menu-height: 45px;
+
+    // header区域
+    --system-header-height: 50px;
+    --system-header-text-color: #fff;
+    --system-header-breadcrumb-text-color: #97a8be;
+    --system-header-item-hover-color: #000;
+    --system-header-border-color: #d8dce5;
+    --system-header-tab-background: #fff;
+
+    // contaier区域，父框架
+    --system-container-background: #eee;
+    --system-container-main-background: #fff;
+
+    // 页面区域, 这一块是你在自己写的文件中使用主题，核心需要关注的地方
+    --system-page-background: #fff; // 主背景
+}
+// 进度条颜色修改为主题色
+body #nprogress .bar {
+    background-color: var(--color-primary);
+}
+body #nprogress .peg {
+    box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary);
+}
+body #nprogress .spinner-icon {
+    border-top-color: var(--color-primary);
+    border-left-color: var(--color-primary);
+}
+// 基础
+@import '~@/styles/markdown.less';
+@import '~@/styles/global.less';
+@import '~@/styles/admin.less';
+
+.el-tooltip__popper {
+    max-width: 480px;
+}
+.el-table .cell {
+    line-height: 1.3;
+}
+.el-upload-list--picture-card .el-upload-list__item-thumbnail {
+    object-fit: contain;
+}
+
+/* TODO 改样式只是作用于 develop 项目，为了适配表单的 el-form-item__label 按照规范去掉了 ： 导致的样式展示错误 */
+.el-form {
+    .el-row .el-col .el-form-item__label {
+        padding-right: 8px;
+    }
+}

@@ -14,10 +14,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Ref } from 'vue-property-decorator'
-import { MyListRef } from '@/entry/h5/scripts/types'
-import { getData } from '../../data'
+import { MyListRef } from '@h5/scripts/types'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import ItemCell from '../../components/ItemCell/index.vue'
+import { getData } from '../../data'
 
 @Component({
     name: 'TabError',

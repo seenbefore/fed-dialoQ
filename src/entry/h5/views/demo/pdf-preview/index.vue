@@ -1,6 +1,6 @@
 <script lang="ts">
-import PdfPreview from '@/entry/h5/components/pdf-preview/index.vue'
-import { Vue, Component } from 'vue-property-decorator'
+import PdfPreview from '@h5/components/pdf-preview/index.vue'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
     name: 'PdfPreviewPage',

@@ -97,8 +97,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { appStore, userStore } from '@/entry/library/store/useStore'
+import { userStore } from '@library/store/useStore'
+import { Component, Vue } from 'vue-property-decorator'
 @Component({
     name: 'MyNav',
     components: {},

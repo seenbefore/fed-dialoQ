@@ -1,5 +1,5 @@
-import { configAxisY, getSeriesBar, getEchartAxisConfig } from '@/entry/bigscreen/scripts/echarts/config'
-import { setLinearGradient } from '@/entry/bigscreen/scripts/echarts/utils'
+import { configAxisY, getEchartAxisConfig, getSeriesBar } from '@bigScreen/scripts/echarts/config'
+import { setLinearGradient } from '@bigScreen/scripts/echarts/utils'
 import { bus } from '../bus'
 /**
  * @description echarts_single_bar => bar-chart

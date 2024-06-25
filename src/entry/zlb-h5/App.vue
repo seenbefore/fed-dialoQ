@@ -24,7 +24,7 @@ export default {
         module: () => appStore.appSysInfo.uiStyle,
     },
     components: {
-        BtnVconsole: () => import('@/entry/zlb-h5/components/BtnVconsole.vue'),
+        BtnVconsole: () => import('@zlb-h5/components/BtnVconsole.vue'),
     },
     methods: {
         init() {

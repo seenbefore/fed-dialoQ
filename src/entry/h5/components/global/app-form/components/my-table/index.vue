@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import loading from '../../directives/v-loading'
 import AppForm, { Field } from '../../index.vue'
 
@@ -32,7 +31,7 @@ import AppForm, { Field } from '../../index.vue'
     components: {},
     directives: { loading },
 })
-export default class MyTable extends UseGenerate {
+export default class MyTable extends Vue {
     /**当前输入的值 */
     @Prop({ type: [Array, String], default: () => [] })
     value!: Record<string, any>[] | ''

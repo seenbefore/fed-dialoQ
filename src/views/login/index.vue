@@ -154,9 +154,9 @@ export default class LoginSimple extends Vue {
                 content: ' ';
             }
             &.active {
-                color: var(--system-primary-color);
+                color: var(--color-primary);
                 &::after {
-                    background-color: var(--system-primary-color);
+                    background-color: var(--color-primary);
                 }
             }
         }

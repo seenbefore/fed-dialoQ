@@ -4,14 +4,14 @@
     </div>
 </template>
 <script lang="ts">
-import { CustomFormatModel } from './extends/dataStore/CustomFormatModel'
-import { useCustomFormatFieldsExtends } from './extends/useCustomFormatFieldsExtends'
-import AppForm, { componentMap, Field } from '@/entry/h5/components/global/app-form/index.vue'
-import http from '@/entry/h5/scripts/http'
+import AppForm, { componentMap, Field } from '@h5/components/global/app-form/index.vue'
+import http from '@h5/scripts/http'
 import { formatDate, generateGUID } from 'icinfo-util'
 import { get } from 'lodash'
 import { Toast } from 'vant'
 import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
+import { CustomFormatModel } from './extends/dataStore/CustomFormatModel'
+import { useCustomFormatFieldsExtends } from './extends/useCustomFormatFieldsExtends'
 import { getDocBaseInfo, getDocFormData, IDocParams } from './request'
 import { CONTROL_TYPE, getApiFieldValue, getControlInfo, parseJson, parseStringFunction } from './utils'
 

@@ -2,8 +2,8 @@
  * @file API：/form
  */
 
+import http from "@library/scripts/http"
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"
 
 /**
  * 描述：查询表单列表

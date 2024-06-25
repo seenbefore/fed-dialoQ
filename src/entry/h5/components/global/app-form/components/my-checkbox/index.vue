@@ -15,9 +15,8 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
 import { Checkbox } from 'vant'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 export interface OptionItem {
     label: string
@@ -29,7 +28,7 @@ export interface OptionItem {
     name: 'MyCheckbox',
     components: {},
 })
-export default class MyCheckbox extends UseGenerate {
+export default class MyCheckbox extends Vue {
     /**当前输入的值 */
     @Prop({ default: false })
     value!: any

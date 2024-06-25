@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { IBaseItem } from '../../../../types/index'
 
 const DEFAULT_FIELD_CONFIG = { key: 'itemCode', valueKey: 'itemValue' }
@@ -68,7 +68,7 @@ export default class MyBaseItem extends Vue {
     get imgSrc() {
         if (this.item.iconUrl) return this.item.iconUrl
         const icon = this.item.icon || 'icon-sqbs'
-        return require(`@/entry/bigscreen/assets/base-svg/${icon}.svg`)
+        return require(`@bigScreen/assets/base-svg/${icon}.svg`)
     }
     /** text-item 组件数据集 */
     get options() {

@@ -8,6 +8,7 @@
     <QuillEditor
         v-model="content"
         :upload-config="uploadConfig"
+        :video-config="videoConfig"
     ></QuillEditor>
 </template>
 
@@ -26,26 +27,54 @@ export default class Demo extends Vue {
         //action: 'http://localhost:8181/openapi/upload2',
         'http-request': ({ data, file, filename }: any) => {
             const formData = new FormData()
-            formData.append('files', file)
+            formData.append('file', file)
             //formData.append('param1', '1')
             //return Promise.resolve('https://tva1.sinaimg.cn/large/008i3skNly1gqzmpw2gjoj30u50ktwkj.jpg')
             return http
                 .request({
-                    url: '/fileUpload/upload',
+                    url: '/open/upload',
                     data: formData,
-                    baseURL: 'http://192.168.1.242:8081/devops',
+                    //baseURL: 'http://192.168.1.242:8081/devops',
                     method: 'post',
                     headers: {
                         'content-type': 'multipart/form-data',
                     },
+                    onUploadProgress(event) {
+                        data.onProgress({ percent: Math.round((event.loaded / event.total) * 100) })
+                    },
                 })
                 .then(res => {
                     console.log(res.data)
-                    const data = res.data || []
-                    const file = data[0]
-                    return file.url
+                    const data = res.data || {}
+                    return data.url
                 })
         },
+    }
+    
+    // 视频配置
+    videoConfig = {
+        // 示例
+        // 插入视频默认宽度，不传默认600
+        // width: 300,
+        // 插入视频默认高度，不传默认auto
+        // height: 169,
+        // 视频上传请求, 不传默认共用uploadConfig.httpRequest
+        // httpRequest: async (data: any) => {
+        //     // return 'http://www.w3school.com.cn/example/html5/mov_bbb.mp4'
+        //     const resp = await portalUploadAutoType(
+        //         { file: data.file },
+        //         {
+        //             exApiHooks: ['uploadFile'],
+        //             exShowLoading: false,
+        //             // 上传进度
+        //             onUploadProgress(event) {
+        //                 data.file.percent = Math.round((event.loaded / event.total) * 100)
+        //                 data.onProgress(data.file)
+        //             },
+        //         },
+        //     )
+        //     return resp.data.url
+        // },
     }
     mounted() {}
 }
@@ -60,6 +89,7 @@ export default class Demo extends Vue {
 | 参数 | 说明         | 类型     | 可选值 | 默认值         |
 | ---- | ------------ | -------- | ------ | -------------- |
 | uploadConfig | 上传配置 | Object  | —      | -           |
+| videoConfig  | 视频配置 | Object  | —      | -           |
 | disabled | 是否可编辑 | Boolean  | —      | false          |
 
 
@@ -90,6 +120,13 @@ export default class Demo extends Vue {
 | disabled | 是否禁用 | boolean | — | false |
 | limit | 最大允许上传个数 |  number | — | — |
 | on-exceed | 文件超出个数限制时的钩子 | function(files, fileList) | — | - |
+
+#### videoConfig
+| 参数        | 说明                                               | 类型                                                             | 可选值 | 默认值 |
+| ----------- | -------------------------------------------------- | ---------------------------------------------------------------- | ------ | ------ |
+| width       | 插入视频默认宽度，不传默认600                      | number                                                           | —      | 600    |
+| height      | 插入视频默认高度，不传默认auto                     | number                                                           | —      | auto   |
+| httpRequest | 视频上传请求, 不传默认共用uploadConfig.httpRequest | { file: File; onProgress?: (data: { percent: number }) => void } | —      | -      |
 
 ### 方法
 

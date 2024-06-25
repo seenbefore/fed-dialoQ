@@ -12,14 +12,13 @@
 </template>
 
 <script lang="tsx">
-import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
-import { FormColumn, FormRef, TableColumn, TableLoadValue, TableRef } from '@/sharegood-ui'
-import { userStore } from '@/entry/library/store/useStore'
-import moment from 'moment'
-import * as API from '@/entry/library/services/community'
 import { dateFormat } from '@/scripts/utils'
-import { ComboGroupDict } from '@/entry/library/scripts/dict/combo_group'
-import { UserService } from '@/entry/library/services/user'
+import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
+import { ComboGroupDict } from '@library/scripts/dict/combo_group'
+import * as API from '@library/services/community'
+import { UserService } from '@library/services/user'
+import { userStore } from '@library/store/useStore'
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
 
 @Component({
     name: 'AuthorMe',
@@ -200,6 +199,16 @@ export default class AuthorMe extends Vue {
             },
         },
         // {
+        //     tag: 'input',
+        //     name: 'rule',
+        //     itemAttrs: {
+        //         label: '扫描规则',
+        //     },
+        //     attrs: {
+        //         placeholder: '',
+        //     },
+        // },
+        // {
         //     tag: 'date',
         //     name: '[timeStart,timeEnd]',
         //     itemAttrs: {
@@ -313,7 +322,12 @@ export default class AuthorMe extends Vue {
                 ]
             },
         },
-
+        {
+            align: 'left',
+            label: '扫描规则',
+            prop: 'rule',
+            width: '120px',
+        },
         {
             align: 'left',
             label: '一级分类',
@@ -355,7 +369,7 @@ export default class AuthorMe extends Vue {
             align: 'left',
             label: '操作',
             prop: 'action',
-            width: '110px',
+            width: '140px',
             fixed: 'right',
             render: (h, { row }) => {
                 return [
@@ -366,7 +380,7 @@ export default class AuthorMe extends Vue {
                             props: {
                                 type: 'text',
                             },
-                            //style: isAdmin(userStore.info) || row.reviewerName === userStore.info.name ? '' : 'visibility:hidden',
+
                             on: {
                                 click: () => {
                                     this.handleEdit(row)
@@ -374,6 +388,22 @@ export default class AuthorMe extends Vue {
                             },
                         },
                         '编辑',
+                    ),
+                    h(
+                        'a',
+                        {
+                            class: 'sg-link ',
+                            props: {
+                                type: 'text',
+                            },
+
+                            on: {
+                                click: () => {
+                                    this.handleScan(row)
+                                },
+                            },
+                        },
+                        '扫描',
                     ),
                     h(
                         'a',
@@ -395,6 +425,19 @@ export default class AuthorMe extends Vue {
             },
         },
     ]
+    async handleScan(item: any) {
+        if (!item.rule) {
+            return this.$message.warning('请先去配置扫描规则')
+        }
+        this.$confirm(`确认开始扫描吗？`).then(async () => {
+            await API.stat({
+                rule: item.rule,
+                title: item.name,
+                limit: 10,
+            })
+            this.$message.success('扫描任务已启动，请等待企微通知')
+        })
+    }
     handleDelete(item: any) {
         this.$confirm(`确认删除 ${item.name} 吗？`).then(async () => {
             await API.remove(

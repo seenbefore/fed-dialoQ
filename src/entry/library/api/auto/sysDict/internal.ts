@@ -2,8 +2,8 @@
  * @file API：/sysDict/internal
  */
 
+import http from "@library/scripts/http"
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"
 
 /**
  * 获取所有内置的字典.

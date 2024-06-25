@@ -2,8 +2,8 @@
  * @file API：/jira
  */
 
+import http from "@library/scripts/http"
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"
 
 /**
  * 定时统计信息

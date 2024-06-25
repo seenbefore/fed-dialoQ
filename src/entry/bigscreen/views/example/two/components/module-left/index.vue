@@ -2,10 +2,10 @@
     左侧模块
 -->
 <script lang="tsx">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { IBaseItem } from '@bigScreen/types/index'
+import { Component, Vue } from 'vue-property-decorator'
 import { LayoutConfig, ModuleDataConfig } from './config'
 import Service from './service'
-import { IBaseItem } from '@/entry/bigscreen/types/index'
 
 @Component({
     name: 'ModuleLeft',

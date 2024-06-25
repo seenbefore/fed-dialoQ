@@ -90,10 +90,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-import { detail, ComponentInfoUrlDto } from '@/entry/library/api/auto/component'
-import { list } from '@/entry/library/api/auto/component/use'
 import { TableColumn, TableRef } from '@/sharegood-ui'
+import { ComponentInfoUrlDto, detail } from '@library/api/auto/component'
+import { list } from '@library/api/auto/component/use'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 const API = {
     detail,
     list,

@@ -2,8 +2,8 @@
  * @file API：/component/use
  */
 
+import http from "@library/scripts/http"
 import { ExAxiosRequestConfig } from 'icinfo-request'
-import http from "@/entry/library/scripts/http"
 
 /**
  * 组件-应用记录-分页列表

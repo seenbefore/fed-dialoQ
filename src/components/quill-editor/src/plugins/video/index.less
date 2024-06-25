@@ -1,0 +1,78 @@
+.ql-snow .ql-editor .ql-video,
+.ql-video {
+    line-height: 0;
+    position: relative;
+    // display: inline-block !important;
+    span[contenteditable='false'] {
+        font-size: 0;
+        padding: 0 1px;
+    }
+
+    &[data-align='left'] > span {
+        float: left;
+        text-align: right;
+        video {
+            display: inline;
+            margin: 0px 1em 1em 0px;
+            float: left;
+        }
+    }
+    &[data-align='center'] {
+        display: inline-block;
+        width: 100%;
+        video {
+            display: block;
+            margin: auto;
+        }
+        .ql-video_mask {
+            margin: 0 auto;
+        }
+    }
+    &[data-align='right'] > span {
+        float: right;
+        text-align: 'left';
+        position: relative;
+        video {
+            display: inline;
+            margin: 0px 0px 1em 1em;
+            float: right;
+        }
+    }
+}
+.ql-snow .ql-editor .ql-video {
+    position: relative;
+    // 加载进度
+    --loading-percent: '0';
+    .ql-video_mask {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    &.loading .ql-video_mask {
+        background-image: url('./images/loading.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: rgb(50, 50, 50);
+        color: #fff;
+        font-size: 14px;
+        line-height: 20px;
+        &::before {
+            content: '上传中';
+        }
+        &::after {
+            content: var(--loading-percent) + '%';
+        }
+    }
+}
+
+.blot-formatter__overlay {
+    z-index: 1;
+}

@@ -286,7 +286,7 @@ export default {
     width: 100%;
     height: 32px;
     background: #fff;
-    //   border-bottom: 1px solid var(--system-primary-color);
+    //   border-bottom: 1px solid var(--color-primary);
     // box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
     .tags-view-wrapper {
         .tags-view-item {
@@ -323,8 +323,8 @@ export default {
                 transform: translateY(-50%);
             }
             &.active {
-                border-color: var(--system-primary-color);
-                background-color: var(--system-primary-color);
+                border-color: var(--color-primary);
+                background-color: var(--color-primary);
                 color: #fff;
                 &::before {
                     display: none;
@@ -336,7 +336,7 @@ export default {
                     z-index: 10;
                     width: 3px;
                     height: 100%;
-                    background-color: var(--system-primary-color);
+                    background-color: var(--color-primary);
                     content: ' ';
                 }
             }

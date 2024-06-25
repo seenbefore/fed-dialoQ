@@ -9,15 +9,14 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
 import { formatDate } from 'icinfo-util'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component({
     name: 'DatePicker',
     components: {},
 })
-export default class DatePicker extends UseGenerate {
+export default class DatePicker extends Vue {
     /**当前输入的值 */
     @Prop({ type: [Date, String], default: '' })
     value!: string | Date

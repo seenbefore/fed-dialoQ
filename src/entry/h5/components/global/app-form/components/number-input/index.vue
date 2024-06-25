@@ -11,14 +11,13 @@
 </template>
 
 <script lang="ts">
-import { UseGenerate } from '@/entry/h5/components/global/app-form/hooks/useGenerate'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
     name: 'NumberInput',
     components: {},
 })
-export default class NumberInput extends UseGenerate {
+export default class NumberInput extends Vue {
     /**当前输入的值 */
     @Prop({ type: [Number, String], default: '' })
     value!: string | number

@@ -1,4 +1,4 @@
-import http from '@/entry/h5/scripts/http'
+import http from '@h5/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
 
 export type IDocParams = {

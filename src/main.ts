@@ -1,29 +1,24 @@
-import Vue from 'vue'
-import 'normalize.css'
 // 项目的全局组件 指令、混入等
 import '@/components/registerAdminComp'
-// 项目样式
-import './styles/index.less'
-// 路由
-import router from './router'
-// 状态管理
-import store from './store'
-import App from './App.vue'
-import { getURLParameters } from 'icinfo-util'
-import { userStore, settingsStore } from './store/useStore'
-import defaultSettings from './settings'
 import { LocalMenu } from '@/menus'
 // 弹窗插件
 import modalDialog from '@/scripts/ModalDialog'
+import { getURLParameters } from 'icinfo-util'
+import Vue from 'vue'
+import App from './App.vue'
+// 路由
+import router from './router'
+import defaultSettings from './settings'
+// 状态管理
+import store from './store'
+import { settingsStore, userStore } from './store/useStore'
+// 项目样式
+import './styles/index.less'
 Vue.use(modalDialog, { store, router })
 const { settings, user } = defaultSettings
 
 userStore.set(user)
 
-/* 条件编译 (必须是运行时可用的环境变量，并且变量值不能为 undefined，否则模块必定会打包) */
-if (process.env.VUE_APP_MOCK === 'true') {
-    require('./mock')
-}
 // 配置全局组件
 Vue.prototype.$ShareGood = {
     uploader: {},

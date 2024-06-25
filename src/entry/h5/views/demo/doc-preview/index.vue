@@ -1,6 +1,6 @@
 <script lang="ts">
-import DocForm from '@/entry/h5/components/global/doc-form/index.vue'
-import { Vue, Component } from 'vue-property-decorator'
+import DocForm from '@h5/components/global/doc-form/index.vue'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
     name: 'DocPreview',

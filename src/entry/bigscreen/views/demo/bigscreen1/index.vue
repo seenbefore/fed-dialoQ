@@ -49,13 +49,13 @@
                     </div>
                     <div class="map">
                         <div class="map1">
-                            <img src="@/entry/bigscreen/assets/images/lbx.png" />
+                            <img src="@bigScreen/assets/images/lbx.png" />
                         </div>
                         <div class="map2">
-                            <img src="@/entry/bigscreen/assets/images/jt.png" />
+                            <img src="@bigScreen/assets/images/jt.png" />
                         </div>
                         <div class="map3">
-                            <img src="@/entry/bigscreen/assets/images/map.png" />
+                            <img src="@bigScreen/assets/images/map.png" />
                         </div>
                         <div class="map4" id="map_1"></div>
                     </div>
@@ -127,7 +127,7 @@ export default {
 }
 .demo-bigscreen1-bg {
     overflow: hidden;
-    background: #000d4a url('~@/entry/bigscreen/assets/images/bg.jpeg') center top;
+    background: #000d4a url('~@bigScreen/assets/images/bg.jpeg') center top;
     background-size: cover;
 }
 </style>
@@ -137,7 +137,7 @@ export default {
     z-index: 100;
     width: 1920px;
     height: 105px;
-    background: url('~@/entry/bigscreen/assets/images/head_bg.png') no-repeat center center;
+    background: url('~@bigScreen/assets/images/head_bg.png') no-repeat center center;
     background-size: 100% 100%;
 }
 
@@ -200,7 +200,7 @@ export default {
     margin-bottom: 15px;
     padding: 0 20px 40px 15px;
     border: 1px solid rgba(25, 186, 139, 0.17);
-    background: rgba(255, 255, 255, 0.04) url('~@/entry/bigscreen/assets/images/line.png');
+    background: rgba(255, 255, 255, 0.04) url('~@bigScreen/assets/images/line.png');
     background-size: 100% auto;
 }
 

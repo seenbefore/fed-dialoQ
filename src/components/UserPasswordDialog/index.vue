@@ -7,7 +7,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-//import * as API from '@/api/App'
 import { FormRow, FormRef } from '@/sharegood-ui'
 
 @Component({
@@ -99,9 +98,6 @@ export default class UserEdUserPasswordDialog extends Vue {
             if (valid) {
                 try {
                     this.FormView.loading = true
-                    // await API.UserService.update_password({
-                    //     password: model.password,
-                    // })
                     this.FormView.loading = false
                     this.$message.success('修改密码成功，重新登录')
                     this.confirm()
@@ -112,10 +108,7 @@ export default class UserEdUserPasswordDialog extends Vue {
         })
     }
 
-    async created() {
-        // const { data } = await API.UserService.current()
-        // this.model.username = data.id
-    }
+    async created() {}
 
     cancel() {
         const $options: any = this.$options

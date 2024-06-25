@@ -19,28 +19,14 @@
         "types": ["webpack-env"],
         "paths": {
             "@/*": ["src/*"],
-            "@icinfo-ui/*": ["packages/*"],
+            "@bigScreen/*": ["src/entry/bigScreen/*"],
+            "@admin/*": ["src/entry/admin/*"],
+            "@h5/*": ["src/entry/h5/*"],
+            "@library/*": ["src/entry/library/*"],
             "@zlb-h5/*": ["src/entry/zlb-h5/*"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
-    "include": [
-        "packages",
-        "typings",
-        "@types/*.d.ts",
-        "types/*.ts",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue",
-        "tests/**/*.ts",
-        "tests/**/*.tsx"
-    ],
-    "exclude": [
-        "build/**/*",
-        "node_modules",
-        "**/dist",
-        "**/__tests__/**/*",
-        "**/test/**",
-        "**/tests/**"
-    ]
+    "include": ["packages", "typings", "@types/*.d.ts", "types/*.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
+    "exclude": ["build/**/*", "node_modules", "**/dist", "**/__tests__/**/*", "**/test/**", "**/tests/**"]
 }

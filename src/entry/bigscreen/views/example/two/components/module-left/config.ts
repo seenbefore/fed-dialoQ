@@ -1,4 +1,4 @@
-import { ITextItem, ILayout, IBaseItem } from '@/entry/bigscreen/types/index'
+import { IBaseItem, ILayout } from '@bigScreen/types'
 
 /**
  * 模块布局配置项

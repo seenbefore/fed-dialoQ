@@ -69,8 +69,8 @@ VUE_APP_ERUDA = true"
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import { BasePage } from '@/entry/h5/mixins'
+import { BasePage } from '@h5/mixins'
+import { Component } from 'vue-property-decorator'
 @Component({
     name: 'IndexHome',
     components: {},

@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { MyListRef } from '@/entry/h5/scripts/types'
+import { MyListRef } from '@h5/scripts/types'
 import { getData } from '../data'
 import ItemCell from '../components/ItemCell/index.vue'
 

@@ -8,8 +8,8 @@ import App from './App.vue'
 import './assets/less/index.less'
 import './components'
 import router from './router'
-import modalDialog from './scripts/ModalDialog'
 import http from './scripts/http'
+import modalDialog from './scripts/ModalDialog'
 import store from './store'
 import './styles/app.less'
 
@@ -23,7 +23,9 @@ Vue.config.productionTip = false
 async function bootstrap() {
     // 嵌入第三方免登进入
     const { token = '' } = getURLParameters(location.href)
-
+    if (token) {
+        // TODO set token or get userInfo
+    }
     new Vue({
         router,
         store,

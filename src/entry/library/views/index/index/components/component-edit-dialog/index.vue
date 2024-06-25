@@ -38,11 +38,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { FormRow } from '@/sharegood-ui'
-import { save, detail } from '@/entry/library/api/auto/component'
-import { appStore } from '@/entry/library/store/useStore'
-import { save as saveUrl, ComponentInfoSave } from '@/entry/library/api/auto/component/url'
+import { detail, save } from '@library/api/auto/component'
+import { ComponentInfoSave, save as saveUrl } from '@library/api/auto/component/url'
+import { appStore } from '@library/store/useStore'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 const API = {
     save,
     saveUrl,
