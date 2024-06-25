@@ -20,9 +20,7 @@
         "report": "npm run build -- --report",
         "report:devops": "npm run build:fat1:devops -- --report",
         "commit": "git cz",
-        "dev:zlb-h5": "cross-env VUE_APP_ENTRY=zlb-h5 vue-cli-service serve --open --mode=development",
-        "build:uat:zlb-h5": "cross-env VUE_APP_ENTRY=zlb-h5 vue-cli-service build --mode=uat",
-        "build:prd:zlb-h5": "cross-env VUE_APP_ENTRY=zlb-h5 vue-cli-service build --mode=production"
+        "generate:entry": "node build/generateTemplate/index.js"
     },
     "dependencies": {
         "@vue/compiler-sfc": "^3.4.27",
