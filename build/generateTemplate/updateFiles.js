@@ -109,6 +109,7 @@ const replaceEntryFilesPath = (directory, searchString, replaceString) => {
 const updateFiles = (entryDir, entryType, entryDirName) => {
     console.log('info: 开始替换文件路径，请稍等.......')
     replaceEntryFilesPath(entryDir, `@/entry/${entryType}`, `@${entryDirName}`)
+    replaceEntryFilesPath(entryDir, `@${entryType}`, `@${entryDirName}`)
     console.log('info: 替换文件路径完成。')
     updateGenerateApiConfig(entryType, entryDirName)
     updateConfigJson(entryDirName)
