@@ -8,7 +8,6 @@ const getScrollDom = (el: HTMLElement, scrollDom: () => HTMLElement) => {
     // 查找最近可滚动的节点
     function eleCanScroll(ele: HTMLElement) {
         if (!(ele instanceof HTMLElement)) {
-            console.log('fuck off')
             return
         }
         if (ele.scrollTop > 0) {

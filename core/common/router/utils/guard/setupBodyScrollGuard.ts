@@ -5,7 +5,6 @@ export function setupBodyScrollGuard(router: VueRouter) {
         try {
             const meta = to.meta || {}
             const scrollToTop = meta.scrollToTop ?? true
-            console.log('scrollToTop', scrollToTop, to.fullPath)
             const appMain$ = document.documentElement as HTMLElement
             if (scrollToTop) {
                 appMain$.scrollTop = 0

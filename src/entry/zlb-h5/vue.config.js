@@ -1,2 +1,2 @@
 /* 获取基础的配置 */
-module.exports = require('../../../core/data/configurations/vueConfigs/zlbBaseConfig.js')
+module.exports = require('../../../core/common/configurations/vueConfigs/zlbBaseConfig.js')

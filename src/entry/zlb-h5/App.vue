@@ -12,7 +12,7 @@
 import { initMixins } from '@zlb-h5/mixins/initMixins'
 import { ZLBConfig } from '@zlb-h5/share/ZLBConfig'
 import { appStore, logStore } from '@zlb-h5/store/useStore'
-import { useConsole } from '@@core/data/hooks/useConsole'
+import { useConsole } from '@@core/common/hooks/useConsole'
 
 export default {
     mixins: [initMixins],

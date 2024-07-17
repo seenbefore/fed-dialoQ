@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { IBaseVisitedView } from '@@core/data/store/BaseTagsViewStore'
+import { IBaseVisitedView } from '@@core/common/store/BaseTagsViewStore'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 import { tagsViewStore } from '@h5/store/useStore'

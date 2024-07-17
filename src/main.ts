@@ -3,7 +3,7 @@ import '@/components/registerAdminComp'
 import { LocalMenu } from '@/menus'
 // 弹窗插件
 import modalDialog from '@/scripts/ModalDialog'
-import { desktopInit } from '@@core/data/configurations/initConfig/desktopInit'
+import { desktopInit } from '@@core/common/configurations/initConfig/desktopInit'
 import { getURLParameters } from 'icinfo-util'
 import Vue from 'vue'
 import App from './App.vue'

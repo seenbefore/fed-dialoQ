@@ -1,4 +1,4 @@
-import { createBaseMobileHttp } from '@@core/data/http'
+import { createBaseMobileHttp } from '@@core/common/http'
 
 const http = createBaseMobileHttp({ exHooks: ['BaseConsoleHook', 'BaseMobileLoadingHook', 'BaseShowMobileErrorMessageHook'] })
 

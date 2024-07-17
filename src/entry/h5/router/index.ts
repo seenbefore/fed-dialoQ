@@ -1,6 +1,6 @@
 import NotFound from '@/views/404/index.vue'
-import { createBaseRouter } from '@@core/data/router'
-import { setupRouterGuard } from '@@core/data/router/utils/guard'
+import { createBaseRouter } from '@@core/common/router'
+import { setupRouterGuard } from '@@core/common/router/utils/guard'
 import Vue from 'vue'
 
 const { mode } = require('../settings.js')

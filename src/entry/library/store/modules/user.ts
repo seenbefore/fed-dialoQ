@@ -1,5 +1,5 @@
 import { UserInfo } from '@/@types'
-import BaseUserStore, { IBaseUserStore } from '@@core/data/store/BaseUserStore'
+import BaseUserStore, { IBaseUserStore } from '@@core/common/store/BaseUserStore'
 import { Action, Module, Mutation } from 'vuex-module-decorators'
 
 export interface UserStateType extends IBaseUserStore<any, UserInfo> {}

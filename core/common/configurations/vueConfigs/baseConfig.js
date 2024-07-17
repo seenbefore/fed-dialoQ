@@ -76,20 +76,21 @@ const outputDir = env.outputDir || 'dist'
 /**
  * @return {import('@vue/cli-service').ConfigFunction}
  */
-module.exports = (configOptions = { staticResource }) => {
-    Log.info(
-        [
-            `环境变量如下:`,
-            `\t入口文件 ${VUE_APP_ENTRY}`,
-            `\t编译模式 ${process.env.NODE_ENV}`,
-            `\t当前环境 ${process.env.VUE_APP_ENV}`,
-            `\t接口前缀 ${process.env.VUE_APP_BASEURL_API}`,
-            `\tURL路径 ${process.env.BASE_URL}`,
-            `\t打包路径 ${outputDir}`,
-            `\t代理地址 ${process.env.DEV_PROXY_TARGET_API}`,
-            `\t本地缓存 ${process.env.VUE_APP_STORAGE_VERSION}`,
-        ].join('\n'),
-    )
+module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
+    configOptions.showLogInfo &&
+        Log.info(
+            [
+                `环境变量如下:`,
+                `\t入口文件 ${VUE_APP_ENTRY}`,
+                `\t编译模式 ${process.env.NODE_ENV}`,
+                `\t当前环境 ${process.env.VUE_APP_ENV}`,
+                `\t接口前缀 ${process.env.VUE_APP_BASEURL_API}`,
+                `\tURL路径 ${process.env.BASE_URL}`,
+                `\t打包路径 ${outputDir}`,
+                `\t代理地址 ${process.env.DEV_PROXY_TARGET_API}`,
+                `\t本地缓存 ${process.env.VUE_APP_STORAGE_VERSION}`,
+            ].join('\n'),
+        )
 
     const devServerOptions = env.DEV_PROXY_TARGET_API
         ? {

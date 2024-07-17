@@ -1,6 +1,6 @@
 const path = require('path')
-const baseConfig = require('./core/data/configurations/vueConfigs/mainConfig.js')
-const { parseSvg } = require('./core/data/configurations/vueConfigs/utils/parseSvg')
+const baseConfig = require('./core/common/configurations/vueConfigs/mainConfig.js')
+const { parseSvg } = require('./core/common/configurations/vueConfigs/utils/parseSvg')
 
 /* 获取基础的配置 */
 const { chainWebpack, ...config } = baseConfig()

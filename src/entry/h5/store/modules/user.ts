@@ -1,5 +1,5 @@
 import { PermissionMenu, UserInfo, UserMenu } from '@/@types'
-import BaseUserStore, { IBaseUserStore } from '@@core/data/store/BaseUserStore'
+import BaseUserStore, { IBaseUserStore } from '@@core/common/store/BaseUserStore'
 import { Module } from 'vuex-module-decorators'
 
 export interface UserStateType extends IBaseUserStore<PermissionMenu | UserMenu, UserInfo> {}

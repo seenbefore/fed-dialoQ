@@ -2,7 +2,7 @@
  * 路由权限控制方式：beforeEach | addRoutes | 两者结合
  * 这里封装了 addRoutes 方式，即 resetRoutes 与 filterMapRoutes
  */
-import { baseInitRouter } from '@@core/data/router'
+import { baseInitRouter } from '@@core/common/router'
 import { userStore } from '@admin/store/useStore'
 import Vue from 'vue'
 import NotFound from '@/components/NotFound/index.vue'

@@ -3,14 +3,18 @@
  * 这里封装了 addRoutes 方式，即 resetRoutes 与 filterMapRoutes
  */
 
-import { createBaseRouter } from '@@core/data/router'
-import { setupRouterGuard } from '@@core/data/router/utils/guard'
+import { createBaseRouter } from '@@core/common/router'
+import { setupRouterGuard } from '@@core/common/router/utils/guard'
 import Vue from 'vue'
 
 const { mode } = require('../settings.js')
 
 const { routerInstance, routes, flatRoutes } = createBaseRouter(Vue, require.context(`../views`, true, /router\.js/), {
     mode,
+    routes: {
+        path: '/:path(.*)*',
+        redirect: '/',
+    },
 })
 
 setupRouterGuard(routerInstance)

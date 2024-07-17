@@ -1,6 +1,6 @@
-import { createBaseRouter } from '@@core/data/router'
-import { RouterMode } from '@@core/data/router/utils/enum'
-import { setupRouterGuard } from '@@core/data/router/utils/guard'
+import { createBaseRouter } from '@@core/common/router'
+import { RouterMode } from '@@core/common/router/utils/enum'
+import { setupRouterGuard } from '@@core/common/router/utils/guard'
 import { addKeepAlive } from './guard/addKeepAlive'
 import Vue from 'vue'
 
