@@ -1,1 +1,1 @@
-module.exports = require('../../../core/data/configurations/vueConfigs/desktopBaseConfig.js')
+module.exports = require('../../../core/common/configurations/vueConfigs/desktopBaseConfig.js')

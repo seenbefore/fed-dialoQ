@@ -1,6 +1,6 @@
 import '@/styles/global.less'
 import '@/theme/vant'
-import { zlbInit } from '@@core/data/configurations/initConfig/zlbInit'
+import { zlbInit } from '@@core/common/configurations/initConfig/zlbInit'
 import { getURLParameters } from 'icinfo-util'
 import 'normalize.css'
 import { Notify, Toast } from 'vant'

@@ -9,7 +9,7 @@ export default {
         bodyClass: '',
         parent: 'Index',
         title: 'TestPage',
-        requireAuth: false,
+        requireAuth: true,
         keepAlive: false,
         noCache: false,
         activeMenu: '',

@@ -1,4 +1,4 @@
-import BaseMobileAppStore from '@@core/data/store/BaseMobileAppStore'
+import BaseMobileAppStore from '@@core/common/store/BaseMobileAppStore'
 import { Module, VuexModule } from 'vuex-module-decorators'
 
 @Module({

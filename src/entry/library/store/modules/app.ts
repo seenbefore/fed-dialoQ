@@ -1,4 +1,4 @@
-import BaseAppStore, { IBaseAppStore } from '@@core/data/store/BaseAppStore'
+import BaseAppStore, { IBaseAppStore } from '@@core/common/store/BaseAppStore'
 import { InternalDictListVO } from '@library/api/auto/sysDict/internal'
 import { Module, Mutation } from 'vuex-module-decorators'
 

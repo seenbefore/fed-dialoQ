@@ -30,7 +30,7 @@ export default class UserEdUserPasswordDialog extends Vue {
                     tag: 'text',
                     name: 'username',
                     itemAttrs: {
-                        label: '用户名',
+                        label: '用户名：',
                     },
                 },
             ],
@@ -42,7 +42,7 @@ export default class UserEdUserPasswordDialog extends Vue {
                     tag: 'input',
                     name: 'password',
                     itemAttrs: {
-                        label: '密码',
+                        label: '密码：',
                         rules: [
                             {
                                 required: true,

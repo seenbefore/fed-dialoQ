@@ -16,7 +16,7 @@ glob.sync(path.resolve(root, './**/App.vue')).forEach(dir => {
     let template = settings.template ? settings.template : path.join(entry$, `./index.html`)
     /* if template not exists, use public index.html */
     if (!fs.existsSync(template)) {
-        template = path.join(baseRootPath, 'core/data/template/index.html')
+        template = path.join(baseRootPath, 'core/common/template/index.html')
     }
 
     const { title = '', keywords = '', description = '', filename = 'index.html' } = settings

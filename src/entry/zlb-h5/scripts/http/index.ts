@@ -1,4 +1,4 @@
-import { createBaseHttp } from '@@core/data/http/baseHttp'
+import { createBaseHttp } from '@@core/common/http/baseHttp'
 import exAuth from '@zlb-h5/scripts/http/exAuth'
 import { ZLBConfig } from '@zlb-h5/share/ZLBConfig'
 import { appStore } from '@zlb-h5/store/useStore'

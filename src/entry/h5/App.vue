@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { useConsole } from '@@core/data/hooks/useConsole'
+import { useConsole } from '@@core/common/hooks/useConsole'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({

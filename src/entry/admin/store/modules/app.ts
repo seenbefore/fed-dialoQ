@@ -1,4 +1,4 @@
-import BaseAppStore, { IBaseAppStore } from '@@core/data/store/BaseAppStore'
+import BaseAppStore, { IBaseAppStore } from '@@core/common/store/BaseAppStore'
 import { Module } from 'vuex-module-decorators'
 
 export interface AppStateType extends IBaseAppStore {}

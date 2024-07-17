@@ -1,6 +1,6 @@
 import '@/styles/global.less'
 import '@/theme/vant'
-import { mobileInit } from '@@core/data/configurations/initConfig/mobileInit'
+import { mobileInit } from '@@core/common/configurations/initConfig/mobileInit'
 import { getURLParameters } from 'icinfo-util'
 import 'normalize.css'
 import Vue from 'vue'

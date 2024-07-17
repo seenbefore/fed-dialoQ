@@ -1,4 +1,4 @@
-import { createBaseDesktopHttp } from '@@core/data/http'
+import { createBaseDesktopHttp } from '@@core/common/http'
 import exAuth from './exAuth'
 
 console.log('[当前请求前缀]', process.env.VUE_APP_BASEURL_API)

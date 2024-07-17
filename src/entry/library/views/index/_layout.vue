@@ -22,8 +22,6 @@ export default class Index extends Vue {
     get key() {
         const meta = this.$route.meta || {}
         const { fullPath, path, name } = this.$route
-        console.log(`key`, path, name)
-
         if (['Community'].includes(name!)) {
             return name
         } else {

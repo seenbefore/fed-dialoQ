@@ -2,7 +2,7 @@ import '@/components/directives/copy'
 import '@/components/registerAdminComp'
 import '@/components/registerGlobalComp'
 import modalDialog from '@/scripts/ModalDialog'
-import { desktopInit } from '@@core/data/configurations/initConfig/desktopInit'
+import { desktopInit } from '@@core/common/configurations/initConfig/desktopInit'
 import { LocalMenu } from '@admin/menus'
 import 'icinfo-ui/lib/theme-chalk/index.css'
 import { getURLParameters } from 'icinfo-util'
@@ -38,5 +38,6 @@ bootstrap(() => {
 
     if (token) {
         // TODO set token or get userInfo
+        userStore.login(token)
     }
 }).then(mount => mount({ router, store, themeStore: settingsStore, App }))

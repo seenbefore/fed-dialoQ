@@ -1,7 +1,7 @@
 import '@/theme/element-ui'
 import '@/sharegood-ui'
 import 'normalize.css'
-import { bigScreenInit } from '@@core/data/configurations/initConfig/bigScreenInit'
+import { bigScreenInit } from '@@core/common/configurations/initConfig/bigScreenInit'
 import Vue from 'vue'
 import App from './App.vue'
 import './components'

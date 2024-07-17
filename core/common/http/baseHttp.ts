@@ -54,7 +54,7 @@ export function createBaseHttp(configOrCallBack?: IConfig | ICallBack, callback?
                     if (isString(hook)) {
                         const currentHook = Reflect.get(defineHooks, hook)
                         if (!currentHook) {
-                            console.warn(`未找到${hook}对应的hook，请检查core/data/http/defineHooks.ts`)
+                            console.warn(`未找到${hook}对应的hook，请检查core/common/http/defineHooks.ts`)
                         } else {
                             instance.exHooks.add(currentHook)
                         }
