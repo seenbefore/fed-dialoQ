@@ -34,7 +34,7 @@ export default class UserSubject extends Vue {
     current = ''
     logOut() {
         //this.$router.push('/logout')
-        userStore.FedLogOut()
+        userStore.fedLogOut()
     }
     handlePasswordEdit() {
         this.$modalDialog(() => import('@/components/UserPasswordDialog/index.vue')).then(() => {

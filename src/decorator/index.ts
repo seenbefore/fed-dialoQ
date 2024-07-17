@@ -68,7 +68,7 @@ export const debounce = function(wait: number, options = {}) {
  *  计算方法耗时装饰器
  *  用于需要计时的方法,可传异步方法
  * **/
-export const logMehtodTime = function(): MethodDecorator {
+export const logMethodTime = function(): MethodDecorator {
     return (_target, methodIdentifier: any, descriptor: TypedPropertyDescriptor<any>) => {
         const originMethodImpl = descriptor.value!
         descriptor.value = async function(...args: unknown[]) {

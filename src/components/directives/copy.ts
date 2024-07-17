@@ -1,17 +1,14 @@
-import Vue from 'vue'
-import { Message } from 'element-ui'
 import Clipboard from 'clipboard'
+import { Message } from 'element-ui'
+import Vue from 'vue'
+
 Vue.directive('copy', {
     bind: (el: any, binding: any) => {
         const handler = () => {
             const text = binding.value || ''
             const clipboard = new Clipboard(el, {
                 text: () => {
-                    // const str = binding.value || binding.expression
-                    // console.log(binding)
-
-                    const result = typeof text === 'string' ? text : JSON.stringify(text)
-                    return result
+                    return typeof text === 'string' ? text : JSON.stringify(text)
                 },
             })
             clipboard.on('success', () => {

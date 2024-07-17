@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
-import { BasePage } from '@h5/mixins'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
+
 @Component({
     name: 'DemoB',
     components: {},
 })
-export default class DemoB extends BasePage {
+export default class DemoB extends Vue {
     mounted() {
         console.log('bbbb')
     }

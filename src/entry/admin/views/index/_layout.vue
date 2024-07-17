@@ -72,7 +72,8 @@ export default class Index extends Vue {
         }
     }
     logOut() {
-        userStore.FedLogOut()
+        userStore.toggleRemember(1)
+        userStore.fedLogOut()
     }
     get title() {
         return settingsStore.title
@@ -117,7 +118,7 @@ export default class Index extends Vue {
      * 切换顶部菜单
      */
     async changeTopMenu(uri: any) {
-        const defaultPath = await userStore.GetDefaultPath(uri)
+        const defaultPath = await userStore.getDefaultPath(uri)
         this.$router.push(defaultPath).catch(err => {})
     }
     maxVisibleMenuCount = 8

@@ -26,7 +26,7 @@ export const exAuth = Object.freeze({
                         title: '提示',
                         message: `用户登录异常 [code:${resOrErr.code}], 是否立即退出重新登录？`,
                     }).then(() => {
-                        userStore.FedLogOut()
+                        userStore.fedLogOut()
                     })
                     isLock = true
                     setTimeout(() => {

@@ -153,7 +153,7 @@ export default {
         },
         showPasswordLayer() {},
         logOut() {
-            userStore.FedLogOut()
+            userStore.fedLogOut()
         },
         toggleSideBar() {
             appStore.toggleSideBar()

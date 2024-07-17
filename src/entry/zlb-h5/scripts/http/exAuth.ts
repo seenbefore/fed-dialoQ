@@ -12,15 +12,16 @@ export const exAuth = Object.freeze({
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`
         }
-        if (config.method.toLowerCase() === 'post' && !config.notEncryption) {
-            // post 接口 统一加密参数
-            const { key, iv } = ZLBConfig.encryptConfig
-            config.data = {
-                encParamsStr: encryption.encrypt(key, iv, JSON.stringify(config.data)),
-            }
-        } else if (config.method.toLowerCase() === 'get') {
-            // get 不加密参数
-        }
+        /* 是否需要加密自行处理。 */
+        // if (config.method.toLowerCase() === 'post' && !config.notEncryption) {
+        //     // post 接口 统一加密参数
+        //     const { key, iv } = ZLBConfig.encryptConfig
+        //     config.data = {
+        //         encParamsStr: encryption.encrypt(key, iv, JSON.stringify(config.data)),
+        //     }
+        // } else if (config.method.toLowerCase() === 'get') {
+        //     // get 不加密参数
+        // }
         return config
     },
     onComplete(config: ExAxiosRequestConfig, isResolve: boolean, resOrErr: any) {

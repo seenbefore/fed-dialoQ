@@ -14,7 +14,6 @@ export const store = new Vuex.Store({
     plugins:
         process.env.NODE_ENV !== 'production'
             ? [
-                  //createLogger(),
                   createPersistedState({
                       key: ZLBConfig.vuexKey,
                       paths: ['app'],

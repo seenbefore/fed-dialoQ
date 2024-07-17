@@ -2,40 +2,18 @@
  * 路由权限控制方式：beforeEach | addRoutes | 两者结合
  * 这里封装了 addRoutes 方式，即 resetRoutes 与 filterMapRoutes
  */
-
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-
-import scrollBehavior from './scrollBehavior'
-import routes from './routes'
-import registerInterceptor from './registerInterceptor'
 import NotFound from '@/components/NotFound/index.vue'
 import LAYOUT from '@/views/index/_layout.vue'
-Vue.use(VueRouter)
+import { baseInitRouter } from '@@core/data/router'
+import { userStore } from '@admin/store/useStore'
+import Vue from 'vue'
 
-const { mode } = require('../settings.js')
-const base = mode === 'hash' ? '/' : process.env.BASE_URL
-
-const router = new VueRouter({
-    mode: 'history',
-    base,
-    routes: [
-        ...routes,
-        {
-            path: '/:path(.*)*',
-            component: LAYOUT,
-            children: [
-                {
-                    path: '/:path(.*)*',
-                    component: NotFound,
-                },
-            ],
-        },
-    ],
-    scrollBehavior,
+const { routerInstance, routes, flatRoutes } = baseInitRouter(Vue, require.context(`../views`, true, /router\.js/), {
+    userStore: userStore,
+    notFoundLayout: LAYOUT,
+    notFoundComponent: NotFound,
 })
 
-/* 注册路由拦截器 */
-registerInterceptor(router)
+export { routes, flatRoutes }
 
-export default router
+export default routerInstance

@@ -3,7 +3,7 @@ import { Location } from 'vue-router'
 import { Component } from 'vue-property-decorator'
 import PageWrapper from '@/components/PageWrapper/index.vue'
 import { tagsViewStore, userStore } from '../store/useStore'
-import { flatRoutes } from '../router/routes'
+import { flatRoutes } from '@admin/router'
 
 @Component({
     components: {
@@ -11,13 +11,14 @@ import { flatRoutes } from '../router/routes'
     },
 })
 export class MyMixins extends Vue {
-    get user$() {
+    public get user$() {
         return userStore.info
     }
+
     /**
      * 跳转新的页面
      */
-    $open(location: Location) {
+    public $open(location: Location): void {
         const { path, query } = location
 
         let routeUrl = this.$router.resolve({
@@ -26,10 +27,11 @@ export class MyMixins extends Vue {
         })
         window.open(routeUrl.href, '_blank')
     }
+
     /**
      * 跳转新的页面
      */
-    $push(location: Location) {
+    public $push(location: Location): void {
         const { path, query } = location
         const { name = '', fullPath } = this.$route
         this.$router.push({
@@ -41,22 +43,24 @@ export class MyMixins extends Vue {
             },
         })
     }
-    async $go(location: Location) {
+
+    public async $go(location: Location): Promise<void> {
         const { path } = location
         await this.$closeTab(path)
         this.$router.push(location)
     }
+
     /**
      * 关闭当前页面
      */
-    async $close(reload = false, redirect = false) {
+    public async $close(reload = false, redirect = false): Promise<void> {
         const { query = {} } = this.$route
         const { name = '', from = '' } = query
         await tagsViewStore.delView(this.$route)
         // 如果上一页有缓存 保存或修改动作需要更新下上一页的缓存 也可以在上一页路由.meta.noCache=true 这样就不需要这个代码
-        if (name && reload === true) {
+        if (name && reload) {
             await tagsViewStore.delCachedView({
-                name, // 上一页的路由名称
+                name: name as string, // 上一页的路由名称
             })
         }
         if (redirect) {
@@ -67,10 +71,11 @@ export class MyMixins extends Vue {
             this.$router.go(-1)
         }
     }
+
     /**
      * 关闭当前页面
      */
-    async $closeTab(path?: string) {
+    public async $closeTab(path?: string): Promise<void> {
         const target: any = flatRoutes.find(item => {
             return item.path === path || item.fullPath === path
         })

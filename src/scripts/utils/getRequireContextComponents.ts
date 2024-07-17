@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export const getRequireContextComponents = (files: __WebpackModuleApi.RequireContext, filter?: (key: string) => boolean) => {
     const components: Obj = {}
 
@@ -12,4 +14,9 @@ export const getRequireContextComponents = (files: __WebpackModuleApi.RequireCon
     })
 
     return components
+}
+
+export const registryRequireContextComponents = (files: __WebpackModuleApi.RequireContext, VueInstance: typeof Vue, filter?: (key: string) => boolean) => {
+    const components = getRequireContextComponents(files, filter)
+    Object.entries(components).forEach(([key, value]) => VueInstance.component(key, value))
 }

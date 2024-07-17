@@ -19,6 +19,7 @@
         "types": ["webpack-env"],
         "paths": {
             "@/*": ["src/*"],
+            "@@core/*": ["core/*"],
             "@bigScreen/*": ["src/entry/bigScreen/*"],
             "@admin/*": ["src/entry/admin/*"],
             "@h5/*": ["src/entry/h5/*"],
@@ -27,6 +28,6 @@
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
-    "include": ["packages", "typings", "@types/*.d.ts", "types/*.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
+    "include": ["packages", "typings", "@types/*.d.ts", "types/*.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "core/**/*.ts"],
     "exclude": ["build/**/*", "node_modules", "**/dist", "**/__tests__/**/*", "**/test/**", "**/tests/**"]
 }
