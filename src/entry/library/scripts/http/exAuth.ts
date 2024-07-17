@@ -13,7 +13,7 @@ export const exAuth = Object.freeze({
         if (resOrErr && !isResolve) {
             // 用户信息失效
             if (resOrErr.code === 450 || resOrErr.code === 401) {
-                userStore.FedLogOut()
+                userStore.fedLogOut()
             }
         }
     },

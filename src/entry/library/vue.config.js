@@ -1,5 +1,1 @@
-const path = require('path')
-const loadEnv = require('../../../build/env.js')
-loadEnv(path.resolve(__dirname, '.'))
-
-module.exports = {}
+module.exports = require('../../../core/common/configurations/vueConfigs/desktopBaseConfig.js')

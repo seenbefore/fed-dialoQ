@@ -1,34 +1,17 @@
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
 import NotFound from '@/views/404/index.vue'
-import AutoRouteGenerator from '@/router/auto-router'
-import scrollBehavior from '@/router/scrollBehavior'
-import { setupRouterGuard } from './guard'
+import { createBaseRouter } from '@@core/common/router'
+import { setupRouterGuard } from '@@core/common/router/utils/guard'
+import Vue from 'vue'
 
-const generator = new AutoRouteGenerator(require.context(`../views`, true, /router\.js/))
-const autoRoutes = generator.generate(true)
-console.log('所有路由', autoRoutes)
-Vue.use(VueRouter)
+const { mode } = require('../settings.js')
 
-const routes: Array<RouteConfig> = [
-    ...autoRoutes,
-    // {
-    //     path: '/',
-    //     redirect: '/work-platform',
-    // },
-    {
-        path: '*',
-        component: NotFound,
-    },
-]
-
-const router = new VueRouter({
-    mode: 'history',
-    base: process.env.BASE_URL,
-    routes,
-    scrollBehavior,
+const { routerInstance, routes, flatRoutes } = createBaseRouter(Vue, require.context(`../views`, true, /router\.js/), {
+    mode,
+    notFoundLayout: NotFound,
 })
 
-setupRouterGuard(router)
+setupRouterGuard(routerInstance)
 
-export default router
+export { routes, flatRoutes }
+
+export default routerInstance

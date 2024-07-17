@@ -1,4 +1,4 @@
-import EventBus, { IEventBusOptions } from '@zlb-h5/scripts/utils/EventBus'
+import EventBus, { IEventBusOptions } from '@/scripts/utils/EventBus'
 
 interface IPagination {
     pageNum: number

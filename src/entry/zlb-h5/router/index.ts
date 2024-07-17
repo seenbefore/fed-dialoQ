@@ -1,32 +1,21 @@
-import { addKeepAlive } from '@zlb-h5/router/guard/addKeepAlive'
-import AutoRouteGenerator from '@/router/auto-router'
-import scrollBehavior from '@/router/scrollBehavior'
+import { createBaseRouter } from '@@core/common/router'
+import { RouterMode } from '@@core/common/router/utils/enum'
+import { setupRouterGuard } from '@@core/common/router/utils/guard'
+import { addKeepAlive } from './guard/addKeepAlive'
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import { setupRouterGuard } from './guard'
 
-const generator = new AutoRouteGenerator(require.context(`../views`, true, /router\.js/))
-const autoRoutes = generator.generate(true)
-console.log('所有路由', autoRoutes)
-Vue.use(VueRouter)
-
-const routes: Array<RouteConfig> = [...autoRoutes]
-
-const router = new VueRouter({
-    mode: 'hash',
-    base: process.env.BASE_URL,
-    routes: [
-        ...routes,
-        {
-            path: '*',
-            redirect: '/404',
-        },
-    ],
-    scrollBehavior,
+const { routes, routerInstance, flatRoutes } = createBaseRouter(Vue, require.context(`../views`, true, /router\.js/), {
+    mode: RouterMode.HASH,
+    routes: {
+        path: '*',
+        redirect: '/404',
+    },
 })
 
-addKeepAlive(router)
+addKeepAlive(routerInstance)
 
-setupRouterGuard(router)
+setupRouterGuard(routerInstance)
 
-export default router
+export { routes, flatRoutes }
+
+export default routerInstance

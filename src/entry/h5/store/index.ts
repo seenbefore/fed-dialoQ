@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import Vuex, { createLogger } from 'vuex'
+import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import modules from './modules'
+
 const LocalConfig = require('../settings.js')
 const { key } = LocalConfig
 Vue.use(Vuex)
@@ -15,7 +16,6 @@ export const store = new Vuex.Store({
     plugins:
         process.env.NODE_ENV !== 'production'
             ? [
-                  //createLogger(),
                   createPersistedState({
                       key,
                       paths: ['app'],

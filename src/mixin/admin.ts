@@ -3,7 +3,7 @@ import { tagsViewStore } from '@/store/useStore'
 /* 全局混入 Vue.mixin */
 Vue.mixin({
     methods: {
-        // 返回上一页  relaod 是否重载上一页
+        // 返回上一页  reload 是否重载上一页
         $goBack(reload = false) {
             const { fullPath, name } = this.$route
             const { from } = this.$route.meta || {}
@@ -14,14 +14,6 @@ Vue.mixin({
                 })
             }
             window.history.go(-1)
-            // this.$store
-            //     .dispatch('tagsView/delView', {
-            //         name,
-            //         fullPath,
-            //     })
-            //     .then(() => {
-            //         window.history.go(-1)
-            //     })
         },
     },
 })

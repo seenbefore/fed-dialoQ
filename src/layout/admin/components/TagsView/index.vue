@@ -40,8 +40,8 @@
 import ScrollPane from './ScrollPane'
 import path from 'path'
 import { findChildrenByPath } from '@/scripts/utils'
-import { userStore, tagsViewStore } from '../../../../store/useStore'
-import routes from '../../../../router/routes'
+import { userStore, tagsViewStore } from '@/store/useStore'
+import { routes } from '@/router'
 export default {
     components: { ScrollPane },
     props: {

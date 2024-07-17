@@ -97,16 +97,16 @@
 </template>
 
 <script lang="ts">
-import { userStore } from '@library/store/useStore'
-import { Component, Vue } from 'vue-property-decorator'
+import { userStore } from "@library/store/useStore";
+import { Component, Vue } from "vue-property-decorator";
+
 @Component({
     name: 'MyNav',
     components: {},
 })
 export default class MyNav extends Vue {
     get user() {
-        const user = userStore.info || {}
-        return user
+        return userStore.info || {}
     }
     get firstLetter() {
         const name = this.user.name || ''
@@ -123,12 +123,12 @@ export default class MyNav extends Vue {
         //location.replace(href)
         this.$router.replace('/')
         setTimeout(async () => {
-            await userStore.FedLogOut()
+            await userStore.fedLogOut()
             location.replace(href)
         }, 200)
     }
     async redirectToLogin() {
-        await userStore.FedLogOut()
+        await userStore.fedLogOut()
         await userStore.ThirdLogin()
     }
     redirectToUpload() {

@@ -21,11 +21,7 @@ export default class App extends Vue {
             const type = data.type
             if (type === 'logout') {
                 console.log('---------logout---------')
-                userStore.FedLogOut({
-                    // 广播让其他页面退出
-                    broadcast: false,
-                    code: 401,
-                })
+                userStore.fedLogOut()
             }
         })
         // 监听iframe行政执法页面发出的postMessage
@@ -37,11 +33,7 @@ export default class App extends Vue {
                 if ([403].includes(code)) {
                     this.$router.push(`/403`)
                 } else if ([401].includes(code)) {
-                    userStore.FedLogOut({
-                        // 广播让其他页面退出
-                        broadcast: true,
-                        code: 401,
-                    })
+                    userStore.fedLogOut()
                 }
             },
             false,

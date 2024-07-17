@@ -1,21 +1,21 @@
+import BaseAppStore, { IBaseAppStore } from '@@core/common/store/BaseAppStore'
 import { InternalDictListVO } from '@library/api/auto/sysDict/internal'
-import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Module, Mutation } from 'vuex-module-decorators'
 
-const state = {
-    community: {} as any,
+export interface AppStateType extends IBaseAppStore {
+    dict: Array<InternalDictListVO>
 }
 
-type AppStateType = typeof state
-export { AppStateType, state }
 @Module({
     name: 'app',
     namespaced: true,
     stateFactory: true,
 })
-export default class AppModule extends VuexModule {
-    dict = [] as InternalDictListVO[]
+export default class AppModule extends BaseAppStore {
+    public dict: Array<InternalDictListVO> = []
+
     @Mutation
-    setDict(data: InternalDictListVO[]) {
+    public setDict(data: InternalDictListVO[]): void {
         this.dict = data
     }
 }

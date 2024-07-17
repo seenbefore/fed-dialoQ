@@ -1,57 +1,29 @@
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import { UserInfo } from '@/@types'
+import BaseUserStore, { IBaseUserStore } from '@@core/common/store/BaseUserStore'
+import { Action, Module, Mutation } from 'vuex-module-decorators'
 
-const state = {
-    token: '', // 用户token
-    info: {} as UserInfo, // 用户信息
-}
-
-type UserStateType = typeof state
-export { UserStateType, state }
+export interface UserStateType extends IBaseUserStore<any, UserInfo> {}
 
 @Module({
     name: 'user',
     namespaced: true,
-    // store,
-    // dynamic: true,
     stateFactory: true,
 })
-export default class MyModule extends VuexModule {
-    token = state.token
-    info = state.info
-
+export default class MyModule extends BaseUserStore<any, UserInfo> {
     /**
      * 清空用户信息
      */
     @Mutation
-    clear() {
+    public clear(): void {
         this.token = ''
         this.info = {}
     }
-    /**
-     * 设置登录token
-     * @param token 登录凭证
-     */
-    @Mutation
-    login(token: string) {
-        this.token = token
-    }
 
-    /**
-     * 设置用户信息
-     * @param data 用户信息对象
-     * @param data.name 姓名
-     * @param data.sex 性别  0 无 1 男 2 女
-     */
-    @Mutation
-    setUserInfo(data: UserInfo) {
-        Object.assign(this.info, data)
-    }
     /**
      * 清空登录信息
      */
     @Mutation
-    logout() {
+    public logout(): void {
         this.token = ''
         this.info = {}
     }
@@ -60,24 +32,25 @@ export default class MyModule extends VuexModule {
     /**
      * 退出登录
      */
-    FedLogOut() {
+    public fedLogOut(): Promise<void> {
         return new Promise(resolve => {
             this.logout()
-            resolve('')
+            resolve(void 0)
         })
     }
+
     @Action
     /**
      * 跳转第三方登录
      */
-    ThirdLogin() {
+    public ThirdLogin(): Promise<void> {
         return new Promise(resolve => {
             const redirect = process.env.NODE_ENV === 'development' ? `${location.origin}/login-free` : ''
             // 蜻蜓云效
             //location.href = `http://192.168.1.147:3001/login?redirect=${redirect}`
             // 仓颉扫码
             location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
-            resolve('')
+            resolve(void 0)
         })
     }
 }

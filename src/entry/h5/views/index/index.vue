@@ -7,9 +7,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { IBaseVisitedView } from '@@core/common/store/BaseTagsViewStore'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
-import { tagsViewStore } from '../../store/useStore'
+import { tagsViewStore } from '@h5/store/useStore'
+
 @Component({
     name: 'Index',
     components: {},
@@ -19,7 +21,7 @@ export default class Index extends Vue {
         const visitedViews = tagsViewStore.visitedViews
         const { fullPath } = this.$route
         let index = -1
-        visitedViews.forEach((item: Route, i) => {
+        visitedViews.forEach((item, i) => {
             if (item.fullPath === fullPath) {
                 index = i
             }
@@ -65,9 +67,9 @@ export default class Index extends Vue {
 
     addTags() {
         const { name, meta = {}, query, params, path, fullPath, hash } = this.$route
-        const view = {
+        const view: IBaseVisitedView = {
             title: meta.title || name,
-            _: query._ || '',
+            _: (query._ as string) || '',
             query: {
                 ...query,
             },
@@ -77,7 +79,7 @@ export default class Index extends Vue {
             path,
             fullPath,
             hash,
-            name,
+            name: name || '',
 
             meta: {
                 ...meta,
