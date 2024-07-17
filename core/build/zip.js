@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const archiver = require('archiver')
 const { formatDate } = require('icinfo-util')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 
 const DEST_DIR = path.join(baseRootPath, 'dist')
 const DEST_ZIP_DIR = path.join(baseRootPath, 'dist-zip')

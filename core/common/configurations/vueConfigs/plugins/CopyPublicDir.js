@@ -1,6 +1,6 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const { baseRootPath } = require('../../../../utils/baseRootPath')
+const { baseRootPath } = require('../../../../utils/path.js')
 
 /**
  * copy public 文件夹到打包的产物中

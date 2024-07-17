@@ -28,3 +28,4 @@ build-zip
 /*.zip
 public/json
 fed-library
+/.t/

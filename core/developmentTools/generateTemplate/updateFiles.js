@@ -1,11 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const { baseRootPath } = require('../../utils/baseRootPath.js')
+const { baseRootPath } = require('../../utils/path.js')
 const { Log } = require('../../share/log/index.js')
-
-const writeJson = (jsonPath, json) => {
-    fs.writeFileSync(jsonPath, JSON.stringify(json, null, 4))
-}
+const { writeJson } = require('../../utils/write')
 
 const updateGenerateApiConfig = (entryType, entryDirName) => {
     Log.info('开始修改生成的 api 配置文件。')
