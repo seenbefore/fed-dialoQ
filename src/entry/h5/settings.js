@@ -5,7 +5,6 @@ module.exports = {
     keywords: '',
     description: '',
     filename: 'index.html',
-    template: 'public/index.html',
     settings: {
         breadcrumb: false,
     },

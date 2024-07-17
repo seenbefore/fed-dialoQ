@@ -9,8 +9,5 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({
     components: {},
 })
-export default class App extends Vue {
-    async created() {}
-}
+export default class App extends Vue {}
 </script>
-<style lang="less"></style>

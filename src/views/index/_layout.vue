@@ -38,7 +38,7 @@
                         <span v-text="userInfo.name" class="user-name"></span>
                         <div v-if="userInfo.sex" class="user-avatar" :class="[userInfo.sex == '1' ? 'man' : '']"></div>
                     </span>
-                    <span style="cursor:pointer;margin-left:7px" @click="FedLogOut">退出</span>
+                    <span style="cursor:pointer;margin-left:7px" @click="fedLogOut">退出</span>
                 </div>
             </div>
         </template>
@@ -178,29 +178,6 @@ export default class Index extends Vue {
                             })
                             return result
                         },
-                        // defaultSlotRender: (h, { row }) => {
-                        //     const title = ''
-                        //     return [
-                        //         h(
-                        //             'div',
-                        //             {
-                        //                 class: 'row',
-                        //             },
-                        //             [
-                        //                 h(
-                        //                     'div',
-                        //                     {
-                        //                         class: 'name',
-                        //                         domProps: {
-                        //                             innerHTML: title,
-                        //                         },
-                        //                     },
-                        //                     [],
-                        //                 ),
-                        //             ],
-                        //         ),
-                        //     ]
-                        // },
                     },
                 },
             ] as FormColumn[],
@@ -229,7 +206,7 @@ export default class Index extends Vue {
      * 切换顶部菜单
      */
     async changeTopMenu(uri: any) {
-        const defaultPath = await userStore.GetDefaultPath(uri)
+        const defaultPath = await userStore.getDefaultPath(uri)
         this.$router.push(defaultPath).catch(err => {})
     }
     maxVisibleMenuCount = 8
@@ -257,8 +234,8 @@ export default class Index extends Vue {
     get userInfo() {
         return Object.assign({ name: '未登录' }, userStore.info)
     }
-    FedLogOut() {
-        userStore.FedLogOut()
+    fedLogOut() {
+        userStore.fedLogOut()
     }
     created() {}
     mounted() {}
@@ -325,7 +302,7 @@ export default class Index extends Vue {
         vertical-align: middle;
         cursor: pointer;
         &.man {
-            background-image: url('~@/assets/images/admin//gender-man.svg');
+            background-image: url('~@/assets/images/admin/gender-man.svg');
         }
     }
 }

@@ -69,13 +69,13 @@ VUE_APP_ERUDA = true"
 </template>
 
 <script lang="ts">
-import { BasePage } from '@h5/mixins'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
+
 @Component({
     name: 'IndexHome',
     components: {},
 })
-export default class IndexHome extends BasePage {
+export default class IndexHome extends Vue {
     value = ''
     images = ['https://img01.yzcdn.cn/vant/apple-1.jpg', 'https://img01.yzcdn.cn/vant/apple-2.jpg']
     mounted() {}

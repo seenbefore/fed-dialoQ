@@ -1,4 +1,4 @@
-import { appStore } from '@h5/store/useStore'
+import { userStore } from '@h5/store/useStore'
 import axios from 'axios'
 import { getURLParameters } from 'icinfo-util'
 import { get } from 'lodash'
@@ -83,7 +83,7 @@ export const parseApiOptions = (apiOptions: ApiOptions, restParams: any = {}, fo
             reject()
         }
         if (apiUseToken) {
-            const token = appStore.token
+            const token = userStore.token
             ;(headers as any).Authorization = 'Bearer ' + token
         }
         const axiosOptions: Record<string, any> = {

@@ -1,5 +1,6 @@
 import '@/styles/global.less'
-import '@/vant'
+import '@/theme/vant'
+import { mobileInit } from '@@core/data/configurations/initConfig/mobileInit'
 import { getURLParameters } from 'icinfo-util'
 import 'normalize.css'
 import Vue from 'vue'
@@ -12,18 +13,15 @@ import store from './store'
 import './styles/app.less'
 
 Vue.prototype.$modalDialog = modalDialog
-Vue.config.devtools = process.env.VUE_APP_ENV === 'dev'
 Vue.prototype.$http = http
 
-async function bootstrap() {
-    // 嵌入第三方免登进入
+const { bootstrap } = mobileInit(Vue)
+
+bootstrap(async () => {
+    /* 嵌入第三方免登进入 */
     const { token = '' } = getURLParameters(location.href)
 
-    new Vue({
-        router,
-        store,
-        render: h => h(App),
-    }).$mount('#app')
-}
-
-bootstrap()
+    if (token) {
+        // TODO set token or get userInfo
+    }
+}).then(mount => mount({ store, router, App }))

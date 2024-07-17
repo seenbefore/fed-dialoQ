@@ -6,7 +6,6 @@ import { MessageBox, Message } from 'element-ui'
  * @param {String} title - 标题
  * @param {String} content - 内容
  * @param {String} confirmButtonText - 确认按钮名称
- * @param {Function} callback - 确认按钮名称
  * @returns
  **/
 export function Confirm(title, content, confirmButtonText = '确定') {
