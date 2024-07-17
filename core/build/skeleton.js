@@ -3,7 +3,7 @@
 const webpack = require('webpack')
 const chalk = require('chalk')
 const { resolve } = require('path')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 const webpackSkeletonConfig = require(resolve(baseRootPath, 'src/skeleton/webpack.skeleton.config'))
 
 webpack(webpackSkeletonConfig, function(err, stats) {

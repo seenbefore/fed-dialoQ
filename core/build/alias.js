@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 
 const entryPath = path.join(baseRootPath, 'src/entry')
 const setAlias = config => {

@@ -21,7 +21,8 @@
         "report:devops": "npm run build:fat1:devops -- --report",
         "commit": "git cz",
         "generate:entry": "node core/developmentTools/generateTemplate/index.js",
-        "update:core": "node core/developmentTools/updateCore/index.js"
+        "update:core": "node core/developmentTools/updateCore/index.js",
+        "load": "node core/developmentTools/loadFileToBaseTemplate/index.js"
     },
     "dependencies": {
         "@vue/compiler-sfc": "^3.4.27",

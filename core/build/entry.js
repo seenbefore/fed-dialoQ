@@ -1,7 +1,7 @@
 const glob = require('glob')
 const path = require('path')
 const fs = require('fs')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 const VUE_APP_ENTRY = process.env.VUE_APP_ENTRY || 'src'
 const pages = {}
 const root = path.resolve(baseRootPath, 'src')

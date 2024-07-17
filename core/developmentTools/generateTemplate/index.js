@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
 const { Log } = require('../../share/log/index.js')
-const { baseRootPath } = require('../../utils/baseRootPath.js')
+const { baseRootPath } = require('../../utils/path.js')
 
 const entryTypes = [
     {

@@ -2,7 +2,7 @@ const { spawn } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const { updateFiles } = require('./updateFiles.js')
-const { baseRootPath } = require('../../utils/baseRootPath.js')
+const { baseRootPath } = require('../../utils/path.js')
 const { extractFromRemote } = require('../../utils/gitHelpers')
 
 // 用当前项目作为模板，从 gitlab 上拉取代码

@@ -1,5 +1,6 @@
 const { spawn } = require('child_process')
 const { Log } = require('../share/log')
+const { runCommand } = require('./run')
 
 /* 默认的远程url */
 const defaultRemoteUrl = 'git@gitlab.icinfo.co:fed/base-vue-template.git'
@@ -13,30 +14,13 @@ const defaultBranch = 'master'
  * @param sourcePath 需要拉取的仓库文件路径
  * @param targetPath 需要解压的文件路径
  */
-function extractFromRemote(remoteUrl = defaultRemoteUrl, branch = defaultBranch, sourcePath, targetPath) {
-    return new Promise((resolve, reject) => {
-        const command = `git archive --remote=${remoteUrl} ${branch}:${sourcePath} | tar -x -C ${targetPath}`
-        Log.info(`开始从${remoteUrl}克隆${sourcePath}文件至${targetPath}，请稍等.......`)
-        const child = spawn('sh', ['-c', command])
-        child.stdout.on('data', data => {
-            console.log(`info: ${data}`)
-        })
-
-        // 监听标准错误输出
-        child.stderr.on('data', reject)
-
-        child.on('close', code => {
-            if (code === 0) {
-                Log.info(`从${remoteUrl}克隆${sourcePath}文件至${targetPath}成功。`)
-                resolve()
-            } else {
-                Log.error(`克隆项目失败，code: ${code}`)
-                reject(code)
-            }
-        })
-    })
+async function extractFromRemote(remoteUrl = defaultRemoteUrl, branch = defaultBranch, sourcePath, targetPath) {
+    const command = `git archive --remote=${remoteUrl} ${branch} ${sourcePath} | tar -x -C ${targetPath}`
+    Log.info(`开始从${remoteUrl}克隆${sourcePath}文件至${targetPath}，请稍等.......`)
+    return runCommand(command)
 }
 
 module.exports = {
     extractFromRemote,
+    defaultRemoteUrl,
 }

@@ -1,6 +1,6 @@
 const glob = require('glob')
 const path = require('path')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 
 const root = path.resolve(baseRootPath, 'public/json')
 const downloadDir = path.resolve(baseRootPath, 'dist/mp3')

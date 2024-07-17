@@ -13,7 +13,7 @@
 const path = require('path')
 const fs = require('fs')
 const tinify = require('tinify')
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 const config = require(path.resolve(baseRootPath, 'package.json'))
 const chalk = require('chalk')
 const glob = require('glob')

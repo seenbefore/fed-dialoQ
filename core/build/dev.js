@@ -5,7 +5,7 @@ const glob = require('glob')
 const path = require('path')
 const fs = require('fs')
 const execSync = require('child_process').execSync
-const { baseRootPath } = require('../utils/baseRootPath')
+const { baseRootPath } = require('../utils/path.js')
 
 const pkg = require(path.resolve(baseRootPath, 'package.json'))
 
