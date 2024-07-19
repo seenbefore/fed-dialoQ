@@ -11,6 +11,12 @@ export function setupDesktopAuthGuard<T extends BaseUserStore>(router: VueRouter
 
         if (meta.requireAuth) {
             if (userStore.token) {
+                if (to.path === '/' && userStore.defaultPath) {
+                    next({
+                        path: userStore.defaultPath,
+                        replace: true,
+                    })
+                }
                 // 已登录
                 next()
             } else {
