@@ -30,7 +30,7 @@ validateGitEmail().then(async email => {
             mkdirSync(temporaryPath)
         }
         /* 拉取config配置文件 */
-        await extractFromRemote(defaultRemoteUrl, 'release', 'core/config.json', temporaryPath)
+        await extractFromRemote(defaultRemoteUrl, 'master', 'core/config.json', temporaryPath)
         Log.info('配置文件拉取成功，开始对比版本')
         /* remote version */
         const { version } = require(join(temporaryPath, 'core/config.json'))

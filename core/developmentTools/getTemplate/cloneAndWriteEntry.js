@@ -15,7 +15,7 @@ const cloneAndWriteEntry = (entryType, entryDirName) => {
     const cloneEntryPath = path.join(archivePath, entryType)
     fs.mkdirSync(entryDir, { recursive: true })
     /* clone repo */
-    extractFromRemote(gitRepoUrl, 'master', cloneEntryPath, entryDir).then(() => {
+    extractFromRemote(gitRepoUrl, 'master', cloneEntryPath, baseRootPath).then(() => {
         updateFiles(entryDir, entryType, entryDirName)
     })
 }
