@@ -5,7 +5,7 @@
 import NotFound from '@/components/NotFound/index.vue'
 import LAYOUT from '@/views/index/_layout.vue'
 import { baseInitRouter } from '@@core/common/router'
-import { userStore } from '@admin/store/useStore'
+import { userStore } from '@/store/useStore'
 import Vue from 'vue'
 
 const { routerInstance, routes, flatRoutes } = baseInitRouter(Vue, require.context(`../views`, true, /router\.js/), {

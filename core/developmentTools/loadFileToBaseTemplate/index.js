@@ -48,7 +48,7 @@ validateGitEmail().then(async email => {
     }
 
     /* 拉取远程文件 */
-    await extractFromRemote(remoteUrl, branch, fileUrl, writeUrl)
+    await extractFromRemote(remoteUrl, branch, fileUrl, writeUrl, true)
 
     Log.success('文件拉取成功！请注意是否需要更新 package.json')
 })
