@@ -7,14 +7,9 @@ export const LocalMenu: UserMenu[] = [
         uri: '/我的工作台',
         children: [
             {
-                label: '我的待办',
+                label: '测试页面',
                 icon: 'el-icon-document',
-                uri: '/admin/dashboard',
-            },
-            {
-                label: '我的已办',
-                icon: 'el-icon-document',
-                uri: '/workbench/done',
+                uri: '/test',
             },
         ],
     },

@@ -1,6 +1,6 @@
 <template>
     <el-breadcrumb class="my-breadcrumb" v-bind="$attrs">
-        <el-breadcrumb-item v-for="item in breadList" :to="{ path: item.path }" :key="item.path">{{ item.meta.title }}</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="item in breadList" :key="item.path">{{ item.meta.title }}</el-breadcrumb-item>
     </el-breadcrumb>
 </template>
 

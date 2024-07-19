@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { userStore } from '@admin/store/useStore'
+import { userStore } from '@/store/useStore'
 
 @Component({
     name: 'UserSubject',

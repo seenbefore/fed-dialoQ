@@ -82,7 +82,7 @@
 <script>
 import { style } from '../theme/index'
 import ThemeIcon from './theme-icon'
-import { userStore, appStore, settingsStore } from '../../../store/useStore'
+import { userStore, appStore, settingsStore } from '@admin/store/useStore'
 export default {
     components: {
         ThemeIcon,

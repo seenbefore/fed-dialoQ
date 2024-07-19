@@ -31,6 +31,6 @@ module.exports = {
     },
     user: {
         // 设置一级菜单为顶部菜单
-        mode: 2,
+        mode: 1,
     },
 }
