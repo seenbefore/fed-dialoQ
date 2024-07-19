@@ -2,7 +2,7 @@ const { spawnSync } = require('child_process')
 const { Log } = require('../share/log')
 
 /* examples: xxx@icinfo.com.cn */
-const isIcinfoEmail = email => email.endsWith('@icinfo.com.cn1')
+const isIcinfoEmail = email => email.endsWith('@icinfo.com.cn')
 
 /* 校验下当前执行的邮箱是否为公司邮箱 */
 const validateGitEmail = async () => {
