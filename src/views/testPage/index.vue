@@ -1,6 +1,6 @@
 <script lang="ts">
-import { appStore, settingsStore, tagsViewStore, userStore } from '@admin/store/useStore'
-import { Component, Vue } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
+import { appStore, settingsStore, tagsViewStore, userStore } from '@/store/useStore'
 
 @Component({
     name: 'TestPage',

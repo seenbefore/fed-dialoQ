@@ -26,7 +26,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import SidebarItem from './SidebarItem.vue'
-import { userStore, appStore, settingsStore } from '../../../../store/useStore'
+import { userStore, appStore, settingsStore } from '@admin/store/useStore'
 @Component({
     name: 'Sidebar',
     components: { SidebarItem },

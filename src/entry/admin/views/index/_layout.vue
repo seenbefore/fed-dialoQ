@@ -54,10 +54,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import Admin from '@admin/layout/admin/index.vue'
-import { userStore, settingsStore, appStore, tagsViewStore } from '../../store/useStore'
 import { findParents } from '@/scripts/utils'
+import Admin from '@admin/layout/admin/index.vue'
+import { appStore, settingsStore, tagsViewStore, userStore } from '@admin/store/useStore'
+import { Component, Vue } from 'vue-property-decorator'
+
 @Component({
     name: 'Index',
     components: { Admin },
@@ -82,14 +83,14 @@ export default class Index extends Vue {
         return Object.assign({ name: '未登录' }, userStore.info)
     }
     handlePasswordEdit() {
-        this.$modalDialog(() => import(/* webpackChunkName: "UserPasswordDialog" */ '@admin/components/UserPasswordDialog/index.vue')).then(() => {
+        this.$modalDialog(() => import(/* webpackChunkName: "UserPasswordDialog" */ '@/components/UserPasswordDialog/index.vue')).then(() => {
             setTimeout(() => {
                 this.logOut()
             }, 1000)
         })
     }
     handleUpdate() {
-        this.$modalDialog(() => import(/* webpackChunkName: "UserEditDialog" */ '@admin/components/UserEditDialog/index.vue'), {
+        this.$modalDialog(() => import(/* webpackChunkName: "UserEditDialog" */ '@/components/UserEditDialog/index.vue'), {
             isEdit: true,
         }).then(() => {})
     }
@@ -133,9 +134,7 @@ export default class Index extends Vue {
         if (length < this.maxVisibleMenuCount) {
             return topMenus
         }
-        const result = [...userStore.topMenus.slice(0, this.maxVisibleMenuCount)]
-
-        return result
+        return [...userStore.topMenus.slice(0, this.maxVisibleMenuCount)]
     }
     topMenuOptions = {
         'background-color': 'var(--color-primary)',

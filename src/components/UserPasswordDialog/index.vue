@@ -6,8 +6,8 @@
     </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { FormRow, FormRef } from '@/sharegood-ui'
+import { Component, Vue, Prop } from 'vue-property-decorator'
+import { FormColumn, FormRow, FormRef } from '@/sharegood-ui'
 
 @Component({
     components: {},
@@ -31,6 +31,9 @@ export default class UserEdUserPasswordDialog extends Vue {
                     name: 'username',
                     itemAttrs: {
                         label: '用户名：',
+                    },
+                    attrs: {
+                        disabled: true,
                     },
                 },
             ],
@@ -98,6 +101,7 @@ export default class UserEdUserPasswordDialog extends Vue {
             if (valid) {
                 try {
                     this.FormView.loading = true
+                    // TODO send request
                     this.FormView.loading = false
                     this.$message.success('修改密码成功，重新登录')
                     this.confirm()
@@ -108,7 +112,13 @@ export default class UserEdUserPasswordDialog extends Vue {
         })
     }
 
-    async created() {}
+    async created() {
+        // TODO send request
+        const data = {
+            username: 'xxx',
+        }
+        this.model.username = data.username
+    }
 
     cancel() {
         const $options: any = this.$options

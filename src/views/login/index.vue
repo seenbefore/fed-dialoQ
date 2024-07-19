@@ -12,6 +12,12 @@
                 </div>
 
                 <div class="login-form-right">
+                    <div class="login-switch" @click="toQrcodeLogin">
+                        <div class="tip_layer">
+                            扫码登录
+                        </div>
+                        <div class="mark_layer"></div>
+                    </div>
                     <sg-base-form class="my-login-form" :fields="fields" v-model="View.model" :span="24" ref="form" size="medium" @submit="onSubmit">
                         <div class="header" slot="header">
                             <span>登录</span>
@@ -22,7 +28,12 @@
                         </div>
                     </sg-base-form>
                     <div class="sg-pt-5 sg-flexbox justify-between">
-                        <span>账号密码随意</span>
+                        <a id="step1" href="javascript:void(0)" class="sg-link" @click="toThirdLogin">GitLab授权登录</a>
+                        <div>
+                            <!-- <span><router-link to="/register" class="sg-link">注册</router-link></span>
+                            <span class="sg-ml-2 sg-mr-2">|</span> -->
+                            <span><router-link to="/forget-password" class="sg-link">找回账号/密码?</router-link></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,6 +46,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { LocalMenu } from '@/menus'
 import { FormColumn } from '@/sharegood-ui'
 import { userStore, settingsStore } from '@/store/useStore'
+import introJs from 'intro.js'
+import 'intro.js/introjs.css'
+import { URLJoin } from 'icinfo-util'
 
 const state = {
     username: '',
@@ -51,7 +65,51 @@ export default class LoginSimple extends Vue {
     get title() {
         return settingsStore.title
     }
-    mounted() {}
+    guide() {
+        const intro = introJs()
+        intro.setOptions({
+            nextLabel: '下一步', // 下一个的按钮文字
+            prevLabel: '上一步', // 上一个按钮文字
+            skipLabel: '跳过', // 跳过指引的按钮文字
+            doneLabel: '完成', // 完成按钮的文字
+            hidePrev: false, // 是否在第一步中隐藏“上一步”按钮;不隐藏，将呈现为一个禁用的按钮
+            hideNext: false, // 是否在最后一步中隐藏“下一步”按钮（同时会隐藏完成按钮);不隐藏，将呈现为一个禁用的按钮
+            exitOnEsc: false, // 点击键盘的ESC按钮是否退出指引
+            exitOnOverlayClick: false, // 点击遮罩层时是否退出介绍
+            showStepNumbers: false, // 是否显示步骤编号
+            disableInteraction: true, // 是否禁用高亮显示框内元素的交互
+            showBullets: true, // 是否显示面板的指示点
+            overlayOpacity: 0.7, // 遮罩层的透明度 0-1之间
+            helperElementPadding: 10, // 选中的指引元素周围的填充距离
+            steps: [
+                {
+                    element: '#step1', // 定位到相应的元素位置，如果不设置element，则默认展示在屏幕中央
+                    title: '引导', // 标题
+                    intro: '开发人员请通过gitlab授权登录，或者通过账号密码获取信息', // 内容
+                },
+            ],
+        })
+        intro.oncomplete(function() {
+            userStore.setLoginGuide()
+        })
+        if (!userStore.loginGuide) {
+            intro.start()
+        }
+    }
+    mounted() {
+        if (userStore.alwaysRemember || this.action === 'AutoLogin') {
+            this.View.model.username = userStore.username
+            this.View.model.password = userStore.password
+        }
+        if (this.action === 'AutoLogin') {
+            this.onSubmit()
+        }
+        this.$nextTick(() => {
+            this.guide()
+        })
+        //userStore.setRedirect(decodeURIComponent(this.redirect))
+        //console.log(11, this.View)
+    }
     private View = {
         alwaysRemember: userStore.alwaysRemember,
         loading: false,
@@ -77,6 +135,28 @@ export default class LoginSimple extends Vue {
                 type: 'password',
                 placeholder: '请输入密码',
                 isTriggerSubmit: true,
+                appendSlotRender: h => {
+                    return h('div', {}, [
+                        h(
+                            'el-checkbox',
+                            {
+                                props: {
+                                    value: this.View.alwaysRemember,
+                                    trueLabel: 1,
+                                    falseLabel: 0,
+                                },
+                                on: {
+                                    change: (value: any) => {
+                                        console.log(value)
+                                        this.View.alwaysRemember = value
+                                        userStore.toggleRemember(value)
+                                    },
+                                },
+                            },
+                            '记住我',
+                        ),
+                    ])
+                },
             },
         },
     ]
@@ -91,30 +171,51 @@ export default class LoginSimple extends Vue {
         try {
             this.View.loading = true
             const model = this.View.model
-            await this.login(model)
+            const access_token = await this.login(model)
             this.$message.success('登录成功')
             this.View.loading = false
-            const redirect = decodeURIComponent(this.redirect) || userStore.defaultPath || '/'
-
+            let redirect = this.redirect || userStore.redirect || userStore.defaultPath || '/'
+            redirect = decodeURIComponent(redirect)
+            if (redirect.indexOf('http://') > -1) {
+                location.href = URLJoin.apply(null, [redirect, `?token=${access_token}`] as any)
+                return
+            }
             this.$router.push(redirect).catch(() => {})
         } catch (err) {
             this.View.loading = false
             console.error(err)
         }
     }
+    toThirdLogin() {
+        userStore.setRedirect(decodeURIComponent(this.redirect))
+        this.$router.push('/test')
+    }
+    toQrcodeLogin() {
+        let BASE_URL = process.env.BASE_URL
+        let redirect = encodeURIComponent(`${location.origin}${BASE_URL}login-free`)
+        location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
+    }
     async login(model: State) {
-        // TODO: 登录接口待完善
-        // await this.$api.login(model)
-        // TODO 开发环境全量加载菜单
-        if (process.env.NODE_ENV === 'development') {
-            userStore.setPermissionMenus(LocalMenu)
+        // TODO send request
+        const data = {
+            token: 'xxx',
+            name: 'xxx',
+            role: '',
+            position: '',
         }
-
-        userStore.login('123456token')
+        userStore.setPermissionMenus(LocalMenu)
+        userStore.login(data.token)
         userStore.setUserInfo({
-            name: model.username,
+            name: data.name,
             username: model.username,
+            sex: 1,
+            role: data.role,
+            position: data.position || '',
         })
+        if (this.View.alwaysRemember) {
+            userStore.rememberAccount(model)
+        }
+        return data.token
     }
 }
 </script>
@@ -131,6 +232,7 @@ export default class LoginSimple extends Vue {
     justify-content: center;
     min-height: 450px;
     height: 100%;
+
     .login-type-bar {
         display: flex;
         justify-content: space-around;
@@ -214,6 +316,50 @@ export default class LoginSimple extends Vue {
             flex: 1;
             padding: 30px;
             padding-top: 50px;
+            position: relative;
+
+            .login-switch {
+                position: absolute;
+                right: 0;
+                top: 0;
+                cursor: pointer;
+
+                .mark_layer {
+                    position: absolute;
+                    width: 60px;
+                    height: 60px;
+                    right: 0;
+                    top: 0;
+                    background: url('./assets/img/qrcode.jpg') no-repeat center;
+                    background-size: 60px 60px;
+
+                    &::before {
+                        display: block;
+                        content: ' ';
+                        z-index: 10;
+                        position: absolute;
+                        width: 60px;
+                        height: 60px;
+                        right: 0;
+                        top: 0;
+                        background: url('./assets/img/layer_mask.png');
+                    }
+                }
+                .tip_layer {
+                    width: 90px;
+                    height: 30px;
+                    position: absolute;
+                    right: 60px;
+                    top: 10px;
+                    background: url('./assets/img/circle_tip_bg.png') no-repeat center;
+                    background-size: cover;
+                    z-index: 11;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 10px;
+                    cursor: pointer;
+                }
+            }
         }
         .my-login-form {
             padding: 0;

@@ -6,5 +6,6 @@ export interface AppStateType extends IBaseAppStore {}
 @Module({
     name: 'app',
     namespaced: true,
+    stateFactory: true,
 })
 export default class AppModule extends BaseAppStore {}

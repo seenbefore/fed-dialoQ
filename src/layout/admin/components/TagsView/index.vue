@@ -42,6 +42,7 @@ import path from 'path'
 import { findChildrenByPath } from '@/scripts/utils'
 import { userStore, tagsViewStore } from '@/store/useStore'
 import { routes } from '@/router'
+
 export default {
     components: { ScrollPane },
     props: {
@@ -78,8 +79,10 @@ export default {
         },
     },
     watch: {
-        $route(newVal) {
-            const { path, fullPath, name } = newVal
+        $route(newVal, oldVal) {
+            const { path, fullPath, name, query } = newVal
+            const reload = query.reload
+
             // if (name) {
             //     // 针对统一组件不同参数query 不在缓存组件
             //     if (
@@ -101,7 +104,7 @@ export default {
             //     }
             // }
             if (name) {
-                this.addTags()
+                this.addTags(oldVal.fullPath)
                 this.moveToCurrentTag()
             }
         },
@@ -123,7 +126,13 @@ export default {
             return route.fullPath === this.$route.fullPath
         },
         isAffix(tag) {
-            return tag.meta && tag.meta.affix
+            if (tag.fullPath) {
+                const affix = tag.fullPath.indexOf('affix=0') === -1
+
+                return tag.meta && tag.meta.affix && affix
+            } else {
+                return tag.meta && tag.meta.affix
+            }
         },
         filterAffixTags(routes, basePath = '/') {
             let tags = []
@@ -150,7 +159,6 @@ export default {
         },
         initTags() {
             const affixTags = (this.affixTags = this.filterAffixTags(this.routes))
-
             for (const tag of affixTags) {
                 // Must have tag name
                 if (tag.name) {
@@ -158,7 +166,7 @@ export default {
                 }
             }
         },
-        addTags() {
+        addTags(fromPath = '') {
             const { name, meta = {}, query, params, path, fullPath, hash } = this.$route
             const view = {
                 title: meta.title || name,
@@ -173,7 +181,7 @@ export default {
                 fullPath,
                 hash,
                 name,
-
+                fromPath: fromPath,
                 meta: {
                     ...meta,
                 },

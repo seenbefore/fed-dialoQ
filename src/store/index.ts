@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import Vuex, { createLogger, Store } from 'vuex'
+import Vuex, { Store } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import { StateType } from './StateType'
 import modules from './modules'
+import { StateType } from './StateType'
+
 const LocalConfig = require('../settings.js')
 const { key } = LocalConfig
 Vue.use(Vuex)

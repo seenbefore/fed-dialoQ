@@ -43,7 +43,7 @@ export default class Sidebar extends Vue {
     }
     get activeMenu() {
         const route = this.$route
-        const { meta = {}, path, query } = route
+        const { meta = {}, path, query, fullPath } = route
         const alias = query.___
         const key = alias ? path + '?___=' + alias : path
 
@@ -54,6 +54,7 @@ export default class Sidebar extends Vue {
         if (query.activeMenu) {
             return query.activeMenu
         }
+
         return key
     }
     get showLogo() {
