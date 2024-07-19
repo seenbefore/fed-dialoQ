@@ -16,7 +16,7 @@ const defaultBranch = 'master'
  */
 async function extractFromRemote(remoteUrl = defaultRemoteUrl, branch = defaultBranch, sourcePath, targetPath) {
     const command = `git archive --remote=${remoteUrl} ${branch} ${sourcePath} | tar -x -C ${targetPath}`
-    Log.info(`开始从${remoteUrl}克隆${sourcePath}文件至${targetPath}，请稍等.......`)
+    Log.info(`开始从【${remoteUrl}】克隆【${sourcePath}】文件至【${targetPath}】，请稍等.......`)
     return runCommand(command)
 }
 

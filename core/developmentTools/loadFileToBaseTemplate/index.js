@@ -13,20 +13,34 @@ const { join } = require('path')
 const { existsSync, mkdirSync } = require('fs')
 const { validateGitEmail } = require('../../utils/validate')
 
+const remoteRootUrl = 'gitlab.icinfo.co'
+const httpPrefix = `http://${remoteRootUrl}`
+
 validateGitEmail().then(async email => {
     /* 获取脚本的参数 */
     const args = process.argv.slice(2)
     const [sourceUrl, targetUrl] = args
 
     if (!sourceUrl) {
-        Log.error(`请输入远程文件的url。具体参考仓库：${defaultRemoteUrl}`)
+        Log.error(`请输入远程文件的url。默认参考请参考仓库：${defaultRemoteUrl}`)
         process.exit(1)
         return
+    }
+    let [remoteUrl, fileUrl, branch] = [defaultRemoteUrl, sourceUrl, 'master']
+    if (sourceUrl.startsWith(httpPrefix)) {
+        /* 固定规则用 -/tree 截取 */
+        const [r, u] = sourceUrl.split('/-/tree/')
+        /* 替换http */
+        remoteUrl = `${r.replace(`${httpPrefix}/`, `git@${remoteRootUrl}:`)}.git`
+        /* 获取分之信息 */
+        const [b, ...reset] = u.split('/')
+        branch = b
+        fileUrl = reset.join('/')
     }
 
     const writeUrl = targetUrl ? join(baseRootPath, targetUrl) : baseRootPath
 
-    Log.info(`开始从${defaultRemoteUrl}拉取${sourceUrl}文件到${writeUrl}`)
+    Log.info(`开始从【${remoteUrl}】拉取【${sourceUrl}】文件到【${writeUrl}】`)
 
     /* 检查目标文件夹是否存在 */
     if (!existsSync(writeUrl)) {
@@ -34,7 +48,7 @@ validateGitEmail().then(async email => {
     }
 
     /* 拉取远程文件 */
-    await extractFromRemote(defaultRemoteUrl, 'master', sourceUrl, writeUrl)
+    await extractFromRemote(remoteUrl, branch, fileUrl, writeUrl)
 
     Log.success('文件拉取成功！请注意是否需要更新 package.json')
 })
