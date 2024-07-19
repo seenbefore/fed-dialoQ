@@ -20,9 +20,10 @@
         "report": "npm run build -- --report",
         "report:devops": "npm run build:fat1:devops -- --report",
         "commit": "git cz",
-        "generate:entry": "node core/developmentTools/generateTemplate/index.js",
+        "get:entry": "node core/developmentTools/getTemplate/index.js",
         "update:core": "node core/developmentTools/updateCore/index.js",
-        "load": "node core/developmentTools/loadFileToBaseTemplate/index.js"
+        "load": "node core/developmentTools/loadFileToBaseTemplate/index.js",
+        "base:init": "node core/developmentTools/init/index.js"
     },
     "dependencies": {
         "@vue/compiler-sfc": "^3.4.27",

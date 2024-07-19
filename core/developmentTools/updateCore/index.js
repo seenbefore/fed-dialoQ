@@ -5,16 +5,18 @@ const { extractFromRemote, defaultRemoteUrl } = require('../../utils/gitHelpers.
 const { baseRootPath, temporaryPath } = require('../../utils/path.js')
 const { inspectConfig } = require('./inspectConfig.js')
 const { removeDirSync } = require('../../utils/file')
+const { validateGitEmail } = require('../../utils/validate')
 
-/* 获取脚本的参数 */
-const args = process.argv.slice(2)
-const [force] = args
+validateGitEmail().then(async email => {
+    /* 获取脚本的参数 */
+    const args = process.argv.slice(2)
+    const [force] = args
 
-const cover = async () => {
-    await extractFromRemote(defaultRemoteUrl, 'master', 'core', baseRootPath)
-}
+    const cover = async () => {
+        await extractFromRemote(defaultRemoteUrl, 'master', 'core', baseRootPath)
+    }
 
-const updateCore = async () => {
+    /* 如果版本大于或者等于版本不修改配置文件。 */
     let updateConfig = true
     /* npm run update:core force */
     /* 不管版本强制更新core文件夹 */
@@ -55,6 +57,4 @@ const updateCore = async () => {
     if (existsSync(temporaryPath)) {
         await removeDirSync(temporaryPath)
     }
-}
-
-updateCore()
+})

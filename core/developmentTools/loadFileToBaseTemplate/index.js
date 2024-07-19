@@ -1,9 +1,3 @@
-const { extractFromRemote, defaultRemoteUrl } = require('../../utils/gitHelpers')
-const { Log } = require('../../share/log')
-const { baseRootPath } = require('../../utils/path')
-const { join } = require('path')
-const { existsSync, mkdirSync } = require('fs')
-
 /**
  * 获取远程的指定文件内容
  * npm run load <sourceUrl> [targetUrl]
@@ -12,7 +6,14 @@ const { existsSync, mkdirSync } = require('fs')
  * npm run load src/components src/abc
  * @return {Promise<void>}
  */
-const loadFileToBaseTemplate = async () => {
+const { extractFromRemote, defaultRemoteUrl } = require('../../utils/gitHelpers')
+const { Log } = require('../../share/log')
+const { baseRootPath } = require('../../utils/path')
+const { join } = require('path')
+const { existsSync, mkdirSync } = require('fs')
+const { validateGitEmail } = require('../../utils/validate')
+
+validateGitEmail().then(async email => {
     /* 获取脚本的参数 */
     const args = process.argv.slice(2)
     const [sourceUrl, targetUrl] = args
@@ -36,6 +37,4 @@ const loadFileToBaseTemplate = async () => {
     await extractFromRemote(defaultRemoteUrl, 'master', sourceUrl, writeUrl)
 
     Log.success('文件拉取成功！请注意是否需要更新 package.json')
-}
-
-loadFileToBaseTemplate()
+})
