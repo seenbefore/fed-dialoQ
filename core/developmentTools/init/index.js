@@ -1,10 +1,9 @@
 /* 做一些初始化的操作。初始化操作不校验邮箱 */
-import { writeJson } from '../../utils/write'
-
+const { writeJson } = require('../../utils/write')
 const { Log } = require('../../share/log')
 const { join } = require('path')
-import { removeDirSync } from '../../utils/file'
-import { baseRootPath } from '../../utils/path'
+const { removeDirSync } = require('../../utils/file')
+const { baseRootPath } = require('../../utils/path')
 
 /* 删除 src/entry 目录。由业务自己决定使用那些项目模板 */
 const deleteEntry = async () => {
