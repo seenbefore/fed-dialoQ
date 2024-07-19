@@ -1,9 +1,10 @@
 const { join } = require('path')
-const { existsSync, mkdirSync } = require('fs')
+const { existsSync, mkdirSync, rmdirSync } = require('fs')
 const { Log } = require('../../share/log/index.js')
 const { extractFromRemote, defaultRemoteUrl } = require('../../utils/gitHelpers.js')
 const { baseRootPath, temporaryPath } = require('../../utils/path.js')
 const { inspectConfig } = require('./inspectConfig.js')
+const { removeDirSync } = require('../../utils/file')
 
 /* 获取脚本的参数 */
 const args = process.argv.slice(2)
@@ -47,6 +48,10 @@ const updateCore = async () => {
         }
     }
     await inspectConfig()
+    /* 删除临时文件夹 */
+    if (existsSync(temporaryPath)) {
+        await removeDirSync(temporaryPath)
+    }
 }
 
 updateCore()
