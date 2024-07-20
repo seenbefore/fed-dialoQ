@@ -35,6 +35,7 @@ export default class TestPage extends Vue {
         <div>
             <p>userStore</p>
             <p>{{ store.userStore.info }}</p>
+            <p>token: {{ store.userStore.token }}</p>
         </div>
     </div>
 </template>

@@ -9,17 +9,22 @@ export function setupDesktopAuthGuard<T extends BaseUserStore>(router: VueRouter
             userStore.clear()
         }
 
-        if (meta.requireAuth) {
-            if (userStore.token) {
-                if (to.path === '/' && userStore.defaultPath) {
+        if (userStore.token) {
+            if (to.path === '' || to.path === '/') {
+                // 已登录默认跳转第一个菜单
+                if (userStore.defaultPath) {
                     next({
                         path: userStore.defaultPath,
                         replace: true,
                     })
+                } else {
+                    next()
                 }
-                // 已登录
-                next()
             } else {
+                next()
+            }
+        } else {
+            if (meta.requireAuth) {
                 // 未登录
                 const query =
                     to.path === '/'
@@ -31,23 +36,9 @@ export function setupDesktopAuthGuard<T extends BaseUserStore>(router: VueRouter
                     path: '/login',
                     query,
                 })
-            }
-        } else if (to.path === '' || to.path === '/') {
-            // 已登录默认跳转第一个菜单
-            if (userStore.defaultPath) {
-                next({
-                    path: userStore.defaultPath,
-                    replace: true,
-                })
             } else {
-                // 未登录
-                next({
-                    path: '/login',
-                    replace: true,
-                })
+                next()
             }
-        } else {
-            next()
         }
     })
 }
