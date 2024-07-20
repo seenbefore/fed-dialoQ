@@ -31,7 +31,7 @@
 
 <script>
 import { Sidebar, Navbar, AppMain, AppBreadcrumb, TagsView } from './components'
-import { appStore, settingsStore } from '../../store/useStore'
+import { appStore, settingsStore } from '@/store/useStore'
 export default {
     name: 'Index',
     props: {

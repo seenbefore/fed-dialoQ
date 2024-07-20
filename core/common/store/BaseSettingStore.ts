@@ -14,8 +14,7 @@ export interface IBaseSettingStore {
 
 /* 基础的 SettingStore */
 @Module({
-    stateFactory: true,
-    namespaced: true,
+    name: 'baseSetting',
 })
 export default class BaseSettingStore<T extends IBaseSettingStore = IBaseSettingStore> extends VuexModule implements IBaseSettingStore {
     /* 标题 */
