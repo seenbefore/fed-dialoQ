@@ -3,6 +3,7 @@ const path = require('path')
 const { baseRootPath } = require('../../utils/path.js')
 const { Log } = require('../../share/log/index.js')
 const { writeJson } = require('../../utils/write')
+const { removeDirSync } = require('../../utils/file')
 
 const updateGenerateApiConfig = (entryType, entryDirName) => {
     Log.info('开始修改生成的 api 配置文件。')
@@ -87,17 +88,25 @@ const updateConfigJson = entryDirName => {
 }
 
 // 修改文件中的字符串
-const replaceEntryFilesPath = (directory, searchString, replaceString) => {
+const replaceEntryFilesPath = (directory, searchString, replaceString, callBack) => {
     fs.readdirSync(directory).forEach(file => {
         const filePath = path.join(directory, file)
         if (fs.statSync(filePath).isDirectory()) {
-            replaceEntryFilesPath(filePath, searchString, replaceString)
+            replaceEntryFilesPath(filePath, searchString, replaceString, callBack)
         } else if (fs.statSync(filePath).isFile()) {
             let content = fs.readFileSync(filePath, 'utf8')
+            if (callBack) {
+                content = callBack(filePath, content)
+            }
             if (content.includes(searchString)) {
                 content = content.replace(new RegExp(searchString, 'g'), replaceString)
                 fs.writeFileSync(filePath, content)
                 Log.info('info: 文件：' + filePath + ' 替换成功。')
+            } else {
+                if (callBack) {
+                    fs.writeFileSync(filePath, content)
+                    Log.info('info: 文件：' + filePath + ' 替换成功。')
+                }
             }
         } else {
             Log.info('文件：' + filePath + ' 不存在。')
@@ -105,15 +114,41 @@ const replaceEntryFilesPath = (directory, searchString, replaceString) => {
     })
 }
 
-const updateFiles = (entryDir, entryType, entryDirName) => {
+/* 作为当前项目的扩展项目 */
+const initExtendFiles = entryDirName => {
+    Log.info('开始初始化扩展模块')
+    /* 删除一些文件和文件夹 */
+    const fileList = ['main.ts', 'views', 'router', /\.env.*/, 'vue.config.js']
+    const entryPath = path.join(baseRootPath, 'src/entry', entryDirName)
+    const readFiles = fs.readdirSync(entryPath)
+    readFiles.forEach(it => {
+        if (!fileList.some(s => s === it || s?.test?.(it))) {
+            removeDirSync(path.join(baseRootPath, 'src/entry', entryDirName, it))
+        }
+    })
+    replaceEntryFilesPath(entryPath, `@${entryDirName}`, `@`, (filePath, content) => {
+        if (filePath === path.join(entryPath, 'main.ts')) {
+            console.log(content.replace(/\.\//g, '@/'))
+            return content.replace(/\.\//g, '@/')
+        } else if (filePath === path.join(entryPath, 'router/index.ts')) {
+            content = content.replace('../settings', '@/settings')
+            content = content.replace('require.context(`../views`, true, /router\\.js/)', '[require.context(`@/views`, true, /router\\.js/), require.context(`../views`, true, /router\\.js/)]')
+        }
+        return content
+    })
+}
+
+const updateFiles = (entryDir, entryType, entryDirName, isExtend) => {
     Log.info('开始替换文件路径，请稍等.......')
     replaceEntryFilesPath(entryDir, `@/entry/${entryType}`, `@${entryDirName}`)
     replaceEntryFilesPath(entryDir, `@${entryType}`, `@${entryDirName}`)
     Log.info('替换文件路径完成。')
     updateGenerateApiConfig(entryType, entryDirName)
     updateConfigJson(entryDirName)
+    isExtend && initExtendFiles(entryDirName)
 }
 
 module.exports = {
     updateFiles,
+    initExtendFiles,
 }

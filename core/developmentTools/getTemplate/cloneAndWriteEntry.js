@@ -10,13 +10,13 @@ const gitRepoUrl = 'git@gitlab.icinfo.co:fed/base-vue-template.git'
 const archivePath = 'src/entry'
 const baseFolder = path.join(baseRootPath, 'src/entry')
 
-const cloneAndWriteEntry = (entryType, entryDirName) => {
+const cloneAndWriteEntry = (entryType, entryDirName, isExtend) => {
     const entryDir = path.join(baseFolder, entryDirName)
     const cloneEntryPath = path.join(archivePath, entryType)
     fs.mkdirSync(entryDir, { recursive: true })
     /* clone repo */
     extractFromRemote(gitRepoUrl, 'master', cloneEntryPath, entryDir, true).then(() => {
-        updateFiles(entryDir, entryType, entryDirName)
+        updateFiles(entryDir, entryType, entryDirName, isExtend)
     })
 }
 

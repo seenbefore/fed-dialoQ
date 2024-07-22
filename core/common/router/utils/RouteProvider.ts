@@ -8,11 +8,13 @@ interface Raw {
     [propName: string]: any
 }
 
+export type IRouterModule = __WebpackModuleApi.RequireContext | Array<__WebpackModuleApi.RequireContext>
+
 export class RouteProvider {
     public routes: Array<IRouteConfig> = []
-    public requireContext: __WebpackModuleApi.RequireContext
+    public requireContext: IRouterModule
 
-    public constructor(requireContext: __WebpackModuleApi.RequireContext) {
+    public constructor(requireContext: IRouterModule) {
         this.requireContext = requireContext
         this.init()
     }
@@ -22,11 +24,14 @@ export class RouteProvider {
         const routes: Array<IRouteConfig> = []
 
         // 获取除了路由以外的vue文件
-        const requireAll = (context: __WebpackModuleApi.RequireContext) => {
-            context.keys().forEach((key: string) => {
-                if (key.indexOf('router.js') > -1) {
-                    modules[key] = this.requireContext(key).default
-                }
+        const requireAll = (context: IRouterModule) => {
+            const contexts = Array.isArray(context) ? context : [context]
+            contexts.forEach(c => {
+                c.keys().forEach((key: string) => {
+                    if (key.indexOf('router.js') > -1) {
+                        modules[key] = c(key).default
+                    }
+                })
             })
         }
         // 重新排序，将动态路由放在路由表尾部，最后匹配
