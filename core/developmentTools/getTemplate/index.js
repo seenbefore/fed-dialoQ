@@ -60,7 +60,7 @@ validateGitEmail().then(async email => {
             type: 'list',
             name: 'isExtend',
             message: '是否是项目扩展模块',
-            default: 'No',
+            default: '否',
             choices: ['是', '否'],
         },
     ]
