@@ -5,11 +5,19 @@ const { baseRootPath } = require('../utils/path.js')
 const VUE_APP_ENTRY = process.env.VUE_APP_ENTRY || 'src'
 const pages = {}
 const root = path.resolve(baseRootPath, 'src')
-//
-glob.sync(path.resolve(root, './**/App.vue')).forEach(dir => {
+
+const getConfigFile = (entryPath, fileName) => {
+    const filePath = path.join(entryPath, fileName)
+    if (!fs.existsSync(filePath)) {
+        return path.join(baseRootPath, 'src', fileName)
+    }
+    return filePath
+}
+
+glob.sync(path.resolve(root, './**/main.ts')).forEach(dir => {
     let chunk = dir.split('/').slice(-2)[0]
-    const entry$ = path.resolve(baseRootPath, dir.split('/App.vue')[0])
-    const settings$ = path.join(entry$, `./settings.js`)
+    const entry$ = path.resolve(baseRootPath, dir.split('/main.ts')[0])
+    const settings$ = getConfigFile(entry$, `./settings.js`)
     const entry = path.join(entry$, `./main.ts`)
     const VueConfig = chunk === 'src' ? '' : path.join(entry$, `./vue.config.js`)
     const settings = require(settings$)

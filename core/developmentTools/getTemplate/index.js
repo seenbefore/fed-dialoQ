@@ -5,6 +5,7 @@ const inquirer = require('inquirer')
 const { Log } = require('../../share/log/index.js')
 const { baseRootPath } = require('../../utils/path.js')
 const { validateGitEmail } = require('../../utils/validate')
+const { initExtendFiles } = require('./updateFiles')
 
 validateGitEmail().then(async email => {
     const entryTypes = [
@@ -55,10 +56,17 @@ validateGitEmail().then(async email => {
                 }
             },
         },
+        {
+            type: 'list',
+            name: 'isExtend',
+            message: '是否是项目扩展模块',
+            default: '否',
+            choices: ['是', '否'],
+        },
     ]
 
-    inquirer.prompt(questions).then(({ entryTypeName, entryDirName }) => {
+    inquirer.prompt(questions).then(({ entryTypeName, entryDirName, isExtend }) => {
         const entryType = entryTypes.find(m => m.name === entryTypeName).value
-        cloneAndWriteEntry(entryType, entryDirName)
+        cloneAndWriteEntry(entryType, entryDirName, isExtend === '是')
     })
 })

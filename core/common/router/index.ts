@@ -1,5 +1,5 @@
 import { registerInterceptor } from './utils/registerInterceptor'
-import { IRouteConfig } from './utils/RouteProvider'
+import { IRouteConfig, IRouterModule } from './utils/RouteProvider'
 import BaseUserStore from '../store/BaseUserStore'
 import { isArray } from 'lodash'
 import Vue, { AsyncComponent, ComponentOptions } from 'vue'
@@ -34,7 +34,7 @@ const getDefaultConfig = (): Partial<ICreateBaseRouterConfig> => {
     }
 }
 
-export const createBaseRouter = (VueInstance: typeof Vue, requireContext: __WebpackModuleApi.RequireContext, config?: ICreateBaseRouterConfig): IRouterReturn => {
+export const createBaseRouter = (VueInstance: typeof Vue, requireContext: IRouterModule, config?: ICreateBaseRouterConfig): IRouterReturn => {
     VueInstance.use(VueRouter)
     const generator = new RouteProvider(requireContext)
     const generateRoutes = generator.generate(true)
@@ -73,7 +73,7 @@ export const createBaseRouter = (VueInstance: typeof Vue, requireContext: __Webp
     }
 }
 
-export const baseInitRouter = (VueInstance: typeof Vue, requireContext: __WebpackModuleApi.RequireContext, config?: ICreateBaseRouterConfig): IRouterReturn => {
+export const baseInitRouter = (VueInstance: typeof Vue, requireContext: IRouterModule, config?: ICreateBaseRouterConfig): IRouterReturn => {
     const result = createBaseRouter(VueInstance, requireContext, config)
     registerInterceptor(result.routerInstance, config?.userStore)
     return result
