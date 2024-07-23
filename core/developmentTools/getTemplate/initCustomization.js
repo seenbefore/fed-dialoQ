@@ -79,23 +79,26 @@ const startReplace = (entryPath, fileList, entryDirName) => {
             /* 不用处理环境变量 */
             if (!/\.env(\..+)?$/.test(filePath)) {
                 optionalFiles.forEach(optional => {
-                    const { filePath: l } = optional
+                    const { filePath: l, fieldName } = optional
                     const p = l.split('/*').shift() || l
                     const fullPPath = path.join(entryPath, p)
                     const fullPPathLength = fullPPath.split('/').length
                     const filePathLength = filePath.split('/').length
-                    /* 说明当前目录和需要替换的目录层级一致或者当前目录在外层 */
-                    if (fullPPathLength === filePathLength || filePathLength > fullPPathLength) {
-                        /* 判断当前是否选中咯 */
-                        if (!fileList.includes(l)) {
+
+                    /* 判断当前是否选中咯 */
+                    if (!fileList.includes(l)) {
+                        /* 说明当前目录和需要替换的目录层级一致或者当前目录在外层 */
+                        if (fullPPathLength === filePathLength || filePathLength > fullPPathLength) {
                             /* 替换有@符号携带的路径 */
-                            updateContent = updateContent.replace(new RegExp(`@${entryDirName}/${p}`, 'g'), `@/${p}`)
+                            updateContent = updateContent.replace(new RegExp(`@${entryDirName}/${fieldName}`, 'g'), `@/${fieldName}`)
 
                             const points = new Array(filePathLength - fullPPathLength).fill('\\.{2}')
                             /* 替换相对路径 */
-                            const pointStr = `${points.length ? points.join('/') : '\\.'}/${p}`
+                            const pointStr = `${points.length ? points.join('/') : '\\.'}/${fieldName}`
                             /* XXX 不能直接new RegExp */
-                            updateContent = updateContent.replace(new RegExp(pointStr, 'g'), `@/${p}`)
+                            updateContent = updateContent.replace(new RegExp(pointStr, 'g'), `@/${fieldName}`)
+                        } else {
+                            updateContent = updateContent.replace(new RegExp(`\\./${fieldName}`, 'g'), `@/${fieldName}`)
                         }
                     }
                 })
@@ -103,6 +106,17 @@ const startReplace = (entryPath, fileList, entryDirName) => {
             return updateContent
         })
     }
+}
+
+const mergeRouter = entryPath => {
+    eachFilesUpdateContent(path.join(entryPath, 'router'), (filePath, content) => {
+        let updateContent = content
+        const replaceStr = 'Vue, require.context(`../views`, true, /router\\.js/)'
+        if (updateContent.includes(replaceStr)) {
+            updateContent = updateContent.replace(replaceStr, 'Vue, [require.context(`@/views`, true, /router\\.js/), require.context(`../views`, true, /router\\.js/)]')
+        }
+        return updateContent
+    })
 }
 
 const initCustomization = params => {
@@ -113,6 +127,8 @@ const initCustomization = params => {
     const entryPath = path.join(baseRootPath, 'src/entry', entryDirName)
     deleteUnReserveFiles(entryPath, fileList)
     startReplace(entryPath, fileList, entryDirName)
+    /* 合并路由 */
+    mergeRouter(entryPath)
 }
 
 module.exports = {
