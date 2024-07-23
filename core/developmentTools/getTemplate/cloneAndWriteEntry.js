@@ -17,8 +17,10 @@ const cloneAndWriteEntry = (entryType, entryDirName, params) => {
     /* clone repo */
     extractFromRemote(gitRepoUrl, 'master', cloneEntryPath, entryDir, true).then(() => {
         updateFiles(entryDir, entryType, entryDirName)
-        /* xxx 后续可以优化为 先 初始化定制模块 再 替换文件。或者合并为一起。 */
-        initCustomization(params)
+        if (params.isCustom === '是') {
+            /* xxx 后续可以优化为 先 初始化定制模块 再 替换文件。或者合并为一起。 */
+            initCustomization(params)
+        }
     })
 }
 
