@@ -69,9 +69,13 @@ const patchPackageJson = async (remotePackage, localPackage) => {
         writeJson(join(baseRootPath, 'package.json'), localPackage)
     }
     if (install) {
-        Log.info('开始更新依赖')
-        await runCommand('npm install --unsafe-perm') // 为了增加权限增加 --unsafe-perm
-        Log.info('依赖更新完成')
+        try {
+            Log.info('开始更新依赖')
+            await runCommand('npm install --unsafe-perm') // 为了增加权限增加 --unsafe-perm
+            Log.info('依赖更新完成')
+        } catch (e) {
+            Log.error('依赖更新失败', e)
+        }
     }
 }
 
