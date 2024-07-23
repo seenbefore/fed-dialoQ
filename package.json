@@ -40,7 +40,7 @@
         "icinfo-electronic-signature": "^2.0.1",
         "icinfo-monitor-web": "^1.0.5",
         "icinfo-request": "^0.1.3",
-        "icinfo-ui": "^2.0.16",
+        "icinfo-ui": "git+ssh://git@gitlab.icinfo.co:fed/icinfo-ui.git#master",
         "icinfo-util": "^0.1.8",
         "iframe-resizer": "^4.3.11",
         "interactjs": "^1.10.27",
