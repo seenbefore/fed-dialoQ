@@ -1,6 +1,6 @@
 import Vue from 'vue'
-export const initShareGood = () => {
-    Vue.prototype.$ShareGood = {
+export const initShareGood = (VueInstance: typeof Vue) => {
+    VueInstance.prototype.$ShareGood = {
         DataView: {
             paramsSerializer(params = {}) {
                 return {

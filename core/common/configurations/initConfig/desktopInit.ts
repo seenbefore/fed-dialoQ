@@ -8,7 +8,7 @@ import 'icinfo-ui/lib/theme-chalk/index.css'
 /* 初始化一些配置 */
 export const desktopInit = (VueInstance: typeof Vue) => {
     // 配置全局组件
-    initShareGood()
+    initShareGood(VueInstance)
     // 配置全局风格
     VueInstance.prototype.$ELEMENT = { size: 'small', zIndex: 3000 }
     /* add redirect route */
