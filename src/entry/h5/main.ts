@@ -8,7 +8,7 @@ import App from './App.vue'
 import './components'
 import router from './router'
 import http from './scripts/http'
-import modalDialog from './scripts/ModalDialog'
+import modalDialog from './scripts/MobileModalDialog'
 import store from './store'
 import './styles/app.less'
 

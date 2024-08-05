@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import PdfPreview from '@/components/pdf-preview/index.vue'
+import PdfPreview from '@h5/components/pdf-preview/index.vue'
 // 示例常量
 const PDFSRC1 = 'https://csoss-test.oss-cn-shanghai.aliyuncs.com/xfjdzf/2022/1110/6129212ddc3a4443846a16fd7549b35a.pdf'
 const PDFSRC2 = 'https://csoss-test.oss-cn-shanghai.aliyuncs.com/xfjdzf/2022/1110/2176f011f4fe41278a9abbc1d93cb2e5.pdf'
