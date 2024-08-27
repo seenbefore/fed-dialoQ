@@ -2,9 +2,12 @@ import Vue from 'vue'
 export const initShareGood = (VueInstance: typeof Vue) => {
     VueInstance.prototype.$ShareGood = {
         DataView: {
-            paramsSerializer(params = {}) {
+            paramsSerializer(params: { pageSize?: number; page?: number } = {}) {
+                const { page, pageSize, ...reset } = params
                 return {
-                    ...params,
+                    ...reset,
+                    pageNum: page,
+                    length: pageSize,
                 }
             },
             // 不需要打印和导出
