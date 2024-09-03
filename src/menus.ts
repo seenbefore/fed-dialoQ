@@ -1,5 +1,5 @@
 import { UserMenu } from '@/@types/menu'
-
+const menu = require('./menu.json')
 export const LocalMenu: UserMenu[] = [
     {
         label: '我的工作台',
@@ -13,4 +13,5 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    ...menu,
 ]
