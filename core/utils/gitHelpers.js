@@ -27,6 +27,7 @@ const windowsExtractFromRemote = async (remoteUrl = defaultRemoteUrl, branch = d
     if (!fs.existsSync(temporaryPath)) {
         fs.mkdirSync(temporaryPath)
     }
+    sourcePath = sourcePath.replace(/\//g, '//')
     const archiveZipPath = path.join(temporaryPath, 'archive.zip')
     const command = `git archive --format=zip --remote=${remoteUrl} ${branch} ${sourcePath} -o ${archiveZipPath}`
     Log.info(`开始从【${remoteUrl}】克隆【${sourcePath}】文件至【${targetPath}】，请稍等.......`)
