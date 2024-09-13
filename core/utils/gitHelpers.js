@@ -34,13 +34,17 @@ const windowsExtractFromRemote = async (remoteUrl = defaultRemoteUrl, branch = d
     /* 开始解压 */
     const zip = new AdmZip(archiveZipPath)
     const zipEntries = zip.getEntries()
+    const replaceSourcePath = sourcePath.replace(/\\/g, '/')
     zipEntries.forEach(zipEntry => {
-        const fileName = zipEntry.entryName.replace(sourcePath, '')
-        const outPath = path.join(targetPath, fileName)
-        if (zipEntry.isDirectory) {
-            fs.mkdirSync(outPath, { recursive: true })
-        } else {
-            fs.writeFileSync(outPath, zip.readFile(zipEntry))
+        const entryName = zipEntry.entryName
+        if (entryName.length >= replaceSourcePath.length) {
+            const fileName = zipEntry.entryName.replace(replaceSourcePath, '')
+            const outPath = path.join(targetPath, fileName)
+            if (zipEntry.isDirectory) {
+                fs.mkdirSync(outPath, { recursive: true })
+            } else {
+                fs.writeFileSync(outPath, zip.readFile(zipEntry))
+            }
         }
     })
     Log.success('解压完成。')

@@ -4,7 +4,8 @@ const { isMac } = require('../utils/platform')
 
 const runCommand = async command => {
     return new Promise((resolve, reject) => {
-        const cmd = isMac ? 'cmd.ext' : 'sh'
+        /* windows use cmd */
+        const cmd = isMac ? 'sh' : 'cmd.exe'
         const args = isMac ? ['-c', command] : ['/c', command]
         const child = spawn(cmd, args)
         Log.info(`开始执行脚本: ${command}`)
