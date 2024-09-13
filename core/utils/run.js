@@ -1,9 +1,12 @@
 const { spawn } = require('child_process')
 const { Log } = require('../share/log')
+const { isMac } = require('../utils/platform')
 
 const runCommand = async command => {
     return new Promise((resolve, reject) => {
-        const child = spawn('sh', ['-c', command])
+        const cmd = isMac ? 'cmd.ext' : 'sh'
+        const args = isMac ? ['-c', command] : ['/c', command]
+        const child = spawn(cmd, args)
         Log.info(`开始执行脚本: ${command}`)
         child.stdout.on('data', data => {
             Log.info(`info: ${data}`)

@@ -5,14 +5,11 @@ const path = require('path')
 const fs = require('fs')
 const { temporaryPath } = require('../utils/path')
 const AdmZip = require('adm-zip')
-const os = require('os')
-
+const { isMac } = require('../utils/platform')
 /* 默认的远程url */
 const defaultRemoteUrl = 'git@gitlab.icinfo.co:fed/base-vue-template.git'
 /* 默认拉取的分支名称：如果想要从当前分支的源分支拉取，则可以使用 HEAD */
 const defaultBranch = 'master'
-
-const isMac = os.platform() === 'darwin'
 
 /* mac直接使用 tar */
 const macExtractFromRemote = async (remoteUrl = defaultRemoteUrl, branch = defaultBranch, sourcePath, targetPath, innermostDir = false) => {
@@ -27,7 +24,7 @@ const windowsExtractFromRemote = async (remoteUrl = defaultRemoteUrl, branch = d
     if (!fs.existsSync(temporaryPath)) {
         fs.mkdirSync(temporaryPath)
     }
-    const parseSourcePath = sourcePath.replace(/\//g, '//')
+    const parseSourcePath = sourcePath.replace(/\\/g, '//')
     const archiveZipPath = path.join(temporaryPath, 'archive.zip')
     const command = `git archive --format=zip --remote=${remoteUrl} ${branch} ${parseSourcePath} -o ${archiveZipPath}`
     Log.info(`开始从【${remoteUrl}】克隆【${sourcePath}】文件至【${targetPath}】，请稍等.......`)
