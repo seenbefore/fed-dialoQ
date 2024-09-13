@@ -9,6 +9,7 @@ import { getURLParameters } from 'icinfo-util'
 import Vue, { Component } from 'vue'
 import VueRouter from 'vue-router'
 import { Store } from 'vuex'
+import { getOS } from '../utils/os'
 
 export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUserStore, S extends BaseSettingStore = BaseSettingStore>(
     App: Component,
@@ -31,5 +32,7 @@ export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUse
         // 此处添加获取全局配置等异步操作
         settings.isThirdParty = isThirdParty ? true : settings.isThirdParty
         settingsStore.changeSetting(settings as any)
+        // 判断电脑系统
+        document.documentElement.setAttribute('class', getOS())
     }).then(mount => mount({ router, store, themeStore: settingsStore, App }))
 }

@@ -1,6 +1,7 @@
 const axios = require('axios')
 const { generate } = require('icinfo-api-generator')
 async function main() {
+    // 注意 文档地址后加/api.json
     const apis = ['http://api.fed.icinfo.co/CBB/cbb-application/icinfo-devops-library/default/develop/api.json']
     apis.forEach(async url => {
         const result = await axios(url)
