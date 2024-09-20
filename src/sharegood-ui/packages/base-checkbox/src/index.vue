@@ -116,7 +116,7 @@ export default {
     methods: {
         getAttrs(item) {
             const { trueLabel, falseLabel, disabled, name, checked } = item
-            return trueLabel, falseLabel, disabled, name, checked
+            return { trueLabel, falseLabel, disabled, name, checked }
         },
         initOptions(options) {
             this.dataList.push(...options)
