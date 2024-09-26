@@ -412,7 +412,7 @@ export default {
         /**label后面是否添加冒号 */
         colon: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         /**自动触发子组件校验 */
         autoTriggerSubComponentValidate: {
