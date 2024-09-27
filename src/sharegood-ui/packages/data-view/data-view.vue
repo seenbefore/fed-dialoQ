@@ -71,6 +71,7 @@
                 v-bind="exPagination"
                 @pagination="onLoad"
                 class="no-print sg-pagination-container sg-data-view__pagination"
+                v-absorb="vPaginationStickyBottom"
             >
                 <div class="sg-flex-1 no-print" slot="page-header">
                     <slot name="page-header"></slot>
@@ -289,6 +290,11 @@ export default {
             type: [Boolean, Object],
             default: false,
         },
+        /**分页吸底 */
+        paginationStickyBottom: {
+            type: [Boolean, Object],
+            default: false,
+        },
         /**
          * 允许勾选导出(传入 acrossPage, 则表示允许跨页勾选导出)
          * 跨页勾选，必须设置idKey
@@ -330,6 +336,23 @@ export default {
         }
     },
     computed: {
+        vPaginationStickyBottom() {
+            const { paginationStickyBottom } = this
+            if (typeof paginationStickyBottom === 'boolean') {
+                return {
+                    disabled: !paginationStickyBottom,
+                    bottom: 0,
+                }
+            }
+            return {
+                /**滚动容器dom获取函数 */
+                // scrollDom: () => document.querySelector('.app-main-box .sg-page'),
+                /**禁用 */
+                // disabled: false,
+                ...(paginationStickyBottom || {}),
+                bottom: 0,
+            }
+        },
         vElTableStickyHeaderConfig() {
             const { tableHeaderSticky } = this
             if (typeof tableHeaderSticky === 'boolean') {

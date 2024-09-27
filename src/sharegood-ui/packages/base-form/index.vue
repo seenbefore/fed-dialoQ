@@ -1,5 +1,14 @@
 <template>
-    <div class="sg-data-form-container" :class="{ 'fix-layout': !autoLayout }">
+    <div
+        class="sg-data-form-container"
+        :class="{ 'fix-layout': !autoLayout }"
+        v-query-form-layout="{
+            columnCount,
+            contentWidth,
+            gap,
+            disabled: autoLayout,
+        }"
+    >
         <el-form
             ref="form"
             :model="formData"
@@ -380,22 +389,22 @@ export default {
             type: [Number, String],
             default: 3,
         },
-        // 内容区宽度（autoLayout为false生效）
+        // 内容区宽度（autoLayout为false生效）(设置为auto时，会铺满剩余空间)
         contentWidth: {
             type: [Number, String],
-            default: '250px',
+            default: 250,
         },
-        // label的左留白（autoLayout为false生效）
-        labelPaddingLeft: {
-            type: [Number, String],
-            default: '40px',
+        // 每列之间的间隙（autoLayout为false生效）
+        gap: {
+            type: Number,
+            default: 40,
         },
-        // 最大默认显示数，超过此数，则默认收起（autoLayout为false生效）
+        // 最大默认显示数，超过此数，则默认收起
         maxDefaultShowCount: {
             type: [Number],
             default: 9,
         },
-        // 是否自动追加操作按钮，则默认收起（autoLayout为false生效）
+        // 是否自动追加操作按钮
         autoAppendAction: {
             type: Boolean,
             default: false,
@@ -403,7 +412,7 @@ export default {
         /**label后面是否添加冒号 */
         colon: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         /**自动触发子组件校验 */
         autoTriggerSubComponentValidate: {
@@ -424,7 +433,53 @@ export default {
     },
     computed: {
         exRows() {
-            const rows = this.rows.map(row => this.computeFormItem(row, this.formData))
+            let config = { formItemStartIndex: -1 }
+            const rows = this.rows.map(row => {
+                return this.computeFormItem(row, this.formData, config)
+            })
+            /** 自动追加操作按钮 start */
+            if (this.autoAppendAction) {
+                const singleRowData = rows.length === 1
+                const columnCount = singleRowData ? this.columnCount : rows.length
+                const count = rows.reduce((acc, item) => {
+                    const columnsLength = item.columns.filter(item => item._ifRender).length
+                    return acc + columnsLength
+                }, 0)
+                // 表单数大于1个显示重置
+                const hasResetBtn = count > 1
+                // 表单数大于最大默认显示数显示更多
+                const hasMoreBtn = count > this.maxDefaultShowCount
+                const lastRow = rows[rows.length - 1].columns || []
+                lastRow.push({
+                    tag: 'action',
+                    visible: true,
+                    _ifRender: true,
+                    _visible: true,
+                    // 表单数大于列数，操作行重起一行
+                    span: count < columnCount ? -1 : 24,
+                    buttons: [
+                        {
+                            isSubmit: true,
+                            type: 'primary',
+                            text: '查询',
+                            show: true,
+                        },
+                        {
+                            isReset: true,
+                            type: '',
+                            text: '重置',
+                            show: hasResetBtn,
+                        },
+                        {
+                            isMore: true,
+                            type: '',
+                            text: '',
+                            show: hasMoreBtn,
+                        },
+                    ].filter(({ show }) => show),
+                })
+            }
+            /** 自动追加操作按钮 end */
             return rows
         },
     },
@@ -537,71 +592,6 @@ export default {
         init(fields) {
             const rows = this.computeRows(fields || this.fields)
 
-            this.singleRowData = rows.length === 1
-            const { singleRowData } = this
-            let colLableMaxLens = []
-            /** 不自动采用布局时 start */
-            if (!this.autoLayout) {
-                const columnCount = singleRowData ? this.columnCount : rows.length
-                // 列label最大长度
-                colLableMaxLens = new Array(columnCount).fill(0)
-                rows.forEach(row => {
-                    const columns = row.columns || []
-                    let colIndex = 0
-                    columns.forEach(column => {
-                        const label = column?.label || column?.itemAttrs?.label
-                        // label不为空时计算
-                        if (label) {
-                            let index = colIndex
-                            if (singleRowData) {
-                                index = colIndex % this.columnCount
-                            }
-                            colLableMaxLens[index] = Math.max(colLableMaxLens[index] || 0, label?.length || 0)
-                            colIndex++
-                        }
-                    })
-                    return row
-                })
-
-                // 自动追加操作按钮
-                if (this.autoAppendAction) {
-                    const count = rows.reduce((acc, item) => {
-                        return acc + item.columns.length
-                    }, 0)
-                    // 表单数大于1个显示重置
-                    const hasResetBtn = count > 1
-                    // 表单数大于最大默认显示数显示更多
-                    const hasMoreBtn = count > this.maxDefaultShowCount
-                    const lastRow = rows[rows.length - 1].columns || []
-                    lastRow.push({
-                        tag: 'action',
-                        // 表单数大于列数，操作行重起一行
-                        span: count < columnCount ? -1 : 24,
-                        buttons: [
-                            {
-                                isSubmit: true,
-                                type: 'primary',
-                                text: '查询',
-                                show: true,
-                            },
-                            {
-                                isReset: true,
-                                type: '',
-                                text: '重置',
-                                show: hasResetBtn,
-                            },
-                            {
-                                isMore: true,
-                                type: '',
-                                text: '',
-                                show: hasMoreBtn,
-                            },
-                        ].filter(({ show }) => show),
-                    })
-                }
-            }
-            /** 不自动采用布局时 end */
-
             this.rows = rows.map((row, rowIndex) => {
                 const columns = row.columns || []
                 let count = -1
@@ -633,26 +623,6 @@ export default {
 
                     column.itemAttrs = column.itemAttrs || {}
 
-                    /** 不自动采用布局时 start */
-                    if (!this.autoLayout) {
-                        if (column.tag !== 'action' && !column.span) {
-                            count++
-                            column.span = -1
-                            let index = count
-                            if (singleRowData) {
-                                index = count % this.columnCount
-                            }
-                            column.itemAttrs.labelWidth = `calc(${index === 0 ? '10px' : this.labelPaddingLeft} + ${colLableMaxLens[index] || 0}em)`
-                        }
-                        // 除action操作外，超过最大默认显示数的，默认收起
-                        if (column.tag !== 'action') {
-                            visible = colIndex < this.maxDefaultShowCount
-                            this.$set(column, 'visible', visible)
-                            this.$set(column, '_visible', visible)
-                        }
-                    }
-                    /** 不自动采用布局时 end */
-
                     // 隐藏域
                     if (!visible) {
                         this.hiddens.push(column)
@@ -660,32 +630,6 @@ export default {
                 })
                 return row
             })
-
-            /** 不自动采用布局时 start */
-            if (!this.autoLayout) {
-                this.$nextTick(() => {
-                    if (this.contentWidth) {
-                        const itemContentDoms = this.$el.querySelectorAll('.el-form-item__content')
-                        Array.from(itemContentDoms).forEach(itemDom => {
-                            itemDom.style.width = this.contentWidth
-                        })
-                    }
-                    if (singleRowData) {
-                        const itemDoms = this.$el.querySelectorAll('.sg-form-row .el-col--1')
-                        let containerMinWidth = 0
-                        Array.from(itemDoms).some((item, index) => {
-                            if (index >= this.columnCount) {
-                                return true
-                            }
-                            containerMinWidth += item.offsetWidth
-                        })
-                        const containerDom = this.$el.querySelector('.sg-form-row')
-                        containerDom.style.width = `${containerMinWidth}px`
-                        containerDom.style.margin = `0 auto`
-                    }
-                })
-            }
-            /** 不自动采用布局时 end */
 
             //console.log('this.rows', JSON.stringify(this.rows))
         },
@@ -701,13 +645,13 @@ export default {
                 item._visible = !item._visible
             })
         },
-        computeFormItem(row, formData) {
+        computeFormItem(row, formData, config) {
             const { columns = [], ...rest } = row
             const item = {
                 ...rest,
             }
             item.columns = columns.map(column => {
-                const { tag, name, label, visible, span, ifRender, custom, ...rest } = column
+                let { tag, name, label, visible, span, ifRender, custom, _visible, ...rest } = column
                 const exColumn = {
                     tag,
                     name,
@@ -754,8 +698,13 @@ export default {
 
                     //console.log(exColumn.name, exColumn.attrs)
                 }
-                exColumn._visible = column._visible
                 exColumn._ifRender = ifRender ? ifRender(formData) : true
+                exColumn._visible = _visible
+                if (this.autoAppendAction && exColumn._ifRender) {
+                    config.formItemStartIndex++
+                    exColumn.visible = !this.isFieldHidden ? true : config.formItemStartIndex + 1 > this.maxDefaultShowCount ? false : true
+                    exColumn._visible = exColumn.visible
+                }
                 if (!exColumn._ifRender) {
                     // 直接删除属性无法监听对象不变化 所以先改变值
                     formData[name] = null
@@ -770,32 +719,6 @@ export default {
                 return exColumn
             })
             //console.log(22, JSON.stringify(formData), formData)
-            /** 不自动采用布局时 start */
-            if (!this.autoLayout) {
-                this.$nextTick(() => {
-                    if (!this.$el) return
-                    if (this.contentWidth) {
-                        const itemContentDoms = this.$el.querySelectorAll('.el-form-item__content')
-                        Array.from(itemContentDoms).forEach(itemDom => {
-                            itemDom.style.width = this.contentWidth
-                        })
-                    }
-                    if (this.singleRowData) {
-                        const itemDoms = this.$el.querySelectorAll('.sg-form-row .el-col--1')
-                        let containerMinWidth = 0
-                        Array.from(itemDoms).some((item, index) => {
-                            if (index >= this.columnCount) {
-                                return true
-                            }
-                            containerMinWidth += item.offsetWidth
-                        })
-                        const containerDom = this.$el.querySelector('.sg-form-row')
-                        containerDom.style.width = `${containerMinWidth}px`
-                        containerDom.style.margin = `0 auto`
-                    }
-                })
-            }
-            /** 不自动采用布局时 end */
             //console.log('computeFormItem', item)
             return item
         },
@@ -981,9 +904,6 @@ export default {
         .sg-data-form .el-form-item__label {
             text-overflow: unset;
         }
-        // .el-form-item {
-        //     margin-bottom: 15px;
-        // }
 
         .sg-form-row {
             & > div:last-child:nth-child(3),
