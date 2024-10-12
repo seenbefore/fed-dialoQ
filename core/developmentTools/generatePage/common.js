@@ -2,8 +2,6 @@ const nunjucks = require('nunjucks')
 const { baseRootPath } = require('../../utils/path.js')
 const { join } = require('path')
 const { readFileSync, writeFileSync, existsSync, mkdirSync } = require('fs')
-const { Log } = require('../../share/log')
-const { spawnSync } = require('child_process')
 
 const GenerateNjk = nunjucks.configure({
     autoescape: false,
@@ -62,17 +60,8 @@ const genPageByNjk = (njkPath, targetPath) => {
     })
 }
 
-Promise.all([
-    genPageByNjk(join(__dirname, './template/index.njk'), join(insertPath, 'index.vue')),
-    genPageByNjk(join(__dirname, './template/router.njk'), join(insertPath, 'router.js')),
-    genPageByNjk(join(__dirname, './template/search.njk'), join(insertPath, 'search.vue')),
-])
-    .then(() => {
-        Log.success('page generate success')
-        // git add
-        spawnSync('git', ['add', '-A'])
-        Log.success('git add success')
-    })
-    .catch(e => {
-        Log.error('page generate error', e)
-    })
+const run = array => Promise.all(array.map(m => genPageByNjk(join(__dirname, m.njkPath), join(insertPath, m.fileName))))
+
+module.exports = {
+    run,
+}

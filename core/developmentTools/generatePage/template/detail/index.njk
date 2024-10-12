@@ -1,0 +1,67 @@
+<script lang="tsx">
+import FormWrapper from '@/components/form-wrapper/index.vue'
+import { FormDetailsBuilder, IFormDetailsColumns } from '@/sharegood-ui/packages/base-form-details/core/FormDetailsBuilder'
+import { Component, Vue } from 'vue-property-decorator'
+import SgBaseFormDetails from '@/sharegood-ui/packages/base-form-details/index.vue'
+
+@Component({
+    name: '<$ componentName $>',
+    components: { FormWrapper, SgBaseFormDetails },
+})
+export default class <$ componentName $> extends Vue {
+    public get breadcrumbs(): Array<ICustomBreadcrumbItem | string> {
+        return [{ path: '/parent', label: '替换为父级路由' }, '<$ title $>']
+    }
+
+    public get columns(): Array<IFormDetailsColumns> {
+        return [
+            {
+                title: '标题',
+            },
+            {
+                label: '测试',
+                prop: 'test',
+                span: 12,
+            },
+            {
+                label: '测试2',
+                prop: 'test2',
+                span: 12,
+            },
+        ]
+    }
+
+    public fb = new FormDetailsBuilder()
+
+    public cancel() {
+        this.$router.go(-1)
+    }
+
+    public async save() {
+        this.cancel()
+    }
+
+    public async created() {
+        // TODO send request
+        const data = {
+            test: '测试value',
+            test2: '测试value2',
+        }
+        this.fb.init(this.columns, { gutterSpan: 24 }).buildModel(data)
+    }
+}
+</script>
+
+<template>
+    <FormWrapper :breadcrumbs="breadcrumbs">
+        <SgBaseFormDetails :fb="fb"></SgBaseFormDetails>
+        <template #footer>
+            <div class="text-center sg-p-t-12">
+                <el-button type="primary" class="base__el-button" @click="save">保存</el-button>
+                <el-button class="base__el-button" @click="cancel">取消</el-button>
+            </div>
+        </template>
+    </FormWrapper>
+</template>
+
+<style scoped lang="less"></style>

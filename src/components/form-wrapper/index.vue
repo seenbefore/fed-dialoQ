@@ -65,6 +65,7 @@ export default class FormWrapper extends Vue {
 
     &__footer {
         padding-bottom: 16px;
+        border-top: 1px solid var(--border-color-base);
     }
 }
 

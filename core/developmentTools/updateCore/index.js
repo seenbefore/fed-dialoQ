@@ -21,15 +21,15 @@ validateGitEmail().then(async email => {
         let updateConfig = true
         /* npm run update:core force */
         /* 不管版本强制更新core文件夹 */
+        /* 创建一个临时文件用于处理内容 */
+        if (!existsSync(temporaryPath)) {
+            mkdirSync(temporaryPath)
+        }
         if (force === 'force') {
             Log.info('开始强制覆盖core文件夹。')
             await cover()
             Log.success('core文件夹覆盖成功')
         } else {
-            /* 创建一个临时文件用于处理内容 */
-            if (!existsSync(temporaryPath)) {
-                mkdirSync(temporaryPath)
-            }
             /* 拉取config配置文件 */
             await extractFromRemote(defaultRemoteUrl, 'master', 'core/config.json', temporaryPath)
             Log.info('配置文件拉取成功，开始对比版本')

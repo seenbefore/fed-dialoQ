@@ -66,6 +66,8 @@ const patchPackageJson = async (remotePackage, localPackage) => {
     if (hasDiff) {
         /* 更新package.json */
         Log.info('更新 package.json 文件')
+        // 删除base:init
+        Reflect.deleteProperty(localPackage.scripts, 'base:init')
         writeJson(join(baseRootPath, 'package.json'), localPackage)
     }
     if (install) {

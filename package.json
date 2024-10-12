@@ -24,7 +24,9 @@
         "update:core": "node core/developmentTools/updateCore/index.js",
         "load": "node core/developmentTools/loadFileToBaseTemplate/index.js",
         "base:init": "node core/developmentTools/init/index.js",
-        "gen:page": "node core/developmentTools/generatePage/index.js"
+        "gen:report": "node core/developmentTools/generatePage/report.js",
+        "gen:form": "node core/developmentTools/generatePage/form.js",
+        "gen:detail": "node core/developmentTools/generatePage/detail.js"
     },
     "dependencies": {
         "@vue/compiler-sfc": "^3.4.27",
