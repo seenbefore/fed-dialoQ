@@ -1,0 +1,84 @@
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
+
+@Component({
+    name: '<$ searchComponentName $>',
+})
+export default class <$ searchComponentName $> extends Vue {
+    @Prop({ type: Object, default: () => ({}) })
+    public queryModel!: Record<string, any>
+
+    public get formAttrs() {
+        return {
+            fields: [
+                {
+                    tag: 'input',
+                    span: 8,
+                    name: 'input',
+                    itemAttrs: {
+                        label: '输入框',
+                    },
+                    attrs: {
+                        placeholder: '请输入',
+                    },
+                },
+                {
+                    span: 8,
+                    tag: 'select',
+                    name: 'select',
+                    itemAttrs: {
+                        label: '下拉框',
+                    },
+                    attrs: {
+                        placeholder: '全部',
+                        options: [
+                            {
+                                label: '选项1',
+                                value: '选项1',
+                            },
+                        ],
+                    },
+                },
+                {
+                    span: 8,
+                    tag: 'date',
+                    name: 'date',
+                    itemAttrs: {
+                        label: '时间',
+                    },
+                    attrs: {
+                        clearable: true,
+                        value: '',
+                        placeholder: '请选择',
+                        'value-format': 'yyyy-MM-dd',
+                    },
+                },
+                {
+                    tag: 'action',
+                    span: '24',
+                    buttons: [
+                        {
+                            isSubmit: true,
+                            type: 'primary',
+                            text: '查询',
+                        },
+                        {
+                            isReset: true,
+                            text: '重置',
+                        },
+                    ],
+                },
+            ],
+            labelWidth: '170px',
+        }
+    }
+
+    public handleSearch(): void {
+        this.$emit('submit', this.queryModel)
+    }
+}
+</script>
+
+<template>
+    <sg-base-form ref="formRef" v-bind="formAttrs" v-model="queryModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
+</template>

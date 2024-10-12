@@ -1,0 +1,74 @@
+<script lang="tsx">
+import TableWrapper from '@/components/table-wrapper/index.vue'
+import { mockRequest, useLoadList } from '@/hooks/useLoadList'
+import { TableColumn } from '@/sharegood-ui'
+import { Component, Vue } from 'vue-property-decorator'
+import <$ searchComponentName $> from './search.vue'
+
+@Component({
+    name: '<$ componentName $>',
+    components: { TableWrapper, <$ searchComponentName $> },
+})
+export default class <$ componentName $> extends Vue {
+    public get tableColumns() {
+        return [
+            {
+                label: '序号',
+                type: 'index',
+                fixed: 'left',
+            },
+            {
+                label: '测试',
+                prop: 'test',
+            },
+            {
+                label: '操作',
+                fixed: 'right',
+                render: (h, { row }) => {
+                    return [
+                        <el-button type="primary" primary onClick={this.editHandler}>
+                            编辑
+                        </el-button>,
+                        <el-button type="primary" danger onClick={this.deleteHandler}>
+                            删除
+                        </el-button>,
+                    ]
+                },
+            },
+        ] as Array<TableColumn>
+    }
+
+    public queryModel: Record<string, any> = {}
+
+    public tableAttrs = {
+        columns: this.tableColumns,
+        tableHeaderSticky: {
+            scrollDom: () => document.querySelector('.ranking-enterprise__container'),
+        },
+        idKey: 'id',
+        border: true,
+        load: this.loadList,
+        pageActionLayout: [],
+        fit: true,
+    }
+
+    public async loadList(params: { pageNum: number; length?: number }) {
+        return await useLoadList(params, this.queryModel, mockRequest)
+    }
+
+    public editHandler(): void {}
+
+    public deleteHandler(): void {}
+}
+</script>
+
+<template>
+    <TableWrapper class="administrative-compulsion__container">
+        <template #search>
+            <<$ searchComponentName $> :query-model="queryModel"></<$ searchComponentName $>>
+        </template>
+        <sg-data-view ref="tableRef" v-bind="tableAttrs"></sg-data-view>
+    </TableWrapper>
+</template>
+
+<style scoped lang="less"></style>
