@@ -44,7 +44,7 @@ export default class <$ componentName $> extends Vue {
     public tableAttrs = {
         columns: this.tableColumns,
         tableHeaderSticky: {
-            scrollDom: () => document.querySelector('.ranking-enterprise__container'),
+            scrollDom: () => document.querySelector('.<$ parseRouterPath $>__container'),
         },
         idKey: 'id',
         border: true,
@@ -64,7 +64,7 @@ export default class <$ componentName $> extends Vue {
 </script>
 
 <template>
-    <TableWrapper class="administrative-compulsion__container">
+    <TableWrapper class="<$ parseRouterPath $>__container">
         <template #search>
             <<$ searchComponentName $> :query-model="queryModel"></<$ searchComponentName $>>
         </template>
