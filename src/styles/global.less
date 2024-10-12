@@ -171,3 +171,242 @@ a:hover {
         height: auto;
     }
 }
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ellipsis-line-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.ellipsis-line-4 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-1-oa:extend(.flex-1) {
+    overflow: auto;
+}
+
+.flex-1-oh:extend(.flex-1) {
+    overflow: hidden;
+}
+
+/* 设置为flex并且上下排列 */
+.flex-column:extend(.flex) {
+    flex-direction: column;
+}
+
+/* 左右居中，并且上下排列 */
+.column-center:extend(.flex-column) {
+    justify-content: center;
+}
+
+/* 上下左右居中 */
+.flex-center:extend(.column-center) {
+    align-content: center;
+    align-items: center;
+}
+
+/*靠右*/
+.flex-end:extend(.flex) {
+    justify-content: flex-end;
+}
+
+/* 上下居中，并且左右排列 */
+.row-center:extend(.flex) {
+    align-items: center;
+}
+
+/* 设置flex，并且左右布局 */
+.flex-between:extend(.flex) {
+    justify-content: space-between;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.row-top:extend(.flex) {
+    align-items: flex-start;
+}
+
+.wh100p {
+    width: 100%;
+    height: 100%;
+}
+
+.w100p {
+    width: 100%;
+}
+
+.max-w100p {
+    max-width: 100%;
+}
+
+.min-w100p {
+    min-width: 100%;
+}
+
+.h100p {
+    height: 100%;
+}
+
+/* 适用于设置了flex宽度失效 */
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+
+/* 用于图片上下居中 */
+.img-vertical-center {
+    vertical-align: text-bottom;
+}
+
+/* 设置文字过多的时候展示... */
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.m-h-200 {
+    min-height: 200px;
+}
+
+.w-mc {
+    width: max-content;
+}
+
+.w-mc-max100p:extend(.w-mc) {
+    max-width: 100%;
+}
+
+.oa {
+    overflow: auto;
+}
+
+.oa-x {
+    overflow-x: auto;
+}
+
+.oa-y {
+    overflow-y: auto;
+}
+
+.oh {
+    overflow: hidden;
+}
+
+.oh-x {
+    overflow-x: hidden;
+}
+
+.oh-y {
+    overflow-y: hidden;
+}
+
+.sg-data-form {
+    .search-checkbox_lin-height {
+        .el-form-item__content,
+        .el-form-item__label {
+            line-height: 12px;
+        }
+    }
+}
+//带有前缀蓝色的标题
+.prefix-title {
+    display: flex;
+    align-items: center;
+    color: #000;
+    font-weight: 600;
+    font-size: 16px;
+    &::before {
+        margin-right: 8px;
+        width: 4px;
+        height: 14px;
+        background: var(--primary);
+        content: '';
+    }
+}
+.left-box-border {
+    margin-right: 16px;
+    padding-right: 16px;
+    min-width: 300px;
+    border-right: 1px solid #e6e6e6;
+}
+.pointer {
+    cursor: pointer;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.color-red {
+    color: var(--color-danger);
+}
+
+.color-primary {
+    color: var(--color-primary);
+} // color-primary
+
+.color-secondary {
+    color: var(--color-text-secondary);
+} // default is #999
+
+.dc {
+    display: contents;
+}
+
+.page-global {
+    padding: 16px 20px !important;
+}
+
+.delete-fix-table__before-line {
+    .el-table__fixed,
+    .el-table__fixed-right {
+        &::before {
+            display: none;
+        }
+    }
+}
+
+.select-placeholder-dark {
+    .setPlaceholderStyle({color: var(--color-text-primary) ;});
+}
+.sg-form-text {
+    .el-form {
+        .sg-form-row {
+            .el-col {
+                .el-form-item {
+                    .el-form-item__label {
+                        color: var(--color-text-secondary);
+                        width: unset !important;
+                    }
+                    .el-form-item__content {
+                        color: var(--color-text-primary);
+                    }
+                }
+            }
+        }
+    }
+}
