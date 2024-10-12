@@ -24,12 +24,13 @@ export default class <$ componentName $> extends Vue {
             {
                 label: '操作',
                 fixed: 'right',
+                width: '120px',
                 render: (h, { row }) => {
                     return [
-                        <el-button type="primary" primary onClick={this.editHandler}>
+                        <el-button type="text" primary onClick={this.editHandler}>
                             编辑
                         </el-button>,
-                        <el-button type="primary" danger onClick={this.deleteHandler}>
+                        <el-button type="text" danger onClick={this.deleteHandler}>
                             删除
                         </el-button>,
                     ]
