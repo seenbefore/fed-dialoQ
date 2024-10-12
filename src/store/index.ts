@@ -17,7 +17,7 @@ export const store: Store<StateType> = new Vuex.Store({
     plugins: [
         createPersistedState({
             key,
-            paths: ['user'],
+            paths: ['user', 'setting.theme'],
             storage: window.localStorage,
         }),
     ],
