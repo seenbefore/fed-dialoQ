@@ -1,9 +1,5 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
-@Module({
-    stateFactory: true,
-    namespaced: true,
-})
 export default class BaseLogStore extends VuexModule {
     public startTime = 0
     /** 用户从进入到离开当前页面的时长 */

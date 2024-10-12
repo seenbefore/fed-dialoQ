@@ -26,10 +26,6 @@ export enum RememberType {
  * { T } 菜单类型
  * { U } 用户信息
  */
-@Module({
-    stateFactory: true,
-    namespaced: true,
-})
 export default abstract class BaseUserStore<T = any, U = any> extends VuexModule implements IBaseUserStore<T, U> {
     /**
      * 顶部菜单

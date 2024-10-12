@@ -20,10 +20,6 @@ export interface IBaseAppStore {
     size: AppSizeType
 }
 
-@Module({
-    stateFactory: true,
-    namespaced: true,
-})
 export default class BaseAppStore extends VuexModule implements IBaseAppStore {
     public sidebar = {
         opened: true,

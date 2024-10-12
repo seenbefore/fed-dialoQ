@@ -20,10 +20,6 @@ export type IBaseVisitedView = {
 
 export type IBaseTagsViewStore<T = IBaseVisitedView> = { visitedViews: Array<T>; cachedViews: Array<string> }
 
-@Module({
-    stateFactory: false,
-    namespaced: true,
-})
 export default class BaseTagsViewStore<T extends IBaseVisitedView = IBaseVisitedView> extends VuexModule {
     public cachedViews: Array<string> = []
 

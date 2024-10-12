@@ -1,9 +1,5 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
-@Module({
-    stateFactory: true,
-    namespaced: true,
-})
 export default class BaseMobileAppStore extends VuexModule {
     /**
      * 用户登录的token
