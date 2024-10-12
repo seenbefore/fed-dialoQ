@@ -1,15 +1,15 @@
 <script lang="tsx">
 import TableWrapper from '@/components/table-wrapper/index.vue'
 import { mockRequest, useLoadList } from '@/hooks/useLoadList'
-import { CreateElement } from 'vue'
+import { TableColumn } from '@/sharegood-ui'
 import { Component, Vue } from 'vue-property-decorator'
-import Search from './search.vue'
+import <$ searchComponentName $> from './search.vue'
 
 @Component({
-    name: 'TestPage',
-    components: { TableWrapper, Search },
+    name: '<$ componentName $>',
+    components: { TableWrapper, <$ searchComponentName $> },
 })
-export default class TestPage extends Vue {
+export default class <$ componentName $> extends Vue {
     public get tableColumns() {
         return [
             {
@@ -18,40 +18,24 @@ export default class TestPage extends Vue {
                 fixed: 'left',
             },
             {
-                label: '单位名称',
-                prop: '单位名称',
-                render: (_: CreateElement, { row }: Obj) => {
-                    return (
-                        <el-button type="text" primary>
-                            **机构
-                        </el-button>
-                    )
-                },
-            },
-            {
-                label: '总分',
-                prop: '总分',
-            },
-            {
-                label: '纬度1得分',
-                prop: '纬度1得分',
+                label: '测试',
+                prop: 'test',
             },
             {
                 label: '操作',
-                width: '120px',
                 fixed: 'right',
-                render: (_: CreateElement, { row }: Obj) => {
+                render: (h, { row }) => {
                     return [
-                        <el-button type="text" primary>
-                            修改
+                        <el-button type="primary" primary onClick={this.editHandler}>
+                            编辑
                         </el-button>,
-                        <el-button type="text" danger>
+                        <el-button type="primary" danger onClick={this.deleteHandler}>
                             删除
                         </el-button>,
                     ]
                 },
             },
-        ]
+        ] as Array<TableColumn>
     }
 
     public queryModel: Record<string, any> = {}
@@ -62,6 +46,7 @@ export default class TestPage extends Vue {
             scrollDom: () => document.querySelector('.ranking-enterprise__container'),
         },
         idKey: 'id',
+        border: true,
         load: this.loadList,
         pageActionLayout: [],
         fit: true,
@@ -70,16 +55,17 @@ export default class TestPage extends Vue {
     public async loadList(params: { pageNum: number; length?: number }) {
         return await useLoadList(params, this.queryModel, mockRequest)
     }
+
+    public editHandler(): void {}
+
+    public deleteHandler(): void {}
 }
 </script>
 
 <template>
-    <TableWrapper class="tast-page__container">
+    <TableWrapper class="administrative-compulsion__container">
         <template #search>
-            <Search :query-model="queryModel"></Search>
-        </template>
-        <template #middle>
-            <el-button type="primary">新增</el-button>
+            <<$ searchComponentName $> :query-model="queryModel"></<$ searchComponentName $>>
         </template>
         <sg-data-view ref="tableRef" v-bind="tableAttrs"></sg-data-view>
     </TableWrapper>

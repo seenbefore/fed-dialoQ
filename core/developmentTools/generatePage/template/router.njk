@@ -1,0 +1,12 @@
+export default {
+    path: '<$ routerPath $>',
+    name: '<$ componentName $>',
+    component: () => import(/* webpackChunkName: "<$ componentName $>" */ './index'),
+    meta: {
+        bodyClass: '',
+        parent: 'Index',
+        title: '<$ title $>',
+        requireAuth: true,
+        keepAlive: true,
+    },
+}
