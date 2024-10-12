@@ -1,3 +1,5 @@
+@import './mixins.less';
+
 :root {
     // 主题色
     --color-primary: #188dfb; // 可做背景色和文本色，用做背景色时，需要和--system-primary-text-color配合使用，避免文件颜色和主题色冲突
@@ -43,7 +45,7 @@ body #nprogress .bar {
 }
 body #nprogress .peg {
     box-shadow: 0 0 10px var(--color-primary),
-        0 0 5px var(--color-primary);
+    0 0 5px var(--color-primary);
 }
 body #nprogress .spinner-icon {
     border-top-color: var(--color-primary);
@@ -55,4 +57,3 @@ body #nprogress .spinner-icon {
 @import './admin.less';
 @import './app.less';
 @import './home.less';
-
