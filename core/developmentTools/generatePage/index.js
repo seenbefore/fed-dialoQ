@@ -43,6 +43,7 @@ if (!existsSync(insertPath)) {
 
 const data = {
     componentName,
+    parseRouterPath: baseRoutePath,
     routerPath: `/${baseRoutePath}`,
     title: title || '',
     searchComponentName: `${componentName}Search`,
