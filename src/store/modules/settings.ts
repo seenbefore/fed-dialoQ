@@ -12,4 +12,6 @@ export default class SettingsModule extends BaseSettingStore {
         name: 'gci',
         variables: {},
     }
+
+    public noMargin = false
 }
