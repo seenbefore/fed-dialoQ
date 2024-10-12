@@ -7,4 +7,4 @@ export interface SettingsStateType extends IBaseSettingStore {}
     name: 'settings',
     namespaced: true,
 })
-export default class MyModule extends BaseSettingStore {}
+export default class SettingsModule extends BaseSettingStore {}
