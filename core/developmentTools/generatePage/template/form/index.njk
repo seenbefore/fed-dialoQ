@@ -1,0 +1,63 @@
+<script lang="tsx">
+import FormWrapper from '@/components/form-wrapper/index.vue'
+import { FormRef } from '@/sharegood-ui'
+import { Component, Ref, Vue } from 'vue-property-decorator'
+
+@Component({
+    name: '<$ componentName $>',
+    components: { FormWrapper },
+})
+export default class <$ componentName $> extends Vue {
+    @Ref('formRef')
+    public formRef!: FormRef
+
+    public get formAttrs() {
+        return {
+            fields: [
+                {
+                    span: 24,
+                    tag: 'input',
+                    name: 'input',
+                    itemAttrs: {
+                        label: '请输入',
+                        rules: [{ required: true, message: '请输入input', trigger: 'change' }],
+                    },
+                    attrs: {
+                        placeholder: '请输入',
+                    },
+                },
+            ],
+        }
+    }
+
+    public get breadcrumbs(): Array<ICustomBreadcrumbItem | string> {
+        return [{ path: '/parent', label: '替换为父级路由' }, '<$ title $>']
+    }
+
+    public formModel: Obj = {}
+
+    public cancel() {
+        this.$router.go(-1)
+    }
+
+    public async save() {
+        await this.formRef.validate()
+        this.cancel()
+    }
+}
+</script>
+
+<template>
+    <FormWrapper :breadcrumbs="breadcrumbs">
+        <sg-base-form ref="formRef" v-bind="formAttrs" v-model="formModel"></sg-base-form>
+
+        <template #footer>
+            <div class="text-center sg-p-t-12">
+                <el-button type="primary" class="base__el-button" @click="save">保存</el-button>
+                <el-button class="base__el-button" @click="cancel">取消</el-button>
+            </div>
+        </template>
+    </FormWrapper>
+</template>
+
+<style scoped lang="less"></style>

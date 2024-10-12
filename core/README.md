@@ -21,3 +21,6 @@ npm run gen:page test-page 测试页面
 # 想要生成在当前执行脚本的目录下
 npm run gen:page test-page 测试页面 false
 ```
+
+### 1.0.8
+- 增加 `gen:form`、`gen:detail` 脚本和模板用于生成表单和详情页面。
