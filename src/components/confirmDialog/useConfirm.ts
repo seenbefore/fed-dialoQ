@@ -1,0 +1,93 @@
+import ConfirmDialog from '@/components/confirmDialog/index.vue'
+import Vue from 'vue'
+
+export enum ConfirmResultEnum {
+    CANCEL = 'cancel',
+    CONFIRM = 'confirm',
+}
+
+export interface IUseConfirm {
+    message: string | JSX.Element
+    title?: string | JSX.Element
+    titleIcon?: any
+    titleIconClass?: string
+    closeOnClickModal?: boolean
+    lockScroll?: boolean
+    beforeClose?: (done: () => void) => void
+    width?: string
+    closeOnPressEscape?: boolean
+    footerCancelText?: string
+    footerConfirmText?: string
+}
+
+const defaultOptions: Omit<IUseConfirm, 'message'> = {
+    title: '提示',
+    closeOnClickModal: false,
+    width: '390px',
+    closeOnPressEscape: true,
+    footerCancelText: '取消',
+    footerConfirmText: '确认',
+    lockScroll: true,
+}
+
+const isIUserConfirm = (value: unknown): value is IUseConfirm => {
+    return typeof value === 'object' && (value as Obj).message
+}
+
+const getOptions = (userOptions: string | JSX.Element | IUseConfirm) => {
+    return !isIUserConfirm(userOptions) ? { message: userOptions, ...defaultOptions } : Object.assign({}, defaultOptions, userOptions)
+}
+
+export const useConfirm = (userOptions: string | JSX.Element | IUseConfirm) => {
+    return new Promise((resolve, reject) => {
+        const options = getOptions(userOptions)
+        const DialogConstructor = Vue.extend(ConfirmDialog)
+        const instance = new DialogConstructor({
+            propsData: {
+                options,
+            },
+        })
+
+        instance.$on(ConfirmResultEnum.CONFIRM, () => {
+            instance.$destroy()
+            resolve(void 0)
+        })
+
+        instance.$on(ConfirmResultEnum.CANCEL, () => {
+            instance.$destroy()
+            reject()
+        })
+
+        instance.$mount()
+    })
+}
+
+const baseUseIconConfirm = (userOptions: string | JSX.Element | IUseConfirm, icon: string) => {
+    const options = getOptions(userOptions)
+    options.titleIcon = require(`./assets/confirm-${icon}.svg`)
+    return useConfirm(options)
+}
+
+/**
+ * 带info图标的弹框
+ * @param userOptions
+ */
+export const useInfoConfirm = (userOptions: string | JSX.Element | IUseConfirm) => baseUseIconConfirm(userOptions, 'info')
+
+/**
+ * 带error图标的弹框
+ * @param userOptions
+ */
+export const useErrorConfirm = (userOptions: string | JSX.Element | IUseConfirm) => baseUseIconConfirm(userOptions, 'error')
+
+/**
+ * 带success图标的弹框
+ * @param userOptions
+ */
+export const useSuccessConfirm = (userOptions: string | JSX.Element | IUseConfirm) => baseUseIconConfirm(userOptions, 'success')
+
+/**
+ * 带warning图标的弹框
+ * @param userOptions
+ */
+export const useWarningConfirm = (userOptions: string | JSX.Element | IUseConfirm) => baseUseIconConfirm(userOptions, 'warning')
