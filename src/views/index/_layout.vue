@@ -23,6 +23,10 @@
                 </el-menu>
             </div>
             <div class="right-box">
+                <!-- 搜索菜单 -->
+                <div style="width:300px;">
+                    <sg-base-form v-bind="formAttrs" v-model="formModel"></sg-base-form>
+                </div>
                 <!-- 用户信息 -->
                 <div class="user-info">
                     <el-dropdown>
@@ -58,12 +62,76 @@ import { findParents } from '@/scripts/utils'
 import Admin from '@/layout/admin/index.vue'
 import { appStore, settingsStore, tagsViewStore, userStore } from '@/store/useStore'
 import { Component, Vue } from 'vue-property-decorator'
-
+import { LocalMenu } from '../../menus'
+import { FormColumn } from '@/sharegood-ui'
 @Component({
     name: 'Index',
     components: { Admin },
 })
 export default class Index extends Vue {
+    formModel = {}
+    /**表单配置 */
+    get formAttrs() {
+        return {
+            span: 24,
+            fields: [
+                {
+                    span: 24,
+                    tag: 'autocomplete',
+                    name: 'key',
+                    itemAttrs: {
+                        label: '',
+                        style: 'margin-bottom:0;',
+                        class: 'global-search',
+                    },
+                    attrs: {
+                        debounce: 0,
+                        'highlight-first-item': true,
+                        'trigger-on-focus': true,
+                        placeholder: '全局菜单模糊查询',
+                        'popper-class': 'my-autocomplete',
+                        'value-key': 'label',
+                        'suffix-icon': 'el-icon-search',
+                        listeners: {
+                            select: (val: any) => {
+                                const { value } = val
+                                console.log(value, val)
+                                if (value.indexOf('http') === 0) {
+                                    window.open(value)
+                                } else {
+                                    this.$router.push({
+                                        path: value,
+                                    })
+                                }
+
+                                this.$set(this.formModel, 'key', '')
+                            },
+                        },
+                        load: async (queryString: any) => {
+                            const value = queryString
+                            if (!value) {
+                                return Promise.resolve([])
+                            }
+                            let result = findNodes(LocalMenu, queryString)
+                            result = result.map((item: any) => {
+                                const { node, parents = [] } = item
+
+                                let label = parents.map((node: any) => {
+                                    return node.label
+                                })
+                                label.push(node.label)
+                                return {
+                                    label: label.join(' -> '),
+                                    value: node.uri,
+                                }
+                            })
+                            return result
+                        },
+                    },
+                },
+            ] as FormColumn[],
+        }
+    }
     public get store() {
         return {
             userStore,
@@ -141,6 +209,61 @@ export default class Index extends Vue {
         'text-color': '#fff',
         'active-text-color': '#fff',
     }
+}
+
+/**
+ * 匹配菜单名称或者uri
+ */
+function findNodes(data: any[], val: any) {
+    const result: any = []
+    const visited: Set<any> = new Set()
+
+    function searchNodes(nodes: any, parentNodes: any = []) {
+        for (const node of nodes) {
+            const currentNodes = [...parentNodes, node]
+
+            if (node.label.indexOf(val) > -1 || node.uri.indexOf(val) > -1) {
+                if (!node.children) {
+                    const nodeKey = JSON.stringify(node)
+                    if (!visited.has(nodeKey)) {
+                        visited.add(nodeKey)
+                        result.push({
+                            node: node,
+                            parents: currentNodes.slice(0, -1),
+                        })
+                    }
+                } else {
+                    // 找到非叶子节点，遍历其子节点找到所有叶子节点
+                    findLeafNodes(node.children, currentNodes)
+                }
+            }
+
+            if (node.children) {
+                searchNodes(node.children, currentNodes)
+            }
+        }
+    }
+
+    function findLeafNodes(nodes: any, parentNodes: any) {
+        for (const node of nodes) {
+            if (!node.children) {
+                const nodeKey = JSON.stringify(node)
+                if (!visited.has(nodeKey)) {
+                    visited.add(nodeKey)
+                    result.push({
+                        node: node,
+                        parents: parentNodes,
+                    })
+                }
+            } else {
+                findLeafNodes(node.children, [...parentNodes, node])
+            }
+        }
+    }
+
+    searchNodes(data)
+
+    return result
 }
 </script>
 

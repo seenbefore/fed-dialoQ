@@ -126,13 +126,19 @@ npm run build
 ## 目录
 
 ```bash
-base-vue-template
 ├── .vscode                # VSCode 配置
 ├── core                   # 核心功能模块
 ├── docs                   # 文档
 ├── node_modules           # npm 依赖包
 ├── plop-templates         # Plop.js 模板
 ├── src                    # 源代码
+    ├── views              # 页面
+        ├── user-manage    # 用户管理
+            ├── index.vue  # 用户管理页面
+            ├── router.js  # 用户管理路由
+            ├── api.ts      # 用户管理接口
+            ├── enum.ts     # 用户管理枚举
+            ├── components  # 用户管理组件
 ├── tests                  # 测试文件
 ├── .editorconfig          # 编辑器配置
 ├── .env                   # 环境变量

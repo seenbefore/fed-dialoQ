@@ -7,7 +7,7 @@ async function main() {
         const result = await axios(url)
 
         generate(result.data, {
-            mockDir: 'src/mock/auto',
+            // mockDir: 'src/mock/auto',
             tsDir: 'src/services/auto',
             merge: true,
             request: 'http.request',
