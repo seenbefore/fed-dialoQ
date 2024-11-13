@@ -9,6 +9,7 @@ const { routerInstance, routes, flatRoutes } = createBaseRouter(Vue, require.con
     mode,
     notFoundLayout: NotFound,
 })
+console.log(routes)
 
 setupRouterGuard(routerInstance)
 

@@ -201,10 +201,10 @@ export interface LoginDTO {
 默认依次生成以下文件：
 - 业务文件目录
     - 接口文件 api.ts
-    - 枚举文件 enum.ts
+    - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
     - 主视图文件 index.vue
     - 路由文件 router.js
-
+fu
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
 - 路由地址对应匹配文件路径，比如`/system/user-manage`对应生成文件目录`system/user-manage`
@@ -312,7 +312,53 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 }
 ```
 ## 主视图模板
+```vue
+<template>
+  <div class="component-name">
+    <!-- 模板内容 -->
+  </div>
+</template>
 
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { getExamList } from './api'
+import { ExamStatusEnum } from './enum'
+
+@Component({
+    name: 'ComponentName'
+})
+export default class ComponentName extends Vue {
+  /**
+   * Props 定义
+   */
+  @Prop({ type: String, required: true }) readonly title!: string
+
+  // Data
+  private data = ''
+
+  // Computed
+  get computedValue() {
+    return this.data
+  }
+
+  // Methods
+  private handleClick() {
+    this.$emit('click')
+  }
+
+  // Lifecycle hooks
+  mounted() {
+    // 初始化逻辑
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.component-name {
+  // 样式定义
+}
+</style>
+```
 
 
 # Constrains
@@ -320,10 +366,10 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 - 技术栈：vue2 + typescript + vant
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
-- 接口文件`api.ts`仅模拟数据，不涉及具体业务逻辑，数据结构不变，请按照example中的函数名称和参数，必须生成1条数据，如果是数组则生成2条数据。
-- 枚举文件`enum.ts`请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
-- 主视图文件`index.vue`生成后请再检查一遍ts校验问题，有问题则立刻修复。
-- 路由文件`router.js`默认必须生成，组件可不生成。
+- 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑，数据结构不变，请按照example中的函数名称和参数，必须生成1条数据，如果是数组则生成2条数据。
+- 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
+- 主视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
+- 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
 ### 代码风格和结构
 - 编写简洁、技术性强的TypeScript代码，并提供准确的例子。
@@ -366,7 +412,7 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 
 # Workflow
 - 用户输入产品prd内容
-- 根据prd创建对应文件
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。
 - 依次循环
 
 # Output
