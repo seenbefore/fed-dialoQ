@@ -641,9 +641,11 @@ export default {
     path: '/self-inspection-form-management',
     name: 'SelfInspectionFormManagement',
     component: SelfInspectionFormManagement,
+    // 此处不要删减
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
         bodyClass: '',
+        // 此处不允许修改，一直为Index
         parent: 'Index',
         rank: 1,
         title: '',
@@ -828,6 +830,10 @@ export default class UserManagement extends Vue {
         returned: 0,
         received: 0,
         all: 0,
+    }
+    activated() {
+        console.log('activated')
+        this.handleSearch()
     }
     // 查询条件 查询方法
     handleSearch(val = {}) {
@@ -1285,6 +1291,8 @@ export default class UserManagement extends Vue {
                     label: '导出全部',
                 },
             ],
+            // 是否显示分页，默认true
+            pageVisible: true,
             // 返回数据格式要求 { result: [], total: 0 }
             load: async (params: any = {}) => {
                 const { receiptDate, ...rest } = this.formModel
@@ -2373,8 +2381,9 @@ export default class AppChart extends Vue {
     - 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
     - 使用`$modalDialog`时确保import中的文件路径正确。。
     - 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
-    - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
     - 表单中出现尾随内容，请配置`attrs.appendSlotRender`方法。
+    - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
+    - 调用接口时不需要判断`code`，直接使用`res.data`。
 - 依次循环
 
 # Output

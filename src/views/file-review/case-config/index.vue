@@ -32,6 +32,11 @@ export default class CaseConfig extends Vue {
 
     formModel: Record<string, any> = {}
 
+    activated() {
+        console.log('activated')
+        this.handleSearch()
+    }
+
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
@@ -41,7 +46,7 @@ export default class CaseConfig extends Vue {
     }
 
     handleEdit(row: any) {
-        this.$router.push(`/file-review/case-config/edit?id=${row.id}`)
+        this.$router.push(`/file-review/case-config/add?id=${row.id}&type=edit`)
     }
 
     handleCopy(row: any) {

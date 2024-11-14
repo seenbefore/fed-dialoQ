@@ -9,10 +9,13 @@ import http from './scripts/http'
 import defaultSettings from './settings'
 // 状态管理
 import store from './store'
-import { settingsStore, userStore } from './store/useStore'
+import { settingsStore, userStore, tagsViewStore } from './store/useStore'
 import './styles/index.less'
 
 Vue.prototype.$http = http
+Vue.prototype.$back = function() {
+    console.log('$back', this)
+}
 
 desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
     const { settings, user } = defaultSettings ?? {}

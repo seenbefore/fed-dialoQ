@@ -9,5 +9,6 @@ declare module 'vue/types/vue' {
         $functionInConstruction: () => void
         openNewPage: (path: string, query: any) => void
         $bus: EventBus
+        $back: any
     }
 }

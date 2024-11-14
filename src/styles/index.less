@@ -44,8 +44,7 @@ body #nprogress .bar {
     background-color: var(--color-primary);
 }
 body #nprogress .peg {
-    box-shadow: 0 0 10px var(--color-primary),
-    0 0 5px var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary);
 }
 body #nprogress .spinner-icon {
     border-top-color: var(--color-primary);
@@ -57,3 +56,7 @@ body #nprogress .spinner-icon {
 @import './admin.less';
 @import './app.less';
 @import './home.less';
+
+.sg-help-icon::after {
+    display: none !important;
+}
