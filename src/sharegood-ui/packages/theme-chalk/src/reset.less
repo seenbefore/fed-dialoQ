@@ -188,7 +188,16 @@
 
 /* 提示确认框 */
 .sg-confirm-box {
-    width: 325px;
+    &.el-message-box {
+        width: 320px;
+    }
+
+    .el-message-box__status {
+        display: none;
+    }
+    .message {
+        padding: 15px 0;
+    }
     .title {
         height: 50px;
         display: flex;
@@ -203,9 +212,7 @@
             margin-right: 5px;
         }
     }
-    .message {
-        min-height: 40px;
-    }
+
     .el-message-box__header {
         padding: 0;
         height: 0px;
@@ -216,7 +223,7 @@
     .el-message-box__btns {
         padding-bottom: 10px;
         display: flex;
-        flex-direction: row-reverse;
+        // flex-direction: row-reverse;
         justify-content: center;
     }
 }

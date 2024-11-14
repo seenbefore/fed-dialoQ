@@ -86,7 +86,7 @@
 
 ### 组件文档化
 每个组件都应该包含:
-```vue
+```html
 /**
  * @description 组件描述
  * @param {Type} propName - 参数描述
@@ -95,7 +95,7 @@
 ```
 
 ### 组件结构
-```vue
+```html
 <template>
   <div class="component-name">
     <!-- 模板内容 -->
@@ -204,7 +204,7 @@ export interface LoginDTO {
     - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
     - 主视图文件 index.vue
     - 路由文件 router.js
-fu
+
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
 - 路由地址对应匹配文件路径，比如`/system/user-manage`对应生成文件目录`system/user-manage`

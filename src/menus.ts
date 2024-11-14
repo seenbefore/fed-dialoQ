@@ -14,4 +14,16 @@ export const LocalMenu: UserMenu[] = [
         ],
     },
     ...menu,
+    {
+        label: '电子卷宗',
+        icon: 'el-icon-document',
+        uri: '/电子卷宗',
+        children: [
+            {
+                label: '案卷配置',
+                icon: 'el-icon-document',
+                uri: '/file-review/case-config',
+            },
+        ],
+    },
 ]
