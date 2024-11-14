@@ -24,6 +24,16 @@ export const LocalMenu: UserMenu[] = [
                 icon: 'el-icon-document',
                 uri: '/file-review/case-config',
             },
+            {
+                label: '我的卷宗',
+                icon: 'el-icon-document',
+                uri: '/file-review/my-case',
+            },
+            {
+                label: '卷宗查询',
+                icon: 'el-icon-document',
+                uri: '/file-review/case-search',
+            },
         ],
     },
 ]

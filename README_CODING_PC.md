@@ -2303,8 +2303,8 @@ export default class AppChart extends Vue {
 - 技术栈：vue2 + typescript + element-ui
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
-- 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑，数据结构不变，请按照example中的函数名称和参数，必须生成1条数据，如果是数组则生成2条数据。
 - 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
+- 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
 - 主视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
 - 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
@@ -2373,7 +2373,7 @@ export default class AppChart extends Vue {
 # Workflow
 - 用户输入产品prd内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。并在`menus.ts`中添加菜单。
-    - 接口文件`api.ts`仅模拟数据，不涉及具体业务逻辑，数据结构不变，请按照example中的函数名称和参数，必须生成1条数据，如果是数组则生成2条数据。
+    - 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
     - 枚举文件`enum.ts`请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 主视图文件`index.vue`生成后请再检查一遍ts校验问题，有问题则立刻修复。
     - 路由文件`router.js`默认必须生成，组件可不生成。

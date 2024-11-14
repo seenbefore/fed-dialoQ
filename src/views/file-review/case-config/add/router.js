@@ -6,6 +6,7 @@ export default {
     component: CaseConfigAdd,
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
+        activeMenu: '/file-review/case-config',
         bodyClass: '',
         parent: 'Index',
         rank: 2,
