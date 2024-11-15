@@ -4,30 +4,37 @@
         <div class="exam-header">
             <div class="timer">
                 <van-icon name="clock-o" />
+                <span>还剩</span>
                 <span>{{ formatTime }}</span>
+                <span>测评结束</span>
             </div>
             <div class="text-size">
                 <!-- <van-icon name="font" />
                 <span>字号</span> -->
             </div>
-            <div class="score">
-                <!-- <span class="correct">{{ correctCount }}</span>
-                <span class="wrong">{{ wrongCount }}</span> -->
-            </div>
+            <div class="score">{{ currentIndex + 1 }}/{{ questions.length }}</div>
         </div>
 
         <!-- 题目内容 -->
         <div class="question-content" v-if="currentQuestion">
-            <div class="question-title">
-                <span class="question-index">{{ currentIndex + 1 }}.</span>
-                <span class="question-type">{{ questionTypeText }}</span>
-                <div class="title-text">{{ currentQuestion.title }}</div>
-            </div>
+            <div class="inner">
+                <div class="question-title">
+                    <span class="question-index">{{ currentIndex + 1 }}、</span>
+                    <span class="question-type">{{ questionTypeText }}/2.0分</span>
+                    <div class="title-text">{{ currentQuestion.title }}</div>
+                </div>
 
-            <div class="options-list">
-                <div v-for="option in currentQuestion.options" :key="option.value" class="option-item" :class="{ active: isOptionSelected(option.value) }" @click="handleSelectOption(option.value)">
-                    <span class="option-label">{{ option.label }}</span>
-                    <span class="option-text">{{ option.text }}</span>
+                <div class="options-list">
+                    <div
+                        v-for="option in currentQuestion.options"
+                        :key="option.value"
+                        class="option-item"
+                        :class="{ active: isOptionSelected(option.value) }"
+                        @click="handleSelectOption(option.value)"
+                    >
+                        <span class="option-label">{{ option.label }}</span>
+                        <span class="option-text">{{ option.text }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -135,11 +142,10 @@ export default class ExamDetail extends Vue {
     async getExamDetail() {
         try {
             const res = await getExamDetail({ id: this.examId })
-            if (res.code === 200) {
-                this.questions = res.data.questions
-                this.remainingTime = res.data.duration
-                this.startTimer()
-            }
+
+            this.questions = res.data.questions
+            this.remainingTime = res.data.duration
+            this.startTimer()
         } catch (error) {
             console.error(error)
         }
@@ -248,7 +254,7 @@ export default class ExamDetail extends Vue {
 <style lang="less" scoped>
 .exam-detail {
     min-height: 100vh;
-    background: #fff;
+    background: #f5f5f5;
     display: flex;
     flex-direction: column;
 
@@ -269,7 +275,8 @@ export default class ExamDetail extends Vue {
         .timer {
             display: flex;
             align-items: center;
-            color: #666;
+            color: #ff7d00;
+            font-weight: bold;
 
             .van-icon {
                 margin-right: 4px;
@@ -303,7 +310,12 @@ export default class ExamDetail extends Vue {
 
     .question-content {
         flex: 1;
-        padding: 60px 16px 80px;
+        padding: 50px 0px 80px;
+
+        .inner {
+            background: #fff;
+            padding: 16px;
+        }
 
         .question-title {
             margin-bottom: 24px;
@@ -316,8 +328,11 @@ export default class ExamDetail extends Vue {
             }
 
             .question-type {
+                display: inline-flex;
                 font-size: 12px;
-                color: #666;
+                background-color: #ddd;
+                border-radius: 3px;
+                padding: 4px 5px;
                 margin-right: 8px;
             }
 
@@ -402,6 +417,7 @@ export default class ExamDetail extends Vue {
         }
 
         .prev-btn {
+            width: 110px;
             height: 40px;
             padding: 0 16px;
             border-radius: 20px;
@@ -416,7 +432,7 @@ export default class ExamDetail extends Vue {
         }
 
         .next-btn {
-            width: 160px;
+            width: 110px;
             height: 40px;
             font-size: 16px;
             font-weight: 400;

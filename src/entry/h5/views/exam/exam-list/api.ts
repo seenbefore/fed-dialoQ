@@ -1,39 +1,72 @@
 import { http } from '@/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
 
+// 考试状态枚举
+export enum ExamStatus {
+    NOT_START = 'not_start', // 未开始
+    IN_PROGRESS = 'in_progress', // 考试中
+    FINISHED = 'finished', // 已结束
+}
+
+// 考试列表数据
+const EXAM_LIST = [
+    {
+        id: '1',
+        title: '2024年安全法规培训知识测评',
+        startTime: '2024/11/5 9:00:00',
+        endTime: '2024/11/5 10:00:00',
+        duration: '60分钟',
+        status: ExamStatus.NOT_START,
+    },
+    {
+        id: '2',
+        title: '2024年安全法规培训知识测评',
+        startTime: '2024/11/5 9:00:00',
+        endTime: '2024/11/5 10:00:00',
+        duration: '60分钟',
+        status: ExamStatus.IN_PROGRESS,
+    },
+    {
+        id: '3',
+        title: '2024年安全法规培训知识测评',
+        startTime: '2024/11/5 9:00:00',
+        endTime: '2024/11/5 10:00:00',
+        duration: '60分钟',
+        status: ExamStatus.IN_PROGRESS,
+    },
+    {
+        id: '4',
+        title: '2024年安全法规培训知识测评',
+        startTime: '2024/11/5 9:00:00',
+        endTime: '2024/11/5 10:00:00',
+        duration: '60分钟',
+        status: ExamStatus.FINISHED,
+    },
+]
+
 /**
  * 获取考试列表
+ * @param params.page 页码，从1开始
+ * @param params.pageSize 每页数量
  */
-export const getExamList = async (params?: any, options?: ExAxiosRequestConfig) => {
-    // 模拟数据
+export const getExamList = async (
+    params?: {
+        page?: number
+        pageSize?: number
+    },
+    options?: ExAxiosRequestConfig,
+) => {
+    const page = params?.page || 1
+    const pageSize = params?.pageSize || 10
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+
+    // 模拟分页数据
+    const list = EXAM_LIST.slice(start, end)
+
     return {
         code: 200,
         message: 'success',
-        data: {
-            data: [
-                {
-                    id: '20',
-                    title: '公共营养师20年考题',
-                    startTime: '2024-08-28 11:00',
-                    endTime: '2024-11-15 13:54',
-                    isFree: true,
-                },
-                {
-                    id: '21',
-                    title: '公共营养师21年考题',
-                    startTime: '2024-08-28 11:00',
-                    endTime: '2024-11-15 13:54',
-                    isFree: true,
-                },
-                {
-                    id: '22',
-                    title: '公共营养师22年考题',
-                    startTime: '2024-08-28 11:00',
-                    endTime: '2024-11-15 13:54',
-                    isFree: true,
-                },
-            ],
-            total: 3,
-        },
+        data: list,
     }
 }
