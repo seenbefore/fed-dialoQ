@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="formFields" @submit="onSubmit" :show-foot-btns="false"></app-form>
         </div>
         <div class="submit-btn">
-            <van-button round block type="primary" native-type="submit" color="#4080FF" @click="handleSubmit">
+            <van-button round block type="primary" native-type="submit" @click="handleSubmit">
                 下一步，实名认证
             </van-button>
         </div>
@@ -121,7 +121,7 @@ export default class ExamAuth extends Vue {
 <style lang="less" scoped>
 .exam-auth {
     min-height: 100vh;
-    background: #fff;
+    background: #f5f5f5;
     display: flex;
     flex-direction: column;
 
@@ -132,6 +132,16 @@ export default class ExamAuth extends Vue {
     }
 
     &::v-deep {
+        .app-form {
+            padding-top: 0;
+        }
+        .van-cell-group {
+            padding-bottom: 20px;
+        }
+        .van-cell-group--inset {
+            margin: 0;
+            border-radius: 0;
+        }
         .van-cell {
             display: block !important;
             &::after {
@@ -186,7 +196,7 @@ export default class ExamAuth extends Vue {
             .van-field__control {
                 background: #eff3f8;
                 border-radius: 4px;
-                padding: 4px 6px;
+                padding: 5px 12px;
             }
         }
         .van-cell__value {

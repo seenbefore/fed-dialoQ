@@ -50,7 +50,7 @@
                     上一题
                 </van-button>
             </div>
-            <van-button class="next-btn" color="#4080FF" block round @click="handleNextQuestion">
+            <van-button class="next-btn" block round @click="handleNextQuestion" type="primary">
                 下一题
             </van-button>
         </div>
@@ -77,10 +77,23 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <van-button type="primary" block round @click="handleSubmit" color="#4080FF">提交</van-button>
+                    <van-button type="primary" block round @click="handleSubmit">提交</van-button>
                 </div>
             </div>
         </van-popup>
+
+        <!-- 考试结束弹窗 -->
+        <van-dialog v-model="showExamEndDialog" :show-confirm-button="false" :show-cancel-button="false" class="exam-end-dialog" close-on-click-overlay>
+            <div class="exam-end-content">
+                <div class="exam-end-icon">
+                    <van-icon name="clock-o" size="40" />
+                </div>
+                <div class="exam-end-text">测评已结束</div>
+                <van-button plain block class="know-btn" @click="handleExamEnd">
+                    知道了
+                </van-button>
+            </div>
+        </van-dialog>
     </div>
 </template>
 
@@ -101,6 +114,7 @@ export default class ExamDetail extends Vue {
     private showAnswerCard = false
     private correctCount = 0
     private wrongCount = 0
+    private showExamEndDialog = false
 
     get currentQuestion() {
         return this.questions[this.currentIndex]
@@ -157,7 +171,7 @@ export default class ExamDetail extends Vue {
                 this.remainingTime--
             } else {
                 clearInterval(this.timer)
-                this.handleSubmit()
+                this.showExamEndDialog = true
             }
         }, 1000)
     }
@@ -247,6 +261,11 @@ export default class ExamDetail extends Vue {
         } catch (error) {
             console.error(error)
         }
+    }
+
+    private handleExamEnd() {
+        this.showExamEndDialog = false
+        this.handleSubmit() // 自动提交答案
     }
 }
 </script>
@@ -405,7 +424,7 @@ export default class ExamDetail extends Vue {
         .answer-card-btn {
             height: 40px;
             padding: 0 16px;
-            border-radius: 20px;
+
             font-size: 14px;
             color: #666;
             border-color: #ddd;
@@ -420,7 +439,7 @@ export default class ExamDetail extends Vue {
             width: 110px;
             height: 40px;
             padding: 0 16px;
-            border-radius: 20px;
+
             font-size: 14px;
             color: #666;
             border-color: #ddd;
@@ -485,6 +504,40 @@ export default class ExamDetail extends Vue {
 
         .card-footer {
             padding: 0 16px;
+        }
+    }
+
+    :deep(.exam-end-dialog) {
+        .van-dialog__content {
+            padding: 20px;
+        }
+
+        .exam-end-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+
+            .exam-end-icon {
+                margin-bottom: 16px;
+                .van-icon {
+                    color: #666;
+                }
+            }
+
+            .exam-end-text {
+                font-size: 16px;
+                color: #333;
+                margin-bottom: 24px;
+            }
+
+            .know-btn {
+                width: 100%;
+                height: 44px;
+                font-size: 16px;
+                color: #1989fa;
+                border-color: #ebedf0;
+            }
         }
     }
 }

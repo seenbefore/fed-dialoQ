@@ -40,7 +40,7 @@
 
             <!-- 按钮 -->
             <div class="action-button" v-if="!isPassed">
-                <van-button type="primary" block @click="handleRetry" :color="'#1989fa'">重新答题</van-button>
+                <van-button type="primary" block @click="handleRetry">重新答题</van-button>
             </div>
         </div>
     </div>
@@ -227,7 +227,6 @@ export default class ExamResult extends Vue {
             .van-button {
                 height: 44px;
                 font-size: 16px;
-                border-radius: 22px;
             }
         }
     }

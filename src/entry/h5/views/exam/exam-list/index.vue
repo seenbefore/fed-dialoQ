@@ -24,7 +24,7 @@
         </van-list>
 
         <!-- 未开始考试弹窗 -->
-        <van-dialog v-model="showNotStartDialog" :title="currentExam.title" :show-confirm-button="false" class="not-start-dialog">
+        <van-dialog v-model="showNotStartDialog" :title="currentExam.title" :show-confirm-button="true" class="not-start-dialog">
             <div class="dialog-content">
                 <div class="info-item">
                     <span class="label">时间：</span>
@@ -39,8 +39,18 @@
                     <span>还剩 {{ countdownTime }} 开始测评</span>
                 </div>
             </div>
-            <div class="dialog-footer">
+            <!-- <div class="dialog-footer">
                 <van-button block @click="showNotStartDialog = false" class="dialog-btn">知道了</van-button>
+            </div> -->
+        </van-dialog>
+
+        <!-- 考试结束弹窗 -->
+        <van-dialog v-model="showExamEndDialog" :show-confirm-button="true" class="exam-end-dialog" close-on-click-overlay>
+            <div class="exam-end-content">
+                <div class="exam-end-icon">
+                    <van-icon name="clock-o" size="40" />
+                </div>
+                <div class="exam-end-text">测评已结束</div>
             </div>
         </van-dialog>
     </div>
@@ -64,6 +74,7 @@ export default class ExamList extends Vue {
     private showNotStartDialog = false
     private currentExam: any = {}
     private countdownTime = '3:58'
+    private showExamEndDialog = false
 
     private async onLoad() {
         const res = await getExamList({
@@ -105,7 +116,10 @@ export default class ExamList extends Vue {
     }
 
     private handleExamClick(exam: any) {
-        if (exam.status === ExamStatus.FINISHED) return
+        if (exam.status === ExamStatus.FINISHED) {
+            this.showExamEndDialog = true
+            return
+        }
 
         if (exam.status === ExamStatus.NOT_START) {
             this.currentExam = exam
@@ -120,6 +134,10 @@ export default class ExamList extends Vue {
                 examId: exam.id,
             },
         })
+    }
+
+    private handleExamEnd() {
+        this.showExamEndDialog = false
     }
 }
 </script>
@@ -266,24 +284,44 @@ export default class ExamList extends Vue {
                 }
             }
         }
+    }
 
-        .dialog-footer {
-            padding: 0 16px 16px;
-            border-top: 1px solid #ebedf0;
+    // 添加考试结束弹窗样式
+    .exam-end-dialog {
+        .van-dialog__content {
+            padding: 20px;
+        }
 
-            .dialog-btn {
-                height: 40px;
-                line-height: 40px;
-                font-size: 15px;
-                color: #1989fa;
-                background: #fff;
-                border: none;
+        .exam-end-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
 
-                &::before {
-                    border-color: #ebedf0;
+            .exam-end-icon {
+                margin-bottom: 16px;
+                .van-icon {
+                    color: #666;
                 }
             }
+
+            .exam-end-text {
+                font-size: 16px;
+                color: #333;
+                margin-bottom: 24px;
+            }
+
+            .know-btn {
+                width: 100%;
+                height: 44px;
+                font-size: 16px;
+                color: #1989fa;
+                border-color: #ebedf0;
+            }
         }
+    }
+    .van-dialog__confirm {
+        color: #1989fa;
     }
 }
 </style>
