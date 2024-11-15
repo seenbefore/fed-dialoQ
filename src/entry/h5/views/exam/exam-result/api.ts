@@ -17,7 +17,7 @@ export const getExamResult = async (examId: string, options?: ExAxiosRequestConf
         code: 200,
         message: 'success',
         data: {
-            score: 98,
+            score: 8,
             userName: '张姗姗',
             usedTime: '0:30:16',
             totalQuestions: 100,

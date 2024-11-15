@@ -1,15 +1,15 @@
 <template>
-    <div class="exam-result">
+    <div class="exam-result" :class="{ fail: !isPassed }">
         <!-- 结果内容 -->
         <div class="result-content">
             <!-- 标题 -->
-            <div class="result-header">
-                <van-icon name="success" class="success-icon" />
-                <span class="header-text">恭喜您，测评通过</span>
+            <div class="result-header" :class="{ fail: !isPassed }">
+                <van-icon :name="isPassed ? 'success' : 'cross'" class="result-icon" />
+                <span class="header-text">{{ isPassed ? '恭喜您，测评通过' : '非常抱歉，测评未通过' }}</span>
             </div>
 
             <!-- 分数 -->
-            <div class="score-section">
+            <div class="score-section" :class="{ fail: !isPassed }">
                 <div class="score">{{ examResult.score }}</div>
                 <div class="score-label">测评得分</div>
             </div>
@@ -39,8 +39,8 @@
             </div>
 
             <!-- 按钮 -->
-            <div class="action-button">
-                <van-button type="primary" block @click="handleRetry">重新答题</van-button>
+            <div class="action-button" v-if="!isPassed">
+                <van-button type="primary" block @click="handleRetry" :color="'#1989fa'">重新答题</van-button>
             </div>
         </div>
     </div>
@@ -66,6 +66,13 @@ export default class ExamResult extends Vue {
         totalQuestions: 0,
     }
 
+    // 及格分数线
+    private readonly PASS_SCORE = 60
+
+    get isPassed() {
+        return this.examResult.score >= this.PASS_SCORE
+    }
+
     async created() {
         await this.loadExamResult()
     }
@@ -73,9 +80,7 @@ export default class ExamResult extends Vue {
     private async loadExamResult() {
         const examId = this.$route.params.id
         const res = await getExamResult(examId)
-        if (res.code === 200) {
-            this.examResult = res.data
-        }
+        this.examResult = res.data
     }
 
     private handleRetry() {
@@ -95,6 +100,10 @@ export default class ExamResult extends Vue {
     padding: 20px;
     box-sizing: border-box;
 
+    &.fail {
+        background: linear-gradient(180deg, #f56c6c 0%, #f78989 100%);
+    }
+
     .result-content {
         background: #fff;
         border-radius: 12px;
@@ -107,7 +116,7 @@ export default class ExamResult extends Vue {
             justify-content: center;
             margin-bottom: 24px;
 
-            .success-icon {
+            .result-icon {
                 font-size: 24px;
                 color: #fff;
                 background: #07c160;
@@ -120,6 +129,12 @@ export default class ExamResult extends Vue {
                 font-size: 18px;
                 font-weight: 500;
                 color: #333;
+            }
+
+            &.fail {
+                .result-icon {
+                    background: #ee0a24;
+                }
             }
         }
 
@@ -145,6 +160,16 @@ export default class ExamResult extends Vue {
                 }
             }
 
+            &.fail {
+                .score {
+                    color: #ee0a24;
+
+                    &::after {
+                        background: #ee0a24;
+                    }
+                }
+            }
+
             .score-label {
                 font-size: 14px;
                 color: #666;
@@ -152,8 +177,9 @@ export default class ExamResult extends Vue {
         }
 
         .exam-info {
-            background: #f7f8fa;
-            border-radius: 8px;
+            background: #f4faff;
+            border: 1px dashed rgba(49, 146, 228, 0.35);
+            border-radius: 4px;
             padding: 16px;
             margin-bottom: 24px;
 
@@ -183,8 +209,8 @@ export default class ExamResult extends Vue {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff7e6;
-            border: 1px solid #ff7d00;
+            // background: #fff7e6;
+            // border: 1px solid #ff7d00;
             border-radius: 4px;
             padding: 12px;
             margin-bottom: 24px;
@@ -202,8 +228,6 @@ export default class ExamResult extends Vue {
                 height: 44px;
                 font-size: 16px;
                 border-radius: 22px;
-                background: #1989fa;
-                border-color: #1989fa;
             }
         }
     }
