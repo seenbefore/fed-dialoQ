@@ -413,6 +413,7 @@ export default class ComponentName extends Vue {
 # Workflow
 - 用户输入产品prd内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。
+    - 调用接口时不需要判断`code`，直接使用`res.data`。
 - 依次循环
 
 # Output
