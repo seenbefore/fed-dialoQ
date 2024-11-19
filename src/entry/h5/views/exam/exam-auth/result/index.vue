@@ -41,9 +41,8 @@ export default class ExamAuthResult extends Vue {
 
     private async loadAuthResult() {
         const res = await getAuthResult()
-        if (res.code === 200) {
-            this.authResult = res.data
-        }
+
+        this.authResult = res.data
     }
 
     private handleRetry() {

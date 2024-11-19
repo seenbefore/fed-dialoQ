@@ -81,5 +81,6 @@ module.exports = {
         '@typescript-eslint/no-extra-semi': 0,
         'vue/no-side-effects-in-computed-properties': 1,
         'vue/no-v-text-v-html-on-component': 0,
+        'prefer-rest-params': 0,
     },
 }

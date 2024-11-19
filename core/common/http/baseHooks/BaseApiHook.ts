@@ -57,12 +57,12 @@ export const BaseApiHook = Object.freeze({
             })
         }
 
-        if (config.params) {
-            filterDirtyData(config.params, isFilterEmptyStr)
-        }
-        if (config.data) {
-            filterDirtyData(config.data, isFilterEmptyStr)
-        }
+        // if (config.params) {
+        //     filterDirtyData(config.params, isFilterEmptyStr)
+        // }
+        // if (config.data) {
+        //     filterDirtyData(config.data, isFilterEmptyStr)
+        // }
     },
     onComplete(config: any, isResolve: any, resOrErr: any) {},
 })

@@ -20,19 +20,33 @@ export const LocalMenu: UserMenu[] = [
         uri: '/电子卷宗',
         children: [
             {
-                label: '案卷配置',
+                label: '系统管理员',
                 icon: 'el-icon-document',
-                uri: '/file-review/case-config',
+                uri: '/系统管理员',
+                children: [
+                    {
+                        label: '案卷配置',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/case-config',
+                    },
+                ],
             },
             {
-                label: '我的卷宗',
+                label: '案件承办人',
                 icon: 'el-icon-document',
-                uri: '/file-review/my-case',
-            },
-            {
-                label: '卷宗查询',
-                icon: 'el-icon-document',
-                uri: '/file-review/case-search',
+                uri: '/案件承办人',
+                children: [
+                    {
+                        label: '我的卷宗',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/my-case',
+                    },
+                    {
+                        label: '卷宗查询',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/case-search',
+                    },
+                ],
             },
         ],
     },
