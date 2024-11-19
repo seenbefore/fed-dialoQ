@@ -10,9 +10,22 @@
         </div>
         <!-- Main content -->
         <div class="content">
+            <!-- 正副卷tab -->
+            <div class="tabs-wrapper">
+                <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+                    <el-tab-pane label="正卷" name="1"></el-tab-pane>
+                    <el-tab-pane label="副卷" name="2"></el-tab-pane>
+                </el-tabs>
+            </div>
             <!-- 可拖拽的卷宗目录列表 -->
-            <DraggableDirectory v-model="directoryList"></DraggableDirectory>
-            <my-iframe-pdf class="pdf-iframe" :pdf-src="viewPdfSrc" v-show="isToView"></my-iframe-pdf>
+            <div class="directory-list">
+                <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
+                <div class="meta">
+                    <el-button icon="el-icon-plus" type="text">在线选择</el-button>
+                    <el-button icon="el-icon-plus" type="text">本地上传</el-button>
+                </div>
+                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs"></DraggableDirectory>
+            </div>
         </div>
 
         <!-- Fixed bottom action bar -->
@@ -37,7 +50,25 @@ import DraggableDirectory from '@/views/file-review/my-case/save/components/drag
     },
 })
 export default class CaseSave extends Vue {
-    private isToView = false
+    public activeTab = '1'
+    handleTabClick(tab: string) {
+        //this.activeTab = tab
+    }
+    get getDraggableDirectoryAttrs() {
+        return {
+            columns: [
+                { prop: 'index', label: '序号', width: '50px' },
+                { prop: 'code', label: '文号', width: '100px' },
+                { prop: 'name', label: '文书/证据名称', width: '200px' },
+                { prop: 'page', label: '页码', width: '100px' },
+            ],
+            actions: [
+                { key: 'delete', icon: 'el-icon-delete' },
+                { key: 'preview', icon: 'el-icon-view' },
+            ],
+        }
+    }
+
     public viewPdfSrc = ''
     @Ref('formRef')
     formRef!: FormRef
@@ -62,58 +93,6 @@ export default class CaseSave extends Vue {
     /**提交 */
     async handleNext() {}
 
-    formModel: Record<string, any> = {}
-
-    get getFormAttrs() {
-        const fields: FormRow[] = [
-            {
-                columns: [
-                    {
-                        span: 24,
-                        name: 'caseTitle',
-                        tag: 'input',
-                        itemAttrs: {
-                            label: '案件标题：',
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '请输入案件标题',
-                                },
-                            ],
-                        },
-                        attrs: {
-                            placeholder: '请输入案件标题',
-                            maxlength: 100,
-                        },
-                    },
-                ],
-            },
-            {
-                columns: [
-                    {
-                        span: 24,
-                        name: 'caseDesc',
-                        tag: 'input',
-                        itemAttrs: {
-                            label: '案件描述：',
-                        },
-                        attrs: {
-                            type: 'textarea',
-                            placeholder: '请输入案件描述',
-                            maxlength: 500,
-                            rows: 4,
-                        },
-                    },
-                ],
-            },
-        ]
-
-        return {
-            span: 24,
-            fields,
-        }
-    }
-
     handleCancel() {
         this.$router.back()
     }
@@ -126,6 +105,16 @@ export default class CaseSave extends Vue {
     height: 100%;
     display: flex !important;
     flex-direction: column;
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    .meta {
+        text-align: right;
+        margin-bottom: 7px;
+    }
 
     .steps-wrapper {
         padding: 20px;

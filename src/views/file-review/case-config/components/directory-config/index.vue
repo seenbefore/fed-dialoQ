@@ -4,17 +4,21 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        <sg-data-view v-bind="getMainTableAttrs" ref="tableRef"></sg-data-view>
+        {{ mainData }}
+        <DraggableDirectory v-model="mainData" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions"></DraggableDirectory>
     </div>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { TableColumn, TableRef } from '@/sharegood-ui'
+import DraggableDirectory from '@/views/file-review/my-case/save/components/draggable-directory/index.vue'
 
 @Component({
     name: 'DirectoryConfig',
-    components: {},
+    components: {
+        DraggableDirectory,
+    },
 })
 export default class DirectoryConfig extends Vue {
     @Prop({ type: [Array, Object], default: () => ({}) }) value!: any
@@ -22,7 +26,22 @@ export default class DirectoryConfig extends Vue {
     @Prop({ default: 'main' }) type!: string
     @Ref('tableRef') tableRef!: TableRef
 
-    mainData: any[] = []
+    mainData: any[] = [
+        {
+            id: 1,
+            index: 1,
+            name: '卷宗封面',
+            code: '1',
+            attachments: true,
+        },
+        {
+            id: 2,
+            index: 2,
+            name: '卷宗目录',
+            code: '2',
+            attachments: false,
+        },
+    ]
 
     handleSearch() {
         this.tableRef.onLoad()
@@ -70,57 +89,25 @@ export default class DirectoryConfig extends Vue {
     }
 
     get getMainTableAttrs() {
-        const columns: TableColumn[] = [
-            {
-                label: '序号',
-                type: 'index',
-                width: '50px',
-            },
-            {
-                label: '目录名称',
-                prop: 'name',
-                minWidth: '200px',
-            },
-            {
-                label: '含附件',
-                prop: 'hasAttachment',
-                width: '80px',
-                render: (h, { row }) => {
-                    return <el-checkbox v-model={row.hasAttachment}></el-checkbox>
-                },
-            },
-            {
-                label: '操作',
-                prop: 'action',
-                width: '180px',
-                render: (h, { row, index }) => {
-                    return (
-                        <div>
-                            <el-button type="text" danger onClick={() => this.handleDelete(index)}>
-                                删除
-                            </el-button>
-                            <el-button type="text" disabled={index === 0} onClick={() => this.handleMove(index, 'up')}>
-                                <i class="el-icon-arrow-up"></i>
-                            </el-button>
-                            <el-button type="text" disabled={index === this.mainData.length - 1} onClick={() => this.handleMove(index, 'down')}>
-                                <i class="el-icon-arrow-down"></i>
-                            </el-button>
-                        </div>
-                    )
-                },
-            },
-        ]
-
         return {
-            auto: false,
-            columns,
-            load: async (params: any = {}) => {
-                return {
-                    result: this.mainData,
-                    total: this.mainData.length,
-                }
-            },
-            pageVisible: false,
+            columns: [
+                { prop: 'index', label: '序号', width: '50px' },
+                { prop: 'name', label: '名称', minWidth: '200px' },
+                {
+                    prop: 'attachments',
+                    label: '含附件',
+                    width: '100px',
+                    render: (h, { row }) => {
+                        return <el-checkbox v-model={row.attachments}></el-checkbox>
+                    },
+                },
+            ],
+            actions: [
+                {
+                    key: 'delete',
+                    icon: 'el-icon-delete',
+                },
+            ],
         }
     }
 

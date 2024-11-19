@@ -4,12 +4,13 @@
         <div class="directory-header">
             <div class="header-left">
                 <span class="header-handle"></span>
-                <span class="header-index">序号</span>
-                <span class="header-code">文号</span>
-                <span class="header-name">文书/证据名称</span>
+                <template v-for="column in columns">
+                    <span :key="column.prop" :class="['header-' + column.prop]" v-if="!column.hide">
+                        {{ column.label }}
+                    </span>
+                </template>
             </div>
             <div class="header-right">
-                <span class="header-page">页码</span>
                 <span class="header-actions">操作</span>
             </div>
         </div>
@@ -23,19 +24,24 @@
                             <span class="drag-handle">
                                 <i class="el-icon-rank"></i>
                             </span>
-                            <span class="item-index">{{ item.index }}</span>
-                            <span class="item-code">{{ item.code }}</span>
-                            <span class="item-name">{{ item.name }}</span>
+                            <template v-for="column in columns">
+                                <span :key="column.prop" :class="['item-' + column.prop]" v-if="!column.hide">
+                                    <template v-if="column.render">
+                                        <render-cell :render="column.render" :row="item"></render-cell>
+                                    </template>
+                                    <template v-else>
+                                        {{ item[column.prop] }}
+                                    </template>
+                                </span>
+                            </template>
                         </div>
                         <div class="item-right">
-                            <span class="item-page">{{ item.page }}</span>
                             <div class="item-actions">
-                                <el-button type="text" @click="handleDelete(item)">
-                                    <i class="el-icon-delete"></i>
-                                </el-button>
-                                <el-button type="text" @click="handlePreview(item)">
-                                    <i class="el-icon-view"></i>
-                                </el-button>
+                                <template v-for="action in actions">
+                                    <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action.key, item)">
+                                        <i :class="action.icon"></i>
+                                    </el-button>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -55,17 +61,61 @@ interface DirectoryItem {
     code: string
     name: string
     page: number
+    [key: string]: any
+}
+
+interface ColumnItem {
+    prop: string
+    label: string
+    width?: number | string
+    hide?: boolean
+    render?: (h: any, params: { row: DirectoryItem }) => any
+}
+
+interface ActionItem {
+    key: string
+    icon: string
+    hide?: (row: DirectoryItem) => boolean
 }
 
 @Component({
     name: 'DraggableDirectory',
     components: {
         draggable,
+        RenderCell: {
+            functional: true,
+            props: {
+                render: Function,
+                row: Object,
+            },
+            render: (h: any, ctx: any) => {
+                return ctx.props.render(h, { row: ctx.props.row })
+            },
+        },
     },
 })
 export default class DraggableDirectory extends Vue {
     @Prop({ type: Array, default: () => [] })
     value!: DirectoryItem[]
+
+    @Prop({
+        type: Array,
+        default: () => [
+            { prop: 'index', label: '序号', width: '50px' },
+            { prop: 'code', label: '文号', width: '200px' },
+            { prop: 'name', label: '文书/证据名称' },
+        ],
+    })
+    columns!: ColumnItem[]
+
+    @Prop({
+        type: Array,
+        default: () => [
+            { key: 'delete', icon: 'el-icon-delete' },
+            { key: 'preview', icon: 'el-icon-view' },
+        ],
+    })
+    actions!: ActionItem[]
 
     get dragOptions() {
         return {
@@ -84,6 +134,19 @@ export default class DraggableDirectory extends Vue {
     set directoryList(value: DirectoryItem[]) {
         this.$emit('input', value)
         this.$emit('change', value)
+    }
+
+    handleAction(key: string, item: DirectoryItem) {
+        switch (key) {
+            case 'delete':
+                this.handleDelete(item)
+                break
+            case 'preview':
+                this.handlePreview(item)
+                break
+            default:
+                this.$emit(key, item)
+        }
     }
 
     onDragStart() {
@@ -122,10 +185,6 @@ export default class DraggableDirectory extends Vue {
             }
         })
     }
-
-    handleEdit(item: DirectoryItem) {
-        this.$emit('edit', item)
-    }
 }
 </script>
 
@@ -149,7 +208,11 @@ export default class DraggableDirectory extends Vue {
             flex: 1;
 
             .header-handle {
-                width: 36px; // 与拖拽图标宽度一致
+                width: 36px;
+            }
+
+            [class^='header-'] {
+                padding: 0 8px;
             }
 
             .header-index {
@@ -158,7 +221,6 @@ export default class DraggableDirectory extends Vue {
 
             .header-code {
                 width: 200px;
-                margin-right: 20px;
             }
 
             .header-name {
@@ -217,6 +279,10 @@ export default class DraggableDirectory extends Vue {
                 justify-content: center;
             }
 
+            [class^='item-'] {
+                padding: 0 8px;
+            }
+
             .item-index {
                 width: 50px;
                 color: #666;
@@ -225,7 +291,6 @@ export default class DraggableDirectory extends Vue {
             .item-code {
                 width: 200px;
                 color: #666;
-                margin-right: 20px;
             }
 
             .item-name {
