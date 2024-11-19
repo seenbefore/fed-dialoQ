@@ -48,6 +48,28 @@ export const LocalMenu: UserMenu[] = [
                     },
                 ],
             },
+            {
+                label: '档案管理员',
+                icon: 'el-icon-document',
+                uri: '/档案管理员',
+                children: [
+                    {
+                        label: '卷宗整理',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/case-sort',
+                    },
+                    {
+                        label: '卷宗号配置',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/case-number-config',
+                    },
+                    {
+                        label: '卷宗查询记录',
+                        icon: 'el-icon-document',
+                        uri: '/file-review/case-search-record',
+                    },
+                ],
+            },
         ],
     },
 ]
