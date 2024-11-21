@@ -10,7 +10,17 @@
 
             <!-- 目录树 -->
             <div class="directory-tree">
-                <el-tree ref="tree" :data="treeData" :props="defaultProps" show-checkbox node-key="id" :filter-node-method="filterNode" @check="handleCheck">
+                <el-tree
+                    ref="tree"
+                    :data="treeData"
+                    :default-checked-keys="value"
+                    node-key="value"
+                    show-checkbox
+                    default-expand-all
+                    :filter-node-method="filterNode"
+                    @check="handleCheck"
+                    v-if="treeData.length"
+                >
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                         <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
                         <span>{{ node.label }}</span>
@@ -34,6 +44,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
     components: {},
 })
 export default class DirectoryDialog extends Vue {
+    @Prop({ type: Array }) value!: string[]
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
 
@@ -111,11 +122,6 @@ export default class DirectoryDialog extends Vue {
             ],
         },
     ]
-
-    defaultProps = {
-        children: 'children',
-        label: 'label',
-    }
 
     get title() {
         return `新增目录 - ${this.volumeType === 'main' ? '正卷' : '副卷'}`

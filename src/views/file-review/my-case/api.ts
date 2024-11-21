@@ -19,6 +19,7 @@ export const list = async (params?: any) => {
                     returnNo: 'XXXXX立字〔2022〕第XXXXXX号',
                     status: '1',
                     updateTime: '2022-10-11 12:00:00',
+                    archiveUrl: 'F9CD5B1ADBF7C71517B382D0B453B86291701AC89DFDEE0F525D832CD7570272EA157EDA015993CA8A07EE86A25D33B17AEDFDEC71034B16A61D06D29D394CB23AD7D5760E8CE911737D242FE7F9726D',
                 },
                 {
                     id: 2,
@@ -29,6 +30,7 @@ export const list = async (params?: any) => {
                     returnNo: 'XXXXX立字〔2022〕第XXXXXX号',
                     status: '2',
                     updateTime: '2022-10-10 12:00:00',
+                    archiveUrl: 'F9CD5B1ADBF7C71517B382D0B453B86291701AC89DFDEE0F525D832CD7570272EA157EDA015993CA8A07EE86A25D33B17AEDFDEC71034B16A61D06D29D394CB23AD7D5760E8CE911737D242FE7F9726D',
                 },
                 {
                     id: 3,
@@ -40,6 +42,7 @@ export const list = async (params?: any) => {
                     status: '3',
                     rejectReason: '材料不完整，请补充相关证明文件',
                     updateTime: '2022-10-09 12:00:00',
+                    archiveUrl: 'F9CD5B1ADBF7C71517B382D0B453B86291701AC89DFDEE0F525D832CD7570272EA157EDA015993CA8A07EE86A25D33B17AEDFDEC71034B16A61D06D29D394CB23AD7D5760E8CE911737D242FE7F9726D',
                 },
                 {
                     id: 4,
@@ -50,6 +53,7 @@ export const list = async (params?: any) => {
                     returnNo: 'XXXXX立字〔2022〕第XXXXXX号',
                     status: '1',
                     updateTime: '2022-10-08 12:00:00',
+                    archiveUrl: 'F9CD5B1ADBF7C71517B382D0B453B86291701AC89DFDEE0F525D832CD7570272EA157EDA015993CA8A07EE86A25D33B17AEDFDEC71034B16A61D06D29D394CB23AD7D5760E8CE911737D242FE7F9726D',
                 },
                 {
                     id: 5,
@@ -60,6 +64,7 @@ export const list = async (params?: any) => {
                     returnNo: 'XXXXX立字〔2022〕第XXXXXX号',
                     status: '2',
                     updateTime: '2022-10-07 12:00:00',
+                    archiveUrl: 'F9CD5B1ADBF7C71517B382D0B453B86291701AC89DFDEE0F525D832CD7570272EA157EDA015993CA8A07EE86A25D33B17AEDFDEC71034B16A61D06D29D394CB23AD7D5760E8CE911737D242FE7F9726D',
                 },
                 {
                     id: 6,

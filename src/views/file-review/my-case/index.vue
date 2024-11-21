@@ -36,8 +36,12 @@ export default class MyCase extends Vue {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    handleView(row: any) {
-        this.$router.push(`/file-review/my-case/detail?id=${row.id}`)
+    async handleView(row: any) {
+        const { archiveUrl } = row
+        console.log(archiveUrl)
+        await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
+            fileUrl: archiveUrl,
+        })
     }
 
     async handleEdit(row: any) {
@@ -155,7 +159,19 @@ export default class MyCase extends Vue {
                 minWidth: '250px',
                 render: (h, { row }) => {
                     return (
-                        <el-button type="text" onClick={() => this.handleView(row)}>
+                        <el-button
+                            type="text"
+                            onClick={() => {
+                                this.$postMessage({
+                                    type: 'route',
+                                    name: 'FileReviewMyCaseDetail',
+                                    title: '查看卷宗',
+                                    data: {
+                                        id: row.id,
+                                    },
+                                })
+                            }}
+                        >
                             {row.caseName}
                         </el-button>
                     )

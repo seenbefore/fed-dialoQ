@@ -10,5 +10,6 @@ declare module 'vue/types/vue' {
         openNewPage: (path: string, query: any) => void
         $bus: EventBus
         $back: any
+        $postMessage: (data: { type: string; name?: string; title?: string; data?: any }) => void
     }
 }

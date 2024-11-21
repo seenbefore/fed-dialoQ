@@ -1,0 +1,127 @@
+<template>
+    <el-drawer class="document-wrap sg-drawer" append-to-body title="查看文件" :visible.sync="dialogVisible" :size="size">
+        <div class="content" v-loading.lock="isLoading">
+            <my-iframe-pdf :pdf-src="newUrl" iframe-width="100%" iframe-height="100%" v-if="urlType === 'pdf' && newUrl" zoom="100%"></my-iframe-pdf>
+            <video v-else-if="urlType === 'video'" style="height:60vh" controls>
+                <source :src="newUrl" type="video/mp4" />
+                <source :src="newUrl" type="video/ogg" />
+                <source :src="newUrl" type="video/webm" />
+            </video>
+            <img v-else-if="urlType === 'img'" class="el-image" :src="newUrl" @click="$ImageViewer([newUrl])" />
+            <!-- 其他 -->
+            <iframe v-else-if="isBlob()" :src="newUrl" frameborder="0" width="100%" height="100%"></iframe>
+            <div v-else>
+                不支持的格式，
+                <a :href="fileUrl" target="_blank">点击查看</a>
+            </div>
+        </div>
+        <!-- </el-dialog> -->
+    </el-drawer>
+</template>
+
+<script>
+import { getNewUrl, getUrlType, isMp4, isVideo } from '@/utils/pdfAndImgUrl'
+
+export default {
+    name: 'FileDialog',
+    props: {
+        // 查看文件的路径
+        fileUrl: {
+            type: String,
+            default: '',
+        },
+        appendToBody: {
+            type: Boolean,
+            default: false,
+        },
+        size: {
+            type: String,
+            default: '80%',
+        },
+    },
+    data() {
+        return {
+            dialogVisible: true,
+            newUrl: '',
+            isLoading: false,
+        }
+    },
+    watch: {
+        fileUrl: {
+            async handler(newV) {
+                this.isLoading = true
+                const result = await getNewUrl(newV).finally(() => (this.isLoading = false))
+                console.log(3333, result)
+                this.newUrl = result
+            },
+            immediate: true,
+        },
+    },
+    computed: {
+        urlType() {
+            const imgsArr = ['png', 'jpg', 'jpeg', 'gif']
+            if (imgsArr.includes(getUrlType(this.newUrl))) {
+                return 'img'
+            }
+            if (
+                Object.keys(imgsArr).some(item => {
+                    return this.newUrl.endsWith(`.${item}`)
+                })
+            ) {
+                return 'img'
+            }
+            if (this.newUrl.indexOf('.pdf') > -1 || this.newUrl.indexOf('blob:') > -1 || this.newUrl.indexOf('data:application/pdf;') > -1) {
+                return 'pdf'
+            }
+            if (isMp4(this.newUrl)) {
+                return 'video'
+            }
+            return ''
+        },
+    },
+    methods: {
+        isPdf() {
+            // return isPdf(this.fileUrl)
+        },
+        isVideo() {
+            return isVideo(this.fileUrl)
+        },
+        isBlob() {
+            return this.fileUrl.startsWith('blob:')
+        },
+    },
+}
+</script>
+
+<style lang="less" scoped>
+.sg-drawer::v-deep {
+    .el-drawer__header {
+        margin: 0;
+        padding: 0 20px;
+        height: 49px;
+        border-bottom: 1px solid #ddd !important;
+        background: #fff;
+        color: #333;
+        font-size: 16px;
+        line-height: 49px;
+    }
+    .content {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+    ::v-deep {
+        .el-image {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .el-image .el-image__inner {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+    }
+}
+</style>

@@ -11,8 +11,10 @@
         <div class="directory-list">
             <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
             <div class="meta">
-                <el-button icon="el-icon-plus" type="primary" @click="handleAdd">在线选择</el-button>
-                <el-button icon="el-icon-plus" type="primary">本地上传</el-button>
+                <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
+                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
+                    <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
+                </el-upload>
             </div>
             <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs"></DraggableDirectory>
         </div>
@@ -129,8 +131,9 @@ export default class Step2 extends Vue {
         font-family: STSongti-SC-Bold;
     }
     .meta {
-        text-align: right;
         margin-bottom: 7px;
+        display: flex;
+        justify-content: flex-end;
     }
 }
 </style>

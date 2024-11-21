@@ -31,8 +31,12 @@ export default class CaseSearch extends Vue {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    handleView(row: any) {
-        this.$router.push(`/file-review/case-search/detail?id=${row.id}`)
+    async handleView(row: any) {
+        const { archiveUrl } = row
+        console.log(archiveUrl)
+        await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
+            fileUrl: archiveUrl,
+        })
     }
 
     async handleApply(row: any) {

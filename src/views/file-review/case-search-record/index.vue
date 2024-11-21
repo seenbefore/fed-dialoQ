@@ -35,7 +35,7 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'input',
                         name: 'applicant',
                         itemAttrs: {
-                            label: '申请人：',
+                            label: '申请人',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -45,7 +45,7 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'input',
                         name: 'phone',
                         itemAttrs: {
-                            label: '手机号：',
+                            label: '手机号',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -55,12 +55,20 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'daterange',
                         name: 'applyTime',
                         itemAttrs: {
-                            label: '申请时间：',
+                            label: '申请时间',
                         },
                         attrs: {
                             'start-placeholder': '开始时间',
                             'end-placeholder': '结束时间',
                             'value-format': 'yyyy-MM-dd',
+                            'picker-options': {
+                                disabledDate: time => {
+                                    const today = new Date()
+                                    const sixtyYearsAgo = new Date()
+                                    sixtyYearsAgo.setFullYear(today.getFullYear() - 60)
+                                    return time.getTime() > today.getTime() || time.getTime() < sixtyYearsAgo.getTime()
+                                },
+                            },
                         },
                     },
                 ],
@@ -71,7 +79,7 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'select',
                         name: 'caseType',
                         itemAttrs: {
-                            label: '卷宗类型：',
+                            label: '卷宗类型',
                         },
                         attrs: {
                             placeholder: '请选择',
@@ -86,7 +94,7 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'input',
                         name: 'code',
                         itemAttrs: {
-                            label: '编号：',
+                            label: '编号',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -96,7 +104,7 @@ export default class CaseSearchRecord extends Vue {
                         tag: 'select',
                         name: 'status',
                         itemAttrs: {
-                            label: '审批状态：',
+                            label: '审批状态',
                         },
                         attrs: {
                             placeholder: '请选择',

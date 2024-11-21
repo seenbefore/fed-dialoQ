@@ -16,6 +16,14 @@ Vue.prototype.$http = http
 Vue.prototype.$back = function() {
     console.log('$back', this)
 }
+Vue.prototype.$postMessage = function(data: any) {
+    console.log('postMessage==>', data)
+    try {
+        window.parent.postMessage(data, '*')
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
     const { settings, user } = defaultSettings ?? {}

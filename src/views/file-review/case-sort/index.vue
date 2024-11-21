@@ -35,7 +35,7 @@ export default class CaseSort extends Vue {
                         tag: 'select',
                         name: 'caseType',
                         itemAttrs: {
-                            label: '卷宗类型：',
+                            label: '卷宗类型',
                         },
                         attrs: {
                             placeholder: '请选择',
@@ -50,7 +50,7 @@ export default class CaseSort extends Vue {
                         tag: 'input',
                         name: 'caseName',
                         itemAttrs: {
-                            label: '卷宗名称：',
+                            label: '卷宗名称',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -60,7 +60,7 @@ export default class CaseSort extends Vue {
                         tag: 'input',
                         name: 'target',
                         itemAttrs: {
-                            label: '对象：',
+                            label: '对象',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -74,7 +74,7 @@ export default class CaseSort extends Vue {
                         tag: 'input',
                         name: 'returnNo',
                         itemAttrs: {
-                            label: '归档号：',
+                            label: '归档号',
                         },
                         attrs: {
                             placeholder: '请输入',
@@ -84,7 +84,7 @@ export default class CaseSort extends Vue {
                         tag: 'select',
                         name: 'status',
                         itemAttrs: {
-                            label: '整理状态：',
+                            label: '整理状态',
                         },
                         attrs: {
                             placeholder: '请选择',
@@ -210,10 +210,11 @@ export default class CaseSort extends Vue {
         })
     }
 
-    handleView(row: any) {
-        this.$router.push({
-            path: '/file-review/case-sort/detail',
-            query: { id: row.id },
+    async handleView(row: any) {
+        const { archiveUrl } = row
+        console.log(archiveUrl)
+        await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
+            fileUrl: archiveUrl,
         })
     }
 }

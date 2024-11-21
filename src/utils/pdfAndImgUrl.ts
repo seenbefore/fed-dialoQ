@@ -172,3 +172,20 @@ export async function getBlobByBase64(base64: string, type: keyof typeof typeMap
         type: type,
     }
 }
+
+// 根据文件路径获取文件后缀（类型）
+function fileType(url) {
+    const newUrl = url ? url.split('?')[0] : ''
+    const typeList =
+        String(newUrl)
+            .toLowerCase()
+            .split('.') || []
+    return typeList[typeList.length - 1]
+}
+
+// 是否为视频文件
+export function isVideo(url: string) {
+    const videoList = ['mp4', 'webm', 'ogg']
+    const type = fileType(url)
+    return videoList.includes(type)
+}
