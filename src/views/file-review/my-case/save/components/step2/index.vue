@@ -21,7 +21,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DraggableDirectory from '@/views/file-review/my-case/components/draggable-directory/index.vue'
-import { getCaseElectricArchiveDocumentListApi } from './api'
+import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumber } from './api'
 @Component({
     name: 'Step2',
     components: {
@@ -44,7 +44,6 @@ export default class Step2 extends Vue {
         data = data.map((item: any, index) => {
             return {
                 ...item,
-                index: index + 1,
             }
         })
         console.log('data', data)
@@ -53,15 +52,20 @@ export default class Step2 extends Vue {
 
     public activeTab = '1'
     handleTabClick(tab: string) {
-        //this.activeTab = tab
+        console.log('handleTabClick', tab)
+        if (this.activeTab === '2') {
+            this.directoryList = []
+        } else {
+            this.getInitDocs()
+        }
     }
     get getDraggableDirectoryAttrs() {
         return {
             columns: [
-                { prop: 'index', label: '序号', width: '50px' },
-                { prop: 'documentNumber', label: '文号', width: '100px' },
-                { prop: 'documentEvidenceName', label: '文书/证据名称', width: '200px' },
-                { prop: 'pageNumber', label: '页码', width: '100px' },
+                { prop: 'sort', label: '序号', width: '50px', align: 'center' },
+                { prop: 'documentNumber', label: '文号', width: '300px' },
+                { prop: 'documentEvidenceName', label: '文书/证据名称', minWidth: '200px' },
+                { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
             ],
             actions: [
                 { key: 'delete', icon: 'el-icon-delete' },
@@ -72,9 +76,40 @@ export default class Step2 extends Vue {
     directoryList: any[] = []
 
     async handleAdd() {
+        const defaultCheckedKeys = this.directoryList.map(item => item.documentEvidenceUrl)
         const result = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {
             type: 'add',
+            value: defaultCheckedKeys,
         })
+        if (result) {
+            console.log('result', result)
+            this.directoryList = result.map((item: any) => ({
+                ...item,
+            }))
+        }
+    }
+    /** 保存排序数据 */
+    async saveSendData() {
+        const list = this.directoryList.map((item: any, idx: number) => {
+            return {
+                sort: idx + 1,
+                documentEvidenceId: item.documentId || item.documentEvidenceId,
+                documentEvidenceName: item.documentKindName || item.documentEvidenceName,
+                documentEvidenceCode: item.documentKindCode || item.documentEvidenceCode,
+                documentEvidenceUrl: item.documentUrl || item.documentEvidenceUrl,
+                documentNumber: item.documentNumber,
+                pageNumber: item.pageNumber,
+                pageCount: item.pageCount,
+            }
+        })
+        const { caseId, archiveId } = this.row
+        const payload = {
+            caseId,
+            archiveId,
+            archiveCatalogContentList: list,
+        }
+        const { data } = await calculateElectricArchivePageNumber(payload)
+        return data
     }
 }
 </script>

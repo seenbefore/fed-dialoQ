@@ -10,7 +10,17 @@
 
             <!-- 目录树 -->
             <div class="directory-tree">
-                <el-tree ref="tree" :data="treeData" :props="defaultProps" show-checkbox node-key="id" :filter-node-method="filterNode" @check="handleCheck">
+                <el-tree
+                    ref="tree"
+                    :data="treeData"
+                    :default-checked-keys="value"
+                    node-key="value"
+                    show-checkbox
+                    default-expand-all
+                    :filter-node-method="filterNode"
+                    @check="handleCheck"
+                    v-if="treeData.length"
+                >
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                         <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
                         <span>{{ node.label }}</span>
@@ -39,6 +49,8 @@ export default class DirectoryDialog extends Vue {
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
     @Prop({ type: String, default: '' }) caseId!: string
+    // default-checked-keys
+    @Prop({ type: Array, default: () => [] }) value!: any[]
 
     @Ref('tree') tree!: any
 
@@ -118,6 +130,9 @@ export default class DirectoryDialog extends Vue {
     defaultProps = {
         children: 'children',
         label: 'label',
+        defaultCheckedKeys: this.value,
+        nodeKey: 'value',
+        defaultExpandAll: true,
     }
     loading = false
     mounted() {
@@ -160,7 +175,6 @@ export default class DirectoryDialog extends Vue {
                 }
             }
             this.treeData = treeData
-            console.log(111, treeData)
         } catch (error) {
             console.log(error)
         }
@@ -182,16 +196,19 @@ export default class DirectoryDialog extends Vue {
     }
 
     handleCheck(data: any, checked: any) {
-        this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
+        //this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
+        this.selectedNodes = [...checked.checkedNodes]
+        console.log('selectedNodes', this.selectedNodes)
     }
 
     async confirm() {
         // 将选中的节点转换为目录项
-        const directories = this.selectedNodes.map((node, index) => ({
-            name: node.label,
-            sort: index + 1,
-            hasAttachment: false,
-        }))
+        const directories = this.selectedNodes
+            .filter(node => node.isLeafNode)
+            .map((node, index) => ({
+                ...node,
+                hasAttachment: false,
+            }))
         this.$options.confirm?.(directories)
     }
 
