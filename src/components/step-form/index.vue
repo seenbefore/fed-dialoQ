@@ -65,6 +65,7 @@ export interface StepConfig {
                 submit: any
                 /** 获取当前组件 */
                 getCurrentComponent: any
+                loading: boolean
             }
         },
     ) => JSX.Element
@@ -144,6 +145,7 @@ export default class StepForm extends Vue {
     }
 
     handlers = {
+        loading: false,
         prev: () => this.prev(),
         next: () => this.next(),
         submit: () => this.submit(),

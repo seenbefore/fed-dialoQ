@@ -7,7 +7,12 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DocInput from '@/components/doc-input/index.vue'
-
+/** 卷宗封面 */
+export interface CaseStepCoverClass {
+    /** 获取表单数据 */
+    save: () => Promise<any>
+}
+/** 卷宗封面 */
 @Component({
     name: 'Step1',
     components: {

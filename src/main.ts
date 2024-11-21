@@ -9,13 +9,14 @@ import http from './scripts/http'
 import defaultSettings from './settings'
 // 状态管理
 import store from './store'
-import { settingsStore, userStore, tagsViewStore } from './store/useStore'
+import { settingsStore, userStore } from './store/useStore'
 import './styles/index.less'
 
 Vue.prototype.$http = http
-Vue.prototype.$back = function() {
-    console.log('$back', this)
-}
+/**
+ * 向父级发送消息
+ * @param data
+ */
 Vue.prototype.$postMessage = function(data: any) {
     console.log('postMessage==>', data)
     try {

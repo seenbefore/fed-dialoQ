@@ -1,12 +1,14 @@
 <template>
     <div class="sg-page icinfo-ai CaseSave">
-        <StepForm v-model="currentStep" :steps="steps" @save="handleSave" @cancel="handleCancel"></StepForm>
+        <StepForm v-model="currentStep" :steps="steps"></StepForm>
     </div>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import StepForm, { StepConfig } from '@/components/step-form/index.vue'
+import { CaseStepCoverClass } from '@/views/file-review/components/case-step-cover/index.vue'
+import { CaseStepCatalogClass } from '@/views/file-review/components/case-step-catalog/index.vue'
 
 @Component({
     name: 'CaseSave',
@@ -15,6 +17,7 @@ import StepForm, { StepConfig } from '@/components/step-form/index.vue'
     },
 })
 export default class CaseSave extends Vue {
+    @Prop({ type: Object, default: () => ({}) }) row!: any
     @Prop({ type: String }) id!: string
     @Prop({ type: String, default: '' }) caseId!: string
     @Prop({ type: String, default: '' }) archiveId!: string
@@ -50,8 +53,8 @@ export default class CaseSave extends Vue {
                             <el-button
                                 type="primary"
                                 onClick={async () => {
-                                    const currentComponent = handlers.getCurrentComponent()
-                                    const result = await currentComponent.save?.()
+                                    const currentComponent = handlers.getCurrentComponent() as CaseStepCoverClass
+                                    const result = await currentComponent.save()
                                     handlers.next()
                                 }}
                             >
@@ -80,11 +83,20 @@ export default class CaseSave extends Vue {
                             </el-button>
                             <el-button
                                 type="primary"
+                                loading={handlers.loading}
+                                disabled={handlers.loading}
                                 onClick={async () => {
-                                    const currentComponent = handlers.getCurrentComponent()
-                                    const result = await currentComponent.submit?.()
-                                    this.paylaod.archiveCatalogContentList = result
-                                    await this.handleSubmit()
+                                    try {
+                                        handlers.loading = true
+                                        const currentComponent = handlers.getCurrentComponent() as CaseStepCatalogClass
+                                        const result = await currentComponent.submit()
+                                        this.paylaod.archiveCatalogContentList = result
+                                        await this.handleSubmit()
+                                        handlers.loading = false
+                                    } catch (err) {
+                                        handlers.loading = false
+                                        console.error(err)
+                                    }
                                 }}
                             >
                                 提交
@@ -101,21 +113,8 @@ export default class CaseSave extends Vue {
         ] as StepConfig[]
     }
 
-    mounted() {
-        console.log('CaseSave mounted')
-        // Loading.service({
-        //     fullscreen: true,
-        //     lock: true,
-        //     text: '提交中...',
-        // })
-    }
-    handleSave(formData) {
-        console.log('Save:', formData)
-    }
+    mounted() {}
 
-    handleCancel() {
-        this.$router.back()
-    }
     async handlePreview() {
         console.log('preview')
         await this.$modalDialog(() => import('@/views/file-review/components/preview-dialog/index.vue'), {

@@ -1,22 +1,24 @@
 <template>
-    <div class="Step2">
-        <!-- 正副卷tab -->
-        <div class="tabs-wrapper">
-            <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-                <el-tab-pane label="正卷" name="1"></el-tab-pane>
-                <el-tab-pane label="副卷" name="2"></el-tab-pane>
-            </el-tabs>
-        </div>
-        <!-- 可拖拽的卷宗目录列表 -->
-        <div class="directory-list">
-            <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
-            <div class="meta">
-                <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
-                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
-                    <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
-                </el-upload>
+    <div class="Step2" v-loading.lock="loading" element-loading-text="加载中...">
+        <div class="inner">
+            <!-- 正副卷tab -->
+            <div class="tabs-wrapper">
+                <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+                    <el-tab-pane label="正卷" name="1"></el-tab-pane>
+                    <el-tab-pane label="副卷" name="2"></el-tab-pane>
+                </el-tabs>
             </div>
-            <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs"></DraggableDirectory>
+            <!-- 可拖拽的卷宗目录列表 -->
+            <div class="directory-list">
+                <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
+                <div class="meta">
+                    <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
+                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
+                        <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
+                    </el-upload>
+                </div>
+                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs"></DraggableDirectory>
+            </div>
         </div>
     </div>
 </template>
@@ -24,6 +26,13 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DraggableDirectory from '@/views/file-review/components/draggable-directory/index.vue'
 import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
+
+/** 卷宗目录组件 */
+export interface CaseStepCatalogClass {
+    /** 获取表单数据 */
+    submit: () => Promise<any>
+}
+/** 卷宗目录 */
 @Component({
     name: 'Step2',
     components: {
@@ -32,24 +41,32 @@ import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumb
 })
 export default class Step2 extends Vue {
     @Prop({ default: () => ({}) }) row!: any
+    loading = false
     mounted() {
         console.log('Step2 mounted')
         this.getInitDocs()
     }
     /** 获取初始化的目录文书 */
     async getInitDocs() {
-        const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
-        let { data } = await getCaseElectricArchiveDocumentListApi({
-            archiveId,
-            caseId,
-        })
-        data = data.map((item: any, index) => {
-            return {
-                ...item,
-            }
-        })
-        console.log('data', data)
-        this.directoryList = data
+        try {
+            this.loading = true
+            const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
+            let { data } = await getCaseElectricArchiveDocumentListApi({
+                archiveId,
+                caseId,
+            })
+            data = data.map((item: any, index) => {
+                return {
+                    ...item,
+                }
+            })
+            console.log('data', data)
+            this.directoryList = data
+            this.loading = false
+        } catch (err) {
+            this.loading = false
+            console.error(err)
+        }
     }
 
     public activeTab = '1'
@@ -122,6 +139,7 @@ export default class Step2 extends Vue {
 </script>
 <style lang="less" scoped>
 .Step2 {
+    position: relative;
     .title {
         margin: 0;
         color: #000;
@@ -134,6 +152,11 @@ export default class Step2 extends Vue {
         margin-bottom: 7px;
         display: flex;
         justify-content: flex-end;
+    }
+    .inner {
+        width: 80%;
+        max-width: 900px;
+        margin: 0 auto;
     }
 }
 </style>
