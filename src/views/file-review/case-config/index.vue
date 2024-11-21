@@ -42,11 +42,11 @@ export default class CaseConfig extends Vue {
     }
 
     handleAdd() {
-        this.$router.push('/file-review/case-config/add')
+        this.$router.push('/file-review/case-config/save')
     }
 
     handleEdit(row: any) {
-        this.$router.push(`/file-review/case-config/add?id=${row.id}&type=edit`)
+        this.$router.push(`/file-review/case-config/save?id=${row.id}&type=edit`)
     }
 
     handleCopy(row: any) {

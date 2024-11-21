@@ -24,7 +24,7 @@
 </template>
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import DraggableDirectory from '@/views/file-review/components/draggable-directory/index.vue'
+import DraggableDirectory from '@/components/draggable-table/index.vue'
 import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
 
 /** 卷宗目录组件 */

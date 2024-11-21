@@ -25,7 +25,6 @@
         <div class="fixed-bottom">
             <el-button @click="handleCancel">取消</el-button>
             <el-button type="primary" @click="handleNext">下一步</el-button>
-            <el-button type="primary" @click="handlePreview">预览</el-button>
         </div>
     </div>
 </template>
@@ -44,18 +43,6 @@ import DocInput from '@/components/doc-input/index.vue'
 export default class CaseSave extends Vue {
     public viewPdfSrc = ''
     /**预览/返回编辑 */
-    async handlePreview() {
-        try {
-            const res: any = await this.docInputRef.docPreview().finally(() => {})
-            console.log('%c Line:55 🍊 res', 'background:#376ff3', res)
-            this.viewPdfSrc = res?.data.pdfUrl
-            await this.$modalDialog(() => import('@/views/file-review/my-case/save/components/preview-dialog/index.vue'), {
-                pdfSrc: this.viewPdfSrc,
-            })
-        } catch (error) {
-            console.error(error)
-        }
-    }
     /**步骤 */
     @Prop({ type: String, default: '1' })
     step!: string

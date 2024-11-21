@@ -1,68 +1,63 @@
 <template>
     <div class="DraggableDirectory">
-        <!-- Table Header -->
-        <div class="directory-header">
-            <div class="header-left">
-                <span class="header-handle"></span>
-                <template v-for="column in columns">
-                    <span :key="column.prop" :class="['header-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
-                        {{ column.label }}
-                    </span>
-                </template>
-            </div>
-            <div class="header-right">
-                <span class="header-actions">操作</span>
+        <!-- 固定表头 -->
+        <div class="directory-header-wrapper">
+            <div class="directory-header">
+                <div class="header-left">
+                    <span class="header-handle"></span>
+                    <template v-for="column in columns">
+                        <span :key="column.prop" :class="['header-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
+                            {{ column.label }}
+                        </span>
+                    </template>
+                </div>
+                <div class="header-right">
+                    <span class="header-actions">操作</span>
+                </div>
             </div>
         </div>
 
-        <!-- Table Content -->
-        <draggable v-model="directoryList" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
-            <transition-group type="transition">
-                <div v-for="(item, index) in directoryList" :key="index" class="directory-item">
-                    <div class="item-content">
-                        <div class="item-left">
-                            <span class="drag-handle">
-                                <i class="el-icon-rank"></i>
-                            </span>
-                            <template v-for="column in columns">
-                                <span :key="column.prop" :class="['item-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
-                                    <template v-if="column.render">
-                                        <render-cell :render="column.render" :row="item"></render-cell>
-                                    </template>
-                                    <template v-else>
-                                        {{ item[column.prop] }}
-                                    </template>
+        <!-- 可滚动的内容区域 -->
+        <div class="directory-content" :style="{ maxHeight: maxHeight + 'px' }">
+            <draggable v-model="directoryList" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
+                <transition-group type="transition">
+                    <div v-for="(item, index) in directoryList" :key="item.sort" class="directory-item">
+                        <div class="item-content">
+                            <div class="item-left">
+                                <span class="drag-handle">
+                                    <i class="el-icon-rank"></i>
                                 </span>
-                            </template>
-                        </div>
-                        <div class="item-right">
-                            <div class="item-actions">
-                                <template v-for="action in actions">
-                                    <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action.key, item)">
-                                        <i :class="action.icon"></i>
-                                    </el-button>
+                                <template v-for="column in columns">
+                                    <span :key="column.prop" :class="['item-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
+                                        <template v-if="column.render">
+                                            <render-cell :render="column.render" :row="item"></render-cell>
+                                        </template>
+                                        <template v-else>
+                                            {{ item[column.prop] }}
+                                        </template>
+                                    </span>
                                 </template>
+                            </div>
+                            <div class="item-right">
+                                <div class="item-actions">
+                                    <template v-for="action in actions">
+                                        <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action.key, item)">
+                                            <i :class="action.icon"></i>
+                                        </el-button>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </transition-group>
-        </draggable>
+                </transition-group>
+            </draggable>
+        </div>
     </div>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
-
-interface DirectoryItem {
-    id: string | number
-    index: number
-    code: string
-    name: string
-    page: number
-    [key: string]: any
-}
 
 interface ColumnItem {
     prop: string
@@ -71,13 +66,13 @@ interface ColumnItem {
     hide?: boolean
     minWidth?: number | string
     align?: 'left' | 'center'
-    render?: (h: any, params: { row: DirectoryItem }) => any
+    render?: (h: any, params: { row: any }) => any
 }
 
 interface ActionItem {
     key: string
     icon: string
-    hide?: (row: DirectoryItem) => boolean
+    hide?: (row: any) => boolean
 }
 
 @Component({
@@ -98,14 +93,13 @@ interface ActionItem {
 })
 export default class DraggableDirectory extends Vue {
     @Prop({ type: Array, default: () => [] })
-    value!: DirectoryItem[]
+    value!: any[]
 
     @Prop({
         type: Array,
         default: () => [
-            { prop: 'index', label: '序号', width: '50px' },
-            { prop: 'code', label: '文号', width: '200px' },
-            { prop: 'name', label: '文书/证据名称' },
+            { prop: 'sort', label: '序号', width: '50px' },
+            { prop: 'name', label: '名称' },
         ],
     })
     columns!: ColumnItem[]
@@ -119,6 +113,9 @@ export default class DraggableDirectory extends Vue {
     })
     actions!: ActionItem[]
 
+    @Prop({ type: Number, default: 400 })
+    maxHeight!: number
+
     get dragOptions() {
         return {
             animation: 200,
@@ -129,7 +126,7 @@ export default class DraggableDirectory extends Vue {
         }
     }
 
-    get directoryList(): DirectoryItem[] {
+    get directoryList() {
         const result = this.value.map((item, index) => ({
             ...item,
             sort: index + 1,
@@ -138,12 +135,12 @@ export default class DraggableDirectory extends Vue {
         return result
     }
 
-    set directoryList(value: DirectoryItem[]) {
+    set directoryList(value: any[]) {
         this.$emit('input', value)
         this.$emit('change', value)
     }
 
-    handleAction(key: string, item: DirectoryItem) {
+    handleAction(key: string, item: any) {
         switch (key) {
             case 'delete':
                 this.handleDelete(item)
@@ -174,12 +171,11 @@ export default class DraggableDirectory extends Vue {
         }))
     }
 
-    handlePreview(item: DirectoryItem) {
+    handlePreview(item: any) {
         this.$emit('preview', item)
     }
 
-    handleDelete(item: DirectoryItem) {
-        console.log('item', item.index)
+    handleDelete(item: any) {
         this.$confirm('确定要删除吗？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -214,17 +210,32 @@ export default class DraggableDirectory extends Vue {
 
 <style lang="less" scoped>
 .DraggableDirectory {
+    position: relative;
+
+    .directory-header-wrapper {
+        // position: sticky;
+        // top: 0;
+        // z-index: 2;
+        background: #fff;
+    }
+
+    .directory-content {
+        overflow-y: auto;
+        position: relative;
+    }
+
     .directory-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 10px;
+        padding: 3px 10px;
         background: #f5f7fa;
         border: 1px solid #eee;
         border-bottom: none;
         border-radius: 4px 4px 0 0;
         font-weight: 500;
         color: #606266;
+        margin-bottom: 0;
 
         .header-left {
             display: flex;
@@ -273,10 +284,11 @@ export default class DraggableDirectory extends Vue {
         background: #fff;
         border: 1px solid #eee;
         border-radius: 0 0 4px 4px;
+        border-top: none;
     }
 
     .directory-item {
-        padding: 10px;
+        padding: 5px 10px;
         border-bottom: 1px solid #eee;
         background: #fff;
 

@@ -52,19 +52,26 @@ export default class CaseConfigAdd extends Vue {
 
     mounted() {
         console.log(this.type, 11111)
-        if (this.type === 'edit') {
-            this.getDetail()
-        }
+        //if (this.type === 'edit') {
+        this.getDetail()
+        //}
     }
     async getDetail() {
         const res = await getDetail({ id: this.id })
         console.log(res, 222)
-        this.formModel = res.data
+        //this.formModel = res.data
         this.$set(this.formModel, 'directory1', [
             { name: '111', hasAttachment: true },
             { name: '222', hasAttachment: false },
             { name: '333', hasAttachment: false },
             { name: '444', hasAttachment: false },
+            { name: '555', hasAttachment: false },
+            { name: '666', hasAttachment: false },
+            { name: '777', hasAttachment: false },
+            { name: '888', hasAttachment: false },
+            { name: '999', hasAttachment: false },
+            { name: '1010', hasAttachment: false },
+            { name: '1111', hasAttachment: false },
         ])
 
         this.$set(this.formModel, 'directory2', [{ name: '111', hasAttachment: true }])

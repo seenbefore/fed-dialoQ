@@ -117,7 +117,7 @@ export default class CaseSave extends Vue {
 
     async handlePreview() {
         console.log('preview')
-        await this.$modalDialog(() => import('@/views/file-review/components/preview-dialog/index.vue'), {
+        await this.$modalDialog(() => import('@/views/file-review/components/preview-doc-pdf-dialog/index.vue'), {
             docParams: {
                 partyId: '',
                 documentCatalogCode: 'DC2A0223300DZJZFM0000000001',
