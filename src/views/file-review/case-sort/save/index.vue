@@ -1,121 +1,134 @@
 <template>
     <div class="sg-page icinfo-ai CaseSave">
-        <!-- Steps indicator -->
-        <div class="steps-wrapper">
-            <el-steps :active="1" align-center>
-                <el-step title="卷宗封面"></el-step>
-                <el-step title="卷内备考表"></el-step>
-                <el-step title="完成"></el-step>
-            </el-steps>
-        </div>
-        <!-- Main content -->
-        <div class="content">
-            <DocInput
-                ref="docInputRef"
-                :doc-params="docParams"
-                :custom-get-doc-base-info="customGetDocBaseInfo"
-                :custom-get-doc-form="customGetDocForm"
-                :cus-doc-form-data="cusDocFormData"
-                is-custom-save-http
-                @emitDataMap="emitDataMap"
-            ></DocInput>
-        </div>
-
-        <!-- Fixed bottom action bar -->
-        <div class="fixed-bottom">
-            <el-button @click="handleCancel">取消</el-button>
-            <el-button type="primary" @click="handleNext">下一步</el-button>
-        </div>
+        <StepForm v-model="currentStep" :steps="steps" @save="handleSave" @cancel="handleCancel"></StepForm>
     </div>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { FormRow, FormColumn, FormRef } from '@/sharegood-ui'
-import DocInput from '@/components/doc-input/index.vue'
+import StepForm, { StepConfig } from '@/components/step-form/index.vue'
 
 @Component({
     name: 'CaseSave',
     components: {
-        DocInput,
+        StepForm,
     },
 })
 export default class CaseSave extends Vue {
-    public viewPdfSrc = ''
-    /**预览/返回编辑 */
-    async handlePreview() {
-        try {
-            const res: any = await this.docInputRef.docPreview().finally(() => {})
-            console.log('%c Line:55 🍊 res', 'background:#376ff3', res)
-            this.viewPdfSrc = res?.data.pdfUrl
-            await this.$modalDialog(() => import('@/views/file-review/my-case/save/components/preview-dialog/index.vue'), {
-                pdfSrc: this.viewPdfSrc,
-            })
-        } catch (error) {
-            console.error(error)
-        }
+    @Prop({ type: String }) id!: string
+    @Prop({ type: String, default: '' }) caseId!: string
+    @Prop({ type: String, default: '' }) archiveId!: string
+    @Prop({ type: Number, default: 0 }) step!: number
+    paylaod = {
+        caseId: this.caseId,
+        archiveId: this.archiveId,
+        archiveCatalogContentList: [] as any[],
     }
-    /**步骤 */
-    @Prop({ type: String, default: '1' })
-    step!: string
-    @Ref('formRef')
-    formRef!: FormRef
+    loading = false
+    /** 当前步骤 */
+    currentStep = this.step
+    get steps() {
+        return [
+            {
+                title: '卷宗封面',
+                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
+                props: {
+                    // 传递给组件的属性
+                },
 
-    docParams: Record<string, any> = {
-        caseId: '',
-        documentId: '',
-        documentCatalogCode: 'DC2A0223300WWFGJCNS0000001',
-        documentTemplateCode: 'DT2A0223300QWWFGJCNS0000000001',
-        partyId: '',
-        sourcePage: '',
+                render: (h, { row, handlers }) => {
+                    return (
+                        <div>
+                            <el-button
+                                type=""
+                                onClick={async () => {
+                                    console.log('取消')
+                                }}
+                            >
+                                取消
+                            </el-button>
+                            <el-button
+                                type="primary"
+                                onClick={async () => {
+                                    const currentComponent = handlers.getCurrentComponent()
+                                    const result = await currentComponent.save?.()
+                                    handlers.next()
+                                }}
+                            >
+                                下一步
+                            </el-button>
+                        </div>
+                    )
+                },
+            },
+            {
+                title: '卷内备考表',
+                component: () => import('@/views/file-review/components/case-step-form/index.vue'),
+                render: (h, { handlers }) => {
+                    return (
+                        <div>
+                            <el-button type="" onClick={handlers.prev}>
+                                上一步
+                            </el-button>
+
+                            <el-button
+                                type="primary"
+                                onClick={async () => {
+                                    const currentComponent = handlers.getCurrentComponent()
+                                    const result = await currentComponent.submit?.()
+                                    this.paylaod.archiveCatalogContentList = result
+                                    await this.handleSubmit()
+                                }}
+                            >
+                                提交
+                            </el-button>
+                        </div>
+                    )
+                },
+            },
+            {
+                title: '完成',
+                component: null,
+                render: () => {},
+            },
+        ] as StepConfig[]
     }
-    cusDocFormData: {
-        /**当事人名称 */
-        partyName: ''
-        /**证件号码 */
-        zjhm: ''
-        /**住址 */
-        partiesAddress: ''
-        /**电话 */
-        phone: ''
-        /**执法人员姓名 */
-        zfrymz: ''
+
+    mounted() {
+        console.log('CaseSave mounted')
+        // Loading.service({
+        //     fullscreen: true,
+        //     lock: true,
+        //     text: '提交中...',
+        // })
     }
-    /**自定义获取文书模板的接口 */
-    get customGetDocBaseInfo() {
-        return () => this.$http.post('/punish/stagedoc/common/getFirstIllegalityDocBaseInfo', this.docParams)
-    }
-    /**自定义获取文书表单的接口 */
-    get customGetDocForm() {
-        return () => this.$http.post('/punish/stagedoc/common/getFirstIllegalityDocFormData', this.docParams)
-    }
-    // 触发文书保存事件
-    async emitDataMap(tabIndex, values, sendData) {
-        // console.log(tabIndex, values, sendData)
-        // if (!values) return
-        // const paramsData: Record<string, any> = {
-        //     sourceDocCommonOperateSaveDto: sendData,
-        //     partiesLegalInfoList: null,
-        //     partiesPersonInfoList: null,
-        // }
-        // const { data } = await this.$http.post('/punish/ucase/case/firstIllegality/saveFirstIllegalityInfo', paramsData)
-        // if (data?.caseId) {
-        //     this.$router.replace({
-        //         path: '/source-case/detail',
-        //         query: { sourceId: data.caseId },
-        //     })
-        // }
-    }
-    @Ref('docInputRef')
-    docInputRef!: DocInput
-    /**提交 */
-    async handleNext() {
-        //await this.docInputRef.saveData()
-        this.$router.push({ path: '/file-review/case-sort/step2' })
+    handleSave(formData) {
+        console.log('Save:', formData)
     }
 
     handleCancel() {
         this.$router.back()
+    }
+    async handlePreview() {
+        console.log('preview')
+        await this.$modalDialog(() => import('@/views/file-review/my-case/components/preview-dialog/index.vue'), {
+            docParams: {
+                partyId: '',
+                documentCatalogCode: 'DC2A0223300DZJZFM0000000001',
+                documentId: '',
+                operateType: '',
+                documentTemplateCode: '',
+                surveyPeopleId: '',
+                caseId: 'ef01c4aad3f942e38d7f6c6fc3284316',
+            },
+        })
+    }
+    async handleSubmit() {
+        const payload = this.paylaod
+        console.log('submit', payload)
+        // this.$http.get('/punish/common/getLoginUserInfo', {
+        //     exShowLoading: true,
+        // })
     }
 }
 </script>
@@ -123,37 +136,5 @@ export default class CaseSave extends Vue {
 <style lang="less" scoped>
 .CaseSave {
     padding: 0 !important;
-    height: 100%;
-    display: flex !important;
-    flex-direction: column;
-
-    .steps-wrapper {
-        padding: 20px;
-        background: #fff;
-        border-bottom: 1px solid #eee;
-        //flex: 0 0 auto;
-    }
-
-    .content {
-        padding: 20px;
-        overflow-y: auto;
-        //height: calc(100% - 60px - 100px); // 减去底部操作栏高度和步骤条高度
-        flex: 1;
-    }
-
-    .fixed-bottom {
-        height: 50px;
-        padding: 0 20px;
-        display: flex;
-        //flex: 0 0 auto;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        border-top: 1px solid #ddd;
-
-        .el-button {
-            margin-left: 10px;
-        }
-    }
 }
 </style>

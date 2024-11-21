@@ -4,7 +4,7 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        {{ mainData }}
+
         <DraggableDirectory v-model="mainData" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions"></DraggableDirectory>
     </div>
 </template>
@@ -12,7 +12,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { TableColumn, TableRef } from '@/sharegood-ui'
-import DraggableDirectory from '@/views/file-review/my-case/save/components/draggable-directory/index.vue'
+import DraggableDirectory from '@/views/file-review/components/draggable-directory/index.vue'
 
 @Component({
     name: 'DirectoryConfig',
@@ -29,14 +29,12 @@ export default class DirectoryConfig extends Vue {
     mainData: any[] = [
         {
             id: 1,
-            index: 1,
             name: '卷宗封面',
             code: '1',
             attachments: true,
         },
         {
             id: 2,
-            index: 2,
             name: '卷宗目录',
             code: '2',
             attachments: false,
@@ -91,7 +89,7 @@ export default class DirectoryConfig extends Vue {
     get getMainTableAttrs() {
         return {
             columns: [
-                { prop: 'index', label: '序号', width: '50px' },
+                { prop: 'sort', label: '序号', width: '50px' },
                 { prop: 'name', label: '名称', minWidth: '200px' },
                 {
                     prop: 'attachments',

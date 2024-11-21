@@ -20,8 +20,8 @@
 </template>
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import DraggableDirectory from '@/views/file-review/my-case/components/draggable-directory/index.vue'
-import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumber } from './api'
+import DraggableDirectory from '@/views/file-review/components/draggable-directory/index.vue'
+import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
 @Component({
     name: 'Step2',
     components: {
@@ -88,8 +88,8 @@ export default class Step2 extends Vue {
             }))
         }
     }
-    /** 保存排序数据 */
-    async saveSendData() {
+    /** 获取排序数据 */
+    getSortData() {
         const list = this.directoryList.map((item: any, idx: number) => {
             return {
                 sort: idx + 1,
@@ -102,14 +102,19 @@ export default class Step2 extends Vue {
                 pageCount: item.pageCount,
             }
         })
-        const { caseId, archiveId } = this.row
-        const payload = {
-            caseId,
-            archiveId,
-            archiveCatalogContentList: list,
-        }
-        const { data } = await calculateElectricArchivePageNumber(payload)
-        return data
+        return list
+        // const { caseId, archiveId } = this.row
+        // const payload: any = {
+        //     caseId,
+        //     archiveId,
+        //     archiveCatalogContentList: list,
+        // }
+        // const { data } = await calculateElectricArchivePageNumberApi(payload)
+        // return data
+    }
+    async submit() {
+        const list = this.getSortData()
+        return list
     }
 }
 </script>

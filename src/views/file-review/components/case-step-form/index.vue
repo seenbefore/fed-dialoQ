@@ -1,28 +1,6 @@
 <template>
-    <div class="sg-page icinfo-ai CaseSave">
-        <!-- Steps indicator -->
-        <div class="steps-wrapper">
-            <el-steps :active="2" align-center>
-                <el-step title="卷宗封面" status="success"></el-step>
-                <el-step title="卷内备考表"></el-step>
-                <el-step title="完成"></el-step>
-            </el-steps>
-        </div>
-        <!-- Main content -->
-        <div class="content">
-            <!-- 表单 -->
-            <!-- 表单区域 -->
-            <div class="inner">
-                <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
-            </div>
-        </div>
-
-        <!-- Fixed bottom action bar -->
-        <div class="fixed-bottom">
-            <el-button @click="handleCancel">上一步</el-button>
-
-            <el-button type="primary" @click="handleNext">提交</el-button>
-        </div>
+    <div class="inner">
+        <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
     </div>
 </template>
 
@@ -145,66 +123,11 @@ export default class CaseSave extends Vue {
             fields,
         }
     }
-    /**提交 */
-    async handleNext() {
+    async submit() {
         await this.formRef.validate(null, true)
-        this.$message.success('保存成功')
-    }
-
-    handleCancel() {
-        this.$router.back()
+        return this.formModel
     }
 }
 </script>
 
-<style lang="less" scoped>
-.CaseSave {
-    padding: 0 !important;
-    height: 100%;
-    display: flex !important;
-    flex-direction: column;
-    .title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 5px;
-        text-align: center;
-    }
-    .meta {
-        text-align: right;
-        margin-bottom: 7px;
-    }
-
-    .steps-wrapper {
-        padding: 20px;
-        background: #fff;
-        border-bottom: 1px solid #eee;
-        //flex: 0 0 auto;
-    }
-
-    .content {
-        padding: 20px;
-        overflow-y: auto;
-        //height: calc(100% - 60px - 100px); // 减去底部操作栏高度和步骤条高度
-        flex: 1;
-    }
-
-    .fixed-bottom {
-        height: 50px;
-        padding: 0 20px;
-        display: flex;
-        //flex: 0 0 auto;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-        border-top: 1px solid #ddd;
-
-        .el-button {
-            margin-left: 10px;
-        }
-    }
-    .inner {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-}
-</style>
+<style lang="less" scoped></style>

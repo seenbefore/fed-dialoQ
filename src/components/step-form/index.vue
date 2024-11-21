@@ -145,8 +145,8 @@ export default class StepForm extends Vue {
 
     handlers = {
         prev: () => this.prev(),
-        next: () => this.handleButtonClick({ action: 'next', validate: true }),
-        submit: () => this.handleButtonClick({ action: 'save', validate: true }),
+        next: () => this.next(),
+        submit: () => this.submit(),
         getCurrentComponent: () => this.getCurrentComponent(),
     }
 

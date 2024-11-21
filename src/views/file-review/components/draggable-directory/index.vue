@@ -5,7 +5,7 @@
             <div class="header-left">
                 <span class="header-handle"></span>
                 <template v-for="column in columns">
-                    <span :key="column.prop" :class="['header-' + column.prop]" v-if="!column.hide">
+                    <span :key="column.prop" :class="['header-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
                         {{ column.label }}
                     </span>
                 </template>
@@ -18,14 +18,14 @@
         <!-- Table Content -->
         <draggable v-model="directoryList" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
             <transition-group type="transition">
-                <div v-for="item in directoryList" :key="item.id" class="directory-item">
+                <div v-for="(item, index) in directoryList" :key="index" class="directory-item">
                     <div class="item-content">
                         <div class="item-left">
                             <span class="drag-handle">
                                 <i class="el-icon-rank"></i>
                             </span>
                             <template v-for="column in columns">
-                                <span :key="column.prop" :class="['item-' + column.prop]" v-if="!column.hide">
+                                <span :key="column.prop" :class="['item-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
                                     <template v-if="column.render">
                                         <render-cell :render="column.render" :row="item"></render-cell>
                                     </template>
@@ -69,6 +69,8 @@ interface ColumnItem {
     label: string
     width?: number | string
     hide?: boolean
+    minWidth?: number | string
+    align?: 'left' | 'center'
     render?: (h: any, params: { row: DirectoryItem }) => any
 }
 
@@ -128,7 +130,12 @@ export default class DraggableDirectory extends Vue {
     }
 
     get directoryList(): DirectoryItem[] {
-        return this.value
+        const result = this.value.map((item, index) => ({
+            ...item,
+            sort: index + 1,
+            index,
+        }))
+        return result
     }
 
     set directoryList(value: DirectoryItem[]) {
@@ -162,7 +169,8 @@ export default class DraggableDirectory extends Vue {
         // 更新序号
         this.directoryList = this.directoryList.map((item, index) => ({
             ...item,
-            index: index + 1,
+            sort: index + 1,
+            index,
         }))
     }
 
@@ -171,19 +179,35 @@ export default class DraggableDirectory extends Vue {
     }
 
     handleDelete(item: DirectoryItem) {
-        this.$confirm('确定要删除该文件吗？', '提示', {
+        console.log('item', item.index)
+        this.$confirm('确定要删除吗？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
         }).then(() => {
-            const index = this.directoryList.findIndex(i => i.id === item.id)
-            if (index > -1) {
-                const newList = [...this.directoryList]
-                newList.splice(index, 1)
-                this.directoryList = newList
-                this.$message.success('删除成功')
-            }
+            const index = item.index
+
+            const newList = [...this.directoryList]
+            newList.splice(index, 1)
+            this.directoryList = newList
+            this.$message.success('删除成功')
         })
+    }
+
+    getColumnStyle(column: ColumnItem) {
+        const style: any = {}
+
+        if (column.width) {
+            style.width = typeof column.width === 'number' ? `${column.width}px` : column.width
+        }
+        if (column.minWidth) {
+            style.minWidth = typeof column.minWidth === 'number' ? `${column.minWidth}px` : column.minWidth
+        }
+        if (column.align) {
+            style.textAlign = column.align
+        }
+
+        return style
     }
 }
 </script>
@@ -213,6 +237,7 @@ export default class DraggableDirectory extends Vue {
 
             [class^='header-'] {
                 padding: 0 8px;
+                text-align: left;
             }
 
             .header-index {
@@ -281,6 +306,7 @@ export default class DraggableDirectory extends Vue {
 
             [class^='item-'] {
                 padding: 0 8px;
+                text-align: left;
             }
 
             .item-index {

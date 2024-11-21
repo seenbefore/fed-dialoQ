@@ -1,7 +1,9 @@
 <template>
     <div class="sg-page icinfo-ai CaseConfigAdd">
-        {{ formModel }}
-        <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
+        <div class="content">
+            {{ formModel }}
+            <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
+        </div>
 
         <div class="sg-form-actions">
             <el-button type="primary" @click="handleSubmit">确定</el-button>
@@ -261,10 +263,27 @@ export default class CaseConfigAdd extends Vue {
 
 <style lang="less" scoped>
 .CaseConfigAdd ::v-deep {
-    padding: 0px;
+    display: flex !important;
+    flex-direction: column;
+    padding: 0px !important;
+    height: 100%;
+    .content {
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+    }
     .sg-form-actions {
-        margin-top: 20px;
-        text-align: center;
+        height: 50px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border-top: 1px solid #ddd;
+
+        .el-button + .el-button {
+            margin-left: 10px;
+        }
     }
     .volumeType {
         .el-checkbox-group {

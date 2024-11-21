@@ -1,7 +1,7 @@
 /* eslint-disable */
 const CaseSortSave = () => import(/* webpackChunkName: "CaseSortSave" */ './index.vue')
 export default {
-    path: '/file-review/case-sort/save',
+    path: '/file-review/case-sort/save/:step?',
     name: 'CaseSave',
     component: CaseSortSave,
     props: ({ query, params }) => ({ ...query, ...params }),

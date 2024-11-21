@@ -6,7 +6,15 @@ export const BaseDesktopLoadingHook = Object.freeze({
     onBefore(config: any) {
         if (config.exShowLoading) {
             if (!instance || instance.visible === false) {
-                const options = Object.prototype.toString.call(config.exShowLoadingOption) === '[object Object]' ? config.exShowLoadingOption : {}
+                const options =
+                    Object.prototype.toString.call(config.exShowLoadingOption) === '[object Object]'
+                        ? config.exShowLoadingOption
+                        : {
+                              fullscreen: true,
+                              lock: true,
+                              text: '加载中...',
+                          }
+
                 instance = Loading.service(options)
             }
             count++
@@ -14,15 +22,15 @@ export const BaseDesktopLoadingHook = Object.freeze({
         }
     },
     onComplete(config: any) {
-        if (config._exShowLoading) {
-            if (instance) {
-                count--
-                if (count <= 0) {
-                    instance.close()
-                    instance = null
-                    count = 0
-                }
-            }
-        }
+        // if (config._exShowLoading) {
+        //     if (instance) {
+        //         count--
+        //         if (count <= 0) {
+        //             instance.close()
+        //             instance = null
+        //             count = 0
+        //         }
+        //     }
+        // }
     },
 })

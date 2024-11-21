@@ -16,7 +16,14 @@ import StepForm, { StepConfig } from '@/components/step-form/index.vue'
 })
 export default class CaseSave extends Vue {
     @Prop({ type: String }) id!: string
+    @Prop({ type: String, default: '' }) caseId!: string
+    @Prop({ type: String, default: '' }) archiveId!: string
     @Prop({ type: Number, default: 0 }) step!: number
+    paylaod = {
+        caseId: this.caseId,
+        archiveId: this.archiveId,
+        archiveCatalogContentList: [] as any[],
+    }
     loading = false
     /** 当前步骤 */
     currentStep = this.step
@@ -24,7 +31,7 @@ export default class CaseSave extends Vue {
         return [
             {
                 title: '卷宗封面',
-                component: () => import('./components/step1/index.vue'),
+                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
                 props: {
                     // 传递给组件的属性
                 },
@@ -44,8 +51,7 @@ export default class CaseSave extends Vue {
                                 type="primary"
                                 onClick={async () => {
                                     const currentComponent = handlers.getCurrentComponent()
-
-                                    await currentComponent.save?.()
+                                    const result = await currentComponent.save?.()
                                     handlers.next()
                                 }}
                             >
@@ -57,7 +63,7 @@ export default class CaseSave extends Vue {
             },
             {
                 title: '卷宗目录',
-                component: () => import('./components/step2/index.vue'),
+                component: () => import('@/views/file-review/components/case-step-catalog/index.vue'),
                 render: (h, { handlers }) => {
                     return (
                         <div>
@@ -72,8 +78,16 @@ export default class CaseSave extends Vue {
                             >
                                 预览
                             </el-button>
-                            <el-button type="primary" onClick={handlers.next}>
-                                下一步
+                            <el-button
+                                type="primary"
+                                onClick={async () => {
+                                    const currentComponent = handlers.getCurrentComponent()
+                                    const result = await currentComponent.submit?.()
+                                    this.paylaod.archiveCatalogContentList = result
+                                    await this.handleSubmit()
+                                }}
+                            >
+                                提交
                             </el-button>
                         </div>
                     )
@@ -86,6 +100,15 @@ export default class CaseSave extends Vue {
             },
         ] as StepConfig[]
     }
+
+    mounted() {
+        console.log('CaseSave mounted')
+        // Loading.service({
+        //     fullscreen: true,
+        //     lock: true,
+        //     text: '提交中...',
+        // })
+    }
     handleSave(formData) {
         console.log('Save:', formData)
     }
@@ -93,18 +116,26 @@ export default class CaseSave extends Vue {
     handleCancel() {
         this.$router.back()
     }
-    handlePreview() {
+    async handlePreview() {
         console.log('preview')
-        // try {
-        //     const res: any = await this.docInputRef.docPreview().finally(() => {})
-        //     console.log('%c Line:55 🍊 res', 'background:#376ff3', res)
-        //     this.viewPdfSrc = res?.data.pdfUrl
-        //     await this.$modalDialog(() => import('@/views/file-review/my-case/components/preview-dialog/index.vue'), {
-        //         pdfSrc: this.viewPdfSrc,
-        //     })
-        // } catch (error) {
-        //     console.error(error)
-        // }
+        await this.$modalDialog(() => import('@/views/file-review/components/preview-dialog/index.vue'), {
+            docParams: {
+                partyId: '',
+                documentCatalogCode: 'DC2A0223300DZJZFM0000000001',
+                documentId: '',
+                operateType: '',
+                documentTemplateCode: '',
+                surveyPeopleId: '',
+                caseId: 'ef01c4aad3f942e38d7f6c6fc3284316',
+            },
+        })
+    }
+    async handleSubmit() {
+        const payload = this.paylaod
+        console.log('submit', payload)
+        // this.$http.get('/punish/common/getLoginUserInfo', {
+        //     exShowLoading: true,
+        // })
     }
 }
 </script>
