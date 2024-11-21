@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>勾</title>
+    <g id="PC" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="02快办登记" transform="translate(-975.000000, -131.000000)">
+            <g id="2" transform="translate(919.000000, 69.000000)">
+                <g id="流程" transform="translate(57.000000, 62.000000)">
+                    <g id="勾" transform="translate(0.000000, 1.000000)">
+                        <polygon id="路径" fill="#158DFF" points="11.5231 18.0835 20 9.6066 18.1434 7.75 11.5231 14.3703 7.85658 10.7038 6 12.5604"></polygon>
+                        <rect id="矩形" stroke="#158DFF" stroke-width="2" x="0" y="0" width="26" height="26" rx="13"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

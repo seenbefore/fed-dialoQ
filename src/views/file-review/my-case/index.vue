@@ -40,8 +40,13 @@ export default class MyCase extends Vue {
         this.$router.push(`/file-review/my-case/detail?id=${row.id}`)
     }
 
-    handleEdit(row: any) {
-        this.$router.push(`/file-review/my-case/edit?id=${row.id}`)
+    async handleEdit(row: any) {
+        const result = await this.$modalDialog(() => import('./components/case-drawer/index.vue'), {
+            id: row.id,
+        })
+        if (result) {
+            this.handleSearch()
+        }
     }
 
     async handleAdd() {

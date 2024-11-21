@@ -10,4 +10,9 @@ export const httpPDFURL = createBaseDesktopHttp({
     exHooks: ['BaseDataHook', exAuth, 'BaseApiHook', 'BaseConsoleHook', 'BaseDesktopLoadingHook', 'BaseShowDesktopErrorMessageHook'],
 })
 
+export const httpDoc = createBaseDesktopHttp({
+    baseURL: process.env.VUE_APP_BASEURL_API_DOC,
+    exHooks: ['BaseDataHook', exAuth, 'BaseApiHook', 'BaseConsoleHook', 'BaseDesktopLoadingHook', 'BaseShowDesktopErrorMessageHook'],
+})
+
 export default http

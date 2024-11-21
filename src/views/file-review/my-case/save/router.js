@@ -1,7 +1,7 @@
 /* eslint-disable */
 const CaseSave = () => import(/* webpackChunkName: "CaseSave" */ './index.vue')
 export default {
-    path: '/file-review/my-case/save',
+    path: '/file-review/my-case/save/:step?',
     name: 'CaseSave',
     component: CaseSave,
     props: ({ query, params }) => ({ ...query, ...params }),

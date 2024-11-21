@@ -35,5 +35,7 @@ declare let process: {
         readonly VUE_APP_CLIENTSECRET: string
         /* pdf地址 */
         readonly VUE_APP_PDF_API: string
+        /* 文书接口地址 */
+        readonly VUE_APP_BASEURL_API_DOC: string
     }
 }

@@ -34,7 +34,7 @@ export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUse
         settings.isThirdParty = isThirdParty ? true : settings.isThirdParty
         settingsStore.changeSetting(settings as any)
         // 设置自定义主题名称和色系
-        settingsStore.updateThemeName('gci2')
+        settingsStore.updateThemeName('blue')
         let themeVariables: IDefinedThemeValue = {
             '--color-primary': '#06f',
             '--color-success': '#6DD400',
