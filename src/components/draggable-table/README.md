@@ -59,18 +59,19 @@ DraggableTable 是一个基于 Element UI Table 封装的可拖拽排序表格�
 
 ```vue
 <template>
-    <draggable-table :data="tableData" :columns="columns" @drag-end="handleDragEnd">
-       
-    </draggable-table>
+    <draggable-table :data="tableData" :columns="columns" :actions="actions" @drag-end="handleDragEnd"></draggable-table>
 </template>
-<script>
-export default {
-    data() {
+<script lang="tsx">
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import DraggableTable from '@/components/draggable-table/index.vue'
+
+export default class CaseSave extends Vue {
+    tableData = [
+        { id: 1, name: '张三', age: 18 },
+        { id: 2, name: '李四', age: 20 },
+    ]
+    get tableAttrs() {
         return {
-            tableData: [
-                { id: 1, name: '张三', age: 18 },
-                { id: 2, name: '李四', age: 20 },
-            ],
             columns: [
                 { prop: 'sort', label: '序号', width: '50px' },
                 { prop: 'name', label: '名称', minWidth: '200px' },
@@ -91,19 +92,17 @@ export default {
                 },
             ],
         }
-    },
-    methods: {
-        handleDragEnd(newData) {
-            this.tableData = newData
-            // 可以在这里处理排序后的数据，如调用接口保存新的排序
-        },
-        handleEdit(row) {
-            // 处理编辑逻辑
-        },
-        handleDelete(row) {
-            // 处理删除逻辑
-        },
-    },
+    }
+    handleDragEnd(newData) {
+        this.tableData = newData
+        // 可以在这里处理排序后的数据，如调用接口保存新的排序
+    }
+    handleEdit(row) {
+        // 处理编辑逻辑
+    }
+    handleDelete(row) {
+        // 处理删除逻辑
+    }
 }
 </script>
 ```

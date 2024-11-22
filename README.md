@@ -406,9 +406,7 @@ import { userStore, appStore } from '@/store/useStore'
 
 @Component({
     name: 'Step2',
-    components: {
-        DraggableDirectory,
-    },
+    components: {},
 })
 export default class Step2 extends Vue {
     async login() {
@@ -480,10 +478,10 @@ modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
 
 标签页位于`src/store/modules/tagsView.ts`文件中。
 
-
-
 ### 关闭当前标签页并跳转
+
 定义全局函数
+
 ```typescript
 import { tagsViewStore } from '@/store/useStore'
 /**
@@ -494,7 +492,9 @@ Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {
     this.$router.push(params)
 }
 ```
+
 `vue.d.ts`定义
+
 ```typescript
 declare module 'vue/types/vue' {
     class C {}
@@ -505,6 +505,7 @@ declare module 'vue/types/vue' {
 ```
 
 使用
+
 ```vue
 <template>
     <button @click="closeCurrentView">关闭当前标签页</button>
@@ -883,6 +884,63 @@ export default class CaseSave extends Vue {
                 },
             },
         ]
+    }
+}
+</script>
+```
+
+### draggable-table 拖拽表格
+
+拖拽表格组件，[文档地址](./src/components/draggable-table/README.md)
+
+示例代码
+
+```vue
+<template>
+    <draggable-table :data="tableData" :columns="columns" :actions="actions" @drag-end="handleDragEnd"></draggable-table>
+</template>
+<script lang="tsx">
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import DraggableTable from '@/components/draggable-table/index.vue'
+
+export default class CaseSave extends Vue {
+    tableData = [
+        { id: 1, name: '张三', age: 18, attachments: true },
+        { id: 2, name: '李四', age: 20, attachments: false },
+    ]
+    get tableAttrs() {
+        return {
+            columns: [
+                { prop: 'sort', label: '序号', width: '50px' },
+                { prop: 'name', label: '名称', minWidth: '200px' },
+                {
+                    prop: 'attachments',
+                    label: '含附件',
+                    width: '100px',
+                    render: (h, { row }) => {
+                        return <el-checkbox v-model={row.attachments}></el-checkbox>
+                    },
+                },
+            ],
+            actions: [
+                {
+                    key: 'delete',
+                    icon: 'el-icon-delete',
+                    handler: this.handleDelete,
+                    tooltip: '删除',
+                },
+            ],
+        }
+    }
+    handleDragEnd(newData: any) {
+        this.tableData = newData
+        // 可以在这里处理排序后的数据，如调用接口保存新的排序
+    }
+    async handleDelete(row: any, context: any) {
+        // 处理删除逻辑
+        await this.$confirm('确定删除吗？')
+        // 拖拽组件提供的删除行方法
+        context.removeItem(row)
     }
 }
 </script>
