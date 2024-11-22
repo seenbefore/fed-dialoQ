@@ -32,4 +32,12 @@ export default class AppModule extends BaseAppStore {
     public setDontShowMoveConfirm(value: boolean) {
         this.$dontShowMoveConfirm = value
     }
+    @Action
+    public asyncSomething() {
+        // 异步处理某些内容
+        return new Promise(resolve => {
+            this.setDontShowDeleteConfirm(false)
+            resolve('')
+        })
+    }
 }

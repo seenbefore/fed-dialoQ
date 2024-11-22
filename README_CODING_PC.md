@@ -2372,6 +2372,7 @@ export default class AppChart extends Vue {
 
 # Workflow
 - 用户输入产品prd内容
+- 学习[README.md](./README.md)中的内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。并在`menus.ts`中添加菜单。
     - 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
     - 枚举文件`enum.ts`请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。

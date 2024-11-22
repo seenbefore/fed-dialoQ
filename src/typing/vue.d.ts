@@ -11,5 +11,6 @@ declare module 'vue/types/vue' {
         $bus: EventBus
         $back: any
         $postMessage: (data: { type: string; name?: string; title?: string; data?: any }) => void
+        $closeCurrentAndOpenView: (params: any) => void
     }
 }

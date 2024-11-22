@@ -9,7 +9,7 @@ import http from './scripts/http'
 import defaultSettings from './settings'
 // 状态管理
 import store from './store'
-import { settingsStore, userStore } from './store/useStore'
+import { settingsStore, userStore, tagsViewStore } from './store/useStore'
 import './styles/index.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
 
@@ -39,6 +39,13 @@ Vue.prototype.$postMessage = function(data: any) {
     } catch (error) {
         console.error(error)
     }
+}
+/**
+ * 关闭当前标签页
+ */
+Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {
+    await tagsViewStore.delView(this.$route)
+    this.$router.push(params)
 }
 
 desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
