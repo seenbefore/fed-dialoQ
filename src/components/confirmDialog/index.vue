@@ -9,6 +9,8 @@ export default class ConfirmDialog extends Vue {
     @Prop({ type: Object })
     public options!: IUseConfirm
 
+    private noRemind = false
+
     public close(selfClose?: boolean): void {
         if (!selfClose) {
             const { beforeClose } = this.options
@@ -26,19 +28,27 @@ export default class ConfirmDialog extends Vue {
         this.$emit(ConfirmResultEnum.CONFIRM)
     }
 
-    public getTitle(title: string | JSX.Element, icon?: string, className?: string): JSX.Element | string {
+    private handleNoRemindChange(checked: boolean): void {
+        this.noRemind = checked
+        if (this.options.onNoRemindChange) {
+            this.options.onNoRemindChange(checked)
+        }
+    }
+
+    public getTitle(title: string | JSX.Element, icon?: string, className?: string, style?: string): JSX.Element | string {
         /* XXX 不是以这些资源为结尾的都处理为iconFont */
         const isIconFont = !/\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i.test(icon ?? '')
         return (
             <div class="confirm-dialog__icon-title">
-                {icon ? isIconFont ? <i class={[icon, className]}></i> : <img class={className} src={icon} alt="icon" /> : null}
+                {icon ? isIconFont ? <i class={[icon, className]} style={style}></i> : <img class={className} src={icon} alt="icon" style={style} /> : null}
                 <span>{title}</span>
             </div>
         )
     }
 
     public render() {
-        const { message, footerCancelText, footerConfirmText, beforeClose, title, titleIcon, titleIconClass, ...bindOptions } = this.options
+        const { message, footerCancelText, footerConfirmText, beforeClose, title, titleIcon, titleIconClass, titleIconStyle, showNoRemind, noRemindText = '不再提醒', ...bindOptions } = this.options
+
         return (
             <el-dialog
                 {...{
@@ -53,7 +63,7 @@ export default class ConfirmDialog extends Vue {
                 onClose={() => this.close(true)}
                 beforeClose={beforeClose}
                 scopedSlots={{
-                    title: () => this.getTitle(title!, titleIcon, titleIconClass),
+                    title: () => this.getTitle(title!, titleIcon, titleIconClass, titleIconStyle),
                 }}
             >
                 <div class="confirm-dialog__body">{message}</div>
@@ -62,6 +72,13 @@ export default class ConfirmDialog extends Vue {
                         {footerConfirmText}
                     </el-button>
                     <el-button onClick={() => this.close(false)}>{footerCancelText}</el-button>
+                    {showNoRemind && (
+                        <div class="confirm-dialog__no-remind">
+                            <el-checkbox value={this.noRemind} onInput={this.handleNoRemindChange}>
+                                {noRemindText}
+                            </el-checkbox>
+                        </div>
+                    )}
                 </div>
             </el-dialog>
         )
@@ -137,6 +154,16 @@ export default class ConfirmDialog extends Vue {
             &:active {
                 background-color: #fff;
             }
+        }
+    }
+
+    &__no-remind {
+        margin-top: 16px;
+        text-align: center;
+
+        .el-checkbox {
+            color: #606266;
+            font-size: 14px;
         }
     }
 }

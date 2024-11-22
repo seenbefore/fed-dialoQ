@@ -13,11 +13,11 @@
                 <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
                 <div class="meta">
                     <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
-                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
+                    <!-- <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
                         <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
-                    </el-upload>
+                    </el-upload> -->
                 </div>
-                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs"></DraggableDirectory>
+                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs" :confirm-message="'确定从卷宗目录中移除吗？'"></DraggableDirectory>
             </div>
         </div>
     </div>
@@ -26,7 +26,8 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
 import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
-
+import { useNoRemindConfirm } from '@/components/confirmDialog/useConfirm'
+import { appStore } from '@/store/useStore'
 /** 卷宗目录组件 */
 export interface CaseStepCatalogClass {
     /** 获取表单数据 */
@@ -44,7 +45,7 @@ export default class Step2 extends Vue {
     loading = false
     mounted() {
         console.log('Step2 mounted')
-        this.getInitDocs()
+        // this.getInitDocs()
     }
     /** 获取初始化的目录文书 */
     async getInitDocs() {
@@ -73,12 +74,19 @@ export default class Step2 extends Vue {
     handleTabClick(tab: string) {
         console.log('handleTabClick', tab)
         if (this.activeTab === '2') {
-            this.directoryList = []
+            this.directoryList = [
+                {
+                    sort: 1,
+                    documentNumber: '12322',
+                    documentEvidenceName: '文书/证据名称',
+                },
+            ]
         } else {
             this.getInitDocs()
         }
     }
     get getDraggableDirectoryAttrs() {
+        const { activeTab } = this
         return {
             columns: [
                 { prop: 'sort', label: '序号', width: '50px', align: 'center' },
@@ -87,13 +95,43 @@ export default class Step2 extends Vue {
                 { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
             ],
             actions: [
-                { key: 'delete', icon: 'el-icon-delete' },
-                { key: 'preview', icon: 'el-icon-view' },
+                { key: 'delete', icon: 'el-icon-delete', handler: this.handleDelete },
+                { key: 'move', icon: 'el-icon-right', tooltip: activeTab === '1' ? '正卷移动到副卷' : '副卷移动到正卷', handler: this.handleMove },
             ],
         }
     }
-    directoryList: any[] = []
-
+    directoryList: any[] = [
+        {
+            sort: 1,
+            documentNumber: '123',
+            documentEvidenceName: '文书/证据名称',
+        },
+    ]
+    // 正副卷相互移动
+    async handleMove(data: any) {
+        const { activeTab } = this
+        console.log('handleMove', activeTab, data)
+        const result = await useNoRemindConfirm({
+            message: `${activeTab === '1' ? '正卷' : '副卷'}移动到${activeTab === '1' ? '副卷' : '正卷'}吗？`,
+            onNoRemindChange: checked => {
+                appStore.setDontShowMoveConfirm(checked)
+            },
+        })
+    }
+    async handleDelete(data: any, context: any) {
+        const { dontShowDeleteConfirm } = appStore
+        if (dontShowDeleteConfirm) {
+            context.removeItem(data)
+            return
+        }
+        await useNoRemindConfirm({
+            message: '确定从卷宗目录中移除吗？',
+            onNoRemindChange: checked => {
+                appStore.setDontShowDeleteConfirm(checked)
+            },
+        })
+        context.removeItem(data)
+    }
     async handleAdd() {
         const defaultCheckedKeys = this.directoryList.map(item => item.documentEvidenceUrl)
         const result = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {

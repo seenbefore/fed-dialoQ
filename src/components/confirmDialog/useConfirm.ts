@@ -11,6 +11,7 @@ export interface IUseConfirm {
     title?: string | JSX.Element
     titleIcon?: any
     titleIconClass?: string
+    titleIconStyle?: string
     closeOnClickModal?: boolean
     lockScroll?: boolean
     beforeClose?: (done: () => void) => void
@@ -18,6 +19,9 @@ export interface IUseConfirm {
     closeOnPressEscape?: boolean
     footerCancelText?: string
     footerConfirmText?: string
+    showNoRemind?: boolean
+    noRemindText?: string
+    onNoRemindChange?: (checked: boolean) => void
 }
 
 const defaultOptions: Omit<IUseConfirm, 'message'> = {
@@ -91,3 +95,19 @@ export const useSuccessConfirm = (userOptions: string | JSX.Element | IUseConfir
  * @param userOptions
  */
 export const useWarningConfirm = (userOptions: string | JSX.Element | IUseConfirm) => baseUseIconConfirm(userOptions, 'warning')
+
+export const useNoRemindConfirm = (options: IUseConfirm | string) => {
+    const defaultOptions = {
+        showNoRemind: true,
+        noRemindText: '不再提醒',
+        closeOnClickModal: false,
+        closeOnPressEscape: true,
+        lockScroll: true,
+        titleIcon: 'el-icon-warning',
+        titleIconStyle: 'color: var(--color-warning)',
+    }
+
+    const finalOptions = typeof options === 'string' ? { ...defaultOptions, message: options } : { ...defaultOptions, ...options }
+
+    return useConfirm(finalOptions)
+}

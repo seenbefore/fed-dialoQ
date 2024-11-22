@@ -41,9 +41,12 @@
                             <div class="item-right">
                                 <div class="item-actions">
                                     <template v-for="action in actions">
-                                        <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action.key, item)">
-                                            <i :class="action.icon"></i>
-                                        </el-button>
+                                        <el-tooltip :key="action.key" :content="action.tooltip" :disabled="!action.tooltip">
+                                            <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action, item)">
+                                                <i :class="action.icon"></i>
+                                                <span v-if="action.label">{{ action.label }}</span>
+                                            </el-button>
+                                        </el-tooltip>
                                     </template>
                                 </div>
                             </div>
@@ -72,6 +75,9 @@ interface ColumnItem {
 interface ActionItem {
     key: string
     icon: string
+    label?: string
+    tooltip?: string
+    handler?: (row: any, context: any) => Promise<any>
     hide?: (row: any) => boolean
 }
 
@@ -116,6 +122,9 @@ export default class DraggableDirectory extends Vue {
     @Prop({ type: Number, default: 400 })
     maxHeight!: number
 
+    @Prop({ type: String, default: '确定要删除吗？' })
+    confirmMessage!: string
+
     get dragOptions() {
         return {
             animation: 200,
@@ -140,16 +149,16 @@ export default class DraggableDirectory extends Vue {
         this.$emit('change', value)
     }
 
-    handleAction(key: string, item: any) {
-        switch (key) {
+    handleAction(action: ActionItem, item: any) {
+        switch (action.key) {
             case 'delete':
-                this.handleDelete(item)
+                action.handler ? action.handler(item, this) : this.handleDelete(item)
                 break
             case 'preview':
-                this.handlePreview(item)
+                action.handler ? action.handler(item, this) : this.handlePreview(item)
                 break
             default:
-                this.$emit(key, item)
+                action.handler ? action.handler(item, this) : this.$emit(action.key, item)
         }
     }
 
@@ -174,20 +183,19 @@ export default class DraggableDirectory extends Vue {
     handlePreview(item: any) {
         this.$emit('preview', item)
     }
-
-    handleDelete(item: any) {
-        this.$confirm('确定要删除吗？', '提示', {
+    removeItem(item: any) {
+        const index = item.index
+        const newList = [...this.directoryList]
+        newList.splice(index, 1)
+        this.directoryList = newList
+    }
+    async handleDelete(item: any) {
+        await this.$confirm(this.confirmMessage, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
-        }).then(() => {
-            const index = item.index
-
-            const newList = [...this.directoryList]
-            newList.splice(index, 1)
-            this.directoryList = newList
-            this.$message.success('删除成功')
         })
+        this.removeItem(item)
     }
 
     getColumnStyle(column: ColumnItem) {

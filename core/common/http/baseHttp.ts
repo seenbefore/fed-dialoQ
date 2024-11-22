@@ -13,7 +13,8 @@ export const getBaseConfig = (): IConfig => {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
         },
-        timeout: 60 * 1000, // 默认超时30s
+        // 开发环境超时10s，其他环境超时60s
+        timeout: process.env.NODE_ENV === 'development' ? 10 * 1000 : 60 * 1000, // 默认超时60s
         baseURL: process.env.VUE_APP_BASEURL_API,
         // 业务请求是否成功
         isResponseSuccess(res: ExApiResponse) {

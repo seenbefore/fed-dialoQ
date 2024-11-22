@@ -11,7 +11,22 @@ import defaultSettings from './settings'
 import store from './store'
 import { settingsStore, userStore } from './store/useStore'
 import './styles/index.less'
+import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
 
+// 自定义确认框风格样式
+const customConfirm = (options: IUseConfirm | string) => {
+    const defaultOptions = {
+        title: '提示',
+        titleIcon: 'el-icon-warning',
+        titleIconStyle: 'color: var(--color-warning)',
+    } as IUseConfirm
+
+    const finalOptions = typeof options === 'string' ? { ...defaultOptions, message: options } : { ...defaultOptions, ...options }
+
+    return useConfirm(finalOptions)
+}
+customConfirm('33')
+Vue.prototype.$confirm = customConfirm
 Vue.prototype.$http = http
 /**
  * 向父级发送消息
