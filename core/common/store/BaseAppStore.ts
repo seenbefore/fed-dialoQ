@@ -49,4 +49,18 @@ export default class BaseAppStore extends VuexModule implements IBaseAppStore {
     public async closeSideBar(withoutAnimation = false): Promise<void> {
         this.context.commit('CLOSE_SIDEBAR', withoutAnimation)
     }
+    /**
+     * 重置以$开头的业务属性
+     */
+    @Mutation
+    public reset(): void {
+        console.log('reset==>', this)
+        Object.keys(this).forEach(key => {
+            const value = this[key]
+            console.log('key==>', key, value)
+            if (key.startsWith('$')) {
+                this[key] = null
+            }
+        })
+    }
 }

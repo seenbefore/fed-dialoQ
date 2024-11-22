@@ -28,6 +28,8 @@ import DraggableDirectory from '@/components/draggable-table/index.vue'
 import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
 import { useNoRemindConfirm } from '@/components/confirmDialog/useConfirm'
 import { appStore } from '@/store/useStore'
+//appStore.reset()
+
 /** 卷宗目录组件 */
 export interface CaseStepCatalogClass {
     /** 获取表单数据 */
@@ -119,8 +121,8 @@ export default class Step2 extends Vue {
         })
     }
     async handleDelete(data: any, context: any) {
-        const { dontShowDeleteConfirm } = appStore
-        if (dontShowDeleteConfirm) {
+        const { $dontShowDeleteConfirm } = appStore
+        if ($dontShowDeleteConfirm) {
             context.removeItem(data)
             return
         }

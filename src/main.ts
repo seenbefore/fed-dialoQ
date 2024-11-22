@@ -25,7 +25,7 @@ const customConfirm = (options: IUseConfirm | string) => {
 
     return useConfirm(finalOptions)
 }
-customConfirm('33')
+
 Vue.prototype.$confirm = customConfirm
 Vue.prototype.$http = http
 /**

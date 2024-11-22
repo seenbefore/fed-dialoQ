@@ -12,24 +12,24 @@ export default class AppModule extends BaseAppStore {
     /**
      *  是否不显示移动出卷宗目录的确认框
      * */
-    public dontShowDeleteConfirm = false
+    public $dontShowDeleteConfirm = false
     /**
      *  设置是否不显示移动出卷宗目录的确认框
      * */
     @Mutation
     public setDontShowDeleteConfirm(value: boolean) {
-        this.dontShowDeleteConfirm = value
+        this.$dontShowDeleteConfirm = value
     }
     /**
      *  是否不显示移动到副卷的确认框
      * */
 
-    public dontShowMoveConfirm = false
+    public $dontShowMoveConfirm = false
     /**
      *  设置是否不显示移动到副卷的确认框
      * */
     @Mutation
     public setDontShowMoveConfirm(value: boolean) {
-        this.dontShowMoveConfirm = value
+        this.$dontShowMoveConfirm = value
     }
 }
