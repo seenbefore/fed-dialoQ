@@ -10,7 +10,7 @@
                             <component
                                 ref="fieldRef"
                                 :key="field.randomKey || field.name"
-                                :class="['van-form-cell', field.tag, field.verticalAlign ? `van-form-cell-${field.verticalAlign}` : '', field.props ? field.props.class || '' : '']"
+                                :class="['van-form-cell', field.name, field.tag, field.verticalAlign ? `van-form-cell-${field.verticalAlign}` : '', field.props ? field.props.class || '' : '']"
                                 :name="field.name"
                                 :label="field.hiddenLabel ? '' : field.label"
                                 :required="field.required"

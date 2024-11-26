@@ -162,6 +162,30 @@ export default class EnforcementFeedback extends Vue {
                     },
                 ],
             },
+            // 企业信息
+            {
+                groupName: '',
+                groupId: 'companyInfo',
+                children: [
+                    {
+                        tag: 'input',
+                        name: 'companyName',
+                        label: '相关企业名称',
+                        props: {
+                            placeholder: '请输入',
+                        },
+                    },
+                    {
+                        tag: 'input',
+                        name: 'creditCode',
+                        label: '统一征信代码',
+                        props: {
+                            placeholder: '请输入',
+                        },
+                    },
+                ],
+            },
+
             {
                 groupName: '',
                 groupId: 'proofFiles',
