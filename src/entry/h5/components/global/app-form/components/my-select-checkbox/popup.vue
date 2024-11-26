@@ -40,13 +40,7 @@ export default class MySelectCheckbox extends Vue {
     value!: any[]
 
     @Prop({ type: String, default: '请选择' })
-    placeholder!: string
-
-    @Prop({ type: String, default: '请选择' })
     title!: string
-
-    @Prop({ type: Boolean, default: false })
-    disabled!: boolean
 
     @Prop({
         type: Array,
@@ -56,7 +50,6 @@ export default class MySelectCheckbox extends Vue {
 
     private show = true
     private selectedValues: any[] = []
-    private tempValues: any[] = []
 
     get displayValue() {
         return this.selectedValues
@@ -68,27 +61,24 @@ export default class MySelectCheckbox extends Vue {
     @Watch('value', { immediate: true })
     onValueChange(newValue: any[]) {
         this.selectedValues = [...(newValue || [])]
-        this.tempValues = [...(newValue || [])]
-    }
-
-    showPopup() {
-        if (this.disabled) return
-        this.show = true
-        // 备份当前选中值
-        this.tempValues = [...this.selectedValues]
     }
 
     onCancel() {
         this.show = false
         // 恢复之前的选择
-        this.selectedValues = [...this.tempValues]
+        //this.selectedValues = [...this.tempValues]
+        this.$options?.cancel?.()
     }
 
     onConfirm() {
         this.show = false
-        this.tempValues = [...this.selectedValues]
-        this.$emit('input', this.selectedValues)
-        this.$emit('change', {
+
+        // this.$emit('input', this.selectedValues)
+        // this.$emit('change', {
+        //     value: this.selectedValues,
+        //     options: this.options.filter(item => this.selectedValues.includes(item.value)),
+        // })
+        this.$options?.confirm?.({
             value: this.selectedValues,
             options: this.options.filter(item => this.selectedValues.includes(item.value)),
         })

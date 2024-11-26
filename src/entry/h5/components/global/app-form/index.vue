@@ -34,10 +34,10 @@
                                 </template>
                                 <!-- 自定义渲染 -->
                                 <template #input>
-                                    <ex-slot :render="field.inputRender" :row="field"></ex-slot>
+                                    <ex-slot v-if="field.inputRender" :render="field.inputRender" :row="field"></ex-slot>
                                 </template>
                                 <template #label>
-                                    <ex-slot :render="field.labelRender" :row="field"></ex-slot>
+                                    <ex-slot v-if="field.labelRender" :render="field.labelRender" :row="field"></ex-slot>
                                 </template>
                             </component>
                         </template>
@@ -141,6 +141,7 @@ export const componentMap: Record<string, any> = {
     'select-picker': () => import('./components/select-picker/index.vue'),
     table: () => import('./components/my-table/index.vue'),
     'select-checkbox': () => import('./components/my-select-checkbox/index.vue'),
+    custom: () => import('./components/my-custom/index.vue'),
 }
 // 自定义内容的组件
 const ExSlot = {
@@ -365,8 +366,15 @@ export default class AppForm extends Vue {
     /**获取字段校验规则 */
     getFieldRules(field: Field) {
         const { required, label, rules = [] } = field
+        // console.log(field.name, rules, 'rules')
         if (required) {
-            return [{ required, message: `【${label}】为必填项` }, ...rules]
+            return [
+                {
+                    required,
+                    message: `【${label}】为必填项`,
+                },
+                ...rules,
+            ]
         }
         return rules
     }
@@ -425,7 +433,7 @@ export default class AppForm extends Vue {
 
     /**表单校验 */
     async validate() {
-        console.log('validate: ', this.formData, this.$refs.vanForm)
+        console.log('validate: ', this.formData)
         return new Promise((resolve, reject) => {
             this.$refs.vanForm
                 .validate()

@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="groupFields" :show-foot-btns="false" />
         </div>
         <div class="footer">
-            <van-button block type="primary" :loading="submitting" @click="handleSubmit">
+            <van-button block type="primary" :loading="submitting" loading-text="提交中" @click="handleSubmit" :disabled="submitting">
                 提交
             </van-button>
         </div>
@@ -21,37 +21,40 @@ import { mockSubmitHandle } from './api'
 export default class EnforcementHandle extends Vue {
     private formRef: any = null
     private submitting = false
-
+    // 处置人员
+    private handleUsers = [
+        {
+            label: '张三',
+            value: '1',
+            phone: '13800138000',
+            isLeader: false,
+        },
+        {
+            label: '张三1',
+            value: '2',
+            phone: '13800138001',
+            isLeader: true,
+        },
+    ]
+    // 通知人员
+    private notifyUsers = [
+        {
+            label: '张三',
+            value: '1',
+            phone: '13800138000',
+        },
+        {
+            label: '张三1',
+            value: '2',
+            phone: '13800138001',
+        },
+    ] // 通知人员
     private formData = {
-        handleUsers: [
-            {
-                label: '张三',
-                value: '1',
-                phone: '13800138000',
-                isLeader: false,
-            },
-            {
-                label: '张三1',
-                value: '2',
-                phone: '13800138001',
-                isLeader: true,
-            },
-        ], // 处置人员
+        handleUsers2: [],
+        notifyUsers$: ['1'],
         handleEquipment: '', // 处置装备
         handleNote: '', // 处置意见
         messageNotify: ['1'], // 消息通知方式：1-钉消息 2-短信
-        notifyUsers: [
-            {
-                label: '张三',
-                value: '1',
-                phone: '13800138000',
-            },
-            {
-                label: '张三1',
-                value: '2',
-                phone: '13800138001',
-            },
-        ], // 通知人员
     }
 
     get groupFields() {
@@ -62,30 +65,40 @@ export default class EnforcementHandle extends Vue {
                 children: [
                     {
                         tag: 'select-checkbox',
-                        name: 'handleUsers$',
+                        name: 'handleUsers2',
                         label: '处置人员',
                         required: true,
                         props: {
-                            placeholder: '请选择',
-                            value: [],
-                            multiple: true,
-                            options: [
-                                {
-                                    label: 'a',
-                                    value: '1',
-                                },
-                                {
-                                    label: 'b',
-                                    value: '2',
-                                },
-                            ],
+                            options: async () => {
+                                const result = [
+                                    {
+                                        label: '张三',
+                                        value: '1',
+                                    },
+                                    {
+                                        label: 'b',
+                                        value: '2',
+                                    },
+                                ]
+                                return result
+                            },
                         },
+                        // 添加验证规则
+                        // rules: [
+                        //     {
+                        //         message: '请选择处置人员33',
+                        //         validator: (value: any) => {
+                        //             console.log(value, '111value')
+                        //             return false
+                        //         },
+                        //     },
+                        // ],
                         inputRender: () => {
                             return <span style="color: #1676fe">选派人员</span>
                         },
                     },
                     {
-                        tag: 'input',
+                        tag: 'custom',
                         name: 'handleUsers',
                         label: '',
                         props: {
@@ -96,23 +109,23 @@ export default class EnforcementHandle extends Vue {
                             return (
                                 <div class="handle-users">
                                     <div class="user-list">
-                                        {this.formData.handleUsers.map((user: any) => (
+                                        {this.handleUsers.map((user: any, index: number) => (
                                             <div class="user-item" key={user.value}>
                                                 <div class="user-info">
                                                     <span class="user-name">{user.label}</span>
                                                     <span class="user-phone">({user.phone})</span>
                                                 </div>
                                                 <div class="user-actions">
-                                                    <van-button
+                                                    <span
                                                         plain={!user.isLeader}
                                                         type="primary"
                                                         size="mini"
-                                                        class={user.isLeader ? 'leader-btn' : ''}
+                                                        class={`btn ${user.isLeader ? 'leader-btn' : ''}`}
                                                         onClick={() => this.toggleLeader(user.value)}
                                                     >
                                                         {user.isLeader ? '已设为负责人' : '设为负责人'}
-                                                    </van-button>
-                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(user.value)}>
+                                                    </span>
+                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(index, this.handleUsers)}>
                                                         删除
                                                     </span>
                                                 </div>
@@ -136,7 +149,13 @@ export default class EnforcementHandle extends Vue {
                         props: {
                             placeholder: '请选择',
                             value: '',
-                            options: [],
+                            options: async () => {
+                                const result = [
+                                    { label: 'a', value: '1' },
+                                    { label: 'b', value: '2' },
+                                ]
+                                return result
+                            },
                         },
                     },
                 ],
@@ -207,11 +226,11 @@ export default class EnforcementHandle extends Vue {
                             ],
                         },
                         inputRender: () => {
-                            return <span style="color: #1676fe">选派人员</span>
+                            return <span style="color: #1676fe">选择人员</span>
                         },
                     },
                     {
-                        tag: 'input',
+                        tag: 'custom',
                         name: 'notifyUsers',
                         label: '',
                         props: {
@@ -222,14 +241,14 @@ export default class EnforcementHandle extends Vue {
                             return (
                                 <div class="handle-users">
                                     <div class="user-list">
-                                        {this.formData.handleUsers.map((user: any) => (
+                                        {this.notifyUsers.map((user: any, index: number) => (
                                             <div class="user-item" key={user.value}>
                                                 <div class="user-info">
                                                     <span class="user-name">{user.label}</span>
                                                     <span class="user-phone">({user.phone})</span>
                                                 </div>
                                                 <div class="user-actions">
-                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(user.value)}>
+                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(index, this.notifyUsers)}>
                                                         删除
                                                     </span>
                                                 </div>
@@ -248,54 +267,38 @@ export default class EnforcementHandle extends Vue {
     mounted() {
         // 从路由参数获取初始数据
         const { query } = this.$route
-        if (query) {
-            Object.keys(query).forEach(key => {
-                if (key in this.formData) {
-                    this.formData[key] = query[key]
-                }
-            })
-        }
     }
 
     private toggleLeader(value: string) {
-        this.formData.handleUsers = this.formData.handleUsers.map((user: any) => ({
+        this.handleUsers = this.handleUsers.map((user: any) => ({
             ...user,
             isLeader: user.value === value,
         }))
     }
 
-    private removeUser(value: string) {
-        this.formData.handleUsers = this.formData.handleUsers.filter((user: any) => user.value !== value)
-    }
-
-    private removeNotifyUser(value: string) {
-        this.formData.notifyUsers = this.formData.notifyUsers.filter((user: any) => user.value !== value)
-    }
-
-    private clearNotifyUsers() {
-        this.formData.notifyUsers = []
-    }
-
-    private selectUser() {
-        // 打开选择处置人员弹窗
-        console.log('选择处置人员')
-    }
-
-    private selectNotifyUser() {
-        // 打开选择通知人员弹窗
-        console.log('选择通知人员')
+    private removeUser(index: number, users: any[]) {
+        this.$dialog
+            .confirm({
+                message: '确定删除该人员吗？',
+            })
+            .then(() => {
+                users.splice(index, 1)
+            })
     }
 
     private async handleSubmit() {
         if (this.submitting) return
         try {
             await (this.$refs.formRef as any).validate()
+            this.submitting = true
             await mockSubmitHandle()
             this.$toast.success('提交成功')
-            this.$router.back()
+            // this.$router.back()
+            this.submitting = false
         } catch (error) {
             console.error('提交失败:', error)
             this.$toast.fail('提交失败')
+            this.submitting = false
         }
     }
 }
@@ -383,7 +386,7 @@ export default class EnforcementHandle extends Vue {
                 .user-actions {
                     display: flex;
                     align-items: center;
-                    .van-button {
+                    .btn {
                         border: 1px solid rgba(22, 118, 254, 1);
                         color: rgba(22, 118, 254, 1);
                         border-radius: 16px;
@@ -391,6 +394,7 @@ export default class EnforcementHandle extends Vue {
                         margin-right: 12px;
                         height: 24px;
                         font-size: 12px;
+                        padding: 0 8px;
                     }
                     .leader-btn {
                         background: #eeeeee;

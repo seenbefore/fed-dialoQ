@@ -1,6 +1,6 @@
 <template>
     <!-- 触发区域 -->
-    <van-field readonly clickable :value="displayValue" :placeholder="placeholder" :disabled="disabled" @click="showPopup" v-bind="$attrs">
+    <van-field readonly clickable :placeholder="placeholder" @click="showPopup" v-bind="$attrs" v-model="value">
         <template #right-icon>
             <van-icon :name="'arrow'" />
         </template>
@@ -39,45 +39,36 @@ export default class MySelectCheckbox extends Vue {
     @Prop({ type: String, default: '请选择' })
     title!: string
 
-    @Prop({ type: Boolean, default: false })
-    disabled!: boolean
-
     @Prop({
         type: Array,
         default: () => [],
     })
-    options!: OptionItem[]
+    options!: OptionItem[] | Promise<OptionItem[]> | Function
 
     private selectedValues: any[] = []
-    private tempValues: any[] = []
-
-    get displayValue() {
-        return this.selectedValues
-            .map(value => this.options.find(option => option.value === value)?.label)
-            .filter(Boolean)
-            .join('、')
-    }
 
     @Watch('value', { immediate: true })
     onValueChange(newValue: any[]) {
         this.selectedValues = [...(newValue || [])]
-        this.tempValues = [...(newValue || [])]
     }
 
     async showPopup() {
-        const val = await this.$modalDialog(() => import('./popup.vue'), {
+        if (typeof this.options === 'function') {
+            this.options = await this.options()
+        }
+
+        const { value, options } = await this.$modalDialog(() => import('./popup.vue'), {
             options: this.options,
+            value: this.value,
         })
-        if (val) {
-            this.tempValues = [...this.selectedValues]
-            this.$emit('input', this.selectedValues)
+
+        if (Array.isArray(value)) {
+            this.$emit('input', value)
             this.$emit('change', {
-                value: this.selectedValues,
-                options: this.options.filter(item => this.selectedValues.includes(item.value)),
+                value,
+                options,
             })
         }
-        // 备份当前选中值
-        // this.tempValues = [...this.selectedValues]
     }
 }
 </script>
