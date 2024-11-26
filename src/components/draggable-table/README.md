@@ -67,8 +67,8 @@ import DraggableTable from '@/components/draggable-table/index.vue'
 
 export default class CaseSave extends Vue {
     tableData = [
-        { id: 1, name: '张三', age: 18 },
-        { id: 2, name: '李四', age: 20 },
+        { id: 1, name: '张三', age: 18, attachments: true },
+        { id: 2, name: '李四', age: 20, attachments: false },
     ]
     get tableAttrs() {
         return {
@@ -89,19 +89,20 @@ export default class CaseSave extends Vue {
                     key: 'delete',
                     icon: 'el-icon-delete',
                     handler: this.handleDelete,
+                    tooltip: '删除',
                 },
             ],
         }
     }
-    handleDragEnd(newData) {
+    handleDragEnd(newData: any) {
         this.tableData = newData
         // 可以在这里处理排序后的数据，如调用接口保存新的排序
     }
-    handleEdit(row) {
-        // 处理编辑逻辑
-    }
-    handleDelete(row) {
+    async handleDelete(row: any, context: any) {
         // 处理删除逻辑
+        await this.$confirm('确定删除吗？')
+        // 拖拽组件提供的删除行方法
+        context.removeItem(row)
     }
 }
 </script>

@@ -38,3 +38,56 @@
 ## 使用方法
 
 ### 基础用法
+
+```vue
+<template>
+    <div class="sg-page icinfo-ai CaseSave">
+        <StepForm v-model="currentStep" :steps="steps"></StepForm>
+    </div>
+</template>
+<script lang="tsx">
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import StepForm, { StepConfig } from '@/components/step-form/index.vue'
+@Component({
+    name: 'CaseSave',
+    components: {
+        StepForm,
+    },
+})
+export default class CaseSave extends Vue {
+    /** 当前步骤 */
+    currentStep = 0
+    get steps() {
+        return [
+            // 第一步
+            {
+                title: '卷宗封面',
+                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
+                props: {
+                    // 传递给组件的属性
+                },
+                render: (h, { row, handlers }) => {
+                    return (
+                        <div>
+                            <el-button
+                                type="primary"
+                                onClick={async () => {
+                                    // 获取当前组件
+                                    const currentComponent = handlers.getCurrentComponent()
+                                    // 保存当前组件数据
+                                    const result = await currentComponent.save()
+                                    // 下一步
+                                    handlers.next()
+                                }}
+                            >
+                                下一步
+                            </el-button>
+                        </div>
+                    )
+                },
+            },
+        ]
+    }
+}
+</script>
+```

@@ -5,6 +5,7 @@
         <slot slot="right-icon" name="right-icon"></slot>
         <slot slot="button" name="button"></slot>
         <slot slot="extra" name="extra "></slot>
+        <slot slot="input" name="input"></slot>
     </van-field>
 </template>
 
@@ -29,11 +30,14 @@ export default class MyInput extends Vue {
     @Prop({ type: Boolean, default: false })
     showWordLimit?: boolean
 
+    @Prop({ type: String, default: '' })
+    tag?: string
+
     get myValue() {
         return this.value
     }
     get type() {
-        return this.$attrs.type || 'input'
+        return this.tag || this.$attrs.type || 'input'
     }
 
     input(value: string | number) {

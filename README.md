@@ -367,7 +367,7 @@ export interface UserInfoVo {
 
 -   `Mutation`函数名称推荐使用小驼峰式`setXyz`
 -   `Action`函数名称推荐以`sync`开头，比如`syncSomething`
--   业务属性名称推荐以`$`开头，比如`$dontShowDeleteConfirm`
+-   项目业务相关的本地存储推荐在`app`模块中配置，属性名称推荐以`$`开头，比如`$dontShowDeleteConfirm`
 
 ```typescript
 @Module({

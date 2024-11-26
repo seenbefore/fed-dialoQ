@@ -10,12 +10,13 @@
                             <component
                                 ref="fieldRef"
                                 :key="field.randomKey || field.name"
-                                :class="['van-form-cell', field.verticalAlign ? `van-form-cell-${field.verticalAlign}` : '', field.props ? field.props.class || '' : '']"
+                                :class="['van-form-cell', field.tag, field.verticalAlign ? `van-form-cell-${field.verticalAlign}` : '', field.props ? field.props.class || '' : '']"
                                 :name="field.name"
                                 :label="field.hiddenLabel ? '' : field.label"
                                 :required="field.required"
                                 :rules="getFieldRules(field)"
                                 :is="getFieldComponent(field.tag)"
+                                :tag="field.tag"
                                 v-bind="getFieldProps(field.props)"
                                 v-on="field.on"
                                 v-model="formData[field.name]"
@@ -30,6 +31,13 @@
                                 </template>
                                 <template v-if="field.tag === 'slot'">
                                     <slot :name="field.slotName" :slotProps="getFieldProps(field.props)"></slot>
+                                </template>
+                                <!-- 自定义渲染 -->
+                                <template #input>
+                                    <ex-slot :render="field.render" :row="field"></ex-slot>
+                                </template>
+                                <template #label>
+                                    <ex-slot :render="field.labelRender" :row="field"></ex-slot>
                                 </template>
                             </component>
                         </template>
@@ -123,6 +131,7 @@ export function isGroupField(value: any): value is GroupField {
 export const componentMap: Record<string, any> = {
     text: () => import('./components/my-text/index.vue'),
     input: () => import('./components/my-input/index.vue'),
+    textarea: () => import('./components/my-input/index.vue'),
     radio: () => import('./components/my-radio/index.vue'),
     checkbox: () => import('./components/my-checkbox/index.vue'),
     cascader: () => import('./components/my-cascader/index.vue'),
@@ -133,25 +142,28 @@ export const componentMap: Record<string, any> = {
     table: () => import('./components/my-table/index.vue'),
 }
 // 自定义内容的组件
-const exSlot = {
+const ExSlot = {
     functional: true,
     props: {
         row: { type: Object, default: () => {} },
         render: { type: Object, default: () => {} },
         column: { type: Object, default: () => {} },
     },
-    render: (h: any, ctx: any) => {
+    render: (h, ctx) => {
         const params = {
             row: ctx.props.row,
             index: ctx.props.index,
-            column: ctx.props.column || {},
         }
-        return [ctx.props.render(h, params)]
+        if (typeof ctx.props.render === 'function') {
+            return [ctx.props.render(h, params)]
+        } else {
+            return [ctx.props.render]
+        }
     },
 }
 @Component({
     name: 'AppForm',
-    components: { exSlot },
+    components: { ExSlot },
 })
 export default class AppForm extends Vue {
     /**值 */
@@ -488,6 +500,18 @@ export default class AppForm extends Vue {
             }
             .van-cell {
                 padding: 0;
+
+                &.textarea,
+                &.block {
+                    display: block;
+                    textarea {
+                        padding: 15px;
+                        text-align: left;
+                        background: #f0f0f0;
+                        border: 1px solid rgba(221, 221, 221, 1);
+                        border-radius: 4px;
+                    }
+                }
             }
             .van-form-cell {
                 // prettier-ignore
