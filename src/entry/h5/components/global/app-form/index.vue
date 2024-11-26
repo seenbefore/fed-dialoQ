@@ -34,7 +34,7 @@
                                 </template>
                                 <!-- 自定义渲染 -->
                                 <template #input>
-                                    <ex-slot :render="field.render" :row="field"></ex-slot>
+                                    <ex-slot :render="field.inputRender" :row="field"></ex-slot>
                                 </template>
                                 <template #label>
                                     <ex-slot :render="field.labelRender" :row="field"></ex-slot>
@@ -140,6 +140,7 @@ export const componentMap: Record<string, any> = {
     'date-picker': () => import('./components/date-picker/index.vue'),
     'select-picker': () => import('./components/select-picker/index.vue'),
     table: () => import('./components/my-table/index.vue'),
+    'select-checkbox': () => import('./components/my-select-checkbox/index.vue'),
 }
 // 自定义内容的组件
 const ExSlot = {
