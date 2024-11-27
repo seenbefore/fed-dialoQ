@@ -1,8 +1,11 @@
 # H5移动端应用
 
+## 组件
+- 案例：`/readme`
 
 ## 路由
-- `router.js`文件中，`meta`属性中`noCache`为`true`时页面不缓存,`false`时默认缓存页面，可以通过`this.$back()`强行重载页面。如果不想使用`this.$back()`，不想关心缓存问题，也可以在页面生命周期中`activated`中重新加载页面数据。
+- 模式：默认`hash`。`settings.js`中配置`mode`。
+- 页面缓存：`router.js`文件中，`meta`属性中`noCache`为`true`时页面不缓存,`false`时默认缓存页面，可以通过`this.$back()`强行重载页面。
 
 举例说明缓存开启时(`noCache: false`)，页面刷新情况，有如下页面：首页A、地址列表B、地址详情C
 - 从A到B，B自动刷新

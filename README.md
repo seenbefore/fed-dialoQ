@@ -2,11 +2,11 @@
 
 该项目为一个基于 `Vue2` + `TypeScript` 的多应用模板模板项目。包含多个基础项目的模板。
 
--   后台管理系统（src）或 (src/entry/admin)
--   移动端（src/entry/h5）
--   浙里办（src/entry/zlb-h5）
--   门户网站（src/entry/library）
--   大屏（src/entry/bigscreen）
+-   后台管理系统：[src](./README.md)
+-   移动端：[src/entry/h5](./src/entry/h5/README.md)
+-   浙里办：[src/entry/zlb-h5](./src/entry/zlb-h5/README.md)
+-   门户网站：[src/entry/library](./src/entry/library/README.md)
+-   大屏：[src/entry/bigscreen](./src/entry/bigscreen/README.md)
 
 [git 地址](http://gitlab.icinfo.co/fed/base-vue-template)
 
