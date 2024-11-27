@@ -6,18 +6,26 @@ body {
     -webkit-font-smoothing: antialiased;
     text-size-adjust: 100% !important;
 }
+:root {
+    // 主题色
+    --color-primary: #1676fe; // 可做背景色和文本色，用做背景色时，需要和--system-primary-text-color配合使用，避免文件颜色和主题色冲突
+    --system-primary-text-color: #fff; // 主题色作为背景色时使用
+    --system-default-color: #333;
+    --color-danger: #f5222d;
+    --color-success: #52c41a;
+    --color-warning: #faad14;
+    --color-info: #bdbdbd;
+}
+.van-button {
+    &.van-button--primary {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+}
 #app {
     max-width: 375px;
     width: 100vw;
     margin: 0 auto;
-}
-
-.van-button {
-    border-radius: 2px;
-    &.van-button--primary {
-        background: #3192e4;
-        border-color: #3192e4;
-    }
 }
 
 // 业务
@@ -75,5 +83,10 @@ body {
             color: #ff4d4f;
             font-size: 14px;
         }
+    }
+}
+.footer {
+    .van-button--primary {
+        border-radius: 20px;
     }
 }

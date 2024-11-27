@@ -154,7 +154,7 @@ const ExSlot = {
         render: { type: Object, default: () => {} },
         column: { type: Object, default: () => {} },
     },
-    render: (h, ctx) => {
+    render: (h: any, ctx: any) => {
         const params = {
             row: ctx.props.row,
             index: ctx.props.index,
@@ -533,7 +533,8 @@ export default class AppForm extends Vue {
                 padding: 10PX 18PX;
 
                 &.my-custom {
-                    padding: 0;
+                    padding-top: 0;
+                    padding-bottom: 0;
                     .van-field__control--custom {
                         display: block;
                         min-height: 0;

@@ -103,7 +103,7 @@ export default class EnforcementContinue extends Vue {
                             },
                         },
                         inputRender: () => {
-                            return <span style="color: #1676fe">选择人员</span>
+                            return <span style="color: var(--color-primary)">选择人员</span>
                         },
                     },
                     {

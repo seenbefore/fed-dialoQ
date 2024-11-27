@@ -70,7 +70,7 @@ export default class EnforcementHandle extends Vue {
                             },
                         },
                         inputRender: () => {
-                            return <span style="color: #1676fe">选派人员</span>
+                            return <span style="color: var(--color-primary)">选派人员</span>
                         },
                     },
                     {
@@ -204,7 +204,7 @@ export default class EnforcementHandle extends Vue {
                             },
                         },
                         inputRender: () => {
-                            return <span style="color: #1676fe">选择人员</span>
+                            return <span style="color: var(--color-primary)">选择人员</span>
                         },
                     },
                     {

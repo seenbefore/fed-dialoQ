@@ -363,5 +363,9 @@ export default class EnforcementFeedback extends Vue {
             vertical-align: middle;
         }
     }
+    .my-custom {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
 }
 </style>
