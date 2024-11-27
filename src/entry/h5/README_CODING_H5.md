@@ -517,13 +517,14 @@ export default {
     component: SelfInspectionFormManagement,
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
+        // 页面body样式 不要删除修改
         bodyClass: '',
+        // 页面父级name 不要删除修改
         parent: 'Index',
-        rank: 1,
+        // 页面标题 不要删除修改
         title: '',
-        keepAlive: false,
-        requireAuth: true,
-        aliveOnlyTo: [],
+        // 页面不缓存 不要删除修改
+        noCache: true,
     },
 }
 

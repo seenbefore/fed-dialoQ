@@ -6,8 +6,8 @@ export default {
     name: 'ExamResult',
     component: ExamResult,
     meta: {
+        parent: 'Index',
         title: '考试结果',
-        keepAlive: false,
-        requireAuth: true,
+        noCache: true,
     },
 }

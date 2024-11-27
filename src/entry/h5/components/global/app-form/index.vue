@@ -220,7 +220,7 @@ export default class AppForm extends Vue {
     myFieldGroup: GroupField[] | any = []
     @Watch('fields', { deep: true, immediate: true })
     watchFields(newV: Field[], oldV: Field[]) {
-        console.log(newV, 'newV')
+        // console.log(newV, 'newV')
         if (isEqual(newV, oldV)) return
         this.$set(this, 'myFields', this.fieldsFormat(customDeepClone(this.fields)))
         this.initWatcher()

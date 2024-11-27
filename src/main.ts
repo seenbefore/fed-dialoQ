@@ -40,13 +40,6 @@ Vue.prototype.$postMessage = function(data: any) {
         console.error(error)
     }
 }
-/**
- * 关闭当前标签页
- */
-Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {
-    await tagsViewStore.delView(this.$route)
-    this.$router.push(params)
-}
 
 desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
     const { settings, user } = defaultSettings ?? {}

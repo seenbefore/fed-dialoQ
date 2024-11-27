@@ -11,9 +11,32 @@ import http from './scripts/http'
 import modalDialog from './scripts/MobileModalDialog'
 import store from './store'
 import './styles/app.less'
+import { tagsViewStore } from '@h5/store/useStore'
 
 Vue.prototype.$modalDialog = modalDialog
 Vue.prototype.$http = http
+/**
+ * 页面回退，默认重新加载上一页
+ */
+Vue.prototype.$back = async function(reload = true) {
+    const visitedViews = tagsViewStore.visitedViews
+    // 上一页内容
+    const lastView = visitedViews[visitedViews.length - 2]
+
+    if (lastView) {
+        if (reload) {
+            await tagsViewStore.delCachedView({
+                name: lastView.name,
+            })
+        }
+    }
+    this.$router.go(-1)
+}
+
+/**
+ * 关闭当前标签页
+ */
+Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {}
 
 const { bootstrap } = mobileInit(Vue)
 

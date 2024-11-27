@@ -36,3 +36,25 @@ GET http://192.168.1.200/api/v2/usercenter/user/readRsa
 ###
 
 GET http://192.168.1.180:8081/sysDict/internal/list
+
+
+## coze
+### 运行工作流 QPM（每分钟发送的请求数）：60 QPD（每天发送的请求数）：3000
+### https://mp.weixin.qq.com/s/4INC33t1LQNtOGQfCQXI9A
+POST https://api.coze.cn/v1/workflow/run
+content-type: application/json
+Authorization: Bearer pat_Q7lrUDdxS03ZOWAbDQiyOBqU4PPW7XOI4qZlniGvGv4SaxTKWnaAV8YUzXDVlSxg
+
+{
+    "workflow_id": "7438439100972007439",
+    "parameters": {
+        "article_url": "https://mp.weixin.qq.com/s/4INC33t1LQNtOGQfCQXI9A"
+    }
+}
+
+
+### 获取工作流执行情况 https://api.coze.cn/v1/workflows/{{workflow_id}}/run_histories/{{execute_id}}
+
+GET https://api.coze.cn/v1/workflows/7438439100972007439/run_histories/11
+content-type: application/json
+Authorization: Bearer pat_Q7lrUDdxS03ZOWAbDQiyOBqU4PPW7XOI4qZlniGvGv4SaxTKWnaAV8YUzXDVlSxg

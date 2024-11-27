@@ -5,8 +5,8 @@ export default {
     name: 'ExamList',
     component: ExamList,
     meta: {
+        parent: 'Index',
         title: '考试列表',
-        keepAlive: false,
-        requireAuth: true,
+        noCache: true,
     },
 }

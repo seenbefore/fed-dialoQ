@@ -1,10 +1,10 @@
 <template>
     <div class="exam-auth">
-        <div class="form-container">
+        <div class="content">
             <app-form ref="formRef" v-model="formData" :fields="formFields" @submit="onSubmit" :show-foot-btns="false"></app-form>
         </div>
-        <div class="submit-btn">
-            <van-button round block type="primary" native-type="submit" @click="handleSubmit">
+        <div class="footer">
+            <van-button round block type="primary" native-type="submit" @click="handleSubmit" :loading="loading" loading-text="认证中..." :disabled="loading">
                 下一步，实名认证
             </van-button>
         </div>
@@ -14,15 +14,13 @@
 <script lang="tsx">
 import { Component, Vue } from 'vue-property-decorator'
 import { submitAuth } from './api'
-import { Button } from 'vant'
 
 @Component({
     name: 'ExamAuth',
-    components: {
-        [Button.name]: Button,
-    },
+    components: {},
 })
 export default class ExamAuth extends Vue {
+    loading = false
     private formData = {
         userName: '',
         idCard: '',
@@ -97,12 +95,19 @@ export default class ExamAuth extends Vue {
     ]
 
     private async handleSubmit() {
-        try {
-            await (this.$refs.formRef as any).validate()
-            await this.onSubmit()
-        } catch (error) {
-            console.error(error)
-        }
+        this.$router.push({
+            path: `/exam/list`,
+        })
+        // try {
+        //     await (this.$refs.formRef as any).validate()
+        //     this.loading = true
+        //     await this.onSubmit()
+        //     this.loading = false
+
+        // } catch (error) {
+        //     console.error(error)
+        //     this.loading = false
+        // }
     }
 
     private async onSubmit() {
@@ -120,15 +125,14 @@ export default class ExamAuth extends Vue {
 
 <style lang="less" scoped>
 .exam-auth {
-    min-height: 100vh;
+    height: 100vh;
     background: #f5f5f5;
     display: flex;
     flex-direction: column;
 
-    .form-container {
+    .content {
         flex: 1;
         overflow-y: auto;
-        padding-bottom: 80px; // 为底部按钮留出空间
     }
 
     &::v-deep {
@@ -164,7 +168,7 @@ export default class ExamAuth extends Vue {
                     margin-bottom: 8px;
 
                     .required {
-                        color: #ee0a24;
+                        color: var(--color-danger);
                         margin-right: 2px;
                         vertical-align: middle;
                     }
@@ -200,18 +204,14 @@ export default class ExamAuth extends Vue {
             }
         }
         .van-cell__value {
-            margin: 0 -10px;
+            //  margin: 0 -10px;
         }
         .van-field__label {
             width: auto;
         }
     }
 
-    .submit-btn {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
+    .footer {
         padding: 16px;
         background: #fff;
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);

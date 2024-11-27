@@ -1,5 +1,6 @@
 <template>
     <div class="exam-list">
+        <!-- <van-button @click="handleBack">回退</van-button> -->
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
             <div v-for="exam in examList" :key="exam.id" class="exam-item" @click="handleExamClick(exam)">
                 <div class="exam-content">
@@ -76,24 +77,31 @@ export default class ExamList extends Vue {
     private countdownTime = '3:58'
     private showExamEndDialog = false
 
+    mounted() {
+        console.log('mounted')
+    }
+    handleBack() {
+        this.$back(true)
+    }
+
     private async onLoad() {
         const res = await getExamList({
             page: this.currentPage,
             pageSize: this.pageSize,
         })
-        if (res.code === 200) {
-            if (this.currentPage === 1) {
-                this.examList = res.data
-            } else {
-                this.examList.push(...res.data)
-            }
 
-            if (res.data.length < this.pageSize) {
-                this.finished = true
-            } else {
-                this.currentPage += 1
-            }
+        if (this.currentPage === 1) {
+            this.examList = res.data
+        } else {
+            this.examList.push(...res.data)
         }
+
+        if (res.data.length < this.pageSize) {
+            this.finished = true
+        } else {
+            this.currentPage += 1
+        }
+
         this.loading = false
     }
 
@@ -134,10 +142,6 @@ export default class ExamList extends Vue {
                 examId: exam.id,
             },
         })
-    }
-
-    private handleExamEnd() {
-        this.showExamEndDialog = false
     }
 }
 </script>

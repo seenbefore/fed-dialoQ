@@ -6,8 +6,8 @@ export default {
     name: 'ExamAuth',
     component: ExamAuth,
     meta: {
+        parent: 'Index',
         title: '实名认证',
-        keepAlive: false,
-        requireAuth: true,
+        noCache: true,
     },
 }

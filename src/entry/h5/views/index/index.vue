@@ -49,20 +49,23 @@ export default class Index extends Vue {
         const views = this.getHistory()
         // 返回
         if (views) {
-            console.log('回退')
-
+            // console.log('回退', views)
+            // 销毁历史页面，比如当前页面
             for (let item of views) {
+                //console.log('item', item)
                 tagsViewStore.DEL_CACHED_VIEW(item)
                 tagsViewStore.DEL_VISITED_VIEW(item)
+
                 this.$nextTick(() => {
                     this.addTags()
                 })
             }
         } else {
-            console.log('前进')
+            // console.log('前进')
 
             this.addTags()
         }
+        // console.log('tagsViewStore.visitedViews', tagsViewStore.visitedViews)
     }
 
     addTags() {

@@ -8,10 +8,7 @@ export default {
     meta: {
         bodyClass: '',
         parent: 'Index',
-        rank: 1,
         title: '答题',
-        keepAlive: false,
-        requireAuth: true,
-        aliveOnlyTo: [],
+        noCache: true,
     },
 }
