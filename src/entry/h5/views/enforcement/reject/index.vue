@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="groupFields" :show-foot-btns="false" />
         </div>
         <div class="footer">
-            <van-button block type="primary" :loading="submitting" @click="handleSubmit">
+            <van-button block type="primary" :loading="submitting" :disabled="submitting" loading-text="提交中" @click="handleSubmit">
                 提交
             </van-button>
         </div>
@@ -49,28 +49,19 @@ export default class EnforcementReject extends Vue {
         ]
     }
 
-    mounted() {
-        // 从路由参数获取初始数据
-        const { query } = this.$route
-        if (query) {
-            Object.keys(query).forEach(key => {
-                if (key in this.formData) {
-                    this.formData[key] = query[key]
-                }
-            })
-        }
-    }
-
     private async handleSubmit() {
         if (this.submitting) return
         try {
             await (this.$refs.formRef as any).validate()
+            this.submitting = true
             await mockSubmitReject()
             this.$toast.success('提交成功')
+            this.submitting = false
             this.$router.back()
         } catch (error) {
             console.error('提交失败:', error)
             this.$toast.fail('提交失败')
+            this.submitting = false
         }
     }
 }

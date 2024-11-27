@@ -47,8 +47,11 @@
             </van-form>
         </div>
         <div class="form-foot-btns" v-if="showFootBtns">
-            <van-button class="cancel" @click="cancel">取消</van-button>
-            <van-button class="confirm" @click="submit">提交</van-button>
+            <!-- <van-button class="cancel" @click="cancel">取消</van-button>
+            <van-button class="confirm" @click="submit">提交</van-button> -->
+            <van-button block type="primary" :loading="submitting" :loading-text="submittingText" @click="submit">
+                提交
+            </van-button>
         </div>
     </div>
 </template>
@@ -168,6 +171,8 @@ const ExSlot = {
     components: { ExSlot },
 })
 export default class AppForm extends Vue {
+    @Prop({ type: String, default: '提交中' })
+    submittingText!: string
     /**值 */
     @Prop({ type: Object, default: () => {} })
     value!: Record<string, any>
@@ -197,6 +202,7 @@ export default class AppForm extends Vue {
         vanForm: Form
         fieldRef: any
     }
+    submitting = false
 
     /**表单数据 */
     formData: Record<string, any> = {}
@@ -525,6 +531,14 @@ export default class AppForm extends Vue {
             .van-form-cell {
                 // prettier-ignore
                 padding: 10PX 18PX;
+
+                &.my-custom {
+                    padding: 0;
+                    .van-field__control--custom {
+                        display: block;
+                        min-height: 0;
+                    }
+                }
             }
 
             .custom-form-cell {

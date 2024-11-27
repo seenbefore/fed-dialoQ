@@ -22,36 +22,10 @@ export default class EnforcementHandle extends Vue {
     private formRef: any = null
     private submitting = false
     // 处置人员
-    private handleUsers = [
-        {
-            label: '张三',
-            value: '1',
-            phone: '13800138000',
-            isLeader: false,
-        },
-        {
-            label: '张三1',
-            value: '2',
-            phone: '13800138001',
-            isLeader: true,
-        },
-    ]
+    private handleUsers = []
     // 通知人员
-    private notifyUsers = [
-        {
-            label: '张三',
-            value: '1',
-            phone: '13800138000',
-        },
-        {
-            label: '张三1',
-            value: '2',
-            phone: '13800138001',
-        },
-    ] // 通知人员
+    private notifyUsers = [] // 通知人员
     private formData = {
-        handleUsers2: [],
-        notifyUsers$: ['1'],
         handleEquipment: '', // 处置装备
         handleNote: '', // 处置意见
         messageNotify: ['1'], // 消息通知方式：1-钉消息 2-短信
@@ -65,7 +39,7 @@ export default class EnforcementHandle extends Vue {
                 children: [
                     {
                         tag: 'select-checkbox',
-                        name: 'handleUsers2',
+                        name: 'handleUser$',
                         label: '处置人员',
                         required: true,
                         props: {
@@ -74,37 +48,34 @@ export default class EnforcementHandle extends Vue {
                                     {
                                         label: '张三',
                                         value: '1',
+                                        phone: '13800138000',
+                                        isLeader: false,
                                     },
                                     {
-                                        label: 'b',
+                                        label: '张三1',
                                         value: '2',
+                                        phone: '13800138001',
+                                        isLeader: false,
                                     },
                                 ]
                                 return result
                             },
                         },
-                        // 添加验证规则
-                        // rules: [
-                        //     {
-                        //         message: '请选择处置人员33',
-                        //         validator: (value: any) => {
-                        //             console.log(value, '111value')
-                        //             return false
-                        //         },
-                        //     },
-                        // ],
+                        on: {
+                            // 选择人员
+                            change: (val: any) => {
+                                const { value, options = [] } = val
+                                console.log(value, '111value')
+                                this.handleUsers = [...options]
+                            },
+                        },
                         inputRender: () => {
                             return <span style="color: #1676fe">选派人员</span>
                         },
                     },
                     {
                         tag: 'custom',
-                        name: 'handleUsers',
-                        label: '',
-                        props: {
-                            inputAlign: 'left',
-                            class: 'custom',
-                        },
+                        name: 'handleUsers$$',
                         inputRender: () => {
                             return (
                                 <div class="handle-users">
@@ -125,7 +96,7 @@ export default class EnforcementHandle extends Vue {
                                                     >
                                                         {user.isLeader ? '已设为负责人' : '设为负责人'}
                                                     </span>
-                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(index, this.handleUsers)}>
+                                                    <span name="cross" class="delete-btn" onClick={() => this.removeHandleUser(index, this.handleUsers)}>
                                                         删除
                                                     </span>
                                                 </div>
@@ -211,19 +182,26 @@ export default class EnforcementHandle extends Vue {
                         label: '通知人员',
                         required: true,
                         props: {
-                            placeholder: '请选择',
-                            value: [],
-                            multiple: true,
                             options: [
                                 {
-                                    label: 'a',
+                                    label: '默认所有处置人员和负责人',
                                     value: '1',
+                                    phone: '13800138000',
                                 },
                                 {
                                     label: 'b',
                                     value: '2',
+                                    phone: '13800138001',
                                 },
                             ],
+                        },
+                        on: {
+                            // 选择人员
+                            change: (val: any) => {
+                                const { value, options = [] } = val
+                                console.log(value, '111value')
+                                this.notifyUsers = [...options]
+                            },
                         },
                         inputRender: () => {
                             return <span style="color: #1676fe">选择人员</span>
@@ -232,11 +210,6 @@ export default class EnforcementHandle extends Vue {
                     {
                         tag: 'custom',
                         name: 'notifyUsers',
-                        label: '',
-                        props: {
-                            inputAlign: 'left',
-                            class: 'custom',
-                        },
                         inputRender: () => {
                             return (
                                 <div class="handle-users">
@@ -275,7 +248,17 @@ export default class EnforcementHandle extends Vue {
             isLeader: user.value === value,
         }))
     }
-
+    private removeHandleUser(index: number, users: any[]) {
+        this.$dialog
+            .confirm({
+                message: '确定删除该人员吗？',
+            })
+            .then(() => {
+                users.splice(index, 1)
+                // 更新数据确保校验
+                this.$set(this.formData, 'handleUsers$', users)
+            })
+    }
     private removeUser(index: number, users: any[]) {
         this.$dialog
             .confirm({
@@ -283,6 +266,8 @@ export default class EnforcementHandle extends Vue {
             })
             .then(() => {
                 users.splice(index, 1)
+                // 更新数据确保校验
+                this.$set(this.formData, 'notifyUsers$', users)
             })
     }
 
@@ -357,64 +342,6 @@ export default class EnforcementHandle extends Vue {
             padding: 0 !important;
             .van-field__control {
                 display: block;
-            }
-        }
-    }
-
-    .handle-users,
-    .notify-users {
-        .user-list {
-            margin-bottom: 12px;
-            .user-item {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 12px;
-
-                .user-info {
-                    display: flex;
-                    align-items: center;
-                    .user-name {
-                        font-weight: 500;
-                    }
-                    .user-phone {
-                        color: #999;
-                        margin-left: 8px;
-                    }
-                }
-
-                .user-actions {
-                    display: flex;
-                    align-items: center;
-                    .btn {
-                        border: 1px solid rgba(22, 118, 254, 1);
-                        color: rgba(22, 118, 254, 1);
-                        border-radius: 16px;
-                        background: #fff;
-                        margin-right: 12px;
-                        height: 24px;
-                        font-size: 12px;
-                        padding: 0 8px;
-                    }
-                    .leader-btn {
-                        background: #eeeeee;
-                        border-radius: 16px;
-                        color: #666666;
-                        border: none;
-                    }
-                    .delete-btn {
-                        color: #ff4d4f;
-                    }
-                }
-            }
-        }
-        .select-user {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            .delete-all {
-                color: #ff4d4f;
-                font-size: 14px;
             }
         }
     }

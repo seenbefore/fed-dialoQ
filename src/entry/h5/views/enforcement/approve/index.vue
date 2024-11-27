@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="groupFields" :show-foot-btns="false" />
         </div>
         <div class="footer">
-            <van-button block type="primary" :loading="submitting" @click="handleSubmit">
+            <van-button block type="primary" :loading="submitting" loading-text="提交中" :disabled="submitting" @click="handleSubmit">
                 提交
             </van-button>
         </div>
@@ -29,6 +29,7 @@ export default class EnforcementApprove extends Vue {
         attachments: [], // 图片/视频
         proofFiles: [], // 附件
     }
+    handleUsers: any[] = []
 
     get groupFields() {
         const redirectFields = [
@@ -160,23 +161,102 @@ export default class EnforcementApprove extends Vue {
                 groupId: 'messageNotifyUser',
                 children: [
                     {
-                        tag: 'select-picker',
-                        name: 'messageNotifyUser',
+                        tag: 'select-checkbox',
+                        name: 'messageNotifyUser$',
                         label: '通知人员',
+                        required: true,
                         props: {
-                            placeholder: '请选择',
-                            value: [],
-                            multiple: true,
-                            options: [
-                                {
-                                    label: 'a',
-                                    value: '1',
-                                },
-                                {
-                                    label: 'b',
-                                    value: '2',
-                                },
-                            ],
+                            options: async () => {
+                                const result = [
+                                    {
+                                        label: '张三',
+                                        value: '1',
+                                        phone: '13800000000',
+                                    },
+                                    {
+                                        label: '张思',
+                                        value: '2',
+                                        phone: '13800000001',
+                                    },
+                                    {
+                                        label: '李四',
+                                        value: '3',
+                                        phone: '13800000002',
+                                    },
+                                    {
+                                        label: '王五',
+                                        value: '4',
+                                        phone: '13800000003',
+                                    },
+                                    {
+                                        label: '赵六',
+                                        value: '5',
+                                        phone: '13800000004',
+                                    },
+                                    {
+                                        label: '孙七',
+                                        value: '6',
+                                        phone: '13800000005',
+                                    },
+                                    {
+                                        label: '周八',
+                                        value: '7',
+                                        phone: '13800000006',
+                                    },
+                                    {
+                                        label: '吴九',
+                                        value: '8',
+                                        phone: '13800000007',
+                                    },
+                                    {
+                                        label: '郑十',
+                                        value: '9',
+                                        phone: '13800000008',
+                                    },
+                                    {
+                                        label: '陈十一',
+                                        value: '10',
+                                        phone: '13800000009',
+                                    },
+                                ]
+                                return result
+                            },
+                        },
+                        on: {
+                            // 选择人员
+                            change: (val: any) => {
+                                const { value, options = [] } = val
+                                console.log(value, '111value')
+                                this.handleUsers = [...options]
+                            },
+                        },
+                        inputRender: () => {
+                            return <span style="color: #1676fe">选择人员</span>
+                        },
+                    },
+                    {
+                        tag: 'custom',
+                        name: 'messageNotifyUser$$',
+                        inputRender: () => {
+                            return (
+                                <div class="handle-users">
+                                    <div class="user-list">
+                                        {this.handleUsers.map((user: any, index: number) => (
+                                            <div class="user-item" key={user.value}>
+                                                <div class="user-info">
+                                                    <span class="user-name">默认部门值班长</span>
+                                                    <span class="user-phone">({user.phone})</span>
+                                                </div>
+                                                <div class="user-actions">
+                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(index, this.handleUsers)}>
+                                                        删除
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )
                         },
                     },
                 ],
@@ -217,33 +297,30 @@ export default class EnforcementApprove extends Vue {
         ]
     }
 
-    mounted() {
-        // 从路由参数获取初始数据
-        const { query } = this.$route
-        if (query) {
-            Object.keys(query).forEach(key => {
-                if (key in this.formData) {
-                    this.formData[key] = query[key]
-                }
+    private removeUser(index: number, users: any[]) {
+        this.$dialog
+            .confirm({
+                message: '确定删除该人员吗？',
             })
-        }
+            .then(() => {
+                users.splice(index, 1)
+                // 更新数据确保校验
+                this.$set(this.formData, 'messageNotifyUser$', users)
+            })
     }
-
-    private async afterRead(file: any) {
-        // 处理文件上传
-        console.log('上传文件:', file)
-    }
-
     private async handleSubmit() {
         if (this.submitting) return
         try {
             await (this.$refs.formRef as any).validate()
+            this.submitting = true
             await mockSubmitApprove()
             this.$toast.success('提交成功')
+            this.submitting = false
             this.$router.back()
         } catch (error) {
             console.error('提交失败:', error)
             this.$toast.fail('提交失败')
+            this.submitting = false
         }
     }
 }

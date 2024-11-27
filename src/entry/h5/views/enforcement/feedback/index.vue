@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="groupFields" :show-foot-btns="false" />
         </div>
         <div class="footer">
-            <van-button block type="primary" :loading="submitting" @click="handleSubmit">
+            <van-button block type="primary" :loading="submitting" loading-text="提交中" :disabled="submitting" @click="handleSubmit">
                 提交
             </van-button>
         </div>
@@ -191,7 +191,7 @@ export default class EnforcementFeedback extends Vue {
                 groupId: 'proofFiles',
                 children: [
                     {
-                        tag: 'input',
+                        tag: 'custom',
                         name: 'proofFiles',
                         label: '图片/视频',
                         props: {
@@ -199,7 +199,7 @@ export default class EnforcementFeedback extends Vue {
                             class: 'block',
                             inputAlign: 'left',
                         },
-                        render: () => {
+                        inputRender: () => {
                             return (
                                 <div>
                                     <span class="tip" style="color: #808080;">
@@ -217,7 +217,7 @@ export default class EnforcementFeedback extends Vue {
                 groupId: 'attachments',
                 children: [
                     {
-                        tag: 'input',
+                        tag: 'custom',
                         name: 'attachments',
                         label: '附件',
                         props: {
@@ -225,7 +225,7 @@ export default class EnforcementFeedback extends Vue {
                             class: 'block',
                             inputAlign: 'left',
                         },
-                        render: () => {
+                        inputRender: () => {
                             return (
                                 <div class="attachment-wrap">
                                     <span class="tip" style="color: #808080;line-height: 1.2;">
@@ -236,8 +236,8 @@ export default class EnforcementFeedback extends Vue {
                                     <van-uploader value={this.formData.attachments} multiple max-count={5} accept=".rar,.zip,.doc,.docx,.pdf,.xls,.xlsx,.csv" afterRead={this.afterRead}>
                                         {() => (
                                             <van-button plain type="primary" class="attachment-upload-btn">
-                                                <span class="iconfont icon-jiahao"></span>
-                                                <span>上传文件</span>
+                                                <span class="upload-icon"></span>
+                                                <span class="upload-text">上传文件</span>
                                             </van-button>
                                         )}
                                     </van-uploader>
@@ -271,12 +271,15 @@ export default class EnforcementFeedback extends Vue {
         if (this.submitting) return
         try {
             await (this.$refs.formRef as any).validate()
+            this.submitting = true
             await mockSubmitFeedback()
             this.$toast.success('提交成功')
+            this.submitting = false
             this.$router.back()
         } catch (error) {
             console.error('提交失败:', error)
             this.$toast.fail('提交失败')
+            this.submitting = false
         }
     }
 }
@@ -338,9 +341,27 @@ export default class EnforcementFeedback extends Vue {
     }
     .attachment-upload-btn {
         border: 1px solid rgba(22, 118, 254, 1);
-        border-radius: 16px;
+        border-radius: 20px;
         color: rgba(22, 118, 254, 1);
         background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: auto !important;
+        padding: 0 16px !important;
+
+        .upload-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            background: url('./assets/upload.svg') no-repeat center center;
+        }
+        .upload-text {
+            margin-left: 5px;
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
 }
 </style>

@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="groupFields" :show-foot-btns="false" />
         </div>
         <div class="footer">
-            <van-button block type="primary" :loading="submitting" @click="handleSubmit">
+            <van-button block type="primary" :loading="submitting" loading-text="提交中" :disabled="submitting" @click="handleSubmit">
                 提交
             </van-button>
         </div>
@@ -25,8 +25,8 @@ export default class EnforcementContinue extends Vue {
     private formData = {
         handleNote: '', // 处置意见
         messageNotify: ['1'], // 消息通知方式：1-钉消息 2-短信
-        notifyUsers: [], // 通知人员
     }
+    private notifyUsers: any[] = []
 
     get groupFields() {
         return [
@@ -76,40 +76,57 @@ export default class EnforcementContinue extends Vue {
                 groupId: 'notifyUsers',
                 children: [
                     {
-                        tag: 'select-picker',
-                        name: 'notifyUsers',
+                        tag: 'select-checkbox',
+                        name: 'notifyUsers$',
                         label: '通知人员',
                         required: true,
                         props: {
-                            placeholder: '请选择',
-                            value: [],
-                            multiple: true,
                             options: [
                                 {
-                                    label: '张三',
+                                    label: '默认退回的人',
                                     value: '1',
+                                    phone: '13800138000',
                                 },
                                 {
                                     label: '李四',
                                     value: '2',
+                                    phone: '13800138001',
                                 },
                             ],
                         },
-                        render: () => {
+                        on: {
+                            // 选择人员
+                            change: (val: any) => {
+                                const { value, options = [] } = val
+                                console.log(value, '111value')
+                                this.notifyUsers = [...options]
+                            },
+                        },
+                        inputRender: () => {
+                            return <span style="color: #1676fe">选择人员</span>
+                        },
+                    },
+                    {
+                        tag: 'custom',
+                        name: 'notifyUsers',
+                        inputRender: () => {
                             return (
-                                <div class="notify-users">
+                                <div class="handle-users">
                                     <div class="user-list">
-                                        {this.formData.notifyUsers.map((user: any) => (
+                                        {this.notifyUsers.map((user: any, index: number) => (
                                             <div class="user-item" key={user.value}>
-                                                <span class="user-name">{user.label}</span>
-                                                <span class="user-phone">{user.phone}</span>
-                                                <van-icon name="cross" class="delete-icon" onClick={() => this.removeUser(user.value)} />
+                                                <div class="user-info">
+                                                    <span class="user-name">{user.label}</span>
+                                                    <span class="user-phone">({user.phone})</span>
+                                                </div>
+                                                <div class="user-actions">
+                                                    <span name="cross" class="delete-btn" onClick={() => this.removeUser(index, this.notifyUsers)}>
+                                                        删除
+                                                    </span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
-                                    <van-button plain type="primary" size="small" icon="plus" onClick={this.selectUser}>
-                                        选择人员
-                                    </van-button>
                                 </div>
                             )
                         },
@@ -119,37 +136,23 @@ export default class EnforcementContinue extends Vue {
         ]
     }
 
-    mounted() {
-        // 从路由参数获取初始数据
-        const { query } = this.$route
-        if (query) {
-            Object.keys(query).forEach(key => {
-                if (key in this.formData) {
-                    this.formData[key] = query[key]
-                }
-            })
-        }
+    removeUser(index: number, users: any[]) {
+        users.splice(index, 1)
+        this.$set(this.formData, 'notifyUsers$', users)
     }
-
-    private removeUser(value: string) {
-        this.formData.notifyUsers = this.formData.notifyUsers.filter((user: any) => user.value !== value)
-    }
-
-    private selectUser() {
-        // 打开选择人员弹窗
-        console.log('选择人员')
-    }
-
     private async handleSubmit() {
         if (this.submitting) return
         try {
             await (this.$refs.formRef as any).validate()
+            this.submitting = true
             await mockSubmitContinue()
             this.$toast.success('提交成功')
+            this.submitting = false
             this.$router.back()
         } catch (error) {
             console.error('提交失败:', error)
             this.$toast.fail('提交失败')
+            this.submitting = false
         }
     }
 }

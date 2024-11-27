@@ -19,3 +19,61 @@ body {
         border-color: #3192e4;
     }
 }
+
+// 业务
+.handle-users,
+.notify-users {
+    .user-list {
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                .user-name {
+                    font-weight: 500;
+                }
+                .user-phone {
+                    color: #999;
+                    margin-left: 8px;
+                }
+            }
+
+            .user-actions {
+                display: flex;
+                align-items: center;
+                .btn {
+                    border: 1px solid rgba(22, 118, 254, 1);
+                    color: rgba(22, 118, 254, 1);
+                    border-radius: 16px;
+                    background: #fff;
+                    margin-right: 12px;
+                    height: 24px;
+                    font-size: 12px;
+                    padding: 0 8px;
+                }
+                .leader-btn {
+                    background: #eeeeee;
+                    border-radius: 16px;
+                    color: #666666;
+                    border: none;
+                }
+                .delete-btn {
+                    color: #ff4d4f;
+                }
+            }
+        }
+    }
+    .select-user {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .delete-all {
+            color: #ff4d4f;
+            font-size: 14px;
+        }
+    }
+}

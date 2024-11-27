@@ -1,6 +1,6 @@
 const { notEmpty, getParentRouteView, pathToPascalName } = require('../utils.js')
 const path = require('path')
-const pages = require('../../build/entry.js').pages
+const pages = require('../../core/build/entry.js').pages
 const parentPages = getParentRouteView()
 const choices = Object.keys(pages)
     .map((key, index) => {

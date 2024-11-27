@@ -1,5 +1,5 @@
 <template>
-    <van-field class="my-custom" :value="myValue" v-bind="$attrs" @input="input">
+    <van-field class="my-custom" :value="myValue" v-bind="$attrs" @input="input" input-align="inputAlign">
         <slot slot="label" name="label"></slot>
         <slot slot="left-icon" name="left-icon"></slot>
         <slot slot="right-icon" name="right-icon"></slot>
@@ -23,6 +23,9 @@ export default class MyCustom extends Vue {
 
     @Prop({ type: String, default: '' })
     tag?: string
+
+    @Prop({ type: String, default: 'left' })
+    inputAlign?: string
 
     get myValue() {
         console.log(this.value, 'value')
