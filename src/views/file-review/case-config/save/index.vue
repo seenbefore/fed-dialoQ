@@ -16,7 +16,7 @@
 import { Component, Vue, Ref, Watch, Prop } from 'vue-property-decorator'
 import { FormColumn, FormRef } from '@/sharegood-ui'
 import DirectoryConfig from '../components/directory-config/index.vue'
-import { getDetail } from './api'
+import { getDetail, save, update, getDictList } from './api'
 import { tagsViewStore } from '@/store/useStore'
 
 @Component({
@@ -41,11 +41,15 @@ export default class CaseConfigAdd extends Vue {
     formRef!: FormRef
 
     formModel: Record<string, any> = {
-        volumeType: ['1'], // 正卷默认选中
-        qrCode: '0', // 二维码默认隐藏
-        barCode: '0', // 条形码默认隐藏
-        photographerName: '0', // 拍摄人姓名默认隐藏
-        approvalRequired: '1', // 默认需要审批
+        volumeType: ['main'],
+        hasMainVolume: '', // 正卷默认选中
+        hasSubVolume: '', // 副卷默认不选中
+        showQrcode: '', // 二维码默认隐藏
+        showBarcode: '', // 条形码默认隐藏
+        showPhotographer: '', // 拍摄人姓名默认隐藏
+        needApproval: '', // 默认需要审批
+        mainCatalogList: [],
+        subCatalogList: [],
     }
 
     isValid = false
@@ -57,28 +61,45 @@ export default class CaseConfigAdd extends Vue {
     }
     async getDetail() {
         const res = await getDetail({ id: this.id })
+        if (res.code === 200) {
+            const data = res.data
+            // 处理正副卷选择
+            const volumeType = []
+            if (data.hasMainVolume === '1') volumeType.push('1')
+            if (data.hasSubVolume === '1') volumeType.push('2')
 
-        this.$set(this.formModel, 'directory1', [
-            { name: '立案审批表', hasAttachment: 1, id: '1-1' },
-            { name: '案件调查报告书', hasAttachment: 1, id: '2-1' },
-        ])
-
-        this.$set(this.formModel, 'directory2', [])
+            this.formModel = {
+                ...data,
+                volumeType,
+                directory1: data.mainCatalogList || [],
+                directory2: data.subCatalogList || [],
+            }
+        }
     }
 
     get getFormAttrs() {
         const fields: FormColumn[] = [
             {
                 tag: 'select',
-                name: 'businessLine',
+                name: 'lineCode',
                 label: '条线',
                 attrs: {
                     placeholder: '请选择条线',
                     options: async () => {
-                        return [
-                            { label: '行政许可', value: '1' },
-                            { label: '行政处罚', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'territory_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
+                    },
+                    onChange: (val: any) => {
+                        console.log(val)
+                        const { option } = val
+                        if (option) {
+                            this.formModel.lineName = option.label
+                        } else {
+                            this.formModel.lineName = ''
+                        }
                     },
                 },
                 itemAttrs: {
@@ -87,20 +108,24 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'caseType',
+                name: 'volumeTypeCode',
                 label: '卷宗类型',
                 attrs: {
-                    options: [
-                        { label: '许可档案', value: '1' },
-                        { label: '重大火灾隐患档案', value: '2' },
-                        { label: '火灾事故简易调查档案', value: '3' },
-                        { label: '火灾事故调查档案', value: '4' },
-                        { label: '火灾事故认定复核档案', value: '5' },
-                        { label: '简易行政处罚档案', value: '6' },
-                        { label: '普通行政处罚档案', value: '7' },
-                        { label: '临时查封档案', value: '8' },
-                        { label: '行政强制执行档案', value: '9' },
-                    ],
+                    options: async () => {
+                        const { data } = await getDictList({ dictType: 'archive_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
+                    },
+                    onChange: (val: any) => {
+                        const { option } = val
+                        if (option) {
+                            this.formModel.volumeTypeName = option.label
+                        } else {
+                            this.formModel.volumeTypeName = ''
+                        }
+                    },
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请选择卷宗类型' }],
@@ -109,7 +134,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'input',
-                name: 'caseName',
+                name: 'volumeName',
                 label: '卷宗名称',
                 attrs: {
                     placeholder: '请输入',
@@ -126,8 +151,8 @@ export default class CaseConfigAdd extends Vue {
                 label: '正/副卷配置',
                 attrs: {
                     options: [
-                        { label: '正卷', value: '1', disabled: true },
-                        { label: '副卷', value: '2' },
+                        { label: '正卷', value: 'main' },
+                        { label: '副卷', value: 'sub' },
                     ],
                 },
                 itemAttrs: {
@@ -149,10 +174,10 @@ export default class CaseConfigAdd extends Vue {
                     return (
                         <el-row gutter={20}>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.directory1, type: 'main' }} />
+                                <DirectoryConfig props={{ value: this.formModel.mainCatalogList, type: 'main' }} />
                             </el-col>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.directory2, type: 'default' }} />
+                                <DirectoryConfig props={{ value: this.formModel.subCatalogList, type: 'sub' }} />
                             </el-col>
                         </el-row>
                     )
@@ -160,7 +185,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'qrCode',
+                name: 'showQrcode',
                 label: '封面二维码',
                 attrs: {
                     options: [
@@ -175,7 +200,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'barCode',
+                name: 'showBarcode',
                 label: '封面条形码',
                 attrs: {
                     options: [
@@ -190,7 +215,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'photographerName',
+                name: 'showPhotographer',
                 label: '拍摄人姓名',
                 attrs: {
                     options: [
@@ -205,7 +230,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'approvalRequired',
+                name: 'needApproval',
                 label: '申请查看卷宗',
                 attrs: {
                     options: [
@@ -229,9 +254,24 @@ export default class CaseConfigAdd extends Vue {
     async handleSubmit() {
         try {
             await this.formRef.validate(() => {}, true)
-            // // TODO: 调用保存接口
-            this.$message.success('保存成功')
 
+            const params: any = {
+                ...this.formModel,
+                // 处理正副卷选择
+                hasMainVolume: this.formModel.volumeType.includes('main') ? '1' : '0',
+                hasSubVolume: this.formModel.volumeType.includes('sub') ? '1' : '0',
+                // 添加目录数据
+                mainCatalogList: this.formModel.mainCatalogList || [],
+                subCatalogList: this.formModel.subCatalogList || [],
+            }
+
+            if (this.type === 'edit') {
+                await update({ ...params, id: this.id })
+            } else {
+                await save(params)
+            }
+
+            this.$message.success('保存成功')
             await tagsViewStore.delView(this.$route)
             this.$router.push('/file-review/case-config')
         } catch (error) {

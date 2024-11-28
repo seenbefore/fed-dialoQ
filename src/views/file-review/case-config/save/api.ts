@@ -1,14 +1,4 @@
-export const getDetail = (params: Record<string, any> = {}) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            id: 1,
-            businessLine: '行政许可',
-            caseType: '1',
-            caseName: '食品经营许可',
-            volumeType: '正卷',
-            directory: '正卷60件',
-        },
-    }
-}
+import { saveArchiveVolumeConfig, updateArchiveVolumeConfig, getArchiveVolumeConfig } from '@/services/auto/config/archiveVolume'
+import { getDictList } from '@/services/auto/archiveDict'
+
+export { saveArchiveVolumeConfig as save, updateArchiveVolumeConfig as update, getArchiveVolumeConfig as getDetail, getDictList }

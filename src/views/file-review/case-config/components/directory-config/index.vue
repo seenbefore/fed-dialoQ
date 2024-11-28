@@ -14,6 +14,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { TableColumn, TableRef } from '@/sharegood-ui'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
 import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index.vue'
+import { VO } from './api'
 
 @Component({
     name: 'DirectoryConfig',
@@ -22,15 +23,19 @@ import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index
     },
 })
 export default class DirectoryConfig extends Vue {
-    @Prop({ type: [Array], default: () => [] }) value!: any
+    /**
+     * catalogCode 目录编码
+     */
+    @Prop({ type: String, default: '' }) catalogCode!: string
+    @Prop({ type: [Array], default: () => [] }) value!: VO[]
     // 正卷 main 副卷
     @Prop({ default: 'main' }) type!: string
     @Ref('tableRef') tableRef!: TableRef
 
-    mainData: any[] = []
+    mainData: VO[] = []
 
     async handleAdd() {
-        const defaultCheckedKeys = this.value.map(item => item.id)
+        const defaultCheckedKeys = this.value.map(item => item.volumeConfigId)
         console.log('defaultCheckedKeys', defaultCheckedKeys)
 
         const { addNodes }: DirectoryDialogResult = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
@@ -41,9 +46,13 @@ export default class DirectoryConfig extends Vue {
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
-                    hasAttachment: 1,
-                    name: item.label,
-                    id: item.id,
+                    catalogName: item.label,
+                    sortNo: 0,
+                    volumeType: this.type === 'main' ? '1' : '2',
+                    hasAttachment: '1',
+                    volumeConfigId: item.id,
+                    catalogCode: '',
+                    remark: '',
                 }
             })
             this.value.push(..._addNodes)
@@ -54,12 +63,12 @@ export default class DirectoryConfig extends Vue {
         return {
             columns: [
                 { prop: 'sort', label: '序号', width: '50px' },
-                { prop: 'name', label: '名称', minWidth: '200px' },
+                { prop: 'catalogName', label: '名称', minWidth: '200px' },
                 {
                     prop: 'hasAttachment',
                     label: '含附件',
                     width: '100px',
-                    render: (h, { row }) => {
+                    render: (h, { row }: { row: VO }) => {
                         return (
                             <span>
                                 <el-checkbox

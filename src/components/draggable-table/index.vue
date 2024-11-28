@@ -98,6 +98,10 @@ interface ActionItem {
     },
 })
 export default class DraggableDirectory extends Vue {
+    /**
+     * 排序标识
+     */
+    @Prop({ type: String, default: 'sort' }) sortKey!: string
     @Prop({ type: Array, default: () => [] })
     value!: any[]
 
