@@ -6,7 +6,7 @@
 -   移动端：[src/entry/h5](./src/entry/h5/README.md)
 -   浙里办：[src/entry/zlb-h5](./src/entry/zlb-h5/README.md)
 -   门户网站：[src/entry/library](./src/entry/library/README.md)
--   大屏：[src/entry/bigscreen](./src/entry/bigscreen/README.md)
+-   大屏：[src/entry/bigscreen](./src/entry/bigScreen/README.md)
 
 [git 地址](http://gitlab.icinfo.co/fed/base-vue-template)
 
