@@ -17,7 +17,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { VolumeTypeEnum, VolumeTypeEnumMap } from './enum'
-import { list } from './api'
+import { list, remove } from './api'
 
 @Component({
     name: 'CaseConfig',
@@ -54,9 +54,8 @@ export default class CaseConfig extends Vue {
     }
 
     async handleDelete(row: any) {
-        await this.$confirm('确认删除该案卷配置?', '提示', {
-            type: 'warning',
-        })
+        await this.$confirm('确认删除该案卷配置?')
+        await remove({ id: row.id })
         this.$message.success('删除成功')
         this.handleSearch()
     }
