@@ -1,27 +1,27 @@
 /** 审批状态 */
-export enum AUDIT_STATUS {
+export enum StatusEnum {
     /** 待审批 */
     PENDING = '0',
     /** 审批通过 */
-    PASSED = '1',
+    APPROVED = '1',
     /** 审批退回 */
     REJECTED = '2',
 }
 
-export const AUDIT_STATUS_MAP: Record<string, any> = {
-    [AUDIT_STATUS.PENDING]: {
+export const StatusEnumMap: Record<string, any> = {
+    [StatusEnum.PENDING]: {
         label: '待审批',
-        value: AUDIT_STATUS.PENDING,
+        value: StatusEnum.PENDING,
         color: '#E6032D',
     },
-    [AUDIT_STATUS.PASSED]: {
+    [StatusEnum.APPROVED]: {
         label: '审批通过',
-        value: AUDIT_STATUS.PASSED,
+        value: StatusEnum.APPROVED,
         color: '#00B578',
     },
-    [AUDIT_STATUS.REJECTED]: {
+    [StatusEnum.REJECTED]: {
         label: '审批退回',
-        value: AUDIT_STATUS.REJECTED,
+        value: StatusEnum.REJECTED,
         color: '#FF9900',
     },
 }

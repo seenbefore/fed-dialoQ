@@ -24,6 +24,22 @@ import { VO } from './api'
 })
 export default class DirectoryConfig extends Vue {
     /**
+     * formModel 父级表单数据
+     */
+    @Prop({ type: Object, default: () => ({}) }) formModel!: any
+    @Watch('formModel.lineCode', { immediate: true, deep: true })
+    onFormModelChange(val: string) {
+        console.log('val', val)
+        this.territoryCode = val
+    }
+    @Watch('formModel.volumeTypeCode', { immediate: true, deep: true })
+    onFormModelVolumeTypeChange(val: string) {
+        console.log('val', val)
+        this.volumeType = val
+    }
+    private territoryCode = ''
+    private volumeType = ''
+    /**
      * catalogCode 目录编码
      */
     @Prop({ type: String, default: '' }) catalogCode!: string
@@ -35,6 +51,10 @@ export default class DirectoryConfig extends Vue {
     mainData: VO[] = []
 
     async handleAdd() {
+        if (!this.territoryCode) {
+            this.$message.warning('请先选择条线')
+            return
+        }
         const defaultCheckedKeys = this.value.map(item => item.volumeConfigId)
         console.log('defaultCheckedKeys', defaultCheckedKeys)
 
@@ -42,6 +62,8 @@ export default class DirectoryConfig extends Vue {
             type: 'add',
             title: `新增目录 - ${this.type === 'main' ? '正卷' : '副卷'}`,
             defaultCheckedKeys,
+            territoryCode: this.territoryCode,
+            volumeType: this.volumeType,
         } as DirectoryDialog)
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
@@ -51,7 +73,7 @@ export default class DirectoryConfig extends Vue {
                     volumeType: this.type === 'main' ? '1' : '2',
                     hasAttachment: '1',
                     volumeConfigId: item.id,
-                    catalogCode: '',
+                    catalogCode: item.value,
                     remark: '',
                 }
             })

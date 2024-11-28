@@ -12,7 +12,8 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list } from './api'
+import { list, getDictList } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseSearch',
@@ -52,21 +53,24 @@ export default class CaseSearch extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'select',
-                name: 'caseType',
+                name: 'volumeType',
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
-                        return [
-                            { label: '行政处罚', value: '1' },
-                            { label: '行政检查', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'archive_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
                     },
                 },
             },
             {
                 tag: 'input',
-                name: 'caseName',
+                name: 'volumeName',
                 label: '卷宗名称',
                 attrs: {
                     placeholder: '请输入',
@@ -74,7 +78,7 @@ export default class CaseSearch extends Vue {
             },
             {
                 tag: 'input',
-                name: 'target',
+                name: 'volumeObject',
                 label: '对象',
                 attrs: {
                     placeholder: '请输入',
@@ -82,7 +86,7 @@ export default class CaseSearch extends Vue {
             },
             {
                 tag: 'input',
-                name: 'returnNo',
+                name: 'archiveNumber',
                 label: '归档号',
                 attrs: {
                     placeholder: '请输入',
@@ -90,7 +94,7 @@ export default class CaseSearch extends Vue {
             },
             {
                 tag: 'select',
-                name: 'status',
+                name: 'applyStatus',
                 label: '申请状态',
                 attrs: {
                     placeholder: '请选择',
@@ -136,51 +140,53 @@ export default class CaseSearch extends Vue {
             },
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeType',
                 minWidth: '120px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '250px',
                 render: (h, { row }) => {
                     return (
                         <el-button type="text" onClick={() => this.handleView(row)}>
-                            {row.caseName}
+                            {row.volumeName}
                         </el-button>
                     )
                 },
             },
             {
                 label: '对象',
-                prop: 'target',
+                prop: 'volumeObject',
                 minWidth: '120px',
             },
             {
                 label: '归档日期',
-                prop: 'returnDate',
+                prop: 'archiveDate',
                 width: '170px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.archiveDate).format('YYYY-MM-DD')}</span>
+                },
             },
             {
                 label: '归档号',
-                prop: 'returnNo',
+                prop: 'archiveNumber',
                 minWidth: '250px',
             },
             {
                 label: '申请状态',
-                prop: 'status',
+                prop: 'applyStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const status = StatusEnumMap[row.status as keyof typeof StatusEnumMap]
+                    const status = StatusEnumMap[row.applyStatus as keyof typeof StatusEnumMap]
                     const colorMap = {
-                        [StatusEnum.PENDING]: '#FF9900', // 待审批 黄色
-                        [StatusEnum.APPROVED]: '#67C23A', // 通过 绿色
-                        [StatusEnum.REJECTED]: '#F56C6C', // 退回 红色
+                        [StatusEnum.PENDING]: '#FF9900',
+                        [StatusEnum.APPROVED]: '#67C23A',
+                        [StatusEnum.REJECTED]: '#F56C6C',
                     }
-                    const color = colorMap[row.status as keyof typeof StatusEnum] || ''
+                    const color = colorMap[row.applyStatus as keyof typeof StatusEnum] || ''
 
-                    if (row.status === StatusEnum.REJECTED) {
-                        // 退回状态显示悬浮提示
+                    if (row.applyStatus === StatusEnum.REJECTED) {
                         return (
                             <el-tooltip content={row.rejectReason || '无退回理由'} placement="top" effect="light">
                                 <span style={{ color }}>{status?.label || '-'}</span>
@@ -195,6 +201,9 @@ export default class CaseSearch extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 width: '170px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
@@ -207,7 +216,7 @@ export default class CaseSearch extends Vue {
                             <el-button type="text" onClick={() => this.handleView(row)}>
                                 查看
                             </el-button>
-                            {!row.status && (
+                            {!row.applyStatus && (
                                 <el-button type="text" onClick={() => this.handleApply(row)}>
                                     申请查看
                                 </el-button>
@@ -219,7 +228,6 @@ export default class CaseSearch extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
             pageActionLayout: [],
             load: async (params: any = {}) => {
                 const { data } = await list({
@@ -228,7 +236,7 @@ export default class CaseSearch extends Vue {
                 })
                 return {
                     result: data.data,
-                    total: data.recordsTotal,
+                    total: parseInt(data.recordsTotal),
                 }
             },
             columns,

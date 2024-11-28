@@ -41,7 +41,7 @@ export default class CaseConfigAdd extends Vue {
     formRef!: FormRef
 
     formModel: Record<string, any> = {
-        volumeType: ['main'],
+        mainAndSubVolume: ['main'],
         hasMainVolume: '', // 正卷默认选中
         hasSubVolume: '', // 副卷默认不选中
         showQrcode: '', // 二维码默认隐藏
@@ -63,13 +63,13 @@ export default class CaseConfigAdd extends Vue {
         const { data } = await getDetail({ id: this.id })
 
         // 处理正副卷选择
-        const volumeType = []
-        if (data.hasMainVolume === '1') volumeType.push('main')
-        if (data.hasSubVolume === '1') volumeType.push('sub')
+        const mainAndSubVolume = []
+        if (data.hasMainVolume === '1') mainAndSubVolume.push('main')
+        if (data.hasSubVolume === '1') mainAndSubVolume.push('sub')
 
         this.formModel = {
             ...data,
-            volumeType,
+            mainAndSubVolume,
             mainCatalogList: data.mainCatalogList || [],
             subCatalogList: data.subCatalogList || [],
         }
@@ -85,6 +85,8 @@ export default class CaseConfigAdd extends Vue {
                 name: 'lineCode',
                 label: '条线',
                 attrs: {
+                    filterable: true,
+                    'default-first-option': true,
                     placeholder: '请选择条线',
                     options: async () => {
                         const { data } = await getDictList({ dictType: 'territory_type' })
@@ -98,8 +100,6 @@ export default class CaseConfigAdd extends Vue {
                         const { option } = val
                         if (option) {
                             this.formModel.lineName = option.label
-                        } else {
-                            this.formModel.lineName = ''
                         }
                     },
                 },
@@ -112,6 +112,8 @@ export default class CaseConfigAdd extends Vue {
                 name: 'volumeTypeCode',
                 label: '卷宗类型',
                 attrs: {
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
                         const { data } = await getDictList({ dictType: 'archive_type' })
                         return data.map((item: any) => ({
@@ -123,8 +125,6 @@ export default class CaseConfigAdd extends Vue {
                         const { option } = val
                         if (option) {
                             this.formModel.volumeTypeName = option.label
-                        } else {
-                            this.formModel.volumeTypeName = ''
                         }
                     },
                 },
@@ -148,7 +148,7 @@ export default class CaseConfigAdd extends Vue {
             },
             {
                 tag: 'checkbox',
-                name: 'volumeType',
+                name: 'mainAndSubVolume',
                 label: '正/副卷配置',
                 attrs: {
                     options: [
@@ -175,10 +175,10 @@ export default class CaseConfigAdd extends Vue {
                     return (
                         <el-row gutter={20}>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.mainCatalogList, type: 'main' }} />
+                                <DirectoryConfig props={{ value: this.formModel.mainCatalogList, type: 'main', formModel: this.formModel }} />
                             </el-col>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.subCatalogList, type: 'sub' }} />
+                                <DirectoryConfig props={{ value: this.formModel.subCatalogList, type: 'sub', formModel: this.formModel }} />
                             </el-col>
                         </el-row>
                     )
@@ -255,15 +255,27 @@ export default class CaseConfigAdd extends Vue {
     async handleSubmit() {
         try {
             await this.formRef.validate(() => {}, true)
+            const formModel = this.formModel
 
             const params: any = {
-                ...this.formModel,
+                lineCode: formModel.lineCode,
+                lineName: formModel.lineName,
+                volumeTypeCode: formModel.volumeTypeCode,
+                volumeTypeName: formModel.volumeTypeName,
+                volumeName: formModel.volumeName,
+
                 // 处理正副卷选择
-                hasMainVolume: this.formModel.volumeType.includes('main') ? '1' : '0',
-                hasSubVolume: this.formModel.volumeType.includes('sub') ? '1' : '0',
+                hasMainVolume: formModel.mainAndSubVolume.includes('main') ? '1' : '0',
+                hasSubVolume: formModel.mainAndSubVolume.includes('sub') ? '1' : '0',
+                mainCatalogCount: formModel.mainCatalogList.length,
+                subCatalogCount: formModel.subCatalogList.length,
                 // 添加目录数据
-                mainCatalogList: this.formModel.mainCatalogList || [],
-                subCatalogList: this.formModel.subCatalogList || [],
+                mainCatalogList: formModel.mainCatalogList || [],
+                subCatalogList: formModel.subCatalogList || [],
+                showQrcode: formModel.showQrcode,
+                showBarcode: formModel.showBarcode,
+                showPhotographer: formModel.showPhotographer,
+                needApproval: formModel.needApproval,
             }
 
             if (this.type === 'edit') {

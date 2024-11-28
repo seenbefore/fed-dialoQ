@@ -17,7 +17,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { VolumeTypeEnum, VolumeTypeEnumMap } from './enum'
-import { list, remove, VO } from './api'
+import { list, remove, getDictList, VO } from './api'
 import moment from 'moment'
 
 @Component({
@@ -69,11 +69,17 @@ export default class CaseConfig extends Vue {
                 label: '条线',
                 attrs: {
                     placeholder: '请选择',
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
-                        return [
-                            { label: '行政许可', value: '1' },
-                            { label: '行政处罚', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'territory_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
+                    },
+                    onChange: (val: any) => {
+                        this.handleSearch()
                     },
                 },
             },
@@ -83,11 +89,17 @@ export default class CaseConfig extends Vue {
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
-                        return [
-                            { label: '行政处罚', value: '1' },
-                            { label: '许可备案', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'archive_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
+                    },
+                    onChange: (val: any) => {
+                        this.handleSearch()
                     },
                 },
             },
@@ -99,6 +111,9 @@ export default class CaseConfig extends Vue {
                     placeholder: '请选择',
                     options: async () => {
                         return Object.values(VolumeTypeEnumMap)
+                    },
+                    onChange: (val: any) => {
+                        this.handleSearch()
                     },
                 },
             },

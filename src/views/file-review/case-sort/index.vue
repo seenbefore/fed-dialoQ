@@ -12,7 +12,8 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { SORT_STATUS, SORT_STATUS_MAP } from './enum'
-import { getList } from './api'
+import { list, getDictList } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseSort',
@@ -33,22 +34,26 @@ export default class CaseSort extends Vue {
                 columns: [
                     {
                         tag: 'select',
-                        name: 'caseType',
+                        name: 'volumeType',
                         itemAttrs: {
                             label: '卷宗类型',
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [
-                                { label: '全部', value: '' },
-                                { label: '行政处罚', value: '1' },
-                                { label: '行政检查', value: '2' },
-                            ],
+                            filterable: true,
+                            'default-first-option': true,
+                            options: async () => {
+                                const { data } = await getDictList({ dictType: 'archive_type' })
+                                return data.map((item: any) => ({
+                                    label: item.dictChineseName,
+                                    value: item.dictCode,
+                                }))
+                            },
                         },
                     },
                     {
                         tag: 'input',
-                        name: 'caseName',
+                        name: 'volumeName',
                         itemAttrs: {
                             label: '卷宗名称',
                         },
@@ -58,7 +63,7 @@ export default class CaseSort extends Vue {
                     },
                     {
                         tag: 'input',
-                        name: 'target',
+                        name: 'volumeObject',
                         itemAttrs: {
                             label: '对象',
                         },
@@ -72,7 +77,7 @@ export default class CaseSort extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'returnNo',
+                        name: 'archiveNumber',
                         itemAttrs: {
                             label: '归档号',
                         },
@@ -124,12 +129,12 @@ export default class CaseSort extends Vue {
         const columns: TableColumn[] = [
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeType',
                 minWidth: '100px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '200px',
             },
             {
@@ -139,17 +144,17 @@ export default class CaseSort extends Vue {
             },
             {
                 label: '对象',
-                prop: 'target',
+                prop: 'volumeObject',
                 minWidth: '120px',
             },
             {
                 label: '归档日期',
-                prop: 'returnDate',
+                prop: 'archiveDate',
                 minWidth: '120px',
             },
             {
                 label: '归档号',
-                prop: 'returnNo',
+                prop: 'archiveNumber',
                 minWidth: '200px',
             },
             {
@@ -166,6 +171,9 @@ export default class CaseSort extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
@@ -189,7 +197,7 @@ export default class CaseSort extends Vue {
 
         return {
             load: async (params: any = {}) => {
-                const { data } = await getList({ ...params, ...this.formModel })
+                const { data } = await list({ ...params, ...this.formModel })
                 return {
                     result: data.data,
                     total: data.recordsTotal,

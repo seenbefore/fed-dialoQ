@@ -11,8 +11,9 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { AUDIT_STATUS, AUDIT_STATUS_MAP } from './enum'
-import { getList } from './api'
+import { StatusEnum, StatusEnumMap } from './enum'
+import { list, getDictList } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseSearchRecord',
@@ -33,7 +34,7 @@ export default class CaseSearchRecord extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'applicant',
+                        name: 'applicantName',
                         itemAttrs: {
                             label: '申请人',
                         },
@@ -43,7 +44,7 @@ export default class CaseSearchRecord extends Vue {
                     },
                     {
                         tag: 'input',
-                        name: 'phone',
+                        name: 'applicantPhone',
                         itemAttrs: {
                             label: '手机号',
                         },
@@ -76,23 +77,27 @@ export default class CaseSearchRecord extends Vue {
             {
                 columns: [
                     {
-                        tag: 'select',
-                        name: 'caseType',
+                        tag: 'input',
+                        name: 'volumeType',
                         itemAttrs: {
                             label: '卷宗类型',
                         },
                         attrs: {
-                            placeholder: '请选择',
-                            options: [
-                                { label: '全部', value: '' },
-                                { label: '行政处罚', value: '1' },
-                                { label: '行政检查', value: '2' },
-                            ],
+                            placeholder: '请输入',
+                            filterable: true,
+                            'default-first-option': true,
+                            options: async () => {
+                                const { data } = await getDictList({ dictType: 'archive_type' })
+                                return data.map((item: any) => ({
+                                    label: item.dictChineseName,
+                                    value: item.dictCode,
+                                }))
+                            },
                         },
                     },
                     {
                         tag: 'input',
-                        name: 'code',
+                        name: 'volumeNumber',
                         itemAttrs: {
                             label: '编号',
                         },
@@ -102,13 +107,17 @@ export default class CaseSearchRecord extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'status',
+                        name: 'applyStatus',
                         itemAttrs: {
                             label: '审批状态',
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [{ label: '全部', value: '' }, ...Object.values(AUDIT_STATUS_MAP)],
+                            options: [
+                                { label: '全部', value: '' },
+                                { label: '审批通过', value: '2' },
+                                { label: '审批退回', value: '3' },
+                            ],
                         },
                     },
                 ],
@@ -148,63 +157,81 @@ export default class CaseSearchRecord extends Vue {
         const columns: TableColumn[] = [
             {
                 label: '申请人',
-                prop: 'applicant',
+                prop: 'applicantName',
                 minWidth: '100px',
             },
             {
-                label: '所属',
-                prop: 'department',
-                minWidth: '120px',
-            },
-            {
                 label: '手机号',
-                prop: 'phone',
+                prop: 'applicantPhone',
                 minWidth: '120px',
             },
             {
                 label: '申请时间',
                 prop: 'applyTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.applyTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeTypeName',
                 minWidth: '100px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '200px',
             },
             {
-                label: '编号',
-                prop: 'code',
+                label: '卷宗编号',
+                prop: 'volumeNumber',
                 minWidth: '200px',
             },
             {
-                label: '对象',
-                prop: 'target',
+                label: '卷宗对象',
+                prop: 'volumeObjectName',
                 minWidth: '120px',
             },
             {
                 label: '归档日期',
-                prop: 'returnDate',
+                prop: 'archiveTime',
                 minWidth: '120px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.archiveTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
-                label: '审批状态',
-                prop: 'status',
+                label: '申请状态',
+                prop: 'applyStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const { status } = row
-                    const { label, color } = AUDIT_STATUS_MAP[status] || {}
-                    return <span style={{ color }}>{label}</span>
+                    const status = StatusEnumMap[row.applyStatus as keyof typeof StatusEnumMap]
+                    const colorMap = {
+                        [StatusEnum.PENDING]: '#FF9900',
+                        [StatusEnum.APPROVED]: '#67C23A',
+                        [StatusEnum.REJECTED]: '#F56C6C',
+                    }
+                    const color = colorMap[row.applyStatus as keyof typeof StatusEnum] || ''
+
+                    if (row.applyStatus === StatusEnum.REJECTED) {
+                        return (
+                            <el-tooltip content={row.rejectReason || '无退回理由'} placement="top" effect="light">
+                                <span style={{ color }}>{status?.label || '-'}</span>
+                            </el-tooltip>
+                        )
+                    }
+
+                    return <span style={{ color }}>{status?.label || '-'}</span>
                 },
             },
             {
                 label: '审批时间',
-                prop: 'auditTime',
+                prop: 'approveTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.approveTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
         ]
 
@@ -212,12 +239,12 @@ export default class CaseSearchRecord extends Vue {
             load: async (params: any = {}) => {
                 const { applyTime, ...rest } = this.formModel
                 // 日期范围处理
-                const [applyTimeStart, applyTimeEnd] = applyTime || []
-                const { data } = await getList({
+                const [applyStartTime, applyEndTime] = applyTime || []
+                const { data } = await list({
                     ...params,
                     ...rest,
-                    applyTimeStart,
-                    applyTimeEnd,
+                    applyStartTime,
+                    applyEndTime,
                 })
                 return {
                     result: data.data,
@@ -225,6 +252,7 @@ export default class CaseSearchRecord extends Vue {
                 }
             },
             columns,
+            pageActionLayout: [],
         }
     }
 

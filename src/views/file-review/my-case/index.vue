@@ -17,7 +17,8 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list } from './api'
+import { list, getDictList } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'MyCase',
@@ -70,11 +71,14 @@ export default class MyCase extends Vue {
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
-                        return [
-                            { label: '行政处罚', value: '1' },
-                            { label: '行政检查', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'archive_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
                     },
                 },
             },
@@ -186,6 +190,9 @@ export default class MyCase extends Vue {
                 label: '归档日期',
                 prop: 'archiveDate',
                 width: '170px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.archiveDate).format('YYYY-MM-DD')}</span>
+                },
             },
             {
                 label: '归档号',
@@ -220,6 +227,9 @@ export default class MyCase extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 width: '170px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
@@ -242,7 +252,6 @@ export default class MyCase extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
             pageActionLayout: [],
             load: async (params: any = {}) => {
                 const { data } = await list({
