@@ -64,7 +64,7 @@ export default class CaseConfig extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'select',
-                name: 'businessLine',
+                name: 'lineCode',
                 label: '条线',
                 attrs: {
                     placeholder: '请选择',
@@ -78,7 +78,7 @@ export default class CaseConfig extends Vue {
             },
             {
                 tag: 'select',
-                name: 'caseType',
+                name: 'volumeTypeCode',
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
@@ -138,17 +138,17 @@ export default class CaseConfig extends Vue {
             },
             {
                 label: '条线',
-                prop: 'businessLine',
+                prop: 'lineName',
                 minWidth: '120px',
             },
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeTypeName',
                 minWidth: '120px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '150px',
             },
             {
@@ -158,7 +158,7 @@ export default class CaseConfig extends Vue {
             },
             {
                 label: '目录',
-                prop: 'directory',
+                prop: 'catalogName',
                 minWidth: '120px',
             },
             {
