@@ -51,7 +51,7 @@ export default class CaseConfig extends Vue {
     }
 
     handleCopy(row: any) {
-        // TODO: 复制案卷配置
+        this.$router.push(`/file-review/case-config/save?type=add&_=复制案卷配置&id=${row.id}`)
     }
 
     async handleDelete(row: any) {

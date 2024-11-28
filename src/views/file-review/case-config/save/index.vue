@@ -55,25 +55,26 @@ export default class CaseConfigAdd extends Vue {
     isValid = false
 
     mounted() {
-        if (this.type === 'edit') {
+        if (this.type === 'edit' || (this.type === 'add' && this.id)) {
             this.getDetail()
         }
     }
     async getDetail() {
-        const res = await getDetail({ id: this.id })
-        if (res.code === 200) {
-            const data = res.data
-            // 处理正副卷选择
-            const volumeType = []
-            if (data.hasMainVolume === '1') volumeType.push('1')
-            if (data.hasSubVolume === '1') volumeType.push('2')
+        const { data } = await getDetail({ id: this.id })
 
-            this.formModel = {
-                ...data,
-                volumeType,
-                directory1: data.mainCatalogList || [],
-                directory2: data.subCatalogList || [],
-            }
+        // 处理正副卷选择
+        const volumeType = []
+        if (data.hasMainVolume === '1') volumeType.push('main')
+        if (data.hasSubVolume === '1') volumeType.push('sub')
+
+        this.formModel = {
+            ...data,
+            volumeType,
+            mainCatalogList: data.mainCatalogList || [],
+            subCatalogList: data.subCatalogList || [],
+        }
+        if (this.type === 'add') {
+            delete this.formModel.id
         }
     }
 

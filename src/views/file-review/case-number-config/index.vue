@@ -9,6 +9,7 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { getList, save } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseNumberConfig',
@@ -22,27 +23,32 @@ export default class CaseNumberConfig extends Vue {
         const columns: TableColumn[] = [
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeTypeName',
                 minWidth: '120px',
             },
             {
-                label: '卷宗范围',
-                prop: 'caseScope',
+                label: '条线名称',
+                prop: 'lineName',
                 minWidth: '120px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '200px',
             },
             {
                 label: '正/副卷',
-                prop: 'isMain',
+                prop: 'hasMainVolume',
                 minWidth: '100px',
+                render: (h, { row }) => {
+                    const mainText = row.hasMainVolume === '1' ? '正卷' : ''
+                    const subText = row.hasSubVolume === '1' ? '副卷' : ''
+                    return <span>{[mainText, subText].filter(Boolean).join('、')}</span>
+                },
             },
             {
                 label: '全宗号',
-                prop: 'allNumber',
+                prop: 'fondNumber',
                 minWidth: '100px',
             },
             {
@@ -59,6 +65,9 @@ export default class CaseNumberConfig extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm')}</span>
+                },
             },
             {
                 label: '操作',
@@ -82,10 +91,11 @@ export default class CaseNumberConfig extends Vue {
                 const { data } = await getList(params)
                 return {
                     result: data.data,
-                    total: data.recordsTotal,
+                    total: parseInt(data.recordsTotal),
                 }
             },
             columns,
+            pageActionLayout: [],
         }
     }
 
@@ -103,8 +113,6 @@ export default class CaseNumberConfig extends Vue {
                 data: data || {},
             })
             if (result) {
-                await save(result)
-                this.$message.success('保存成功')
                 this.tableRef.onLoad()
             }
         } catch (error) {

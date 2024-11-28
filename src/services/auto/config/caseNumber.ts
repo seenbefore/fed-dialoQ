@@ -12,7 +12,7 @@ import { http } from "@/scripts/http"
  * @param options 附加选项
  * @author claude
  */
-export function getCaseNumberConfigList(data?: {
+export function getCaseNumberConfigPageList(data?: {
 /** 分页参数 页码数 默认1 */ pageNum?: number, 
 /** 分页参数 每页条数 默认10 */ length?: number, 
 /** 对象排序字段 */ orderField?: string, 
@@ -21,7 +21,7 @@ export function getCaseNumberConfigList(data?: {
 /** 机构编码 */ orgCode?: string, 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<PageResponse<ArchiveCaseNumberConfigVO>>>({
-        url: "/config/caseNumber/getCaseNumberConfigList",
+        url: "/config/caseNumber/getCaseNumberConfigPageList",
         type: "POST",
         data,
         ...options
@@ -46,6 +46,25 @@ export function updateCaseNumberConfig(data?: {
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<boolean>>({
         url: "/config/caseNumber/updateCaseNumberConfig",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
+/**
+ * 描述：查询案卷号配置列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ * @author claude
+ */
+export function getCaseNumberConfigList(data?: {
+/** 条线编码 */ lineCode?: string, 
+/** 卷宗类型编码 */ volumeTypeCode?: string, 
+/** 机构编码 */ orgCode?: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<ArchiveCaseNumberConfigVO[]>>({
+        url: "/config/caseNumber/getCaseNumberConfigList",
         type: "POST",
         data,
         ...options
@@ -260,6 +279,11 @@ export interface ArchiveCaseNumberConfigVO {
      * 案卷号
      */
     caseNumber: string
+
+    /**
+     * 是否为模版(0:否,1:是)
+     */
+    isTemplate: number
 
     /**
      * 卷宗名称

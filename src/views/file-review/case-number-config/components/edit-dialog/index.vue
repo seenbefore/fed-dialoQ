@@ -13,6 +13,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { FormRow, FormRef } from '@/sharegood-ui'
+import { save } from './api'
 
 @Component({
     name: 'EditDialog',
@@ -37,7 +38,7 @@ export default class EditDialog extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'allNumber',
+                        name: 'fondNumber',
                         itemAttrs: {
                             label: '全宗号',
                             //rules: [{ required: true, message: '请输入全宗号' }],
@@ -49,18 +50,17 @@ export default class EditDialog extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'allNumberCondition',
+                        name: 'fondNumberLimit',
                         itemAttrs: {
                             label: '限定条件',
                             //rules: [{ required: true, message: '请选择限定条件' }],
                         },
                         attrs: {
                             placeholder: '请选择',
+                            value: '1',
                             options: [
-                                { label: '格式不可编辑且不自动续编', value: '1' },
-                                { label: '格式不可编辑且自动续编', value: '2' },
-                                { label: '格式可编辑且不自动续编', value: '3' },
-                                { label: '格式可编辑且自动续编', value: '4' },
+                                { label: '格式不可编辑', value: '1' },
+                                { label: '格式可编辑', value: '2' },
                             ],
                         },
                     },
@@ -83,19 +83,17 @@ export default class EditDialog extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'catalogNumberCondition',
+                        name: 'catalogNumberLimit',
                         itemAttrs: {
                             label: '限定条件',
                             //rules: [{ required: true, message: '请选择限定条件' }],
                         },
                         attrs: {
                             placeholder: '请选择',
+                            value: '1',
                             options: [
-                                { label: '格式不可编辑且不自动续编', value: '1' },
-                                { label: '格式不可编辑且自动续编', value: '2' },
-                                { label: '格式可编辑且不自动续编', value: '3' },
-                                { label: '格式可编辑且自动续编', value: '4' },
-                                { label: '格式可编辑且自动续编（默认值）', value: '5' },
+                                { label: '格式不可编辑', value: '1' },
+                                { label: '格式可编辑', value: '2' },
                             ],
                         },
                     },
@@ -118,14 +116,18 @@ export default class EditDialog extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'caseNumberCondition',
+                        name: 'caseNumberLimit',
                         itemAttrs: {
                             label: '限定条件',
                             //rules: [{ required: true, message: '请选择限定条件' }],
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [{ label: '自动获取决定书编号', value: '1' }],
+                            value: '1',
+                            options: [
+                                { label: '自动获取决定书编号', value: '1' },
+                                { label: '自动获取立案编号', value: '2' },
+                            ],
                         },
                     },
                 ],
@@ -139,14 +141,17 @@ export default class EditDialog extends Vue {
         }
     }
 
-    created() {
-        this.formModel = { ...this.data }
+    mounted() {
+        this.$set(this, 'formModel', this.data)
     }
 
     async handleSubmit() {
         try {
             this.loading = true
             await this.formRef.validate()
+            const payload: any = { ...this.formModel }
+            await save(payload)
+            this.$message.success('保存成功')
             this.$options.confirm?.(this.formModel)
         } catch (error) {
             console.error(error)
