@@ -3,18 +3,19 @@
         <div class="directory-content">
             <!-- 搜索框 -->
             <div class="search-box">
-                <el-input v-model="searchText" placeholder="输入文献名进行过滤" clearable>
+                <el-input v-model="searchText" placeholder="输入关键字进行过滤" clearable>
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
             </div>
-
+            <div>defaultCheckedKeys:{{ defaultCheckedKeys }}</div>
+            <div>selectedNodes:{{ selectedNodes }}</div>
             <!-- 目录树 -->
             <div class="directory-tree">
                 <el-tree
                     ref="tree"
                     :data="treeData"
-                    :default-checked-keys="value"
-                    node-key="value"
+                    :default-checked-keys="defaultCheckedKeys"
+                    node-key="id"
                     show-checkbox
                     default-expand-all
                     :filter-node-method="filterNode"
@@ -39,13 +40,42 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 
+export interface DirectoryDialogResult {
+    addNodes: Array<{ id: string; label: string; [key: string]: any }>
+    deleteNodeKeys: Array<any>
+    selectedNodes: Array<{ id: string; label: string; [key: string]: any }>
+}
+
 @Component({
     name: 'DirectoryDialog',
     components: {},
 })
 export default class DirectoryDialog extends Vue {
-    @Prop({ type: Array }) value!: string[]
+    /**
+     * 标题
+     */
+    @Prop({ type: String }) title!: string
+    /**
+     * 匹配关键字
+     */
+    @Prop({ type: String, default: 'id' }) nodeKey!: string
+    /**
+     * 默认选中的节点
+     *
+     */
+    @Prop({ type: Array, default: () => [] }) value!: any[]
+    /**
+     * 默认选中的节点标识
+     * ['1-1','2-1']
+     */
+    @Prop({ type: Array, default: () => [] }) defaultCheckedKeys!: any[]
+    /**
+     * 类型
+     */
     @Prop({ type: String }) type!: 'add' | 'edit'
+    /**
+     * 卷宗类型
+     */
     @Prop({ type: String }) volumeType!: string
 
     @Ref('tree') tree!: any
@@ -53,78 +83,84 @@ export default class DirectoryDialog extends Vue {
     searchText = ''
     selectedNodes: any[] = []
 
-    // 预设目录树数据
-    treeData = [
-        {
-            id: '1',
-            label: '立案',
-            children: [
-                {
-                    id: '1-1',
-                    label: '立案审批表',
-                },
-            ],
-        },
-        {
-            id: '2',
-            label: '调查取证',
-            children: [
-                {
-                    id: '2-1',
-                    label: '案件调查报告书',
-                },
-                {
-                    id: '2-2',
-                    label: '案件调查终结报告',
-                },
-            ],
-        },
-        {
-            id: '3',
-            label: '处罚告知',
-            children: [
-                {
-                    id: '3-1',
-                    label: '处罚告知审批表',
-                },
-                {
-                    id: '3-2',
-                    label: '行政处罚事先告知书',
-                },
-                {
-                    id: '3-3',
-                    label: '放弃陈述、申辩声明',
-                },
-            ],
-        },
-        {
-            id: '4',
-            label: '处罚决定',
-            children: [
-                {
-                    id: '4-1',
-                    label: '行政处罚决定书',
-                },
-                {
-                    id: '4-2',
-                    label: '行政处罚决定审批表',
-                },
-            ],
-        },
-        {
-            id: '5',
-            label: '证据',
-            children: [
-                {
-                    id: '5-1',
-                    label: 'XXXXXXXXXXXX.XXX',
-                },
-            ],
-        },
-    ]
+    // 目录树数据
+    treeData = []
 
-    get title() {
-        return `新增目录 - ${this.volumeType === 'main' ? '正卷' : '副卷'}`
+    mounted() {
+        this.getData()
+    }
+    /**
+     * 获取数据
+     */
+    async getData() {
+        this.treeData = [
+            {
+                id: '1',
+                label: '立案',
+                children: [
+                    {
+                        id: '1-1',
+                        label: '立案审批表',
+                    },
+                ],
+            },
+            {
+                id: '2',
+                label: '调查取证',
+                children: [
+                    {
+                        id: '2-1',
+                        label: '案件调查报告书',
+                    },
+                    {
+                        id: '2-2',
+                        label: '案件调查终结报告',
+                    },
+                ],
+            },
+            {
+                id: '3',
+                label: '处罚告知',
+                children: [
+                    {
+                        id: '3-1',
+                        label: '处罚告知审批表',
+                    },
+                    {
+                        id: '3-2',
+                        label: '行政处罚事先告知书',
+                    },
+                    {
+                        id: '3-3',
+                        label: '放弃陈述、申辩声明',
+                    },
+                ],
+            },
+            {
+                id: '4',
+                label: '处罚决定',
+                children: [
+                    {
+                        id: '4-1',
+                        label: '行政处罚决定书',
+                    },
+                    {
+                        id: '4-2',
+                        label: '行政处罚决定审批表',
+                    },
+                ],
+            },
+            {
+                id: '5',
+                label: '证据',
+                children: [
+                    {
+                        id: '5-1',
+                        label: 'XXXXXXXXXXXX.XXX',
+                    },
+                ],
+            },
+        ]
     }
 
     @Watch('searchText')
@@ -142,13 +178,18 @@ export default class DirectoryDialog extends Vue {
     }
 
     async confirm() {
-        // 将选中的节点转换为目录项
-        const directories = this.selectedNodes.map((node, index) => ({
-            name: node.label,
-            sort: index + 1,
-            hasAttachment: false,
-        }))
-        this.$options.confirm?.(directories)
+        const selectedNodes = this.selectedNodes
+        const originKeys = this.value.map(item => item[this.nodeKey])
+        // 通过比对获取新增的节点和删除的节点
+        const addNodes = selectedNodes.filter(node => !originKeys.includes(node[this.nodeKey]))
+        const deleteNodeKeys = originKeys.filter(key => !selectedNodes.map(node => node[this.nodeKey]).includes(key))
+        console.log('addNodes', addNodes, 'deleteNodeKeys', deleteNodeKeys)
+        const result: DirectoryDialogResult = {
+            addNodes,
+            deleteNodeKeys,
+            selectedNodes,
+        }
+        this.$options.confirm?.(result)
     }
 
     cancel() {

@@ -17,7 +17,8 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { VolumeTypeEnum, VolumeTypeEnumMap } from './enum'
-import { list, remove } from './api'
+import { list, remove, VO } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseConfig',
@@ -42,7 +43,7 @@ export default class CaseConfig extends Vue {
     }
 
     handleAdd() {
-        this.$router.push('/file-review/case-config/save')
+        this.$router.push('/file-review/case-config/save?type=add&_=新增案卷配置')
     }
 
     handleEdit(row: any) {
@@ -50,7 +51,7 @@ export default class CaseConfig extends Vue {
     }
 
     handleCopy(row: any) {
-        this.$router.push(`/file-review/case-config/copy?id=${row.id}`)
+        // TODO: 复制案卷配置
     }
 
     async handleDelete(row: any) {
@@ -155,21 +156,47 @@ export default class CaseConfig extends Vue {
                 label: '正/副卷',
                 prop: 'volumeType',
                 minWidth: '80px',
+                render: (h, { row }: { row: VO }) => {
+                    const result = []
+                    if (row.hasMainVolume === '1') {
+                        result.push('正卷')
+                    }
+                    if (row.hasSubVolume === '1') {
+                        result.push('副卷')
+                    }
+                    return <span>{result.join('、')}</span>
+                },
             },
             {
                 label: '目录',
                 prop: 'catalogName',
                 minWidth: '120px',
+                render: (h, { row }: { row: VO }) => {
+                    const result = []
+                    if (row.hasMainVolume === '1') {
+                        result.push(`正卷${row.mainCatalogCount}件`)
+                    }
+                    if (row.hasSubVolume === '1') {
+                        result.push(`副卷${row.subCatalogCount}件`)
+                    }
+                    return <span>{result.join('、')}</span>
+                },
             },
             {
                 label: '创建时间',
                 prop: 'createTime',
                 width: '170px',
+                render: (h, { row }: { row: VO }) => {
+                    return <span>{moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '更新时间',
                 prop: 'updateTime',
                 width: '170px',
+                render: (h, { row }: { row: VO }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',

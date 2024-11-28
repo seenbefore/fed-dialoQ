@@ -51,30 +51,19 @@ export default class CaseConfigAdd extends Vue {
     isValid = false
 
     mounted() {
-        console.log(this.type, 11111)
-        //if (this.type === 'edit') {
-        this.getDetail()
-        //}
+        if (this.type === 'edit') {
+            this.getDetail()
+        }
     }
     async getDetail() {
         const res = await getDetail({ id: this.id })
-        console.log(res, 222)
-        //this.formModel = res.data
+
         this.$set(this.formModel, 'directory1', [
-            { name: '111', hasAttachment: true },
-            { name: '222', hasAttachment: false },
-            { name: '333', hasAttachment: false },
-            { name: '444', hasAttachment: false },
-            { name: '555', hasAttachment: false },
-            { name: '666', hasAttachment: false },
-            { name: '777', hasAttachment: false },
-            { name: '888', hasAttachment: false },
-            { name: '999', hasAttachment: false },
-            { name: '1010', hasAttachment: false },
-            { name: '1111', hasAttachment: false },
+            { name: '立案审批表', hasAttachment: 1, id: '1-1' },
+            { name: '案件调查报告书', hasAttachment: 1, id: '2-1' },
         ])
 
-        this.$set(this.formModel, 'directory2', [{ name: '111', hasAttachment: true }])
+        this.$set(this.formModel, 'directory2', [])
     }
 
     get getFormAttrs() {
@@ -251,19 +240,8 @@ export default class CaseConfigAdd extends Vue {
     }
 
     async handleCancel() {
-        // 如果表单已修改，则提示确认
-        if (Object.keys(this.formModel).length > 4) {
-            try {
-                await this.$confirm('有未保存的内容，确认离开?', '提示', {
-                    type: 'warning',
-                })
-                this.$router.push('/file-review/case-config')
-            } catch (error) {
-                // 取消离开
-            }
-        } else {
-            this.$router.push('/file-review/case-config')
-        }
+        await tagsViewStore.delView(this.$route)
+        this.$router.push('/file-review/case-config')
     }
 }
 </script>

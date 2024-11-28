@@ -136,12 +136,16 @@ export default class DraggableDirectory extends Vue {
     }
 
     get directoryList() {
-        const result = this.value.map((item, index) => ({
-            ...item,
-            sort: index + 1,
-            index,
-        }))
-        return result
+        this.value.map((item, index) => {
+            item.sort = index + 1
+            // return {
+            //     ...item,
+            //     sort: index + 1,
+            //     index,
+            // }
+            return item
+        })
+        return this.value
     }
 
     set directoryList(value: any[]) {

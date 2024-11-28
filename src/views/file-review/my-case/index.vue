@@ -66,7 +66,7 @@ export default class MyCase extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'select',
-                name: 'caseType',
+                name: 'volumeType',
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
@@ -80,7 +80,7 @@ export default class MyCase extends Vue {
             },
             {
                 tag: 'input',
-                name: 'caseName',
+                name: 'volumeName',
                 label: '卷宗名称',
                 attrs: {
                     placeholder: '请输入',
@@ -88,7 +88,7 @@ export default class MyCase extends Vue {
             },
             {
                 tag: 'input',
-                name: 'target',
+                name: 'volumeObject',
                 label: '对象',
                 attrs: {
                     placeholder: '请输入',
@@ -96,7 +96,7 @@ export default class MyCase extends Vue {
             },
             {
                 tag: 'input',
-                name: 'returnNo',
+                name: 'archiveNumber',
                 label: '归档号',
                 attrs: {
                     placeholder: '请输入',
@@ -104,7 +104,7 @@ export default class MyCase extends Vue {
             },
             {
                 tag: 'select',
-                name: 'status',
+                name: 'applyStatus',
                 label: '申请状态',
                 attrs: {
                     placeholder: '请选择',
@@ -150,12 +150,12 @@ export default class MyCase extends Vue {
             },
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeType',
                 minWidth: '120px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '250px',
                 render: (h, { row }) => {
                     return (
@@ -172,41 +172,40 @@ export default class MyCase extends Vue {
                                 })
                             }}
                         >
-                            {row.caseName}
+                            {row.volumeName}
                         </el-button>
                     )
                 },
             },
             {
                 label: '对象',
-                prop: 'target',
+                prop: 'volumeObject',
                 minWidth: '120px',
             },
             {
                 label: '归档日期',
-                prop: 'returnDate',
+                prop: 'archiveDate',
                 width: '170px',
             },
             {
                 label: '归档号',
-                prop: 'returnNo',
+                prop: 'archiveNumber',
                 minWidth: '250px',
             },
             {
                 label: '申请状态',
-                prop: 'status',
+                prop: 'applyStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const status = StatusEnumMap[row.status as keyof typeof StatusEnumMap]
+                    const status = StatusEnumMap[row.applyStatus as keyof typeof StatusEnumMap]
                     const colorMap = {
-                        [StatusEnum.PENDING]: '#FF9900', // 待审批 黄色
-                        [StatusEnum.APPROVED]: '#67C23A', // 通过 绿色
-                        [StatusEnum.REJECTED]: '#F56C6C', // 退回 红色
+                        [StatusEnum.PENDING]: '#FF9900',
+                        [StatusEnum.APPROVED]: '#67C23A',
+                        [StatusEnum.REJECTED]: '#F56C6C',
                     }
-                    const color = colorMap[row.status as keyof typeof StatusEnum] || ''
+                    const color = colorMap[row.applyStatus as keyof typeof StatusEnum] || ''
 
-                    if (row.status === StatusEnum.REJECTED) {
-                        // 退回状态显示悬浮提示
+                    if (row.applyStatus === StatusEnum.REJECTED) {
                         return (
                             <el-tooltip content={row.rejectReason || '无退回理由'} placement="top" effect="light">
                                 <span style={{ color }}>{status?.label || '-'}</span>

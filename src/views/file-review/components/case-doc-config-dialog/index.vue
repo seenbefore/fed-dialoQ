@@ -3,7 +3,7 @@
         <div class="directory-content">
             <!-- 搜索框 -->
             <div class="search-box">
-                <el-input v-model="searchText" placeholder="输入文献名进行过滤" clearable>
+                <el-input v-model="searchText" placeholder="输入关键字进行过滤" clearable>
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
             </div>
@@ -14,7 +14,7 @@
                     ref="tree"
                     :data="treeData"
                     :default-checked-keys="value"
-                    node-key="value"
+                    node-key="id"
                     show-checkbox
                     default-expand-all
                     :filter-node-method="filterNode"
@@ -127,13 +127,6 @@ export default class DirectoryDialog extends Vue {
         // },
     ]
 
-    defaultProps = {
-        children: 'children',
-        label: 'label',
-        defaultCheckedKeys: this.value,
-        nodeKey: 'value',
-        defaultExpandAll: true,
-    }
     loading = false
     mounted() {
         this.loadData()

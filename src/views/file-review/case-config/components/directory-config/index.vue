@@ -4,7 +4,7 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        <!-- {{ value }} -->
+        {{ value }}
         <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions"></DraggableDirectory>
     </div>
 </template>
@@ -13,6 +13,7 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { TableColumn, TableRef } from '@/sharegood-ui'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
+import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index.vue'
 
 @Component({
     name: 'DirectoryConfig',
@@ -26,26 +27,27 @@ export default class DirectoryConfig extends Vue {
     @Prop({ default: 'main' }) type!: string
     @Ref('tableRef') tableRef!: TableRef
 
-    mainData: any[] = [
-        // {
-        //     id: 1,
-        //     name: '卷宗封面',
-        //     code: '1',
-        //     attachments: true,
-        // },
-        // {
-        //     id: 2,
-        //     name: '卷宗目录',
-        //     code: '2',
-        //     attachments: false,
-        // },
-    ]
+    mainData: any[] = []
 
     async handleAdd() {
-        const result = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
+        const defaultCheckedKeys = this.value.map(item => item.id)
+        console.log('defaultCheckedKeys', defaultCheckedKeys)
+
+        const { addNodes }: DirectoryDialogResult = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
             type: 'add',
-            volumeType: this.type,
-        })
+            title: `新增目录 - ${this.type === 'main' ? '正卷' : '副卷'}`,
+            defaultCheckedKeys,
+        } as DirectoryDialog)
+        if (addNodes) {
+            const _addNodes = addNodes.map(item => {
+                return {
+                    hasAttachment: 1,
+                    name: item.label,
+                    id: item.id,
+                }
+            })
+            this.value.push(..._addNodes)
+        }
     }
 
     get getMainTableAttrs() {
@@ -54,20 +56,26 @@ export default class DirectoryConfig extends Vue {
                 { prop: 'sort', label: '序号', width: '50px' },
                 { prop: 'name', label: '名称', minWidth: '200px' },
                 {
-                    prop: 'attachments',
+                    prop: 'hasAttachment',
                     label: '含附件',
                     width: '100px',
                     render: (h, { row }) => {
-                        return <el-checkbox v-model={row.attachments}></el-checkbox>
+                        return (
+                            <span>
+                                <el-checkbox
+                                    checked={row.hasAttachment}
+                                    true-label={1}
+                                    false-label={0}
+                                    onChange={(val: any) => {
+                                        row.hasAttachment = val
+                                    }}
+                                ></el-checkbox>
+                            </span>
+                        )
                     },
                 },
             ],
-            actions: [
-                {
-                    key: 'delete',
-                    icon: 'el-icon-delete',
-                },
-            ],
+            actions: [{ key: 'delete', icon: 'el-icon-delete', handler: this.handleDelete }],
         }
     }
 
@@ -76,6 +84,10 @@ export default class DirectoryConfig extends Vue {
         if (Array.isArray(val)) {
             this.mainData = [...val]
         }
+    }
+    async handleDelete(data: any, context: any) {
+        await this.$confirm('确定从卷宗目录中移除吗？')
+        context.removeItem(data)
     }
 }
 </script>
