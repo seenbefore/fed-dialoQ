@@ -1,7 +1,7 @@
 <template>
     <div class="sg-page icinfo-ai CaseConfigAdd">
         <div class="content">
-            {{ formModel }}
+            {{ formModel.mainCatalogList }}
             <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
         </div>
 
@@ -49,47 +49,49 @@ export default class CaseConfigAdd extends Vue {
         showPhotographer: '0', // 拍摄人姓名默认隐藏
         needApproval: '1', // 默认需要审批
         mainCatalogList: [
-            {
-                // 模拟3条数据
-                catalogName: '222', // 文书目录名称
-                sortNo: 1, // 组卷序号
-                volumeType: '', // 正/副卷(1:正卷,2:副卷)
-                hasAttachment: '1', // 是否含附件(1:是,0:否)
-                caseStageCode: '', // 案件阶段编码
-                caseStageName: '', // 案件阶段名称
-                catalogCode: '222', // 文书目录编码
-                volumeConfigId: '', // 卷宗配置唯一标识
-                remark: '', // 备注
-                id: '',
-            },
-            {
-                // 模拟3条数据
-                catalogName: '333', // 文书目录名称
-                sortNo: 1, // 组卷序号
-                volumeType: '', // 正/副卷(1:正卷,2:副卷)
-                hasAttachment: '1', // 是否含附件(1:是,0:否)
-                caseStageCode: '', // 案件阶段编码
-                caseStageName: '', // 案件阶段名称
-                catalogCode: '333', // 文书目录编码
-                volumeConfigId: '', // 卷宗配置唯一标识
-                remark: '', // 备注
-                id: '2',
-            },
-            {
-                // 模拟3条数据
-                catalogName: '444', // 文书目录名称
-                sortNo: 1, // 组卷序号
-                volumeType: '', // 正/副卷(1:正卷,2:副卷)
-                hasAttachment: '1', // 是否含附件(1:是,0:否)
-                caseStageCode: '', // 案件阶段编码
-                caseStageName: '', // 案件阶段名称
-                catalogCode: '444', // 文书目录编码
-                volumeConfigId: '', // 卷宗配置唯一标识
-                remark: '', // 备注
-                id: '1',
-            },
+            // {
+            //     // 模拟3条数据
+            //     catalogName: '222', // 文书目录名称
+            //     sortNo: 1, // 组卷序号
+            //     volumeType: '', // 正/副卷(1:正卷,2:副卷)
+            //     hasAttachment: '1', // 是否含附件(1:是,0:否)
+            //     caseStageCode: '', // 案件阶段编码
+            //     caseStageName: '', // 案件阶段名称
+            //     catalogCode: '222', // 文书目录编码
+            //     volumeConfigId: '', // 卷宗配置唯一标识
+            //     remark: '', // 备注
+            //     id: '',
+            // },
+            // {
+            //     // 模拟3条数据
+            //     catalogName: '333', // 文书目录名称
+            //     sortNo: 1, // 组卷序号
+            //     volumeType: '', // 正/副卷(1:正卷,2:副卷)
+            //     hasAttachment: '1', // 是否含附件(1:是,0:否)
+            //     caseStageCode: '', // 案件阶段编码
+            //     caseStageName: '', // 案件阶段名称
+            //     catalogCode: '333', // 文书目录编码
+            //     volumeConfigId: '', // 卷宗配置唯一标识
+            //     remark: '', // 备注
+            //     id: '2',
+            // },
+            // {
+            //     // 模拟3条数据
+            //     catalogName: '444', // 文书目录名称
+            //     sortNo: 1, // 组卷序号
+            //     volumeType: '', // 正/副卷(1:正卷,2:副卷)
+            //     hasAttachment: '1', // 是否含附件(1:是,0:否)
+            //     caseStageCode: '', // 案件阶段编码
+            //     caseStageName: '', // 案件阶段名称
+            //     catalogCode: '444', // 文书目录编码
+            //     volumeConfigId: '', // 卷宗配置唯一标识
+            //     remark: '', // 备注
+            //     id: '1',
+            // },
         ],
         subCatalogList: [],
+        mainCatalogList$: [],
+        subCatalogList$: [],
     }
 
     isValid = false
@@ -111,7 +113,9 @@ export default class CaseConfigAdd extends Vue {
             ...data,
             mainAndSubVolume,
             mainCatalogList: data.mainCatalogList || [],
+            mainCatalogList$: data.mainCatalogList || [],
             subCatalogList: data.subCatalogList || [],
+            subCatalogList$: data.subCatalogList || [],
         }
         if (this.type === 'add') {
             delete this.formModel.id
@@ -216,10 +220,30 @@ export default class CaseConfigAdd extends Vue {
                     return (
                         <el-row gutter={20}>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.mainCatalogList, type: 'main', formModel: this.formModel }} />
+                                <DirectoryConfig
+                                    props={{
+                                        value: this.formModel.mainCatalogList$,
+                                        type: 'main',
+                                        formModel: this.formModel,
+                                        onChange: (val: any) => {
+                                            console.log('onChang2222e2222', val)
+                                            this.formModel.mainCatalogList = val
+                                        },
+                                    }}
+                                />
                             </el-col>
                             <el-col class="" span={12}>
-                                <DirectoryConfig props={{ value: this.formModel.subCatalogList, type: 'sub', formModel: this.formModel }} />
+                                <DirectoryConfig
+                                    props={{
+                                        value: this.formModel.subCatalogList$,
+                                        type: 'sub',
+                                        formModel: this.formModel,
+                                        onChange: (val: any) => {
+                                            console.log('onChang2222e', val)
+                                            this.formModel.subCatalogList = val
+                                        },
+                                    }}
+                                />
                             </el-col>
                         </el-row>
                     )

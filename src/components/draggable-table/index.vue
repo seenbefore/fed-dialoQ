@@ -1,6 +1,7 @@
 <template>
     <div class="DraggableDirectory">
-        {{ directoryList }}
+        <!-- {{ directoryList }} -->
+        <!-- {{ value }} -->
         <!-- 固定表头 -->
         <div class="directory-header-wrapper">
             <div class="directory-header">
@@ -112,14 +113,21 @@ export default class DraggableDirectory extends Vue {
 
     @Watch('value', { immediate: true, deep: true })
     onValueChange(val: any) {
+        console.log('onValueChange val', val)
         if (Array.isArray(val)) {
             this.directoryList = val.map((item, index) => ({
                 ...item,
                 [this.sortKey]: index + 1,
             }))
+            //this.$emit('input', this.directoryList)
         }
     }
     directoryList: any[] = []
+    @Watch('directoryList', { immediate: true, deep: true })
+    onDirectoryListChange(val: any[]) {
+        console.log('onDirectoryListChange val', val)
+        this.$emit('change', val)
+    }
 
     // @Watch('directoryList', { deep: true })
     // onDirectoryListChange(val: any[]) {

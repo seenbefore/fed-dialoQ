@@ -1,6 +1,6 @@
 <template>
     <div>
-        <DocInput ref="docInputRef" :doc-params="docParams"></DocInput>
+        <DocInput ref="docInputRef" :doc-params="docParams" :custom-get-doc-base-info="customGetDocBaseInfo"></DocInput>
     </div>
 </template>
 
@@ -22,13 +22,8 @@ export interface CaseStepCoverClass {
 export default class Step1 extends Vue {
     @Prop({
         default: () => ({
-            partyId: '',
-            documentCatalogCode: 'DC2A0223300DZJZFM0000000001',
-            documentId: '',
-            operateType: '',
-            documentTemplateCode: '',
-            surveyPeopleId: '',
             caseId: 'ef01c4aad3f942e38d7f6c6fc3284316',
+            templateCode: 'DT2DZJZFM0000000001',
         }),
     })
     docParams!: any
@@ -46,6 +41,10 @@ export default class Step1 extends Vue {
     }
     public async preview() {
         console.log('step1 next')
+    }
+    /**自定义获取文书模板的接口 */
+    get customGetDocBaseInfo() {
+        return () => this.$http.post('/common/volume/getDocBaseInfo', this.docParams)
     }
 }
 </script>

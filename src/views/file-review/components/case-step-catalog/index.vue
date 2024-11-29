@@ -4,20 +4,21 @@
             <!-- 正副卷tab -->
             <div class="tabs-wrapper">
                 <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-                    <el-tab-pane label="正卷" name="1"></el-tab-pane>
-                    <el-tab-pane label="副卷" name="2"></el-tab-pane>
-                </el-tabs>
-            </div>
-            <!-- 可拖拽的卷宗目录列表 -->
-            <div class="directory-list">
-                <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
-                <div class="meta">
-                    <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
-                    <!-- <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
+                    <el-tab-pane label="正卷" name="1">
+                        <!-- 可拖拽的卷宗目录列表 -->
+                        <div class="directory-list">
+                            <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
+                            <div class="meta">
+                                <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
+                                <!-- <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
                         <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
                     </el-upload> -->
-                </div>
-                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs" :confirm-message="'确定从卷宗目录中移除吗？'"></DraggableDirectory>
+                            </div>
+                            <DraggableDirectory v-model="mainVolumeList" :key="activeTab" v-bind="getDraggableDirectoryAttrs" :confirm-message="'确定从卷宗目录中移除吗？'"></DraggableDirectory>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="副卷" name="2">22</el-tab-pane>
+                </el-tabs>
             </div>
         </div>
     </div>
@@ -25,7 +26,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
-import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
+import { list } from './api'
 import { useNoRemindConfirm } from '@/components/confirmDialog/useConfirm'
 import { appStore } from '@/store/useStore'
 //appStore.reset()
@@ -47,24 +48,21 @@ export default class Step2 extends Vue {
     loading = false
     mounted() {
         console.log('Step2 mounted')
-        // this.getInitDocs()
+        this.getInitDocs()
     }
     /** 获取初始化的目录文书 */
     async getInitDocs() {
         try {
             this.loading = true
-            const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
-            let { data } = await getCaseElectricArchiveDocumentListApi({
-                archiveId,
-                caseId,
+            // "9E5898C362074598B4EDC9EB9C1335A2"
+            // const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
+            let { data } = await list({
+                volumeRecordId: '9E5898C362074598B4EDC9EB9C1335A2',
             })
-            data = data.map((item: any, index) => {
-                return {
-                    ...item,
-                }
-            })
+            this.mainVolumeList = data.mainVolumeList
+            this.subVolumeList = data.subVolumeList
             console.log('data', data)
-            this.directoryList = data
+            //this.directoryList = data
             this.loading = false
         } catch (err) {
             this.loading = false
@@ -73,20 +71,7 @@ export default class Step2 extends Vue {
     }
 
     public activeTab = '1'
-    handleTabClick(tab: string) {
-        console.log('handleTabClick', tab)
-        if (this.activeTab === '2') {
-            this.directoryList = [
-                {
-                    sort: 1,
-                    documentNumber: '12322',
-                    documentEvidenceName: '文书/证据名称',
-                },
-            ]
-        } else {
-            this.getInitDocs()
-        }
-    }
+    handleTabClick(tab: string) {}
     get getDraggableDirectoryAttrs() {
         const { activeTab } = this
         return {
@@ -109,6 +94,8 @@ export default class Step2 extends Vue {
             documentEvidenceName: '文书/证据名称',
         },
     ]
+    mainVolumeList: any[] = []
+    subVolumeList: any[] = []
     // 正副卷相互移动
     async handleMove(data: any) {
         const { activeTab } = this

@@ -165,7 +165,7 @@ export function firstSave(data?: {
 /** 案卷号 */ caseFileNumber?: string, 
 /** 案卷页数 */ pageDesc?: string, 
 }, options?: ExAxiosRequestConfig) {
-    return http.request<Result<string>>({
+    return http.request<Result<any>>({
         url: "/my/volume/firstSave",
         type: "POST",
         data,
@@ -186,8 +186,25 @@ export function nextSave(data?: {
 /** 检查人 */ checkerName?: string, 
 /** 检查时间 */ checkTime?: string, 
 }, options?: ExAxiosRequestConfig) {
-    return http.request<Result<string>>({
+    return http.request<Result<any>>({
         url: "/my/volume/nextSave",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
+/**
+ * 在线选择案件文书及证据列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function selectVolumeDocumentList(data?: {
+/** 卷宗记录id */ volumeRecordId: string, 
+/** 卷宗类型(1:正卷,2:副卷) */ volumeType: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<DocumentStageVO[]>>({
+        url: "/my/volume/selectVolumeDocumentList",
         type: "POST",
         data,
         ...options
@@ -207,6 +224,19 @@ export const CxlxObj = {
     [Cxlx.ABMCX]: { label: '按部门查询', value: Cxlx.ABMCX },
 }
 
+/** 枚举 - 卷宗类型 */
+export enum Jzlx {
+    /** 正卷 */
+    ZJ = '1',
+    /** 副卷 */
+    FJ = '2',
+}
+/** 枚举对象 - 卷宗类型 */
+export const JzlxObj = { 
+    [Jzlx.ZJ]: { label: '正卷', value: Jzlx.ZJ },
+    [Jzlx.FJ]: { label: '副卷', value: Jzlx.FJ },
+}
+
 
 
 export const Dict = new DictionaryFront({
@@ -215,6 +245,13 @@ export const Dict = new DictionaryFront({
         options: [
             { label: '按用户查询', value: Cxlx.AYHCX },
             { label: '按部门查询', value: Cxlx.ABMCX },
+        ]
+    },
+    /**枚举数组 - 卷宗类型 */
+    Jzlx: {
+        options: [
+            { label: '正卷', value: Jzlx.ZJ },
+            { label: '副卷', value: Jzlx.FJ },
         ]
     },
 })
@@ -339,6 +376,11 @@ export interface ArchiveVolumeVO {
      * 主键
      */
     id: string
+
+    /**
+     * 卷宗类型编码
+     */
+    volumeTypeCode: string
 
     /**
      * 归档号
@@ -589,6 +631,16 @@ export interface DocumentVO {
     pageNumber: string
 
     /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
+
+    /**
      * 文书类型(1:文书,2:附件材料)
      */
     documentType: string
@@ -659,6 +711,25 @@ export interface ArchiveVolumeModifyVO {
      * 案件主键标识
      */
     caseId: string
+
+}
+
+export interface DocumentStageVO {
+
+    /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
+
+    /**
+     * 文书列表
+     */
+    documentList: DocumentVO[]
 
 }
 

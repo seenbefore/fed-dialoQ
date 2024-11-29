@@ -1,4 +1,4 @@
-import { getCaseElectricArchiveDocumentList, calculateElectricArchivePageNumber } from '@/services/custom/doc/archive'
+import { documentList } from '@/services/auto/my/volume'
+import { getArchiveVolumeAndCaseNumberConfig } from '@/services/auto/config/archiveVolume'
 
-export const getCaseElectricArchiveDocumentListApi = getCaseElectricArchiveDocumentList
-export const calculateElectricArchivePageNumberApi = calculateElectricArchivePageNumber
+export { documentList as list }
