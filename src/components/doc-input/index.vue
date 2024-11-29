@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Emit } from 'vue-property-decorator'
 import { formatDate, get } from 'icinfo-util'
-import { getDocBaseInfo, getDocFormData, saveDocInfo, saveDocInfoAdditional, docPreview } from './service/punish/stagedoc/common'
+import { getDocBaseInfo, getDocFormData, saveDocInfo, saveDocInfoAdditional, docPreview, DocumentCommonFormHtmlVo } from './service/punish/stagedoc/common'
 import { saveCSourceDocInfo, getCSourceDocBaseInfo, getCSourceDocFormData } from './service/punish/csource/common'
 import { saveExecuteDocInfo, getExecuteDocBaseInfo, getExecuteDocFormData } from './service/punish/execute/doc'
 import { saveTemporary } from './service/punish/ucase/temporary'
@@ -60,6 +60,9 @@ export default class DocInput extends Vue {
     @Prop({ type: Object, default: () => ({}) }) cusTemporaryParams!: object
     // 对getDocFormData接口拿到的dataMap属性进行更改
     @Prop({ type: Object, default: () => ({}) }) cusDocFormData!: Record<string, any>
+    // 父级对getDocFormData接口进行处理
+    @Prop({ type: Function, default: null }) parentHandle!: Function
+
     // dom类型
     public $refs!: {
         docParse: DocParse
@@ -140,6 +143,9 @@ export default class DocInput extends Vue {
                 })
             }
             this.formData = this.handleDataMap(data.dataMap || {}, configInfo)
+            if (this.parentHandle) {
+                this.formData = this.parentHandle(data, configInfo)
+            }
             // 储存一下修改前的文书表单值
             this.oldDocData.formData = JSON.parse(JSON.stringify(this.formData))
             // 5、新建状态，初始化默认值
@@ -155,7 +161,7 @@ export default class DocInput extends Vue {
         this.loading = false
     }
     /**处理dataMap */
-    handleDataMap(dataMap: Record<string, any>, configInfo: Record<string, any>) {
+    handleDataMap(dataMap: Record<string, any>, configInfo: DocumentCommonFormHtmlVo) {
         try {
             const { templateConfigMap = {} } = configInfo || {}
             Object.keys(dataMap).forEach(key => {
@@ -283,10 +289,8 @@ export default class DocInput extends Vue {
                     .validate()
                     .then(({ values }: any) => {
                         const { sendData, httpApiName: httpApiSave } = this.assembleSaveDocSendData(values, fileList || [])
-                        console.log(httpApiSave, 'httpApiSave')
                         if (this.isCustomSaveHttp) {
-                            this.$emit('emitDataMap', tabIndex, values, sendData)
-                            resolve(true)
+                            this.$emit('emitDataMap', tabIndex, values, sendData, resolve)
                             return
                         }
                         this.isSubmiting = true
@@ -364,7 +368,20 @@ export default class DocInput extends Vue {
     // 处理获取文书数据接口和入参
     assembleInitDocSendData(type: string) {
         // 1、获取文书配置信息
-        const { sourcePage, isNeedApproval, caseId, executeId, partyId, documentCatalogCode, documentId, operateType, documentTemplateCode, surveyPeopleId, documentKindCode } = this.docParams
+        const {
+            sourcePage,
+            isNeedApproval,
+            caseId,
+            executeId,
+            partyId,
+            documentCatalogCode,
+            documentId,
+            operateType,
+            documentTemplateCode,
+            surveyPeopleId,
+            documentKindCode,
+            templateCode,
+        } = this.docParams
         console.log(this.docParams, '11')
         let sendData: Record<string, any> = {
             // partyId: this.docParams.handleType === '1' ? '' : partyId,
@@ -374,6 +391,7 @@ export default class DocInput extends Vue {
             operateType: operateType || '',
             documentTemplateCode: documentTemplateCode || '',
             surveyPeopleId: surveyPeopleId || '',
+            templateCode,
         }
         let httpApiName: any = ''
         // 判断来源

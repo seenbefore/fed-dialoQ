@@ -9,9 +9,14 @@
 
         <!-- Main content -->
         <div class="content">
-            <keep-alive>
+            <template v-if="isKeepAlive">
+                <keep-alive>
+                    <component :is="currentComponent" v-bind="currentProps" ref="stepComponent"></component>
+                </keep-alive>
+            </template>
+            <template v-else>
                 <component :is="currentComponent" v-bind="currentProps" ref="stepComponent"></component>
-            </keep-alive>
+            </template>
         </div>
 
         <!-- Fixed bottom action bar -->
@@ -88,6 +93,8 @@ export interface StepConfig {
     },
 })
 export default class StepForm extends Vue {
+    @Prop({ type: Boolean, default: true })
+    isKeepAlive!: boolean
     @Prop({ type: Array, required: true })
     steps!: StepConfig[]
 

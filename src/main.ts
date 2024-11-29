@@ -12,6 +12,7 @@ import store from './store'
 import { settingsStore, userStore, tagsViewStore } from './store/useStore'
 import './styles/index.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
+import PageLoading from '@/scripts/PageLoading'
 
 // 自定义确认框风格样式
 const customConfirm = (options: IUseConfirm | string) => {
@@ -28,6 +29,7 @@ const customConfirm = (options: IUseConfirm | string) => {
 
 Vue.prototype.$confirm = customConfirm
 Vue.prototype.$http = http
+Vue.prototype.$pageLoading = PageLoading
 /**
  * 向父级发送消息
  * @param data

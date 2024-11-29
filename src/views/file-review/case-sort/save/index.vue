@@ -1,6 +1,6 @@
 <template>
     <div class="sg-page icinfo-ai CaseSave">
-        <StepForm v-model="currentStep" :steps="steps" @save="handleSave" @cancel="handleCancel"></StepForm>
+        <StepForm v-model="currentStep" :steps="steps" :is-keep-alive="false" @save="handleSave" @cancel="handleCancel"></StepForm>
     </div>
 </template>
 

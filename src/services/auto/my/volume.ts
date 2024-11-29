@@ -83,6 +83,22 @@ export function documentList(data?: {
 }
 
 /**
+ * 描述：根据卷宗记录id查询卷宗信息
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function getArchiveVolumeRecordById(data?: {
+/** 卷宗记录id，必须 */ volumeRecordId: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<ArchiveVolumeRecordVo>>({
+        url: "/my/volume/getArchiveVolumeRecordById",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
+/**
  * 描述：批量计算文书页码
  * @param data 要提交给服务器的数据
  * @param options 附加选项
@@ -108,6 +124,7 @@ export function submitDocument(data?: {
 /** 卷宗记录id，必须 */ id: string, 
 /** 正卷目录列表 */ mainVolumeList?: DocumentVO[], 
 /** 副卷目录列表 */ subVolumeList?: DocumentVO[], 
+/** 修改电子卷宗内容 -- 修改电子卷宗必传 */ modifyContent?: string, 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<ArchiveVolumeSubmitVO>>({
         url: "/my/volume/submitDocument",
@@ -194,6 +211,23 @@ export function nextSave(data?: {
     })
 }
 
+/**
+ * 在线选择案件文书及证据列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function selectVolumeDocumentList(data?: {
+/** 卷宗记录id */ volumeRecordId: string, 
+/** 卷宗类型(1:正卷,2:副卷) */ volumeType: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<DocumentStageVO[]>>({
+        url: "/my/volume/selectVolumeDocumentList",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
 /** 枚举 - 查询类型 */
 export enum Cxlx {
     /** 按用户查询 */
@@ -207,6 +241,19 @@ export const CxlxObj = {
     [Cxlx.ABMCX]: { label: '按部门查询', value: Cxlx.ABMCX },
 }
 
+/** 枚举 - 卷宗类型 */
+export enum Jzlx {
+    /** 正卷 */
+    ZJ = '1',
+    /** 副卷 */
+    FJ = '2',
+}
+/** 枚举对象 - 卷宗类型 */
+export const JzlxObj = { 
+    [Jzlx.ZJ]: { label: '正卷', value: Jzlx.ZJ },
+    [Jzlx.FJ]: { label: '副卷', value: Jzlx.FJ },
+}
+
 
 
 export const Dict = new DictionaryFront({
@@ -215,6 +262,13 @@ export const Dict = new DictionaryFront({
         options: [
             { label: '按用户查询', value: Cxlx.AYHCX },
             { label: '按部门查询', value: Cxlx.ABMCX },
+        ]
+    },
+    /**枚举数组 - 卷宗类型 */
+    Jzlx: {
+        options: [
+            { label: '正卷', value: Jzlx.ZJ },
+            { label: '副卷', value: Jzlx.FJ },
         ]
     },
 })
@@ -341,6 +395,11 @@ export interface ArchiveVolumeVO {
     id: string
 
     /**
+     * 卷宗类型编码
+     */
+    volumeTypeCode: string
+
+    /**
      * 归档号
      */
     archiveNumber: string
@@ -355,14 +414,139 @@ export interface ArchiveVolumeVO {
 export interface ArchiveVolumeRecord {
 
     /**
-     * 整理人id
-     */
-    arrangeUserId: string
-
-    /**
      * 承办人
      */
     handler: string
+
+    /**
+     * 案发地址
+     */
+    caseAddress: string
+
+    /**
+     * 目录号
+     */
+    catalogNumber: string
+
+    /**
+     * 结案时间
+     */
+    closingTime: string
+
+    /**
+     * 整理人姓名
+     */
+    arrangeUserName: string
+
+    /**
+     * 更新人id
+     */
+    updaterId: string
+
+    /**
+     * 案卷编号
+     */
+    caseNumber: string
+
+    /**
+     * 整理时间
+     */
+    arrangeTime: string
+
+    /**
+     * 案件id
+     */
+    caseId: string
+
+    /**
+     * 案件名称
+     */
+    caseName: string
+
+    /**
+     * 卷宗状态(1:有效,0:无效,9:暂存)
+     */
+    volumeStatus: string
+
+    /**
+     * 主键
+     */
+    id: string
+
+    /**
+     * 审批时间
+     */
+    modifyApproveTime: string
+
+    /**
+     * 审批人姓名
+     */
+    modifyApproverName: string
+
+    /**
+     * 案卷号
+     */
+    caseFileNumber: string
+
+    /**
+     * 审批人id
+     */
+    modifyApproverId: string
+
+    /**
+     * 执法机构名称
+     */
+    orgName: string
+
+    /**
+     * 立卷人姓名
+     */
+    archivingUserName: string
+
+    /**
+     * 检查时间
+     */
+    checkTime: string
+
+    /**
+     * 全宗号
+     */
+    fondNumber: string
+
+    /**
+     * 卷宗名称
+     */
+    volumeName: string
+
+    /**
+     * 立卷时间
+     */
+    archivingTime: string
+
+    /**
+     * 更新人姓名
+     */
+    updaterName: string
+
+    /**
+     * 修改内容
+     */
+    modifyContent: string
+
+    /**
+     * 卷宗配置唯一标识
+     */
+    volumeConfigId: string
+
+    /**
+     * 检查人姓名
+     */
+    checkerName: string
+
+    /**
+     * 整理人id
+     */
+    arrangeUserId: string
 
     /**
      * 卷宗修改描述
@@ -400,11 +584,6 @@ export interface ArchiveVolumeRecord {
     archivingUserId: string
 
     /**
-     * 案发地址
-     */
-    caseAddress: string
-
-    /**
      * 卷宗类型名称
      */
     volumeTypeName: string
@@ -415,34 +594,9 @@ export interface ArchiveVolumeRecord {
     volumeUrl: string
 
     /**
-     * 目录号
-     */
-    catalogNumber: string
-
-    /**
      * 处罚结果
      */
     punishmentResult: string
-
-    /**
-     * 结案时间
-     */
-    closingTime: string
-
-    /**
-     * 整理人姓名
-     */
-    arrangeUserName: string
-
-    /**
-     * 更新人id
-     */
-    updaterId: string
-
-    /**
-     * 案卷编号
-     */
-    caseNumber: string
 
     /**
      * 执法机构编码
@@ -450,34 +604,9 @@ export interface ArchiveVolumeRecord {
     orgCode: string
 
     /**
-     * 整理时间
-     */
-    arrangeTime: string
-
-    /**
-     * 案件id
-     */
-    caseId: string
-
-    /**
-     * 案件名称
-     */
-    caseName: string
-
-    /**
-     * 卷宗状态(1:有效,0:无效,9:暂存)
-     */
-    volumeStatus: string
-
-    /**
      * 整理情况说明
      */
     arrangeDesc: string
-
-    /**
-     * 主键
-     */
-    id: string
 
     /**
      * 归档号
@@ -490,19 +619,9 @@ export interface ArchiveVolumeRecord {
     retentionPeriod: string
 
     /**
-     * 案卷号
+     * 审批意见
      */
-    caseFileNumber: string
-
-    /**
-     * 执法机构名称
-     */
-    orgName: string
-
-    /**
-     * 立卷人姓名
-     */
-    archivingUserName: string
+    modifyApproveRemark: string
 
     /**
      * 更新时间（归档时间）
@@ -520,34 +639,14 @@ export interface ArchiveVolumeRecord {
     pageDesc: string
 
     /**
-     * 检查时间
+     * 申请状态(1:待审批,2:审批通过,3:审批退回)
      */
-    checkTime: string
-
-    /**
-     * 全宗号
-     */
-    fondNumber: string
+    modifyApplyStatus: string
 
     /**
      * 创建时间
      */
     createTime: string
-
-    /**
-     * 卷宗名称
-     */
-    volumeName: string
-
-    /**
-     * 立卷时间
-     */
-    archivingTime: string
-
-    /**
-     * 更新人姓名
-     */
-    updaterName: string
 
     /**
      * 对象名称
@@ -558,16 +657,6 @@ export interface ArchiveVolumeRecord {
      * 检查人id
      */
     checkerId: string
-
-    /**
-     * 卷宗配置唯一标识
-     */
-    volumeConfigId: string
-
-    /**
-     * 检查人姓名
-     */
-    checkerName: string
 
 }
 
@@ -587,6 +676,16 @@ export interface DocumentVO {
      * 页码
      */
     pageNumber: string
+
+    /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
 
     /**
      * 文书类型(1:文书,2:附件材料)
@@ -629,6 +728,255 @@ export interface ArchiveVolumeDocumentVO {
 
 }
 
+export interface ArchiveVolumeRecordVo {
+
+    /**
+     * 承办人
+     */
+    handler: string
+
+    /**
+     * 案发地址
+     */
+    caseAddress: string
+
+    /**
+     * 目录号
+     */
+    catalogNumber: string
+
+    /**
+     * 结案时间
+     */
+    closingTime: string
+
+    /**
+     * 整理人姓名
+     */
+    arrangeUserName: string
+
+    /**
+     * 更新人id
+     */
+    updaterId: string
+
+    /**
+     * 整理时间
+     */
+    arrangeTime: string
+
+    /**
+     * 案件id
+     */
+    caseId: string
+
+    /**
+     * 案件名称
+     */
+    caseName: string
+
+    /**
+     * 卷宗状态(1:有效,0:无效,9:暂存)
+     */
+    volumeStatus: string
+
+    /**
+     * 主键
+     */
+    id: string
+
+    /**
+     * 审批时间
+     */
+    modifyApproveTime: string
+
+    /**
+     * 审批人姓名
+     */
+    modifyApproverName: string
+
+    /**
+     * 案卷号
+     */
+    caseFileNumber: string
+
+    /**
+     * 审批人id
+     */
+    modifyApproverId: string
+
+    /**
+     * 执法机构名称
+     */
+    orgName: string
+
+    /**
+     * 立卷人姓名
+     */
+    archivingUserName: string
+
+    /**
+     * 检查时间
+     */
+    checkTime: string
+
+    /**
+     * 全宗号
+     */
+    fondNumber: string
+
+    /**
+     * 卷宗名称
+     */
+    volumeName: string
+
+    /**
+     * 立卷时间
+     */
+    archivingTime: string
+
+    /**
+     * 更新人姓名
+     */
+    updaterName: string
+
+    /**
+     * 修改内容
+     */
+    modifyContent: string
+
+    /**
+     * 卷宗配置唯一标识
+     */
+    volumeConfigId: string
+
+    /**
+     * 检查人姓名
+     */
+    checkerName: string
+
+    /**
+     * 整理人id
+     */
+    arrangeUserId: string
+
+    /**
+     * 案卷编号
+     */
+    volumeNumber: string
+
+    /**
+     * 卷宗修改描述
+     */
+    modifyDesc: string
+
+    /**
+     * 创建人id
+     */
+    creatorId: string
+
+    /**
+     * 创建人姓名
+     */
+    creatorName: string
+
+    /**
+     * 备注
+     */
+    remark: string
+
+    /**
+     * 卷宗类型编码
+     */
+    volumeTypeCode: string
+
+    /**
+     * 整理状态(1:未整理,2:已整理)
+     */
+    arrangeStatus: string
+
+    /**
+     * 立卷人id
+     */
+    archivingUserId: string
+
+    /**
+     * 卷宗类型名称
+     */
+    volumeTypeName: string
+
+    /**
+     * 卷宗URL地址
+     */
+    volumeUrl: string
+
+    /**
+     * 处罚结果
+     */
+    punishmentResult: string
+
+    /**
+     * 执法机构编码
+     */
+    orgCode: string
+
+    /**
+     * 整理情况说明
+     */
+    arrangeDesc: string
+
+    /**
+     * 归档号
+     */
+    archiveNumber: string
+
+    /**
+     * 保管期限(10年/30年/永久)
+     */
+    retentionPeriod: string
+
+    /**
+     * 审批意见
+     */
+    modifyApproveRemark: string
+
+    /**
+     * 更新时间（归档时间）
+     */
+    updateTime: string
+
+    /**
+     * 立案时间
+     */
+    filingTime: string
+
+    /**
+     * 页数描述
+     */
+    pageDesc: string
+
+    /**
+     * 申请状态(1:待审批,2:审批通过,3:审批退回)
+     */
+    modifyApplyStatus: string
+
+    /**
+     * 创建时间
+     */
+    createTime: string
+
+    /**
+     * 对象名称
+     */
+    objectName: string
+
+    /**
+     * 检查人id
+     */
+    checkerId: string
+
+}
+
 export interface ArchiveVolumeSubmitVO {
 
     /**
@@ -659,6 +1007,25 @@ export interface ArchiveVolumeModifyVO {
      * 案件主键标识
      */
     caseId: string
+
+}
+
+export interface DocumentStageVO {
+
+    /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
+
+    /**
+     * 文书列表
+     */
+    documentList: DocumentVO[]
 
 }
 
