@@ -1,5 +1,6 @@
 <template>
     <div class="DraggableDirectory">
+        {{ directoryList }}
         <!-- 固定表头 -->
         <div class="directory-header-wrapper">
             <div class="directory-header">
@@ -21,7 +22,7 @@
         <div class="directory-content" :style="{ maxHeight: maxHeight + 'px' }">
             <draggable v-model="directoryList" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
                 <transition-group type="transition">
-                    <div v-for="(item, index) in directoryList" :key="item.sort" class="directory-item">
+                    <div v-for="(item, index) in directoryList" :key="item[dragKey]" class="directory-item">
                         <div class="item-content">
                             <div class="item-left">
                                 <span class="drag-handle">
@@ -102,8 +103,29 @@ export default class DraggableDirectory extends Vue {
      * 排序标识
      */
     @Prop({ type: String, default: 'sort' }) sortKey!: string
+    /**
+     * 拖拽Key
+     */
+    @Prop({ type: String, default: 'id' }) dragKey!: string
     @Prop({ type: Array, default: () => [] })
     value!: any[]
+
+    @Watch('value', { immediate: true, deep: true })
+    onValueChange(val: any) {
+        if (Array.isArray(val)) {
+            this.directoryList = val.map((item, index) => ({
+                ...item,
+                [this.sortKey]: index + 1,
+            }))
+        }
+    }
+    directoryList: any[] = []
+
+    // @Watch('directoryList', { deep: true })
+    // onDirectoryListChange(val: any[]) {
+    //     this.$emit('input', val)
+    //     this.$emit('change', val)
+    // }
 
     @Prop({
         type: Array,
@@ -139,24 +161,6 @@ export default class DraggableDirectory extends Vue {
         }
     }
 
-    get directoryList() {
-        this.value.map((item, index) => {
-            item.sort = index + 1
-            // return {
-            //     ...item,
-            //     sort: index + 1,
-            //     index,
-            // }
-            return item
-        })
-        return this.value
-    }
-
-    set directoryList(value: any[]) {
-        this.$emit('input', value)
-        this.$emit('change', value)
-    }
-
     handleAction(action: ActionItem, item: any) {
         switch (action.key) {
             case 'delete':
@@ -183,7 +187,7 @@ export default class DraggableDirectory extends Vue {
         // 更新序号
         this.directoryList = this.directoryList.map((item, index) => ({
             ...item,
-            sort: index + 1,
+            [this.sortKey]: index + 1,
             index,
         }))
     }
@@ -192,10 +196,14 @@ export default class DraggableDirectory extends Vue {
         this.$emit('preview', item)
     }
     removeItem(item: any) {
-        const index = item.index
-        const newList = [...this.directoryList]
-        newList.splice(index, 1)
-        this.directoryList = newList
+        const uuid = item.uuid
+        console.log('removeItem uuid', uuid)
+        // 找到对应的索引号
+        const index = this.directoryList.findIndex(item => item.uuid === uuid)
+        console.log('removeItem index', index)
+        this.directoryList.splice(index, 1)
+        // this.directoryList = this.directoryList.filter(item => item.uuid !== uuid)
+        this.updateIndexes()
     }
     async handleDelete(item: any) {
         await this.$confirm(this.confirmMessage, '提示', {

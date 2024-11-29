@@ -44,11 +44,51 @@ export default class CaseConfigAdd extends Vue {
         mainAndSubVolume: ['main'],
         hasMainVolume: '', // 正卷默认选中
         hasSubVolume: '', // 副卷默认不选中
-        showQrcode: '', // 二维码默认隐藏
-        showBarcode: '', // 条形码默认隐藏
-        showPhotographer: '', // 拍摄人姓名默认隐藏
-        needApproval: '', // 默认需要审批
-        mainCatalogList: [],
+        showQrcode: '0', // 二维码默认隐藏
+        showBarcode: '0', // 条形码默认隐藏
+        showPhotographer: '0', // 拍摄人姓名默认隐藏
+        needApproval: '1', // 默认需要审批
+        mainCatalogList: [
+            {
+                // 模拟3条数据
+                catalogName: '222', // 文书目录名称
+                sortNo: 1, // 组卷序号
+                volumeType: '', // 正/副卷(1:正卷,2:副卷)
+                hasAttachment: '1', // 是否含附件(1:是,0:否)
+                caseStageCode: '', // 案件阶段编码
+                caseStageName: '', // 案件阶段名称
+                catalogCode: '222', // 文书目录编码
+                volumeConfigId: '', // 卷宗配置唯一标识
+                remark: '', // 备注
+                id: '',
+            },
+            {
+                // 模拟3条数据
+                catalogName: '333', // 文书目录名称
+                sortNo: 1, // 组卷序号
+                volumeType: '', // 正/副卷(1:正卷,2:副卷)
+                hasAttachment: '1', // 是否含附件(1:是,0:否)
+                caseStageCode: '', // 案件阶段编码
+                caseStageName: '', // 案件阶段名称
+                catalogCode: '333', // 文书目录编码
+                volumeConfigId: '', // 卷宗配置唯一标识
+                remark: '', // 备注
+                id: '2',
+            },
+            {
+                // 模拟3条数据
+                catalogName: '444', // 文书目录名称
+                sortNo: 1, // 组卷序号
+                volumeType: '', // 正/副卷(1:正卷,2:副卷)
+                hasAttachment: '1', // 是否含附件(1:是,0:否)
+                caseStageCode: '', // 案件阶段编码
+                caseStageName: '', // 案件阶段名称
+                catalogCode: '444', // 文书目录编码
+                volumeConfigId: '', // 卷宗配置唯一标识
+                remark: '', // 备注
+                id: '1',
+            },
+        ],
         subCatalogList: [],
     }
 
@@ -123,6 +163,7 @@ export default class CaseConfigAdd extends Vue {
                     },
                     onChange: (val: any) => {
                         const { option } = val
+                        console.log(111, option, val)
                         if (option) {
                             this.formModel.volumeTypeName = option.label
                         }
@@ -152,7 +193,7 @@ export default class CaseConfigAdd extends Vue {
                 label: '正/副卷配置',
                 attrs: {
                     options: [
-                        { label: '正卷', value: 'main' },
+                        { label: '正卷', value: 'main', disabled: true },
                         { label: '副卷', value: 'sub' },
                     ],
                 },
@@ -270,8 +311,18 @@ export default class CaseConfigAdd extends Vue {
                 mainCatalogCount: formModel.mainCatalogList.length,
                 subCatalogCount: formModel.subCatalogList.length,
                 // 添加目录数据
-                mainCatalogList: formModel.mainCatalogList || [],
-                subCatalogList: formModel.subCatalogList || [],
+                mainCatalogList: formModel.mainCatalogList.map((item: any, index: any) => {
+                    return {
+                        ...item,
+                        sortNo: index + 1 + '',
+                    }
+                }),
+                subCatalogList: formModel.subCatalogList.map((item: any, index: any) => {
+                    return {
+                        ...item,
+                        sortNo: index + 1 + '',
+                    }
+                }),
                 showQrcode: formModel.showQrcode,
                 showBarcode: formModel.showBarcode,
                 showPhotographer: formModel.showPhotographer,

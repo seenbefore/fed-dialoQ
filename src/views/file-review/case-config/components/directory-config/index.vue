@@ -4,8 +4,8 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        {{ value }}
-        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions"></DraggableDirectory>
+
+        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" :sort-key="'sortNo'"></DraggableDirectory>
     </div>
 </template>
 
@@ -72,7 +72,7 @@ export default class DirectoryConfig extends Vue {
                     sortNo: 0,
                     volumeType: this.type === 'main' ? '1' : '2',
                     hasAttachment: '1',
-                    volumeConfigId: item.id,
+                    volumeConfigId: '',
                     catalogCode: item.value,
                     remark: '',
                 }
@@ -84,7 +84,7 @@ export default class DirectoryConfig extends Vue {
     get getMainTableAttrs() {
         return {
             columns: [
-                { prop: 'sort', label: '序号', width: '50px' },
+                { prop: 'sortNo', label: '序号', width: '50px' },
                 { prop: 'catalogName', label: '名称', minWidth: '200px' },
                 {
                     prop: 'hasAttachment',
@@ -94,9 +94,9 @@ export default class DirectoryConfig extends Vue {
                         return (
                             <span>
                                 <el-checkbox
-                                    checked={row.hasAttachment}
-                                    true-label={1}
-                                    false-label={0}
+                                    checked={row.hasAttachment === '1'}
+                                    true-label={'1'}
+                                    false-label={'0'}
                                     onChange={(val: any) => {
                                         row.hasAttachment = val
                                     }}
