@@ -38,8 +38,8 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { getDocumentKindInfoList, Result, DocumentKindInfoVo } from '@/services/custom/doc/kindInfo'
-import { getElectricArchiveList } from '@/services/custom/external'
+
+import { list } from './api'
 
 @Component({
     name: 'DirectoryDialog',
@@ -48,7 +48,7 @@ import { getElectricArchiveList } from '@/services/custom/external'
 export default class DirectoryDialog extends Vue {
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
-    @Prop({ type: String, default: '' }) caseId!: string
+    @Prop({ type: String, default: '' }) volumeRecordId!: string
     // default-checked-keys
     @Prop({ type: Array, default: () => [] }) value!: any[]
 
@@ -138,36 +138,38 @@ export default class DirectoryDialog extends Vue {
         this.loading = true
         try {
             /**树结构数据 */
-            const treeData: any[] = []
-            const { data } = await getElectricArchiveList({
-                caseId: this.caseId || 'ef01c4aad3f942e38d7f6c6fc3284316',
+
+            const { data } = await list({
+                volumeRecordId: this.volumeRecordId,
+                volumeType: this.volumeType,
             })
-            let i = 0
-            data.forEach(it => (it._id = ++i))
-            if (data && data.length) {
-                for (let i = 0; i < data.length; i++) {
-                    const stageDocs = data[i].item || []
-                    if (stageDocs.length) {
-                        let currItem: any = {
-                            label: data[i].title,
-                            value: data[i]._id,
-                            isLeafNode: false, //此父节点数据不要，用于过滤
-                            children: [],
+
+            this.treeData = data.map((node, index) => {
+                const { caseStageCode, caseStageName } = node
+                if (node.documentList) {
+                    const children = node.documentList.map((child, index) => {
+                        return {
+                            ...child,
+                            id: child.caseStageCode,
+                            label: child.caseStageName,
+                            value: child.caseStageCode,
                         }
-                        stageDocs.forEach((item: any) => {
-                            currItem.children.push({
-                                ...item,
-                                label: item.documentEvidenceName,
-                                value: item.documentEvidenceUrl,
-                                isLeafNode: true,
-                                children: null,
-                            })
-                        })
-                        treeData.push(currItem)
+                    })
+                    return {
+                        id: caseStageCode,
+                        label: caseStageName,
+                        children,
+                        value: caseStageCode,
+                    }
+                } else {
+                    return {
+                        ...node,
+                        id: caseStageCode,
+                        label: caseStageName,
+                        value: caseStageCode,
                     }
                 }
-            }
-            this.treeData = treeData
+            })
         } catch (error) {
             console.log(error)
         }

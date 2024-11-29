@@ -1,6 +1,6 @@
 <template>
     <div>
-        <DocInput ref="docInputRef" :doc-params="docParams" :custom-get-doc-base-info="customGetDocBaseInfo"></DocInput>
+        <DocInput ref="docInputRef" :doc-params="docParams" :custom-get-doc-base-info="customGetDocBaseInfo" :custom-get-doc-form="customGetDocForm" is-custom-save-http></DocInput>
     </div>
 </template>
 
@@ -21,10 +21,7 @@ export interface CaseStepCoverClass {
 })
 export default class Step1 extends Vue {
     @Prop({
-        default: () => ({
-            caseId: 'ef01c4aad3f942e38d7f6c6fc3284316',
-            templateCode: 'DT2DZJZFM0000000001',
-        }),
+        default: () => ({}),
     })
     docParams!: any
     mounted() {
@@ -37,7 +34,9 @@ export default class Step1 extends Vue {
     }
     public async save() {
         console.log('step1 save')
-        //await this.docInputRef.saveData()
+        const result: any = await this.docInputRef.saveData()
+        console.log('result', result)
+        return result.values
     }
     public async preview() {
         console.log('step1 next')
@@ -45,6 +44,17 @@ export default class Step1 extends Vue {
     /**自定义获取文书模板的接口 */
     get customGetDocBaseInfo() {
         return () => this.$http.post('/common/volume/getDocBaseInfo', this.docParams)
+    }
+    /**自定义获取文书表单的接口 */
+    get customGetDocForm() {
+        // if (this.docParams.volumeConfigId) {
+        //     return () => this.$http.post('/my/volume/getArchiveVolumeRecordById', this.docParams)
+        // }
+        return () => {
+            return {
+                data: {},
+            }
+        }
     }
 }
 </script>

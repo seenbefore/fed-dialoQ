@@ -126,6 +126,8 @@ export default class Step2 extends Vue {
         const result = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {
             type: 'add',
             value: defaultCheckedKeys,
+            volumeRecordId: this.$route.query.id,
+            volumeType: this.activeTab,
         })
         if (result) {
             console.log('result', result)

@@ -17,7 +17,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list, getDictList, VO } from './api'
+import { list, getDictList, VO, save } from './api'
 import moment from 'moment'
 
 @Component({
@@ -63,9 +63,13 @@ export default class MyCase extends Vue {
     async handleAdd() {
         const result = await this.$modalDialog(() => import('./components/case-dialog/index.vue'), {})
         if (result) {
-            // TODO: 调用保存接口
-            this.$message.success('新增成功')
-            this.handleSearch()
+            this.$router.push({
+                path: '/file-review/my-case/save',
+                query: {
+                    type: 'add',
+                    ...result,
+                },
+            })
         }
     }
 

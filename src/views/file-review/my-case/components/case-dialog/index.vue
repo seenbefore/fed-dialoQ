@@ -3,6 +3,7 @@
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
+        <!-- {{ selectedRow }} -->
         <!-- 列表 -->
         <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
 
@@ -16,7 +17,7 @@
 <script lang="tsx">
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
-import { list } from './api'
+import { list, getArchiveVolumeAndCaseNumberConfig, VO } from './api'
 
 @Component({
     name: 'CaseDialog',
@@ -43,10 +44,42 @@ export default class CaseDialog extends Vue {
     handleRowClick(row: any) {
         this.selectedRow = row
     }
-
-    handleSelect(row: any) {
-        this.selectedRow = row
-        this.confirm()
+    private body = {
+        volumeConfigId: '',
+        caseId: '',
+        volumeNumber: '',
+        retentionPeriod: '',
+        archiveNumber: '',
+    }
+    async handleSelect(row: VO) {
+        try {
+            const params = {
+                lineCode: row.territoryCode, // 条线编码
+                volumeTypeCode: row.volumeType, // 卷宗类型
+                orgCode: (row as any).orgCode, // 机构编码
+            }
+            const { data } = await getArchiveVolumeAndCaseNumberConfig(params)
+            const { volumeConfig, caseNumberConfig } = data
+            const { caseNumberLimit } = caseNumberConfig
+            const { id } = volumeConfig
+            Object.assign(this.body, {
+                //volumeConfigId: id,
+                caseId: row.id,
+                decisionNumber: row.decisionNumber,
+                caseNumber: row.caseNumber,
+                ...params,
+                //volumeNumber: row.caseNumber || row.decisionNumber,
+                //retentionPeriod: '',
+                // 1:自动获取决定书编号,2:自动获取立案编号
+                //archiveNumber: caseNumberLimit === '1' ? row.decisionNumber : row.caseNumber,
+            })
+            console.log(data)
+            this.selectedRow = row
+            this.$message.success('获取配置成功，请点击确认')
+        } catch (error) {
+            console.log(error)
+            //this.$message.error('获取配置异常')
+        }
     }
 
     get getFormAttrs() {
@@ -143,7 +176,7 @@ export default class CaseDialog extends Vue {
 
     async confirm() {
         if (!this.selectedRow) return
-        this.$options.confirm?.(this.selectedRow)
+        this.$options.confirm?.(this.body)
     }
 
     cancel() {
