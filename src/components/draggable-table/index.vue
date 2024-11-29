@@ -32,7 +32,7 @@
                                 <template v-for="column in columns">
                                     <span :key="column.prop" :class="['item-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
                                         <template v-if="column.render">
-                                            <render-cell :render="column.render" :row="item"></render-cell>
+                                            <render-cell :render="column.render" :row="item" :index="index"></render-cell>
                                         </template>
                                         <template v-else>
                                             {{ item[column.prop] }}
@@ -61,6 +61,7 @@
 </template>
 
 <script lang="tsx">
+import { number } from 'echarts'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
 
@@ -92,9 +93,10 @@ interface ActionItem {
             props: {
                 render: Function,
                 row: Object,
+                index: number,
             },
             render: (h: any, ctx: any) => {
-                return ctx.props.render(h, { row: ctx.props.row })
+                return ctx.props.render(h, { row: ctx.props.row, index: ctx.props.index })
             },
         },
     },
@@ -117,16 +119,17 @@ export default class DraggableDirectory extends Vue {
         if (Array.isArray(val)) {
             this.directoryList = val.map((item, index) => ({
                 ...item,
-                [this.sortKey]: index + 1,
+                //[this.sortKey]: index + 1,
             }))
             //this.$emit('input', this.directoryList)
         }
     }
     directoryList: any[] = []
     @Watch('directoryList', { immediate: true, deep: true })
-    onDirectoryListChange(val: any[]) {
-        console.log('onDirectoryListChange val', val)
+    onTableChange(val: any[]) {
+        console.log('onTableChange')
         this.$emit('change', val)
+        //this.$emit('input', val)
     }
 
     // @Watch('directoryList', { deep: true })
@@ -187,18 +190,13 @@ export default class DraggableDirectory extends Vue {
     }
 
     onDragEnd() {
+        console.log('onDragEnd111')
         // 拖拽结束时的处理
         this.updateIndexes()
+        this.$emit('drag-end', this.directoryList)
     }
 
-    updateIndexes() {
-        // 更新序号
-        this.directoryList = this.directoryList.map((item, index) => ({
-            ...item,
-            [this.sortKey]: index + 1,
-            index,
-        }))
-    }
+    updateIndexes() {}
 
     handlePreview(item: any) {
         this.$emit('preview', item)
@@ -212,6 +210,7 @@ export default class DraggableDirectory extends Vue {
         this.directoryList.splice(index, 1)
         // this.directoryList = this.directoryList.filter(item => item.uuid !== uuid)
         this.updateIndexes()
+        this.$emit('remove', this.directoryList)
     }
     async handleDelete(item: any) {
         await this.$confirm(this.confirmMessage, '提示', {

@@ -125,10 +125,20 @@ export default class DocInput extends Vue {
             this.docComponentOptions = generateDocParseComp(htmlContent, templateConfigMap, this.extraParams, this.httpRequest, this.readonlyName)
             // 4、获取文书表单数据
             const { httpApiName: httpApiForm } = this.assembleInitDocSendData('form')
-            const { data } = await httpApiForm({
+            let { data } = await httpApiForm({
                 ...sendData,
                 ...this.getParamsDocForm,
             })
+            // 如果dataMap为空，则赋值为data
+            if (!data.dataMap) {
+                data = {
+                    ...data,
+                    dataMap: {
+                        ...data,
+                    },
+                }
+            }
+
             const docStatus = data.operateType || DOC_STATUS.CREATE
             const cusDocFormDataKeys = Object.keys(this.cusDocFormData)
             //对于文书接口获取的数据每值的情况, 赋默认值

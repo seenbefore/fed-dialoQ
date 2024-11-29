@@ -1,7 +1,7 @@
 <template>
     <div class="sg-page icinfo-ai CaseConfigAdd">
         <div class="content">
-            {{ formModel.mainCatalogList }}
+            <!-- {{ formModel.mainCatalogList }} -->
             <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
         </div>
 
@@ -226,7 +226,6 @@ export default class CaseConfigAdd extends Vue {
                                         type: 'main',
                                         formModel: this.formModel,
                                         onChange: (val: any) => {
-                                            console.log('onChang2222e2222', val)
                                             this.formModel.mainCatalogList = val
                                         },
                                     }}
@@ -239,7 +238,6 @@ export default class CaseConfigAdd extends Vue {
                                         type: 'sub',
                                         formModel: this.formModel,
                                         onChange: (val: any) => {
-                                            console.log('onChang2222e', val)
                                             this.formModel.subCatalogList = val
                                         },
                                     }}

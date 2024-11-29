@@ -15,6 +15,7 @@ import { TableColumn, TableRef } from '@/sharegood-ui'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
 import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index.vue'
 import { VO } from './api'
+import { render } from 'nprogress'
 
 @Component({
     name: 'DirectoryConfig',
@@ -51,7 +52,6 @@ export default class DirectoryConfig extends Vue {
 
     mainData: VO[] = []
     handleChange(val: any) {
-        console.log('onChange', val)
         this.$emit('change', val)
         this.onChange?.(val)
     }
@@ -91,7 +91,15 @@ export default class DirectoryConfig extends Vue {
     get getMainTableAttrs() {
         return {
             columns: [
-                { prop: 'sortNo', label: '序号', width: '50px' },
+                {
+                    prop: 'sortNo',
+                    label: '序号',
+                    width: '50px',
+                    render: (h, { index }) => {
+                        const result = index + 1
+                        return <span>{result}</span>
+                    },
+                },
                 { prop: 'catalogName', label: '名称', minWidth: '200px' },
                 {
                     prop: 'hasAttachment',
@@ -117,18 +125,6 @@ export default class DirectoryConfig extends Vue {
         }
     }
 
-    @Watch('value', { immediate: true, deep: true })
-    onValueChange(val: any) {
-        console.log('onValueChange111111', val)
-        if (Array.isArray(val)) {
-            this.mainData = [...val]
-        }
-    }
-    @Watch('mainData', { immediate: true, deep: true })
-    onMainDataChange(val: any) {
-        console.log('onMainDataChange', val)
-        //this.$emit('input', val)
-    }
     async handleDelete(data: any, context: any) {
         await this.$confirm('确定从卷宗目录中移除吗？')
         context.removeItem(data)

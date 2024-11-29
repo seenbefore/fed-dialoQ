@@ -1,6 +1,13 @@
 <template>
     <div>
-        <DocInput ref="docInputRef" :doc-params="docParams" :custom-get-doc-base-info="customGetDocBaseInfo" :custom-get-doc-form="customGetDocForm" is-custom-save-http></DocInput>
+        <DocInput
+            ref="docInputRef"
+            :doc-params="docParams"
+            :cus-doc-form-data="cusDocFormData"
+            :custom-get-doc-base-info="customGetDocBaseInfo"
+            :custom-get-doc-form="customGetDocForm"
+            is-custom-save-http
+        ></DocInput>
     </div>
 </template>
 
@@ -29,6 +36,9 @@ export default class Step1 extends Vue {
     }
     @Ref('docInputRef')
     docInputRef!: DocInput
+    cusDocFormData = {
+        caseAddress: '22',
+    }
     public handleCancel() {
         console.log('取消222')
     }
@@ -47,9 +57,9 @@ export default class Step1 extends Vue {
     }
     /**自定义获取文书表单的接口 */
     get customGetDocForm() {
-        // if (this.docParams.volumeConfigId) {
-        //     return () => this.$http.post('/my/volume/getArchiveVolumeRecordById', this.docParams)
-        // }
+        if (this.docParams.volumeRecordId) {
+            return () => this.$http.post('/my/volume/getArchiveVolumeRecordById', this.docParams)
+        }
         return () => {
             return {
                 data: {},

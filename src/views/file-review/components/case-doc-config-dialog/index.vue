@@ -46,6 +46,10 @@ import { list } from './api'
     components: {},
 })
 export default class DirectoryDialog extends Vue {
+    /**
+     * 匹配关键字
+     */
+    @Prop({ type: String, default: 'id' }) nodeKey!: string
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
     @Prop({ type: String, default: '' }) volumeRecordId!: string
@@ -197,14 +201,18 @@ export default class DirectoryDialog extends Vue {
     }
 
     async confirm() {
-        // 将选中的节点转换为目录项
-        const directories = this.selectedNodes
-            .filter(node => node.isLeafNode)
-            .map((node, index) => ({
-                ...node,
-                hasAttachment: false,
-            }))
-        this.$options.confirm?.(directories)
+        const selectedNodes = this.selectedNodes
+        const originKeys = this.value.map(item => item[this.nodeKey])
+        // 通过比对获取新增的节点和删除的节点
+        const addNodes = selectedNodes.filter(node => !originKeys.includes(node[this.nodeKey]))
+        const deleteNodeKeys = originKeys.filter(key => !selectedNodes.map(node => node[this.nodeKey]).includes(key))
+        console.log('addNodes', addNodes, 'deleteNodeKeys', deleteNodeKeys)
+        const result: any = {
+            addNodes,
+            deleteNodeKeys,
+            selectedNodes,
+        }
+        this.$options.confirm?.(result)
     }
 
     cancel() {
