@@ -6,9 +6,7 @@
             :custom-get-doc-base-info="customGetDocBaseInfo"
             :custom-get-doc-form="customGetDocForm"
             :get-params-doc-form="getParamsDocForm"
-            :parent-handle="parentHandle"
             is-custom-save-http
-            :parent-doc-base-info="parentDocBaseInfo"
             @emitDataMap="emitDataMap"
         ></DocInput>
     </div>
@@ -48,15 +46,32 @@ export default class Step1 extends Vue {
         }),
     })
     docParams!: any
-    /**获取文书模板 */
-    customGetDocBaseInfo = getDocBaseInfo
-    /**获取模板数据 */
-    customGetDocForm = getArchiveVolumeRecordById
     mounted() {
         console.log('Step1 mounted')
     }
     @Ref('docInputRef')
     docInputRef!: DocInput
+    /**自定义获取文书表单数据 */
+    get customGetDocForm() {
+        return async (params: any) => {
+            const { data } = await getArchiveVolumeRecordById(params)
+            return {
+                data: {
+                    dataMap: data,
+                },
+            }
+        }
+    }
+    /**自定义获取文书模板数据 */
+    get customGetDocBaseInfo() {
+        return async () => {
+            const res = await getDocBaseInfo(this.docParams)
+            return {
+                ...res,
+                data: this.handleDocBaseInfo(res.data),
+            }
+        }
+    }
     get getParamsDocForm() {
         return {
             volumeRecordId: this.$route.query.id,
@@ -68,17 +83,8 @@ export default class Step1 extends Vue {
     public async preview() {
         console.log('step1 next')
     }
-    /**设置formData */
-    public parentHandle(dataMap: Record<string, any>, configInfo: DocumentCommonFormHtmlVo) {
-        const obj = {}
-        const { templateConfigMap } = configInfo
-        Object.keys(templateConfigMap).forEach(key => {
-            obj[key] = dataMap[key] || ''
-        })
-        return obj
-    }
-    /**父组件处理配置项 */
-    parentDocBaseInfo(configInfo: DocumentCommonFormHtmlVo) {
+    /**处理配置项 */
+    handleDocBaseInfo(configInfo: DocumentCommonFormHtmlVo) {
         const { templateConfigMap = {} } = configInfo
         const editVolumeFields = ['fondNumber', 'catalogNumber', 'caseFileNumber']
         Object.keys(templateConfigMap).forEach(key => {

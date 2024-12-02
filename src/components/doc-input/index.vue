@@ -60,10 +60,6 @@ export default class DocInput extends Vue {
     @Prop({ type: Object, default: () => ({}) }) cusTemporaryParams!: object
     // 对getDocFormData接口拿到的dataMap属性进行更改
     @Prop({ type: Object, default: () => ({}) }) cusDocFormData!: Record<string, any>
-    // 父级对getDocFormData接口进行处理
-    @Prop({ type: Function, default: null }) parentHandle!: Function
-    //父组件对配置项进行处理
-    @Prop({ type: Function, default: (arg: any) => arg }) parentDocBaseInfo!: Function
 
     // dom类型
     public $refs!: {
@@ -120,7 +116,7 @@ export default class DocInput extends Vue {
             const { sendData, httpApiName: httpApiBase } = this.assembleInitDocSendData('base')
             const { data: configInfo } = await httpApiBase(sendData)
             // 2、文书配置数据处理
-            const { templateConfigMap = {}, htmlContent = '' } = this.parentDocBaseInfo(configInfo || {})
+            const { templateConfigMap = {}, htmlContent = '' } = configInfo || {}
             Object.values(templateConfigMap).forEach((item: any) => {
                 item.controlConfigContent = parseJson(item.controlConfigContent, {})
             })
@@ -155,9 +151,6 @@ export default class DocInput extends Vue {
                 })
             }
             this.formData = this.handleDataMap(data.dataMap || {}, configInfo)
-            if (this.parentHandle) {
-                this.formData = this.parentHandle(data, configInfo)
-            }
             // 储存一下修改前的文书表单值
             this.oldDocData.formData = JSON.parse(JSON.stringify(this.formData))
             // 5、新建状态，初始化默认值
