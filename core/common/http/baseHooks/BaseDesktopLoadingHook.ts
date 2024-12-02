@@ -12,7 +12,7 @@ export const BaseDesktopLoadingHook = Object.freeze({
                         : {
                               fullscreen: true,
                               lock: true,
-                              text: '加载中...',
+                              text: '处理中...',
                           }
 
                 instance = Loading.service(options)
@@ -22,15 +22,15 @@ export const BaseDesktopLoadingHook = Object.freeze({
         }
     },
     onComplete(config: any) {
-        // if (config._exShowLoading) {
-        //     if (instance) {
-        //         count--
-        //         if (count <= 0) {
-        //             instance.close()
-        //             instance = null
-        //             count = 0
-        //         }
-        //     }
-        // }
+        if (config._exShowLoading) {
+            if (instance) {
+                count--
+                if (count <= 0) {
+                    instance.close()
+                    instance = null
+                    count = 0
+                }
+            }
+        }
     },
 })

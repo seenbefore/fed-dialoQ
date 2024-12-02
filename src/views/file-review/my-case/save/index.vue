@@ -116,7 +116,9 @@ export default class CaseSave extends Vue {
                             <el-button
                                 type=""
                                 onClick={async () => {
-                                    console.log('取消')
+                                    this.$back({
+                                        path: '/file-review/my-case',
+                                    })
                                 }}
                             >
                                 取消
@@ -276,11 +278,15 @@ export default class CaseSave extends Vue {
                                                         subVolumeList: result.subVolumeList,
                                                     },
                                                     {
-                                                        timeout: 5 * 1000,
+                                                        //timeout: 5 * 1000,
+                                                        exShowLoading: true,
                                                     },
                                                 )
                                                 this.loading.submit = false
                                                 this.$message.success(`操作成功`)
+                                                this.$back({
+                                                    path: '/file-review/my-case',
+                                                })
                                             }
                                         }
                                     } catch (err) {

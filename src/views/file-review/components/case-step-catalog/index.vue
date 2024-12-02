@@ -38,6 +38,8 @@
                                 v-bind="getDraggableDirectoryAttrs"
                                 :confirm-message="'确定从卷宗目录中移除吗？'"
                                 id-key="id"
+                                @remove="handlePageChange"
+                                @drag-end="handlePageChange"
                             ></DraggableDirectory>
                         </div>
                     </el-tab-pane>
@@ -143,43 +145,126 @@ export default class Step2 extends Vue {
     }
     // 主卷
     mainVolumeList: any[] = []
+    // @Watch('mainVolumeList')
+    // async onMainVolumeListChange(val: any[], oldVal: any[]) {
+    //     console.log('onMainVolumeListChange', val.length, oldVal.length)
+    //     if (val.length === oldVal.length) return
+    //     console.log('onMainVolumeListChange', val)
+    //     const { data } = await calculatePageNumbers({
+    //         volumeList: val,
+    //     })
+    //     this.mainVolumeList = data.map(item => {
+    //         return {
+    //             id: item.catalogCode,
+    //             ...item,
+    //         }
+    //     })
+    // }
     // 副卷
     subVolumeList: any[] = []
-    async handlePageChange(val: any) {
-        return
+    // @Watch('subVolumeList')
+    // async onSubVolumeListChange(val: any[], oldVal: any[]) {
+    //     if (val.length === oldVal.length) return
+    //     console.log('onSubVolumeListChange', val)
+    //     const { data } = await calculatePageNumbers({
+    //         volumeList: val,
+    //     })
+    //     this.subVolumeList = data.map(item => {
+    //         return {
+    //             id: item.catalogCode,
+    //             ...item,
+    //         }
+    //     })
+    // }
+    async handlePageChange(val: any, key?: string) {
         const { data } = await calculatePageNumbers({
             volumeList: val,
         })
-        let list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
-        // list = data.map((item, index) => {
-        //     return {
-        //         ...item,
-        //         // pageNumber: data[index].pageNumber,
-        //     }
-        // })
-        this.mainVolumeList = data.map(item => {
-            return {
-                id: item.catalogCode,
-                ...item,
-            }
-        })
+
+        if (this.activeTab === '1') {
+            this.mainVolumeList = data.map(item => {
+                return {
+                    id: item.catalogCode,
+                    ...item,
+                }
+            })
+        } else {
+            this.subVolumeList = data.map(item => {
+                return {
+                    id: item.catalogCode,
+                    ...item,
+                }
+            })
+        }
     }
+
     // 正副卷相互移动
-    async handleMove(data: any, context: any, index: number) {
+    async handleMove(row: any, context: any, index: number) {
         const { activeTab } = this
-        console.log('handleMove', activeTab, data, index)
+        console.log('handleMove', activeTab, row, index)
         await useNoRemindConfirm({
             message: `${activeTab === '1' ? '正卷' : '副卷'}移动到${activeTab === '1' ? '副卷' : '正卷'}吗？`,
             onNoRemindChange: checked => {
                 appStore.setDontShowMoveConfirm(checked)
             },
         })
+        // if (this.activeTab === '1') {
+        //     this.subVolumeList.push(row)
+        //     this.mainVolumeList.splice(index, 1)
+        // } else {
+        //     this.mainVolumeList.push(row)
+        //     this.subVolumeList.splice(index, 1)
+        // }
         if (this.activeTab === '1') {
-            this.subVolumeList.push(data)
-            this.mainVolumeList.splice(index, 1)
+            try {
+                this.subVolumeList.push(row)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.subVolumeList,
+                })
+                this.subVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+            try {
+                this.mainVolumeList.splice(index, 1)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.mainVolumeList,
+                })
+                this.mainVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
         } else {
-            this.mainVolumeList.push(data)
-            this.subVolumeList.splice(index, 1)
+            try {
+                this.mainVolumeList.push(row)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.mainVolumeList,
+                })
+                this.mainVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+            try {
+                this.subVolumeList.splice(index, 1)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.subVolumeList,
+                })
+                this.subVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
         }
     }
     async handleDelete(data: any, context: any) {
@@ -205,6 +290,7 @@ export default class Step2 extends Vue {
             volumeRecordId: this.id,
             volumeType: this.activeTab,
         })
+        console.log('addNodes', addNodes)
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
