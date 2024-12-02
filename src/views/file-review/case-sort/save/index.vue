@@ -46,7 +46,9 @@ export default class CaseSave extends Vue {
                                 type=""
                                 onClick={async () => {
                                     this.$router.back()
-                                    this.$store.dispatch('tagsView/delCachedView', this.$route)
+                                    this.$back({
+                                        path: '/file-review/case-sort',
+                                    })
                                 }}
                             >
                                 取消
@@ -133,8 +135,9 @@ export default class CaseSave extends Vue {
             id: this.id,
         })
         this.$message.success('操作成功')
-        this.$store.dispatch('tagsView/delCachedView', this.$route)
-        this.$router.replace('/file-review/case-sort')
+        this.$back({
+            path: '/file-review/case-sort',
+        })
     }
 }
 </script>
