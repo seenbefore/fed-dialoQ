@@ -12,6 +12,7 @@ import store from './store'
 import { settingsStore, userStore, tagsViewStore } from './store/useStore'
 import './styles/index.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
+import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme'
 
 // 自定义确认框风格样式
 const customConfirm = (options: IUseConfirm | string) => {
@@ -40,17 +41,30 @@ Vue.prototype.$postMessage = function(data: any) {
         console.error(error)
     }
 }
-
-desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
-    const { settings, user } = defaultSettings ?? {}
-    userStore.set(user)
-    // 本地调试的时候 加载全量菜单 可删除
-    if (process.env.NODE_ENV === 'development') {
-        userStore.setPermissionMenus(LocalMenu)
-    }
-    const { token } = getURLParameters(location.href)
-    if (token) {
-        userStore.login(token)
-        // TODO do something
-    }
-})
+/**
+ * 初始化用户信息
+ */
+const { settings, user } = defaultSettings ?? {}
+userStore.set(user)
+// 本地调试的时候 加载全量菜单 可删除
+if (process.env.NODE_ENV === 'development') {
+    userStore.setPermissionMenus(LocalMenu)
+}
+const { token } = getURLParameters(location.href)
+if (token) {
+    userStore.login(token)
+    // TODO do something
+}
+/**
+ * 设置自定义主题名称和色系
+ */
+settingsStore.updateThemeName('blue')
+let themeVariables: IDefinedThemeValue = {
+    '--color-primary': '#06f',
+    '--color-success': '#6DD400',
+    '--color-warning': '#FF7D00',
+    '--color-danger': '#F4333C',
+    '--color-info': '#666666',
+}
+settingsStore.updateThemeVariables(themeVariables)
+desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {})
