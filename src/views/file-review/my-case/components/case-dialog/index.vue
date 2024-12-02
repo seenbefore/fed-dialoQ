@@ -44,34 +44,29 @@ export default class CaseDialog extends Vue {
     handleRowClick(row: any) {
         this.selectedRow = row
     }
-    private body = {
-        volumeConfigId: '',
-        caseId: '',
-        volumeNumber: '',
-        retentionPeriod: '',
-        archiveNumber: '',
-    }
+    private body = {}
     async handleSelect(row: VO) {
         try {
+            const { id, caseName, caseAddress, caseNumber, filingTime, closingTime, decisionNumber, handler, party, punishmentResult, territoryCode, volumeType } = row
             const params = {
-                lineCode: row.territoryCode, // 条线编码
-                volumeTypeCode: row.volumeType, // 卷宗类型
+                lineCode: territoryCode, // 条线编码
+                volumeTypeCode: volumeType, // 卷宗类型
                 orgCode: (row as any).orgCode, // 机构编码
             }
             const { data } = await getArchiveVolumeAndCaseNumberConfig(params)
-            const { volumeConfig, caseNumberConfig } = data
-            const { caseNumberLimit } = caseNumberConfig
-            const { id } = volumeConfig
+
             Object.assign(this.body, {
-                //volumeConfigId: id,
-                caseId: row.id,
-                decisionNumber: row.decisionNumber,
-                caseNumber: row.caseNumber,
+                caseId: id,
+                caseName,
+                caseAddress,
+                caseNumber,
+                filingTime,
+                closingTime,
+                decisionNumber,
+                handler,
+                party,
+                punishmentResult,
                 ...params,
-                //volumeNumber: row.caseNumber || row.decisionNumber,
-                //retentionPeriod: '',
-                // 1:自动获取决定书编号,2:自动获取立案编号
-                //archiveNumber: caseNumberLimit === '1' ? row.decisionNumber : row.caseNumber,
             })
             console.log(data)
             this.selectedRow = row

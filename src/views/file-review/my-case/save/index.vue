@@ -1,5 +1,7 @@
 <template>
     <div class="sg-page icinfo-ai CaseSave">
+        <!-- {{ $props }}
+        {{ $attrs }} -->
         <StepForm v-model="currentStep" :steps="steps" v-if="inited"></StepForm>
     </div>
 </template>
@@ -40,6 +42,8 @@ export default class CaseSave extends Vue {
     @Prop({ type: String, default: '' }) orgCode!: string
     /** 案件编号 */
     @Prop({ type: String, default: '' }) caseNumber!: string
+    /** 案件名称 */
+    @Prop({ type: String, default: '' }) caseName!: string
     /** 决定书编号 */
     @Prop({ type: String, default: '' }) decisionNumber!: string
     /** 当前步骤 0:卷宗封面 1:卷宗目录 2:完成 */
@@ -108,6 +112,15 @@ export default class CaseSave extends Vue {
                     docParams: {
                         volumeRecordId: this.paylaod.id,
                         templateCode: 'DT2DZJZFM0000000001',
+                    },
+                    row: {
+                        // 归档号
+                        // archiveNumber:this.archiveNumber,
+                        // caseAddress:this.caseAddress,
+                        //caseName: this.caseName,
+
+                        ...this.$attrs,
+                        ...this.$props,
                     },
                 },
                 render: (h, { row, handlers }) => {

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- {{ templateConfigKeys }} -->
         <DocInput
             ref="docInputRef"
             :doc-params="docParams"
@@ -27,6 +28,13 @@ export interface CaseStepCoverClass {
     },
 })
 export default class Step1 extends Vue {
+    /**
+     * 文书数据
+     */
+    @Prop({
+        default: () => ({}),
+    })
+    row!: any
     @Prop({
         default: () => ({}),
     })
@@ -39,6 +47,7 @@ export default class Step1 extends Vue {
     cusDocFormData = {
         caseAddress: '22',
     }
+    templateConfigKeys: any[] = []
     public handleCancel() {
         console.log('取消222')
     }
@@ -53,16 +62,27 @@ export default class Step1 extends Vue {
     }
     /**自定义获取文书模板的接口 */
     get customGetDocBaseInfo() {
-        return () => this.$http.post('/common/volume/getDocBaseInfo', this.docParams)
+        return () =>
+            this.$http.post('/common/volume/getDocBaseInfo', this.docParams).then(res => {
+                this.templateConfigKeys = Object.keys(res.data?.templateConfigMap || {})
+                return res
+            })
     }
     /**自定义获取文书表单的接口 */
     get customGetDocForm() {
+        const templateConfigKeys = this.templateConfigKeys
         if (this.docParams.volumeRecordId) {
             return () => this.$http.post('/my/volume/getArchiveVolumeRecordById', this.docParams)
         }
         return () => {
+            const data = templateConfigKeys.reduce((acc, key) => {
+                acc[key] = this.row[key]
+                return acc
+            }, {})
             return {
-                data: {},
+                data: {
+                    ...data,
+                },
             }
         }
     }

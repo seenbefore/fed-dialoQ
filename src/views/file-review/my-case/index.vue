@@ -33,25 +33,7 @@ export default class MyCase extends Vue {
 
     formModel: Record<string, any> = {}
 
-    mounted() {
-        // 使用字符串路径
-        const routeInfo = this.$router.resolve({
-            path: '/file-review/my-case/save',
-            query: {
-                // 案件名称
-                caseName: '案件名称',
-                // 案件地址
-                caseAddress: '案件地址',
-                // 案件id
-                caseId: '案件id',
-                // 条线编码 综合执法、消防救援等
-                lineCode: '条线编码',
-                // 卷宗类型编码 普通行政处罚档案、火灾事故调查档案等
-                volumeTypeCode: '卷宗类型',
-            },
-        })
-        console.log(11111, routeInfo.href) // 输出完整的 URL 地址
-    }
+    mounted() {}
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
