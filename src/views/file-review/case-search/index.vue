@@ -14,6 +14,8 @@ import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
 import { list, getDictList } from './api'
 import moment from 'moment'
+import { apply } from '@/services/auto/common/volume/view'
+import { useLoading } from '@/hooks/useLoading'
 
 @Component({
     name: 'CaseSearch',
@@ -33,17 +35,19 @@ export default class CaseSearch extends Vue {
     }
 
     async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+        const { volumeUrl } = row
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: volumeUrl,
         })
     }
 
     async handleApply(row: any) {
         const result = await this.$modalDialog(() => import('./components/apply-dialog/index.vue'), {})
         if (result) {
-            // TODO: 调用申请接口
+            await useLoading(apply, {
+                volumeId: row.id,
+                applyReason: result.reason,
+            })
             this.$message.success('申请成功')
             this.handleSearch()
         }
