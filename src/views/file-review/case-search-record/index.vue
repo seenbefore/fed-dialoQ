@@ -77,7 +77,7 @@ export default class CaseSearchRecord extends Vue {
             {
                 columns: [
                     {
-                        tag: 'input',
+                        tag: 'select',
                         name: 'volumeType',
                         itemAttrs: {
                             label: '卷宗类型',
