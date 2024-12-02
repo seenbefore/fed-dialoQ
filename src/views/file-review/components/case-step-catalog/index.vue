@@ -12,7 +12,7 @@
                                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
                             </div>
 
-                            {{ mainVolumeList }}
+                            <!-- {{ mainVolumeList }} -->
                             <DraggableDirectory
                                 v-model="mainVolumeList"
                                 :key="activeTab"
@@ -20,10 +20,11 @@
                                 :confirm-message="'确定从卷宗目录中移除吗？'"
                                 @remove="handlePageChange"
                                 @drag-end="handlePageChange"
+                                id-key="id"
                             ></DraggableDirectory>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="副卷" name="2">
+                    <el-tab-pane label="副卷" name="2" v-if="subVolumeList.length > 0">
                         <!-- 可拖拽的卷宗目录列表 -->
                         <div class="directory-list">
                             <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
@@ -36,8 +37,9 @@
                                 :key="activeTab"
                                 v-bind="getDraggableDirectoryAttrs"
                                 :confirm-message="'确定从卷宗目录中移除吗？'"
-                                :sort-key="'sortNo'"
-                                @change="handleChange"
+                                id-key="id"
+                                @remove="handlePageChange"
+                                @drag-end="handlePageChange"
                             ></DraggableDirectory>
                         </div>
                     </el-tab-pane>
@@ -57,7 +59,7 @@ import { appStore } from '@/store/useStore'
 /** 卷宗目录组件 */
 export interface CaseStepCatalogClass {
     /** 获取表单数据 */
-    submit: () => Promise<any>
+    submit: () => Promise<{ mainVolumeList: any[]; subVolumeList: any[] }>
 }
 /** 卷宗目录 */
 @Component({
@@ -75,7 +77,7 @@ export default class Step2 extends Vue {
             this.id = val
         }
     }
-    id = '2A789E56403147E18EC93B2729262473'
+    id = ''
     loading = false
     mounted() {
         console.log('Step2 mounted')
@@ -107,7 +109,7 @@ export default class Step2 extends Vue {
                 }
             })
             console.log('data', data)
-            //this.directoryList = data
+
             this.loading = false
         } catch (err) {
             this.loading = false
@@ -141,45 +143,129 @@ export default class Step2 extends Vue {
             ],
         }
     }
-    directoryList: any[] = [
-        {
-            sort: 1,
-            documentNumber: '123',
-            documentEvidenceName: '文书/证据名称',
-        },
-    ]
+    // 主卷
     mainVolumeList: any[] = []
+    // @Watch('mainVolumeList')
+    // async onMainVolumeListChange(val: any[], oldVal: any[]) {
+    //     console.log('onMainVolumeListChange', val.length, oldVal.length)
+    //     if (val.length === oldVal.length) return
+    //     console.log('onMainVolumeListChange', val)
+    //     const { data } = await calculatePageNumbers({
+    //         volumeList: val,
+    //     })
+    //     this.mainVolumeList = data.map(item => {
+    //         return {
+    //             id: item.catalogCode,
+    //             ...item,
+    //         }
+    //     })
+    // }
+    // 副卷
     subVolumeList: any[] = []
-    async handlePageChange(val: any) {
-        console.log(111111, val)
+    // @Watch('subVolumeList')
+    // async onSubVolumeListChange(val: any[], oldVal: any[]) {
+    //     if (val.length === oldVal.length) return
+    //     console.log('onSubVolumeListChange', val)
+    //     const { data } = await calculatePageNumbers({
+    //         volumeList: val,
+    //     })
+    //     this.subVolumeList = data.map(item => {
+    //         return {
+    //             id: item.catalogCode,
+    //             ...item,
+    //         }
+    //     })
+    // }
+    async handlePageChange(val: any, key?: string) {
         const { data } = await calculatePageNumbers({
             volumeList: val,
         })
-        let list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
-        // list = data.map((item, index) => {
-        //     return {
-        //         ...item,
-        //         // pageNumber: data[index].pageNumber,
-        //     }
-        // })
-        this.mainVolumeList = data.map(item => {
-            return {
-                id: item.catalogCode,
-                ...item,
-            }
-        })
-        console.log(data, 'data', JSON.stringify(list))
+
+        if (this.activeTab === '1') {
+            this.mainVolumeList = data.map(item => {
+                return {
+                    id: item.catalogCode,
+                    ...item,
+                }
+            })
+        } else {
+            this.subVolumeList = data.map(item => {
+                return {
+                    id: item.catalogCode,
+                    ...item,
+                }
+            })
+        }
     }
+
     // 正副卷相互移动
-    async handleMove(data: any) {
+    async handleMove(row: any, context: any, index: number) {
         const { activeTab } = this
-        console.log('handleMove', activeTab, data)
-        const result = await useNoRemindConfirm({
+        console.log('handleMove', activeTab, row, index)
+        await useNoRemindConfirm({
             message: `${activeTab === '1' ? '正卷' : '副卷'}移动到${activeTab === '1' ? '副卷' : '正卷'}吗？`,
             onNoRemindChange: checked => {
                 appStore.setDontShowMoveConfirm(checked)
             },
         })
+        // if (this.activeTab === '1') {
+        //     this.subVolumeList.push(row)
+        //     this.mainVolumeList.splice(index, 1)
+        // } else {
+        //     this.mainVolumeList.push(row)
+        //     this.subVolumeList.splice(index, 1)
+        // }
+        if (this.activeTab === '1') {
+            try {
+                this.subVolumeList.push(row)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.subVolumeList,
+                })
+                this.subVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+            try {
+                this.mainVolumeList.splice(index, 1)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.mainVolumeList,
+                })
+                this.mainVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+        } else {
+            try {
+                this.mainVolumeList.push(row)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.mainVolumeList,
+                })
+                this.mainVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+            try {
+                this.subVolumeList.splice(index, 1)
+                const { data } = await calculatePageNumbers({
+                    volumeList: this.subVolumeList,
+                })
+                this.subVolumeList = data.map(item => {
+                    return {
+                        id: item.catalogCode,
+                        ...item,
+                    }
+                })
+            } catch (error) {}
+        }
     }
     async handleDelete(data: any, context: any) {
         const { $dontShowDeleteConfirm } = appStore
@@ -204,6 +290,7 @@ export default class Step2 extends Vue {
             volumeRecordId: this.id,
             volumeType: this.activeTab,
         })
+        console.log('addNodes', addNodes)
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
@@ -237,7 +324,6 @@ export default class Step2 extends Vue {
         })
 
         return {
-            id: this.id,
             mainVolumeList,
             subVolumeList,
         }

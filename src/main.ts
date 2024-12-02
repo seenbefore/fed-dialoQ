@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import { LocalMenu } from './menus'
 // 路由
-import router from './router'
+import router, { flatRoutes } from './router'
 import http from './scripts/http'
 import defaultSettings from './settings'
 // 状态管理
@@ -13,7 +13,24 @@ import { settingsStore, userStore, tagsViewStore } from './store/useStore'
 import './styles/index.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
 import PageLoading from '@/scripts/PageLoading'
+import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme'
 
+/**
+ * 关闭当前标签页
+ */
+Vue.prototype.$back = async function(params: any) {
+    const { path } = params
+    const target: any = flatRoutes.find(item => {
+        return item.path === path || item.fullPath === path
+    })
+    if (target && path) {
+        await tagsViewStore.delCachedView({
+            name: target.name,
+        })
+    }
+    await tagsViewStore.delView(this.$route)
+    this.$router.push(params)
+}
 // 自定义确认框风格样式
 const customConfirm = (options: IUseConfirm | string) => {
     const defaultOptions = {
@@ -42,17 +59,30 @@ Vue.prototype.$postMessage = function(data: any) {
         console.error(error)
     }
 }
-
-desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {
-    const { settings, user } = defaultSettings ?? {}
-    userStore.set(user)
-    // 本地调试的时候 加载全量菜单 可删除
-    if (process.env.NODE_ENV === 'development') {
-        userStore.setPermissionMenus(LocalMenu)
-    }
-    const { token } = getURLParameters(location.href)
-    if (token) {
-        userStore.login(token)
-        // TODO do something
-    }
-})
+/**
+ * 初始化用户信息
+ */
+const { settings, user } = defaultSettings ?? {}
+userStore.set(user)
+// 本地调试的时候 加载全量菜单 可删除
+if (process.env.NODE_ENV === 'development') {
+    userStore.setPermissionMenus(LocalMenu)
+}
+const { token } = getURLParameters(location.href)
+if (token) {
+    userStore.login(token)
+    // TODO do something
+}
+/**
+ * 设置自定义主题名称和色系
+ */
+settingsStore.updateThemeName('blue')
+let themeVariables: IDefinedThemeValue = {
+    '--color-primary': '#06f',
+    '--color-success': '#6DD400',
+    '--color-warning': '#FF7D00',
+    '--color-danger': '#F4333C',
+    '--color-info': '#666666',
+}
+settingsStore.updateThemeVariables(themeVariables)
+desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {})

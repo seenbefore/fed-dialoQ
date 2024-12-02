@@ -33,11 +33,6 @@ Vue.prototype.$back = async function(reload = true) {
     this.$router.go(-1)
 }
 
-/**
- * 关闭当前标签页
- */
-Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {}
-
 const { bootstrap } = mobileInit(Vue)
 
 bootstrap(async () => {

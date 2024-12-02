@@ -107,14 +107,18 @@ export default class DirectoryDialog extends Vue {
             })
 
             this.treeData = data.map((node, index) => {
-                const { item, title } = node
+                const { item, title, code, sortNo } = node
                 if (node.item) {
                     const children = item.map((child, index) => {
                         return {
-                            ...child,
                             id: child.documentEvidenceCode,
                             label: child.documentEvidenceName,
                             value: child.documentEvidenceCode,
+                            caseStageCode: code,
+                            caseStageName: title,
+                            sortNo,
+                            catalogName: child.documentEvidenceName,
+                            catalogCode: child.documentEvidenceCode,
                         }
                     })
                     return {

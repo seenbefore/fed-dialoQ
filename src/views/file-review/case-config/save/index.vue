@@ -1,7 +1,7 @@
 <template>
     <div class="sg-page icinfo-ai CaseConfigAdd">
         <div class="content">
-            <!-- {{ formModel.mainCatalogList }} -->
+            <!-- {{ formModel.subCatalogList }} -->
             <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
         </div>
 
@@ -90,8 +90,6 @@ export default class CaseConfigAdd extends Vue {
             // },
         ],
         subCatalogList: [],
-        mainCatalogList$: [],
-        subCatalogList$: [],
     }
 
     isValid = false
@@ -113,9 +111,8 @@ export default class CaseConfigAdd extends Vue {
             ...data,
             mainAndSubVolume,
             mainCatalogList: data.mainCatalogList || [],
-            mainCatalogList$: data.mainCatalogList || [],
+
             subCatalogList: data.subCatalogList || [],
-            subCatalogList$: data.subCatalogList || [],
         }
         if (this.type === 'add') {
             delete this.formModel.id
@@ -211,10 +208,24 @@ export default class CaseConfigAdd extends Vue {
                 name: 'directory$',
                 label: '目录',
                 attrs: {
-                    value: [1],
+                    value: [],
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请配置目录' }],
+                    rules: [
+                        {
+                            required: true,
+                            message: '请配置目录',
+                            validator: (rule, value, callback) => {
+                                if (this.formModel.mainCatalogList.length === 0) {
+                                    callback(new Error('请配置正卷目录'))
+                                } else if (this.formModel.mainAndSubVolume.includes('sub') && this.formModel.subCatalogList.length === 0) {
+                                    callback(new Error('请配置副卷目录'))
+                                } else {
+                                    callback()
+                                }
+                            },
+                        },
+                    ],
                 },
                 appendRender: () => {
                     return (
@@ -222,22 +233,20 @@ export default class CaseConfigAdd extends Vue {
                             <el-col class="" span={12}>
                                 <DirectoryConfig
                                     props={{
-                                        value: this.formModel.mainCatalogList$,
+                                        value: this.formModel.mainCatalogList,
                                         type: 'main',
                                         formModel: this.formModel,
-                                        onChange: (val: any) => {
-                                            this.formModel.mainCatalogList = val
-                                        },
                                     }}
                                 />
                             </el-col>
                             <el-col class="" span={12}>
                                 <DirectoryConfig
                                     props={{
-                                        value: this.formModel.subCatalogList$,
+                                        value: this.formModel.subCatalogList,
                                         type: 'sub',
                                         formModel: this.formModel,
                                         onChange: (val: any) => {
+                                            console.log('subCatalogList val', val)
                                             this.formModel.subCatalogList = val
                                         },
                                     }}

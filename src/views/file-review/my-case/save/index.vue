@@ -9,7 +9,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import StepForm, { StepConfig } from '@/components/step-form/index.vue'
 import { CaseStepCoverClass } from '@/views/file-review/components/case-step-cover/index.vue'
 import { CaseStepCatalogClass } from '@/views/file-review/components/case-step-catalog/index.vue'
-import { saveVolumeCover, getArchiveVolumeAndCaseNumberConfig, submitDocument, modifyVolumeCover } from './api'
+import { saveVolumeCover, getArchiveVolumeAndCaseNumberConfig, submitDocument, modifyVolumeCover, previewVolume } from './api'
 
 @Component({
     name: 'CaseSave',
@@ -23,7 +23,7 @@ export default class CaseSave extends Vue {
      * add:新增
      * edit:编辑
      */
-    @Prop({ type: String, default: 'add' }) action!: string
+    @Prop({ type: String, default: 'add' }) action!: 'add' | 'edit'
     /** 额外参数  */
     @Prop({ type: Object, default: () => ({}) }) row!: any
     /** 卷宗id */
@@ -89,7 +89,13 @@ export default class CaseSave extends Vue {
         volumeNumber: '',
         archiveCatalogContentList: [] as any[],
     }
-    loading = false
+    loading = {
+        previewSave: false,
+        submit: false,
+        preview: false,
+        cover: false,
+    }
+
     /** 当前步骤 */
     currentStep = this.step
     get steps() {
@@ -104,26 +110,45 @@ export default class CaseSave extends Vue {
                         templateCode: 'DT2DZJZFM0000000001',
                     },
                 },
-
                 render: (h, { row, handlers }) => {
                     return (
                         <div>
                             <el-button
                                 type=""
                                 onClick={async () => {
-                                    console.log('取消')
+                                    this.$back({
+                                        path: '/file-review/my-case',
+                                    })
                                 }}
                             >
                                 取消
                             </el-button>
                             <el-button
                                 type="primary"
+                                loading={this.loading.cover}
+                                disabled={this.loading.cover}
                                 onClick={async () => {
-                                    const currentComponent = handlers.getCurrentComponent() as CaseStepCoverClass
-                                    const result = await currentComponent.save()
-                                    if (this.action === 'add') {
-                                        if (result) {
-                                            const { data } = await saveVolumeCover({
+                                    try {
+                                        this.loading.cover = true
+                                        const currentComponent = handlers.getCurrentComponent() as CaseStepCoverClass
+                                        const result = await currentComponent.save()
+                                        if (this.action === 'add') {
+                                            if (result) {
+                                                const { data } = await saveVolumeCover({
+                                                    volumeConfigId: this.paylaod.volumeConfigId,
+                                                    caseId: this.paylaod.caseId,
+                                                    volumeNumber: this.paylaod.volumeNumber,
+                                                    //retentionPeriod: result.retentionPeriod,
+                                                    //archiveNumber: result.archiveNumber,
+                                                    ...result,
+                                                })
+                                                this.paylaod.id = data.id
+
+                                                handlers.next()
+                                            }
+                                        } else {
+                                            await modifyVolumeCover({
+                                                id: this.paylaod.id,
                                                 volumeConfigId: this.paylaod.volumeConfigId,
                                                 caseId: this.paylaod.caseId,
                                                 volumeNumber: this.paylaod.volumeNumber,
@@ -131,21 +156,12 @@ export default class CaseSave extends Vue {
                                                 //archiveNumber: result.archiveNumber,
                                                 ...result,
                                             })
-                                            this.paylaod.id = data.id
-
                                             handlers.next()
                                         }
-                                    } else {
-                                        await modifyVolumeCover({
-                                            id: this.id,
-                                            volumeConfigId: this.paylaod.volumeConfigId,
-                                            caseId: this.paylaod.caseId,
-                                            volumeNumber: this.paylaod.volumeNumber,
-                                            //retentionPeriod: result.retentionPeriod,
-                                            //archiveNumber: result.archiveNumber,
-                                            ...result,
-                                        })
-                                        handlers.next()
+                                        this.loading.cover = false
+                                    } catch (err) {
+                                        this.loading.cover = false
+                                        console.error(err)
                                     }
                                 }}
                             >
@@ -161,35 +177,121 @@ export default class CaseSave extends Vue {
                 props: {
                     row: this.paylaod,
                 },
-                render: (h, { handlers }) => {
+
+                render: (h, { row, handlers }) => {
                     return (
                         <div>
                             <el-button type="" onClick={handlers.prev}>
                                 上一步
                             </el-button>
                             <el-button
+                                loading={this.loading.previewSave}
+                                disabled={this.loading.previewSave}
                                 type=""
-                                onClick={() => {
-                                    this.handlePreview()
+                                onClick={async () => {
+                                    // 暂存
+                                    try {
+                                        const currentComponent = handlers.getCurrentComponent() as CaseStepCatalogClass
+                                        const result = await currentComponent.submit()
+                                        this.loading.previewSave = true
+
+                                        await submitDocument({
+                                            id: this.paylaod.id,
+                                            operateType: '1',
+
+                                            ...result,
+                                        })
+                                        this.loading.previewSave = false
+                                    } catch (err) {
+                                        this.loading.previewSave = false
+                                        console.error(err)
+                                    }
+                                }}
+                            >
+                                暂存
+                            </el-button>
+                            <el-button
+                                type=""
+                                loading={this.loading.preview}
+                                disabled={this.loading.preview}
+                                onClick={async () => {
+                                    try {
+                                        const currentComponent = handlers.getCurrentComponent() as CaseStepCatalogClass
+                                        const result = await currentComponent.submit()
+                                        this.loading.preview = true
+                                        const { data } = await previewVolume(
+                                            {
+                                                id: this.paylaod.id,
+                                                mainVolumeList: result.mainVolumeList,
+                                                subVolumeList: result.subVolumeList,
+                                            },
+                                            {
+                                                timeout: 60 * 1000,
+                                            },
+                                        )
+                                        this.loading.preview = false
+                                        await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
+                                            fileUrl: data.volumeUrl,
+                                        })
+                                    } catch (err) {
+                                        this.loading.preview = false
+                                        console.error(err)
+                                    }
                                 }}
                             >
                                 预览
                             </el-button>
                             <el-button
                                 type="primary"
-                                loading={handlers.loading}
-                                disabled={handlers.loading}
+                                loading={this.loading.submit}
+                                disabled={this.loading.submit}
                                 onClick={async () => {
                                     try {
-                                        handlers.loading = true
                                         const currentComponent = handlers.getCurrentComponent() as CaseStepCatalogClass
                                         const result = await currentComponent.submit()
 
-                                        await this.handleSubmit(result)
-                                        handlers.loading = false
+                                        if (this.action === 'add') {
+                                            const message: any = this.$createElement('div', {}, [
+                                                this.$createElement('div', {}, '确定提交卷宗吗？'),
+                                                this.$createElement('div', {}, '提交后，等待档案管理员整理卷宗'),
+                                                this.$createElement('div', {}, '整理结束后若修改卷宗，需档案管理员审批'),
+                                            ])
+                                            await this.$confirm(message)
+                                            this.loading.submit = true
+                                            await submitDocument({
+                                                id: this.paylaod.id,
+                                                operateType: '1',
+                                                mainVolumeList: result.mainVolumeList,
+                                                subVolumeList: result.subVolumeList,
+                                            })
+                                            this.loading.submit = false
+                                        } else {
+                                            const model = await this.$modalDialog(() => import('./components/modify-dialog/index.vue'), {})
+                                            if (model.modifyContent) {
+                                                this.loading.submit = true
+                                                await submitDocument(
+                                                    {
+                                                        id: this.paylaod.id,
+                                                        operateType: '1',
+                                                        modifyContent: model.modifyContent,
+                                                        mainVolumeList: result.mainVolumeList,
+                                                        subVolumeList: result.subVolumeList,
+                                                    },
+                                                    {
+                                                        //timeout: 5 * 1000,
+                                                        exShowLoading: true,
+                                                    },
+                                                )
+                                                this.loading.submit = false
+                                                this.$message.success(`操作成功`)
+                                                this.$back({
+                                                    path: '/file-review/my-case',
+                                                })
+                                            }
+                                        }
                                     } catch (err) {
-                                        handlers.loading = false
                                         console.error(err)
+                                        this.loading.submit = false
                                     }
                                 }}
                             >

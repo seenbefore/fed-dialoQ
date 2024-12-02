@@ -195,9 +195,7 @@ export default class DirectoryDialog extends Vue {
     }
 
     handleCheck(data: any, checked: any) {
-        //this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
-        this.selectedNodes = [...checked.checkedNodes]
-        console.log('selectedNodes', this.selectedNodes)
+        this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
     }
 
     async confirm() {

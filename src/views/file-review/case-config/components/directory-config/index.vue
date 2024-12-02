@@ -4,8 +4,7 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        <!-- {{ value }} -->
-        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" :sort-key="'sortNo'" @change="handleChange"></DraggableDirectory>
+        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" @change="handleChange"></DraggableDirectory>
     </div>
 </template>
 
@@ -15,7 +14,6 @@ import { TableColumn, TableRef } from '@/sharegood-ui'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
 import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index.vue'
 import { VO } from './api'
-import { render } from 'nprogress'
 
 @Component({
     name: 'DirectoryConfig',
@@ -31,36 +29,99 @@ export default class DirectoryConfig extends Vue {
     @Prop({ type: Object, default: () => ({}) }) formModel!: any
     @Watch('formModel.lineCode', { immediate: true, deep: true })
     onFormModelChange(val: string) {
-        console.log('val', val)
         this.territoryCode = val
     }
     @Watch('formModel.volumeTypeCode', { immediate: true, deep: true })
     onFormModelVolumeTypeChange(val: string) {
-        console.log('val', val)
         this.volumeType = val
     }
     private territoryCode = ''
     private volumeType = ''
+
+    value2 = [
+        {
+            id: '9A1C9AC24B7F4C6990D1F8B380F5B550',
+            volumeConfigId: '8670005398E141AB816829692154491B',
+            volumeType: '2',
+            catalogCode: 'XWTZS',
+            catalogName: '询问通知书',
+            caseStageCode: null,
+            caseStageName: null,
+            hasAttachment: '1',
+            sortNo: 1,
+            createTime: '2024-12-02T06:28:41.000+00:00',
+            updateTime: '2024-12-02T06:28:41.000+00:00',
+            creatorId: '87a6894eb2cd40908afb44e43ccf6b66',
+            creatorName: '白芳芳',
+            updaterId: '87a6894eb2cd40908afb44e43ccf6b66',
+            updaterName: '白芳芳',
+            remark: '',
+        },
+        {
+            id: '04614C2BBB624EA38A2B913B64CC2540',
+            volumeConfigId: '8670005398E141AB816829692154491B',
+            volumeType: '2',
+            catalogCode: 'SQWTS',
+            catalogName: '授权委托书',
+            caseStageCode: null,
+            caseStageName: null,
+            hasAttachment: '0',
+            sortNo: 2,
+            createTime: '2024-12-02T06:28:41.000+00:00',
+            updateTime: '2024-12-02T06:28:41.000+00:00',
+            creatorId: '87a6894eb2cd40908afb44e43ccf6b66',
+            creatorName: '白芳芳',
+            updaterId: '87a6894eb2cd40908afb44e43ccf6b66',
+            updaterName: '白芳芳',
+            remark: '',
+        },
+        {
+            id: '0AA55342A642498189051ACB514AEE23',
+            volumeConfigId: '8670005398E141AB816829692154491B',
+            volumeType: '2',
+            catalogCode: 'XWBL',
+            catalogName: '询问笔录',
+            caseStageCode: null,
+            caseStageName: null,
+            hasAttachment: '1',
+            sortNo: 3,
+            createTime: '2024-12-02T06:28:41.000+00:00',
+            updateTime: '2024-12-02T06:28:41.000+00:00',
+            creatorId: '87a6894eb2cd40908afb44e43ccf6b66',
+            creatorName: '白芳芳',
+            updaterId: '87a6894eb2cd40908afb44e43ccf6b66',
+            updaterName: '白芳芳',
+            remark: '',
+        },
+    ]
     /**
      * catalogCode 目录编码
      */
     @Prop({ type: String, default: '' }) catalogCode!: string
-    @Prop({ type: [Array], default: () => [] }) value!: any
+    @Prop({ type: [Array], default: () => [] }) value!: VO[]
+    private currentValue: any[] = []
+
+    @Watch('value', { immediate: true })
+    onValueChange(val: any) {
+        this.handleChange(val)
+    }
+
+    handleChange(val: any) {
+        this.$emit('input', val)
+        this.$emit('change', val)
+        this.onChange?.(val)
+    }
+
     // 正卷 main 副卷
     @Prop({ default: 'main' }) type!: string
     @Ref('tableRef') tableRef!: TableRef
 
-    mainData: VO[] = []
-    handleChange(val: any) {
-        this.$emit('change', val)
-        this.onChange?.(val)
-    }
     async handleAdd() {
         if (!this.territoryCode) {
             this.$message.warning('请先选择条线')
             return
         }
-        const defaultCheckedKeys = this.value.map(item => item.volumeConfigId)
+        const defaultCheckedKeys = this.value.map(item => item.catalogCode)
         console.log('defaultCheckedKeys', defaultCheckedKeys)
 
         const { addNodes }: DirectoryDialogResult = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
@@ -73,13 +134,15 @@ export default class DirectoryConfig extends Vue {
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
-                    id: item.value,
-                    catalogName: item.label,
-                    sortNo: 0,
+                    id: item.catalogCode,
+                    catalogName: item.catalogName,
                     volumeType: this.type === 'main' ? '1' : '2',
                     hasAttachment: '1',
                     volumeConfigId: '',
-                    catalogCode: item.value,
+                    catalogCode: item.catalogCode,
+                    sortNo: 1,
+                    caseStageCode: '',
+                    caseStageName: '',
                     remark: '',
                 }
             })
@@ -96,8 +159,7 @@ export default class DirectoryConfig extends Vue {
                     label: '序号',
                     width: '50px',
                     render: (h, { index }) => {
-                        const result = index + 1
-                        return <span>{result}</span>
+                        return <span>{index + 1}</span>
                     },
                 },
                 { prop: 'catalogName', label: '名称', minWidth: '200px' },
@@ -105,15 +167,19 @@ export default class DirectoryConfig extends Vue {
                     prop: 'hasAttachment',
                     label: '含附件',
                     width: '100px',
-                    render: (h, { row }: { row: VO }) => {
+                    render: (h, { row }) => {
                         return (
                             <span>
                                 <el-checkbox
                                     checked={row.hasAttachment === '1'}
                                     true-label={'1'}
                                     false-label={'0'}
-                                    onChange={(val: any) => {
-                                        row.hasAttachment = val
+                                    onChange={(val: string) => {
+                                        const index = this.value.findIndex((item: any) => item.id === row.id)
+                                        if (index > -1) {
+                                            this.$set(this.value[index], 'hasAttachment', val)
+                                            this.handleChange(this.value)
+                                        }
                                     }}
                                 ></el-checkbox>
                             </span>
