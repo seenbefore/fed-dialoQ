@@ -105,6 +105,7 @@ export function getArchiveVolumeRecordById(data?: {
  * @author zhengqiang
  */
 export function calculatePageNumbers(data?: {
+/** 目录列表 */ volumeList: DocumentVO[], 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<DocumentVO[]>>({
         url: "/my/volume/calculatePageNumbers",

@@ -38,17 +38,21 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { getDocumentKindInfoList, Result, DocumentKindInfoVo } from '@/services/custom/doc/kindInfo'
-import { getElectricArchiveList } from '@/services/custom/external'
+
+import { list } from './api'
 
 @Component({
     name: 'DirectoryDialog',
     components: {},
 })
 export default class DirectoryDialog extends Vue {
+    /**
+     * 匹配关键字
+     */
+    @Prop({ type: String, default: 'id' }) nodeKey!: string
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
-    @Prop({ type: String, default: '' }) caseId!: string
+    @Prop({ type: String, default: '' }) volumeRecordId!: string
     // default-checked-keys
     @Prop({ type: Array, default: () => [] }) value!: any[]
 
@@ -138,36 +142,38 @@ export default class DirectoryDialog extends Vue {
         this.loading = true
         try {
             /**树结构数据 */
-            const treeData: any[] = []
-            const { data } = await getElectricArchiveList({
-                caseId: this.caseId || 'ef01c4aad3f942e38d7f6c6fc3284316',
+
+            const { data } = await list({
+                volumeRecordId: this.volumeRecordId,
+                volumeType: this.volumeType,
             })
-            let i = 0
-            data.forEach(it => (it._id = ++i))
-            if (data && data.length) {
-                for (let i = 0; i < data.length; i++) {
-                    const stageDocs = data[i].item || []
-                    if (stageDocs.length) {
-                        let currItem: any = {
-                            label: data[i].title,
-                            value: data[i]._id,
-                            isLeafNode: false, //此父节点数据不要，用于过滤
-                            children: [],
+
+            this.treeData = data.map((node, index) => {
+                const { caseStageCode, caseStageName } = node
+                if (node.documentList) {
+                    const children = node.documentList.map((child, index) => {
+                        return {
+                            ...child,
+                            id: child.caseStageCode,
+                            label: child.caseStageName,
+                            value: child.caseStageCode,
                         }
-                        stageDocs.forEach((item: any) => {
-                            currItem.children.push({
-                                ...item,
-                                label: item.documentEvidenceName,
-                                value: item.documentEvidenceUrl,
-                                isLeafNode: true,
-                                children: null,
-                            })
-                        })
-                        treeData.push(currItem)
+                    })
+                    return {
+                        id: caseStageCode,
+                        label: caseStageName,
+                        children,
+                        value: caseStageCode,
+                    }
+                } else {
+                    return {
+                        ...node,
+                        id: caseStageCode,
+                        label: caseStageName,
+                        value: caseStageCode,
                     }
                 }
-            }
-            this.treeData = treeData
+            })
         } catch (error) {
             console.log(error)
         }
@@ -195,14 +201,18 @@ export default class DirectoryDialog extends Vue {
     }
 
     async confirm() {
-        // 将选中的节点转换为目录项
-        const directories = this.selectedNodes
-            .filter(node => node.isLeafNode)
-            .map((node, index) => ({
-                ...node,
-                hasAttachment: false,
-            }))
-        this.$options.confirm?.(directories)
+        const selectedNodes = this.selectedNodes
+        const originKeys = this.value.map(item => item[this.nodeKey])
+        // 通过比对获取新增的节点和删除的节点
+        const addNodes = selectedNodes.filter(node => !originKeys.includes(node[this.nodeKey]))
+        const deleteNodeKeys = originKeys.filter(key => !selectedNodes.map(node => node[this.nodeKey]).includes(key))
+        console.log('addNodes', addNodes, 'deleteNodeKeys', deleteNodeKeys)
+        const result: any = {
+            addNodes,
+            deleteNodeKeys,
+            selectedNodes,
+        }
+        this.$options.confirm?.(result)
     }
 
     cancel() {

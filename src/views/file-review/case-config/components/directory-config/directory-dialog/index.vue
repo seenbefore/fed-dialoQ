@@ -7,8 +7,8 @@
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
             </div>
-            <div>defaultCheckedKeys:{{ defaultCheckedKeys }}</div>
-            <div>selectedNodes:{{ selectedNodes }}</div>
+            <!-- <div>defaultCheckedKeys:{{ defaultCheckedKeys }}</div>
+            <div>selectedNodes:{{ selectedNodes }}</div> -->
             <!-- 目录树 -->
             <div class="directory-tree">
                 <el-tree

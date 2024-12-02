@@ -17,7 +17,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list, getDictList } from './api'
+import { list, getDictList, VO, save } from './api'
 import moment from 'moment'
 
 @Component({
@@ -37,29 +37,34 @@ export default class MyCase extends Vue {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+    async handleView(row: VO) {
+        const { volumeUrl } = row
+        console.log(volumeUrl)
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: volumeUrl,
         })
     }
 
     async handleEdit(row: any) {
-        const result = await this.$modalDialog(() => import('./components/case-drawer/index.vue'), {
-            id: row.id,
+        this.$router.push({
+            path: '/file-review/my-case/save',
+            query: {
+                id: row.id,
+                action: 'edit',
+            },
         })
-        if (result) {
-            this.handleSearch()
-        }
     }
 
     async handleAdd() {
         const result = await this.$modalDialog(() => import('./components/case-dialog/index.vue'), {})
         if (result) {
-            // TODO: 调用保存接口
-            this.$message.success('新增成功')
-            this.handleSearch()
+            this.$router.push({
+                path: '/file-review/my-case/save',
+                query: {
+                    type: 'add',
+                    ...result,
+                },
+            })
         }
     }
 
@@ -155,7 +160,7 @@ export default class MyCase extends Vue {
             {
                 label: '卷宗类型',
                 prop: 'volumeType',
-                minWidth: '120px',
+                minWidth: '160px',
             },
             {
                 label: '卷宗名称',

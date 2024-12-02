@@ -4,8 +4,8 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-
-        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" :sort-key="'sortNo'"></DraggableDirectory>
+        <!-- {{ value }} -->
+        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" :sort-key="'sortNo'" @change="handleChange"></DraggableDirectory>
     </div>
 </template>
 
@@ -15,6 +15,7 @@ import { TableColumn, TableRef } from '@/sharegood-ui'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
 import DirectoryDialog, { DirectoryDialogResult } from './directory-dialog/index.vue'
 import { VO } from './api'
+import { render } from 'nprogress'
 
 @Component({
     name: 'DirectoryConfig',
@@ -23,6 +24,7 @@ import { VO } from './api'
     },
 })
 export default class DirectoryConfig extends Vue {
+    @Prop() onChange!: any
     /**
      * formModel 父级表单数据
      */
@@ -43,13 +45,16 @@ export default class DirectoryConfig extends Vue {
      * catalogCode 目录编码
      */
     @Prop({ type: String, default: '' }) catalogCode!: string
-    @Prop({ type: [Array], default: () => [] }) value!: VO[]
+    @Prop({ type: [Array], default: () => [] }) value!: any
     // 正卷 main 副卷
     @Prop({ default: 'main' }) type!: string
     @Ref('tableRef') tableRef!: TableRef
 
     mainData: VO[] = []
-
+    handleChange(val: any) {
+        this.$emit('change', val)
+        this.onChange?.(val)
+    }
     async handleAdd() {
         if (!this.territoryCode) {
             this.$message.warning('请先选择条线')
@@ -68,6 +73,7 @@ export default class DirectoryConfig extends Vue {
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
+                    id: item.value,
                     catalogName: item.label,
                     sortNo: 0,
                     volumeType: this.type === 'main' ? '1' : '2',
@@ -78,13 +84,22 @@ export default class DirectoryConfig extends Vue {
                 }
             })
             this.value.push(..._addNodes)
+            console.log('this.value', this.value)
         }
     }
 
     get getMainTableAttrs() {
         return {
             columns: [
-                { prop: 'sortNo', label: '序号', width: '50px' },
+                {
+                    prop: 'sortNo',
+                    label: '序号',
+                    width: '50px',
+                    render: (h, { index }) => {
+                        const result = index + 1
+                        return <span>{result}</span>
+                    },
+                },
                 { prop: 'catalogName', label: '名称', minWidth: '200px' },
                 {
                     prop: 'hasAttachment',
@@ -110,12 +125,6 @@ export default class DirectoryConfig extends Vue {
         }
     }
 
-    @Watch('value', { immediate: true, deep: true })
-    onValueChange(val: any) {
-        if (Array.isArray(val)) {
-            this.mainData = [...val]
-        }
-    }
     async handleDelete(data: any, context: any) {
         await this.$confirm('确定从卷宗目录中移除吗？')
         context.removeItem(data)

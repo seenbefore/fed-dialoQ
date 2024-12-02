@@ -4,20 +4,44 @@
             <!-- 正副卷tab -->
             <div class="tabs-wrapper">
                 <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-                    <el-tab-pane label="正卷" name="1"></el-tab-pane>
-                    <el-tab-pane label="副卷" name="2"></el-tab-pane>
+                    <el-tab-pane label="正卷" name="1">
+                        <!-- 可拖拽的卷宗目录列表 -->
+                        <div class="directory-list">
+                            <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
+                            <div class="meta">
+                                <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
+                            </div>
+
+                            {{ mainVolumeList }}
+                            <DraggableDirectory
+                                v-model="mainVolumeList"
+                                :key="activeTab"
+                                v-bind="getDraggableDirectoryAttrs"
+                                :confirm-message="'确定从卷宗目录中移除吗？'"
+                                @remove="handlePageChange"
+                                @drag-end="handlePageChange"
+                            ></DraggableDirectory>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="副卷" name="2">
+                        <!-- 可拖拽的卷宗目录列表 -->
+                        <div class="directory-list">
+                            <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
+                            <div class="meta">
+                                <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
+                            </div>
+
+                            <DraggableDirectory
+                                v-model="subVolumeList"
+                                :key="activeTab"
+                                v-bind="getDraggableDirectoryAttrs"
+                                :confirm-message="'确定从卷宗目录中移除吗？'"
+                                :sort-key="'sortNo'"
+                                @change="handleChange"
+                            ></DraggableDirectory>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
-            </div>
-            <!-- 可拖拽的卷宗目录列表 -->
-            <div class="directory-list">
-                <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
-                <div class="meta">
-                    <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
-                    <!-- <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false">
-                        <el-button size="small" type="primary" icon="el-icon-upload">本地上传</el-button>
-                    </el-upload> -->
-                </div>
-                <DraggableDirectory v-model="directoryList" :key="activeTab" v-bind="getDraggableDirectoryAttrs" :confirm-message="'确定从卷宗目录中移除吗？'"></DraggableDirectory>
             </div>
         </div>
     </div>
@@ -25,7 +49,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DraggableDirectory from '@/components/draggable-table/index.vue'
-import { getCaseElectricArchiveDocumentListApi, calculateElectricArchivePageNumberApi } from './api'
+import { list, calculatePageNumbers } from './api'
 import { useNoRemindConfirm } from '@/components/confirmDialog/useConfirm'
 import { appStore } from '@/store/useStore'
 //appStore.reset()
@@ -44,27 +68,46 @@ export interface CaseStepCatalogClass {
 })
 export default class Step2 extends Vue {
     @Prop({ default: () => ({}) }) row!: any
+    @Watch('row.id', { immediate: true, deep: true })
+    onRowChange(val: any) {
+        console.log('onRowChange', val)
+        if (val) {
+            this.id = val
+        }
+    }
+    id = '2A789E56403147E18EC93B2729262473'
     loading = false
     mounted() {
         console.log('Step2 mounted')
-        // this.getInitDocs()
+        this.getInitDocs()
     }
     /** 获取初始化的目录文书 */
     async getInitDocs() {
         try {
             this.loading = true
-            const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
-            let { data } = await getCaseElectricArchiveDocumentListApi({
-                archiveId,
-                caseId,
+            // "9E5898C362074598B4EDC9EB9C1335A2"
+            // const { archiveId = '', caseId = 'ef01c4aad3f942e38d7f6c6fc3284316' } = this.row
+            let { data } = await list({
+                volumeRecordId: this.id,
             })
-            data = data.map((item: any, index) => {
+            this.mainVolumeList = data.mainVolumeList.map(item => {
                 return {
+                    id: item.documentId,
+                    label: item.documentName,
+                    value: item.documentId,
+                    ...item,
+                }
+            })
+            this.subVolumeList = data.subVolumeList.map(item => {
+                return {
+                    id: item.documentId,
+                    label: item.documentName,
+                    value: item.documentId,
                     ...item,
                 }
             })
             console.log('data', data)
-            this.directoryList = data
+            //this.directoryList = data
             this.loading = false
         } catch (err) {
             this.loading = false
@@ -73,27 +116,23 @@ export default class Step2 extends Vue {
     }
 
     public activeTab = '1'
-    handleTabClick(tab: string) {
-        console.log('handleTabClick', tab)
-        if (this.activeTab === '2') {
-            this.directoryList = [
-                {
-                    sort: 1,
-                    documentNumber: '12322',
-                    documentEvidenceName: '文书/证据名称',
-                },
-            ]
-        } else {
-            this.getInitDocs()
-        }
-    }
+    handleTabClick(tab: string) {}
     get getDraggableDirectoryAttrs() {
         const { activeTab } = this
         return {
             columns: [
-                { prop: 'sort', label: '序号', width: '50px', align: 'center' },
-                { prop: 'documentNumber', label: '文号', width: '300px' },
-                { prop: 'documentEvidenceName', label: '文书/证据名称', minWidth: '200px' },
+                {
+                    prop: 'sortNo',
+                    label: '序号',
+                    width: '50px',
+                    align: 'center',
+                    render: (h, { index, row }) => {
+                        const result = index + 1
+                        return <span>{result}</span>
+                    },
+                },
+                { prop: 'documentCode', label: '文号', width: '300px' },
+                { prop: 'documentName', label: '文书/证据名称', minWidth: '200px' },
                 { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
             ],
             actions: [
@@ -109,6 +148,28 @@ export default class Step2 extends Vue {
             documentEvidenceName: '文书/证据名称',
         },
     ]
+    mainVolumeList: any[] = []
+    subVolumeList: any[] = []
+    async handlePageChange(val: any) {
+        console.log(111111, val)
+        const { data } = await calculatePageNumbers({
+            volumeList: val,
+        })
+        let list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
+        // list = data.map((item, index) => {
+        //     return {
+        //         ...item,
+        //         // pageNumber: data[index].pageNumber,
+        //     }
+        // })
+        this.mainVolumeList = data.map(item => {
+            return {
+                id: item.catalogCode,
+                ...item,
+            }
+        })
+        console.log(data, 'data', JSON.stringify(list))
+    }
     // 正副卷相互移动
     async handleMove(data: any) {
         const { activeTab } = this
@@ -135,45 +196,51 @@ export default class Step2 extends Vue {
         context.removeItem(data)
     }
     async handleAdd() {
-        const defaultCheckedKeys = this.directoryList.map(item => item.documentEvidenceUrl)
-        const result = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {
+        const list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
+        const defaultCheckedKeys = list.map(item => item.id)
+        const { addNodes } = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {
             type: 'add',
             value: defaultCheckedKeys,
+            volumeRecordId: this.id,
+            volumeType: this.activeTab,
         })
-        if (result) {
-            console.log('result', result)
-            this.directoryList = result.map((item: any) => ({
-                ...item,
-            }))
+        if (addNodes) {
+            const _addNodes = addNodes.map(item => {
+                return {
+                    id: item.value,
+                    label: item.label,
+                    value: item.value,
+                    ...item,
+                }
+            })
+            const list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
+            list.push(..._addNodes)
         }
     }
-    /** 获取排序数据 */
-    getSortData() {
-        const list = this.directoryList.map((item: any, idx: number) => {
+
+    async submit() {
+        const mainVolumeList = this.mainVolumeList.map((item: any, index: number) => {
+            const { sortNo, id, label, value, ...rest } = item
+            const serialNumber = index + 1
             return {
-                sort: idx + 1,
-                documentEvidenceId: item.documentId || item.documentEvidenceId,
-                documentEvidenceName: item.documentKindName || item.documentEvidenceName,
-                documentEvidenceCode: item.documentKindCode || item.documentEvidenceCode,
-                documentEvidenceUrl: item.documentUrl || item.documentEvidenceUrl,
-                documentNumber: item.documentNumber,
-                pageNumber: item.pageNumber,
-                pageCount: item.pageCount,
+                ...rest,
+                serialNumber,
             }
         })
-        return list
-        // const { caseId, archiveId } = this.row
-        // const payload: any = {
-        //     caseId,
-        //     archiveId,
-        //     archiveCatalogContentList: list,
-        // }
-        // const { data } = await calculateElectricArchivePageNumberApi(payload)
-        // return data
-    }
-    async submit() {
-        const list = this.getSortData()
-        return list
+        const subVolumeList = this.subVolumeList.map((item: any, index: number) => {
+            const { sortNo, id, label, value, ...rest } = item
+            const serialNumber = index + 1
+            return {
+                ...rest,
+                serialNumber,
+            }
+        })
+
+        return {
+            id: this.id,
+            mainVolumeList,
+            subVolumeList,
+        }
     }
 }
 </script>
