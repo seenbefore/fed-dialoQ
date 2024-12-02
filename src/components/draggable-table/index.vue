@@ -112,19 +112,6 @@ export default class DraggableDirectory extends Vue {
     @Prop({ type: Array, default: () => [] })
     value!: any[]
 
-    // @Watch('value', { immediate: true, deep: true })
-    // onValueChange(val: any) {
-    //     console.log('onValueChange val', val)
-    //     if (Array.isArray(val)) {
-    //         this.directoryList = val.map((item, index) => ({
-    //             ...item,
-    //             //[this.sortKey]: index + 1,
-    //         }))
-    //         //this.$emit('input', this.directoryList)
-    //     }
-    // }
-    //directoryList: any[] = []
-
     @Prop({
         type: Array,
         default: () => [
@@ -136,10 +123,7 @@ export default class DraggableDirectory extends Vue {
 
     @Prop({
         type: Array,
-        default: () => [
-            { key: 'delete', icon: 'el-icon-delete' },
-            { key: 'preview', icon: 'el-icon-view' },
-        ],
+        default: () => [{ key: 'delete', icon: 'el-icon-delete' }],
     })
     actions!: ActionItem[]
 
@@ -148,6 +132,14 @@ export default class DraggableDirectory extends Vue {
 
     @Prop({ type: String, default: '确定要删除吗？' })
     confirmMessage!: string
+
+    @Watch('value', { immediate: true, deep: true })
+    onValueChange(val: any) {
+        if (Array.isArray(val)) {
+            this.$emit('input', val)
+            this.$emit('change', val)
+        }
+    }
 
     get dragOptions() {
         return {
@@ -180,10 +172,9 @@ export default class DraggableDirectory extends Vue {
     }
 
     onDragEnd() {
-        console.log('onDragEnd111')
-        // 拖拽结束时的处理
         this.updateIndexes()
         this.$emit('drag-end', this.value)
+        this.$emit('change', this.value)
     }
 
     updateIndexes() {}
