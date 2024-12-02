@@ -126,9 +126,29 @@ export function submitDocument(data?: {
 /** 正卷目录列表 */ mainVolumeList?: DocumentVO[], 
 /** 副卷目录列表 */ subVolumeList?: DocumentVO[], 
 /** 修改电子卷宗内容 -- 修改电子卷宗必传 */ modifyContent?: string, 
+/** 操作类型：0:暂存 1:提交 */ operateType: string, 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<ArchiveVolumeSubmitVO>>({
         url: "/my/volume/submitDocument",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
+/**
+ * 描述：预览卷宗
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ * @author zhengqiang
+ */
+export function previewVolume(data?: {
+/** 卷宗记录id，必须 */ id: string, 
+/** 正卷目录列表 */ mainVolumeList?: DocumentVO[], 
+/** 副卷目录列表 */ subVolumeList?: DocumentVO[], 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<ArchiveVolumePreviewVO>>({
+        url: "/my/volume/previewVolume",
         type: "POST",
         data,
         ...options
@@ -229,6 +249,32 @@ export function selectVolumeDocumentList(data?: {
     })
 }
 
+/**
+ * 查询本部门非本人的卷宗列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function getaArchiveNoSelflist(data?: {
+/** 分页参数 页码数 默认1 */ pageNum?: number, 
+/** 分页参数 每页条数 默认10 */ length?: number, 
+/** 对象排序字段 */ orderField?: string, 
+/** 对象排序方式 asc,desc */ orderMethod?: string, 
+/** 综合监管：查询参数管辖单位过滤 */ deptSearchLikeStr?: string, 
+/** 卷宗类型 */ volumeType?: string, 
+/** 卷宗名称 */ volumeName?: string, 
+/** 对象名称 */ objectName?: string, 
+/** 归档号 */ archiveNumber?: string, 
+/** 申请状态(全部、待审批、审批通过、审批退回) */ applyStatus?: string, 
+/** 用户id */ userId?: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<PageResponse<VolumeNoSelfVO>>>({
+        url: "/my/volume/getaArchiveNoSelflist",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
 /** 枚举 - 查询类型 */
 export enum Cxlx {
     /** 按用户查询 */
@@ -240,6 +286,16 @@ export enum Cxlx {
 export const CxlxObj = { 
     [Cxlx.AYHCX]: { label: '按用户查询', value: Cxlx.AYHCX },
     [Cxlx.ABMCX]: { label: '按部门查询', value: Cxlx.ABMCX },
+}
+
+/** 枚举 - operateType */
+export enum Operatetype {
+    /** 提交 */
+    TJ = '1',
+}
+/** 枚举对象 - operateType */
+export const OperatetypeObj = { 
+    [Operatetype.TJ]: { label: '提交', value: Operatetype.TJ },
 }
 
 /** 枚举 - 卷宗类型 */
@@ -263,6 +319,12 @@ export const Dict = new DictionaryFront({
         options: [
             { label: '按用户查询', value: Cxlx.AYHCX },
             { label: '按部门查询', value: Cxlx.ABMCX },
+        ]
+    },
+    /**枚举数组 - operateType */
+    Operatetype: {
+        options: [
+            { label: '提交', value: Operatetype.TJ },
         ]
     },
     /**枚举数组 - 卷宗类型 */
@@ -992,6 +1054,20 @@ export interface ArchiveVolumeSubmitVO {
 
 }
 
+export interface ArchiveVolumePreviewVO {
+
+    /**
+     * 卷宗URL地址
+     */
+    volumeUrl: string
+
+    /**
+     * 卷宗记录id
+     */
+    id: string
+
+}
+
 export interface ArchiveVolumeModifyVO {
 
     /**
@@ -1027,6 +1103,84 @@ export interface DocumentStageVO {
      * 文书列表
      */
     documentList: DocumentVO[]
+
+}
+
+export interface VolumeNoSelfVO$ButtonInfo {
+
+    /**
+     * 是否禁用(1:禁用,0:启用)
+     */
+    disabled: string
+
+    /**
+     * 按钮文本
+     */
+    text: string
+
+    /**
+     * 按钮代码
+     */
+    code: string
+
+}
+
+export interface VolumeNoSelfVO {
+
+    /**
+     * 卷宗类型
+     */
+    volumeType: string
+
+    /**
+     * 归档日期
+     */
+    archiveTime: string
+
+    /**
+     * 卷宗URL地址
+     */
+    volumeUrl: string
+
+    /**
+     * 编号
+     */
+    volumeNumber: string
+
+    /**
+     * 按钮信息
+     */
+    buttons: VolumeNoSelfVO$ButtonInfo[]
+
+    /**
+     * 卷宗名称
+     */
+    volumeName: string
+
+    /**
+     * 对象
+     */
+    objectName: string
+
+    /**
+     * 更新时间
+     */
+    updateTime: string
+
+    /**
+     * 主键
+     */
+    id: string
+
+    /**
+     * 归档号
+     */
+    archiveNumber: string
+
+    /**
+     * 申请状态
+     */
+    applyStatus: string
 
 }
 

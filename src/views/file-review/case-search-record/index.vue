@@ -161,6 +161,11 @@ export default class CaseSearchRecord extends Vue {
                 minWidth: '100px',
             },
             {
+                label: '所属',
+                prop: 'applicantDeptName',
+                minWidth: '100px',
+            },
+            {
                 label: '手机号',
                 prop: 'applicantPhone',
                 minWidth: '120px',

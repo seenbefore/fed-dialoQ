@@ -1,4 +1,2 @@
-import { list } from '@/services/auto/my/volume'
-import { getDictList } from '@/services/auto/archiveDict'
-
-export { list, getDictList }
+export { getaArchiveNoSelflist as list, VolumeNoSelfVO } from '@/services/auto/my/volume'
+export { getDictList } from '@/services/auto/archiveDict'
