@@ -251,7 +251,7 @@ export default class CaseSave extends Vue {
                                         const result = await currentComponent.submit()
 
                                         if (this.action === 'add') {
-                                            const message = this.$createElement('div', {}, [
+                                            const message: any = this.$createElement('div', {}, [
                                                 this.$createElement('div', {}, '确定提交卷宗吗？'),
                                                 this.$createElement('div', {}, '提交后，等待档案管理员整理卷宗'),
                                                 this.$createElement('div', {}, '整理结束后若修改卷宗，需档案管理员审批'),
