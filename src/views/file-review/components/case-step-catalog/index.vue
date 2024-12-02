@@ -12,7 +12,7 @@
                                 <el-button icon="el-icon-plus" type="primary" @click="handleAdd" style="margin-right: 10px">在线选择</el-button>
                             </div>
 
-                            {{ mainVolumeList }}
+                            <!-- {{ mainVolumeList }} -->
                             <DraggableDirectory
                                 v-model="mainVolumeList"
                                 :key="activeTab"
@@ -20,10 +20,11 @@
                                 :confirm-message="'确定从卷宗目录中移除吗？'"
                                 @remove="handlePageChange"
                                 @drag-end="handlePageChange"
+                                id-key="id"
                             ></DraggableDirectory>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="副卷" name="2">
+                    <el-tab-pane label="副卷" name="2" v-if="subVolumeList.length > 0">
                         <!-- 可拖拽的卷宗目录列表 -->
                         <div class="directory-list">
                             <div class="title">{{ activeTab === '1' ? '正卷' : '副卷' }}目录</div>
@@ -36,8 +37,7 @@
                                 :key="activeTab"
                                 v-bind="getDraggableDirectoryAttrs"
                                 :confirm-message="'确定从卷宗目录中移除吗？'"
-                                :sort-key="'sortNo'"
-                                @change="handleChange"
+                                id-key="id"
                             ></DraggableDirectory>
                         </div>
                     </el-tab-pane>
@@ -57,7 +57,7 @@ import { appStore } from '@/store/useStore'
 /** 卷宗目录组件 */
 export interface CaseStepCatalogClass {
     /** 获取表单数据 */
-    submit: () => Promise<any>
+    submit: () => Promise<{ mainVolumeList: any[]; subVolumeList: any[] }>
 }
 /** 卷宗目录 */
 @Component({
@@ -75,7 +75,7 @@ export default class Step2 extends Vue {
             this.id = val
         }
     }
-    id = '2A789E56403147E18EC93B2729262473'
+    id = ''
     loading = false
     mounted() {
         console.log('Step2 mounted')
@@ -107,7 +107,7 @@ export default class Step2 extends Vue {
                 }
             })
             console.log('data', data)
-            //this.directoryList = data
+
             this.loading = false
         } catch (err) {
             this.loading = false
@@ -141,17 +141,12 @@ export default class Step2 extends Vue {
             ],
         }
     }
-    directoryList: any[] = [
-        {
-            sort: 1,
-            documentNumber: '123',
-            documentEvidenceName: '文书/证据名称',
-        },
-    ]
+    // 主卷
     mainVolumeList: any[] = []
+    // 副卷
     subVolumeList: any[] = []
     async handlePageChange(val: any) {
-        console.log(111111, val)
+        return
         const { data } = await calculatePageNumbers({
             volumeList: val,
         })
@@ -168,18 +163,24 @@ export default class Step2 extends Vue {
                 ...item,
             }
         })
-        console.log(data, 'data', JSON.stringify(list))
     }
     // 正副卷相互移动
-    async handleMove(data: any) {
+    async handleMove(data: any, context: any, index: number) {
         const { activeTab } = this
-        console.log('handleMove', activeTab, data)
-        const result = await useNoRemindConfirm({
+        console.log('handleMove', activeTab, data, index)
+        await useNoRemindConfirm({
             message: `${activeTab === '1' ? '正卷' : '副卷'}移动到${activeTab === '1' ? '副卷' : '正卷'}吗？`,
             onNoRemindChange: checked => {
                 appStore.setDontShowMoveConfirm(checked)
             },
         })
+        if (this.activeTab === '1') {
+            this.subVolumeList.push(data)
+            this.mainVolumeList.splice(index, 1)
+        } else {
+            this.mainVolumeList.push(data)
+            this.subVolumeList.splice(index, 1)
+        }
     }
     async handleDelete(data: any, context: any) {
         const { $dontShowDeleteConfirm } = appStore
@@ -237,7 +238,6 @@ export default class Step2 extends Vue {
         })
 
         return {
-            id: this.id,
             mainVolumeList,
             subVolumeList,
         }

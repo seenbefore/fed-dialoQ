@@ -126,9 +126,29 @@ export function submitDocument(data?: {
 /** 正卷目录列表 */ mainVolumeList?: DocumentVO[], 
 /** 副卷目录列表 */ subVolumeList?: DocumentVO[], 
 /** 修改电子卷宗内容 -- 修改电子卷宗必传 */ modifyContent?: string, 
+/** 操作类型：0:暂存 1:提交 */ operateType: string, 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<ArchiveVolumeSubmitVO>>({
         url: "/my/volume/submitDocument",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
+/**
+ * 描述：预览卷宗
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ * @author zhengqiang
+ */
+export function previewVolume(data?: {
+/** 卷宗记录id，必须 */ id: string, 
+/** 正卷目录列表 */ mainVolumeList?: DocumentVO[], 
+/** 副卷目录列表 */ subVolumeList?: DocumentVO[], 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<ArchiveVolumePreviewVO>>({
+        url: "/my/volume/previewVolume",
         type: "POST",
         data,
         ...options
@@ -242,6 +262,16 @@ export const CxlxObj = {
     [Cxlx.ABMCX]: { label: '按部门查询', value: Cxlx.ABMCX },
 }
 
+/** 枚举 - operateType */
+export enum Operatetype {
+    /** 提交 */
+    TJ = '1',
+}
+/** 枚举对象 - operateType */
+export const OperatetypeObj = { 
+    [Operatetype.TJ]: { label: '提交', value: Operatetype.TJ },
+}
+
 /** 枚举 - 卷宗类型 */
 export enum Jzlx {
     /** 正卷 */
@@ -263,6 +293,12 @@ export const Dict = new DictionaryFront({
         options: [
             { label: '按用户查询', value: Cxlx.AYHCX },
             { label: '按部门查询', value: Cxlx.ABMCX },
+        ]
+    },
+    /**枚举数组 - operateType */
+    Operatetype: {
+        options: [
+            { label: '提交', value: Operatetype.TJ },
         ]
     },
     /**枚举数组 - 卷宗类型 */
@@ -979,6 +1015,20 @@ export interface ArchiveVolumeRecordVo {
 }
 
 export interface ArchiveVolumeSubmitVO {
+
+    /**
+     * 卷宗URL地址
+     */
+    volumeUrl: string
+
+    /**
+     * 卷宗记录id
+     */
+    id: string
+
+}
+
+export interface ArchiveVolumePreviewVO {
 
     /**
      * 卷宗URL地址
