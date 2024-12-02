@@ -214,7 +214,7 @@ export default class CaseSort extends Vue {
     handleSort(row: any) {
         this.$router.push({
             path: '/file-review/case-sort/save',
-            query: { id: row.id },
+            query: { id: row.id, orgCode: row.orgCode, lineCode: row.lineCode, volumeTypeCode: row.volumeTypeCode },
         })
     }
 

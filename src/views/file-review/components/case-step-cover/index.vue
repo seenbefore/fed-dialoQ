@@ -19,6 +19,14 @@ import { getDocBaseInfo } from '@/services/auto/common/volume'
 import { firstSave, getArchiveVolumeRecordById } from '@/services/auto/my/volume'
 import { DocumentCommonFormHtmlVo } from '@/components/doc-input/service/punish/csource/common'
 import { useLoading } from '@/hooks/useLoading'
+import { getCaseNumberConfigList, ArchiveCaseNumberConfigVO } from '@/services/auto/config/caseNumber'
+/**1:格式不可编辑,2:格式可编辑 */
+export enum CaseNumberLimit {
+    /** 不可编辑 */
+    UNEDITABLE = '1',
+    /** 可编辑 */
+    EDITABLE = '2',
+}
 /** 卷宗封面 */
 export interface CaseStepCoverClass {
     /** 获取表单数据 */
@@ -32,6 +40,12 @@ export interface CaseStepCoverClass {
     },
 })
 export default class Step1 extends Vue {
+    /**机构编码 */
+    @Prop({ type: String, default: '' }) orgCode!: string
+    /**条线编码 */
+    @Prop({ type: String, default: '' }) lineCode!: string
+    /**卷宗类型编码 */
+    @Prop({ type: String, default: '' }) volumeTypeCode!: string
     @Prop({ type: Boolean, default: false }) isEditVolume!: boolean
     @Prop({
         default: () => ({
@@ -55,9 +69,15 @@ export default class Step1 extends Vue {
     get customGetDocForm() {
         return async (params: any) => {
             const { data } = await getArchiveVolumeRecordById(params)
+            const getCaseNumberConfigData = await this.getCaseNumberConfigList()
             return {
                 data: {
-                    dataMap: data,
+                    dataMap: {
+                        ...data,
+                        fondNumber: data.fondNumber ?? getCaseNumberConfigData.fondNumber ?? '',
+                        catalogNumber: data.catalogNumber ?? getCaseNumberConfigData.catalogNumber ?? '',
+                        caseFileNumber: data.volumeNumber ?? '',
+                    },
                 },
             }
         }
@@ -66,9 +86,10 @@ export default class Step1 extends Vue {
     get customGetDocBaseInfo() {
         return async () => {
             const res = await getDocBaseInfo(this.docParams)
+            const data = await this.handleDocBaseInfo(res.data)
             return {
                 ...res,
-                data: this.handleDocBaseInfo(res.data),
+                data,
             }
         }
     }
@@ -83,13 +104,16 @@ export default class Step1 extends Vue {
     public async preview() {
         console.log('step1 next')
     }
+
     /**处理配置项 */
-    handleDocBaseInfo(configInfo: DocumentCommonFormHtmlVo) {
+    async handleDocBaseInfo(configInfo: DocumentCommonFormHtmlVo) {
+        const getCaseNumberConfigData = await this.getCaseNumberConfigList()
         const { templateConfigMap = {} } = configInfo
-        const editVolumeFields = ['fondNumber', 'catalogNumber', 'caseFileNumber']
+        // 设置全宗号 和 目录号 是否可编辑
+        const editVolumeFields = ['fondNumber', 'catalogNumber']
         Object.keys(templateConfigMap).forEach(key => {
             if (editVolumeFields.includes(key)) {
-                if (this.isEditVolume && templateConfigMap[key].controlConfigContent) {
+                if (getCaseNumberConfigData[key + 'Limit'] === CaseNumberLimit.EDITABLE && templateConfigMap[key].controlConfigContent) {
                     const controlConfigContent = {
                         ...JSON.parse(templateConfigMap[key].controlConfigContent),
                         isEdit: '1',
@@ -99,6 +123,17 @@ export default class Step1 extends Vue {
             }
         })
         return configInfo
+    }
+    /**获取封面底部编号配置 */
+    async getCaseNumberConfigList(): Promise<ArchiveCaseNumberConfigVO> {
+        let caseNumberConfig = {}
+        try {
+            const { data } = await getCaseNumberConfigList({ orgCode: this.orgCode, lineCode: this.lineCode, volumeTypeCode: this.volumeTypeCode }, { exNoErrorMassage: true })
+            caseNumberConfig = data?.[0] ?? {}
+        } catch (error) {
+            console.log(error)
+        }
+        return caseNumberConfig as ArchiveCaseNumberConfigVO
     }
     /**保存文书 */
     async emitDataMap(tabIndex, values, sendData, resolve) {
@@ -111,5 +146,6 @@ export default class Step1 extends Vue {
         })
         resolve(true)
     }
+    created() {}
 }
 </script>

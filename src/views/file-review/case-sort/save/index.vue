@@ -37,6 +37,7 @@ export default class CaseSave extends Vue {
                 props: {
                     // 传递给组件的属性
                     isEditVolume: true,
+                    ...this.$attrs,
                 },
 
                 render: (h, { row, handlers }) => {
