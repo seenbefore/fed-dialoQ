@@ -63,7 +63,7 @@ Vue.prototype.$postMessage = function(data: any) {
 const { settings, user } = defaultSettings ?? {}
 userStore.set(user)
 // 本地调试的时候 加载全量菜单 可删除
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.VUE_APP_ENV === 'fat') {
     userStore.setPermissionMenus(LocalMenu)
 }
 const { token } = getURLParameters(location.href)
