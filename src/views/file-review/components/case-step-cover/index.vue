@@ -20,6 +20,7 @@ import DocInput from '@/components/doc-input/index.vue'
 import { getDocBaseInfo } from '@/services/auto/common/volume'
 import { firstSave, getArchiveVolumeRecordById } from '@/services/auto/my/volume'
 import { DocumentCommonFormHtmlVo } from '@/components/doc-input/service/punish/csource/common'
+import { useLoading } from '@/hooks/useLoading'
 /** 卷宗封面 */
 export interface CaseStepCoverClass {
     /** 获取表单数据 */
@@ -98,12 +99,9 @@ export default class Step1 extends Vue {
         if (tabIndex === -1) {
             return
         }
-        this.$pageLoading.show()
-        await firstSave({
+        await useLoading(firstSave, {
             ...(sendData.dataMap || {}),
             id: this.$route.query.id,
-        }).finally(() => {
-            this.$pageLoading.hide()
         })
         resolve(true)
     }
