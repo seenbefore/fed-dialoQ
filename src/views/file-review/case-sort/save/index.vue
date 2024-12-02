@@ -42,7 +42,8 @@ export default class CaseSave extends Vue {
                             <el-button
                                 type=""
                                 onClick={async () => {
-                                    console.log('取消')
+                                    this.$router.back()
+                                    this.$store.dispatch('tagsView/delCachedView', this.$route)
                                 }}
                             >
                                 取消

@@ -61,15 +61,13 @@ export default class Step1 extends Vue {
             volumeRecordId: this.$route.query.id,
         }
     }
-    public handleCancel() {
-        console.log('取消222')
-    }
     public async save() {
         await this.docInputRef.saveData()
     }
     public async preview() {
         console.log('step1 next')
     }
+    /**设置formData */
     public parentHandle(dataMap: Record<string, any>, configInfo: DocumentCommonFormHtmlVo) {
         const obj = {}
         const { templateConfigMap } = configInfo
@@ -80,6 +78,9 @@ export default class Step1 extends Vue {
     }
     /**保存文书 */
     async emitDataMap(tabIndex, values, sendData, resolve) {
+        if (tabIndex === -1) {
+            return
+        }
         this.$pageLoading.show()
         await firstSave({
             ...sendData,
