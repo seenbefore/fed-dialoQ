@@ -154,7 +154,7 @@ export default class DirectoryDialog extends Vue {
                     const children = node.documentList.map((child, index) => {
                         return {
                             ...child,
-                            id: child.caseStageCode,
+                            id: child.documentId,
                             label: child.caseStageName,
                             value: child.caseStageCode,
                         }

@@ -258,12 +258,17 @@ export default class CaseSave extends Vue {
                                             ])
                                             await this.$confirm(message)
                                             this.loading.submit = true
-                                            await submitDocument({
-                                                id: this.paylaod.id,
-                                                operateType: '1',
-                                                mainVolumeList: result.mainVolumeList,
-                                                subVolumeList: result.subVolumeList,
-                                            })
+                                            await submitDocument(
+                                                {
+                                                    id: this.paylaod.id,
+                                                    operateType: '1',
+                                                    mainVolumeList: result.mainVolumeList,
+                                                    subVolumeList: result.subVolumeList,
+                                                },
+                                                {
+                                                    exShowLoading: true,
+                                                },
+                                            )
                                             this.loading.submit = false
                                         } else {
                                             const model = await this.$modalDialog(() => import('./components/modify-dialog/index.vue'), {})
@@ -283,12 +288,12 @@ export default class CaseSave extends Vue {
                                                     },
                                                 )
                                                 this.loading.submit = false
-                                                this.$message.success(`操作成功`)
-                                                this.$back({
-                                                    path: '/file-review/my-case',
-                                                })
                                             }
                                         }
+                                        this.$message.success(`操作成功`)
+                                        this.$back({
+                                            path: '/file-review/my-case',
+                                        })
                                     } catch (err) {
                                         console.error(err)
                                         this.loading.submit = false

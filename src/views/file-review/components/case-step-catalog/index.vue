@@ -182,17 +182,17 @@ export default class Step2 extends Vue {
         })
 
         if (this.activeTab === '1') {
-            this.mainVolumeList = data.map(item => {
+            this.mainVolumeList = this.mainVolumeList.map((item: any, index: any) => {
                 return {
-                    id: item.catalogCode,
                     ...item,
+                    pageNumber: data[index].pageNumber,
                 }
             })
         } else {
-            this.subVolumeList = data.map(item => {
+            this.subVolumeList = data.map((item: any, index: number) => {
                 return {
-                    id: item.catalogCode,
                     ...item,
+                    pageNumber: data[index].pageNumber,
                 }
             })
         }
@@ -221,10 +221,10 @@ export default class Step2 extends Vue {
                 const { data } = await calculatePageNumbers({
                     volumeList: this.subVolumeList,
                 })
-                this.subVolumeList = data.map(item => {
+                this.subVolumeList = this.subVolumeList.map((item: any, index: number) => {
                     return {
-                        id: item.catalogCode,
                         ...item,
+                        pageNumber: data[index].pageNumber,
                     }
                 })
             } catch (error) {}
@@ -233,10 +233,10 @@ export default class Step2 extends Vue {
                 const { data } = await calculatePageNumbers({
                     volumeList: this.mainVolumeList,
                 })
-                this.mainVolumeList = data.map(item => {
+                this.mainVolumeList = this.mainVolumeList.map((item: any, index: any) => {
                     return {
-                        id: item.catalogCode,
                         ...item,
+                        pageNumber: data[index].pageNumber,
                     }
                 })
             } catch (error) {}
@@ -246,10 +246,10 @@ export default class Step2 extends Vue {
                 const { data } = await calculatePageNumbers({
                     volumeList: this.mainVolumeList,
                 })
-                this.mainVolumeList = data.map(item => {
+                this.mainVolumeList = this.mainVolumeList.map((item: any, index: any) => {
                     return {
-                        id: item.catalogCode,
                         ...item,
+                        pageNumber: data[index].pageNumber,
                     }
                 })
             } catch (error) {}
@@ -258,10 +258,10 @@ export default class Step2 extends Vue {
                 const { data } = await calculatePageNumbers({
                     volumeList: this.subVolumeList,
                 })
-                this.subVolumeList = data.map(item => {
+                this.subVolumeList = this.subVolumeList.map((item: any, index: number) => {
                     return {
-                        id: item.catalogCode,
                         ...item,
+                        pageNumber: data[index].pageNumber,
                     }
                 })
             } catch (error) {}
@@ -294,14 +294,32 @@ export default class Step2 extends Vue {
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
-                    id: item.value,
-                    label: item.label,
-                    value: item.value,
                     ...item,
                 }
             })
-            const list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
+
+            let list = this.activeTab === '1' ? this.mainVolumeList : this.subVolumeList
             list.push(..._addNodes)
+            try {
+                const { data } = await calculatePageNumbers({
+                    volumeList: list,
+                })
+                if (this.activeTab === '1') {
+                    this.mainVolumeList = this.mainVolumeList.map((item: any, index: any) => {
+                        return {
+                            ...item,
+                            pageNumber: data[index].pageNumber,
+                        }
+                    })
+                } else {
+                    this.subVolumeList = this.subVolumeList.map((item: any, index: number) => {
+                        return {
+                            ...item,
+                            pageNumber: data[index].pageNumber,
+                        }
+                    })
+                }
+            } catch (error) {}
         }
     }
 
