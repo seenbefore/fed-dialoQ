@@ -8,6 +8,7 @@
             :get-params-doc-form="getParamsDocForm"
             :parent-handle="parentHandle"
             is-custom-save-http
+            :parent-doc-base-info="parentDocBaseInfo"
             @emitDataMap="emitDataMap"
         ></DocInput>
     </div>
@@ -32,6 +33,7 @@ export interface CaseStepCoverClass {
     },
 })
 export default class Step1 extends Vue {
+    @Prop({ type: Boolean, default: false }) isEditVolume!: boolean
     @Prop({
         default: () => ({
             partyId: '',
@@ -49,8 +51,6 @@ export default class Step1 extends Vue {
     customGetDocBaseInfo = getDocBaseInfo
     /**获取模板数据 */
     customGetDocForm = getArchiveVolumeRecordById
-    /**保存文书 */
-    firstSave = firstSave
     mounted() {
         console.log('Step1 mounted')
     }
@@ -76,6 +76,23 @@ export default class Step1 extends Vue {
         })
         return obj
     }
+    /**父组件处理配置项 */
+    parentDocBaseInfo(configInfo: DocumentCommonFormHtmlVo) {
+        const { templateConfigMap = {} } = configInfo
+        const editVolumeFields = ['fondNumber', 'catalogNumber', 'caseFileNumber']
+        Object.keys(templateConfigMap).forEach(key => {
+            if (editVolumeFields.includes(key)) {
+                if (this.isEditVolume && templateConfigMap[key].controlConfigContent) {
+                    const controlConfigContent = {
+                        ...JSON.parse(templateConfigMap[key].controlConfigContent),
+                        isEdit: '1',
+                    }
+                    templateConfigMap[key].controlConfigContent = JSON.stringify(controlConfigContent)
+                }
+            }
+        })
+        return configInfo
+    }
     /**保存文书 */
     async emitDataMap(tabIndex, values, sendData, resolve) {
         if (tabIndex === -1) {
@@ -83,7 +100,7 @@ export default class Step1 extends Vue {
         }
         this.$pageLoading.show()
         await firstSave({
-            ...sendData,
+            ...(sendData.dataMap || {}),
             id: this.$route.query.id,
         }).finally(() => {
             this.$pageLoading.hide()

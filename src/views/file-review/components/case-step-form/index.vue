@@ -7,6 +7,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, FormRef } from '@/sharegood-ui'
+import { getArchiveVolumeRecordById } from '@/services/auto/my/volume'
 
 @Component({
     name: 'CaseSave',
@@ -24,7 +25,7 @@ export default class CaseSave extends Vue {
                     {
                         span: 24,
                         tag: 'input',
-                        name: 'description',
+                        name: 'arrangeDesc',
                         itemAttrs: {
                             label: '本卷情况说明',
                             rules: [
@@ -46,7 +47,7 @@ export default class CaseSave extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'creator',
+                        name: 'archivingUserName',
                         itemAttrs: {
                             label: '立卷人',
                             rules: [
@@ -61,7 +62,7 @@ export default class CaseSave extends Vue {
                     },
                     {
                         tag: 'date',
-                        name: 'createTime',
+                        name: 'archivingTime',
                         itemAttrs: {
                             label: '立卷时间',
                             rules: [{ required: true, message: '请选择立卷时间' }],
@@ -83,7 +84,7 @@ export default class CaseSave extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'reviewer',
+                        name: 'checkerName',
                         itemAttrs: {
                             label: '检查人',
                             rules: [
@@ -98,7 +99,7 @@ export default class CaseSave extends Vue {
                     },
                     {
                         tag: 'date',
-                        name: 'reviewTime',
+                        name: 'checkTime',
                         itemAttrs: {
                             label: '检查时间',
                             rules: [{ required: true, message: '请选择检查时间' }],
@@ -126,6 +127,15 @@ export default class CaseSave extends Vue {
     async submit() {
         await this.formRef.validate(null, true)
         return this.formModel
+    }
+    async getArchiveVolumeRecordById() {
+        const res = await getArchiveVolumeRecordById({
+            volumeRecordId: this.$route.query.id as string,
+        })
+        this.formModel = res.data
+    }
+    async created() {
+        await this.getArchiveVolumeRecordById()
     }
 }
 </script>

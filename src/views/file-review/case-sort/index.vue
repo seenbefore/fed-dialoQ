@@ -222,7 +222,7 @@ export default class CaseSort extends Vue {
         const { archiveUrl } = row
         console.log(archiveUrl)
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: row.volumeUrl,
         })
     }
 }

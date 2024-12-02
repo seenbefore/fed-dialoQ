@@ -62,6 +62,8 @@ export default class DocInput extends Vue {
     @Prop({ type: Object, default: () => ({}) }) cusDocFormData!: Record<string, any>
     // 父级对getDocFormData接口进行处理
     @Prop({ type: Function, default: null }) parentHandle!: Function
+    //父组件对配置项进行处理
+    @Prop({ type: Function, default: (arg: any) => arg }) parentDocBaseInfo!: Function
 
     // dom类型
     public $refs!: {
@@ -118,7 +120,7 @@ export default class DocInput extends Vue {
             const { sendData, httpApiName: httpApiBase } = this.assembleInitDocSendData('base')
             const { data: configInfo } = await httpApiBase(sendData)
             // 2、文书配置数据处理
-            const { templateConfigMap = {}, htmlContent = '' } = configInfo || {}
+            const { templateConfigMap = {}, htmlContent = '' } = this.parentDocBaseInfo(configInfo || {})
             Object.values(templateConfigMap).forEach((item: any) => {
                 item.controlConfigContent = parseJson(item.controlConfigContent, {})
             })
