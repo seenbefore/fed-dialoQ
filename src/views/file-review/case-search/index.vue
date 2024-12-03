@@ -12,8 +12,10 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list, getDictList } from './api'
+import { list, getDictList, VolumeNoSelfVO } from './api'
 import moment from 'moment'
+import { apply } from '@/services/auto/common/volume/view'
+import { useLoading } from '@/hooks/useLoading'
 
 @Component({
     name: 'CaseSearch',
@@ -31,19 +33,33 @@ export default class CaseSearch extends Vue {
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
-
+    handleBtnClick(item: { code: string }, row: VolumeNoSelfVO) {
+        switch (item.code) {
+            //查看
+            case 'view':
+                this.handleView(row)
+                break
+            //申请查看
+            case 'applyfor':
+                this.handleApply(row)
+                break
+        }
+    }
+    /**查看 */
     async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+        const { volumeUrl } = row
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: volumeUrl,
         })
     }
-
+    /**申请查看 */
     async handleApply(row: any) {
         const result = await this.$modalDialog(() => import('./components/apply-dialog/index.vue'), {})
         if (result) {
-            // TODO: 调用申请接口
+            await useLoading(apply, {
+                volumeId: row.id,
+                applyReason: result.reason,
+            })
             this.$message.success('申请成功')
             this.handleSearch()
         }
@@ -78,7 +94,7 @@ export default class CaseSearch extends Vue {
             },
             {
                 tag: 'input',
-                name: 'volumeObject',
+                name: 'objectName',
                 label: '对象',
                 attrs: {
                     placeholder: '请输入',
@@ -156,8 +172,13 @@ export default class CaseSearch extends Vue {
                 },
             },
             {
+                label: '编号',
+                prop: 'volumeNumber',
+                minWidth: '250px',
+            },
+            {
                 label: '对象',
-                prop: 'volumeObject',
+                prop: 'objectName',
                 minWidth: '120px',
             },
             {
@@ -213,14 +234,13 @@ export default class CaseSearch extends Vue {
                 render: (h, { row }) => {
                     return (
                         <div>
-                            <el-button type="text" onClick={() => this.handleView(row)}>
-                                查看
-                            </el-button>
-                            {!row.applyStatus && (
-                                <el-button type="text" onClick={() => this.handleApply(row)}>
-                                    申请查看
-                                </el-button>
-                            )}
+                            {row.buttons?.map(item => {
+                                return (
+                                    <el-button type="text" onClick={() => this.handleBtnClick(item, row)} disabled={item.disabled === '1'}>
+                                        {item.text}
+                                    </el-button>
+                                )
+                            })}
                         </div>
                     )
                 },

@@ -1,11 +1,11 @@
 /** 审批状态 */
 export enum StatusEnum {
     /** 待审批 */
-    PENDING = '0',
+    PENDING = '1',
     /** 审批通过 */
-    APPROVED = '1',
+    APPROVED = '2',
     /** 审批退回 */
-    REJECTED = '2',
+    REJECTED = '3',
 }
 
 export const StatusEnumMap: Record<string, any> = {

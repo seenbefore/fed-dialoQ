@@ -77,7 +77,7 @@ export default class CaseSearchRecord extends Vue {
             {
                 columns: [
                     {
-                        tag: 'input',
+                        tag: 'select',
                         name: 'volumeType',
                         itemAttrs: {
                             label: '卷宗类型',
@@ -115,8 +115,8 @@ export default class CaseSearchRecord extends Vue {
                             placeholder: '请选择',
                             options: [
                                 { label: '全部', value: '' },
-                                { label: '审批通过', value: '2' },
-                                { label: '审批退回', value: '3' },
+                                { label: '审批通过', value: StatusEnum.APPROVED },
+                                { label: '审批退回', value: StatusEnum.REJECTED },
                             ],
                         },
                     },
@@ -158,6 +158,11 @@ export default class CaseSearchRecord extends Vue {
             {
                 label: '申请人',
                 prop: 'applicantName',
+                minWidth: '100px',
+            },
+            {
+                label: '所属',
+                prop: 'applicantDeptName',
                 minWidth: '100px',
             },
             {
@@ -230,7 +235,7 @@ export default class CaseSearchRecord extends Vue {
                 prop: 'approveTime',
                 minWidth: '160px',
                 render: (h, { row }) => {
-                    return <span>{moment(row.approveTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    return <span>{row.approveTime ? moment(row.approveTime).format('YYYY-MM-DD HH:mm') : '-'}</span>
                 },
             },
         ]

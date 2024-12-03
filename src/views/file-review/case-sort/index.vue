@@ -87,7 +87,7 @@ export default class CaseSort extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'status',
+                        name: 'applyStatus',
                         itemAttrs: {
                             label: '整理状态',
                         },
@@ -139,7 +139,7 @@ export default class CaseSort extends Vue {
             },
             {
                 label: '编号',
-                prop: 'code',
+                prop: 'volumeNumber',
                 minWidth: '200px',
             },
             {
@@ -159,11 +159,11 @@ export default class CaseSort extends Vue {
             },
             {
                 label: '整理状态',
-                prop: 'status',
+                prop: 'applyStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const { status } = row
-                    const { label, color } = SORT_STATUS_MAP[status] || {}
+                    const { applyStatus } = row
+                    const { label, color } = SORT_STATUS_MAP[applyStatus] || {}
                     return <span style={{ color }}>{label}</span>
                 },
             },
@@ -214,7 +214,7 @@ export default class CaseSort extends Vue {
     handleSort(row: any) {
         this.$router.push({
             path: '/file-review/case-sort/save',
-            query: { id: row.id },
+            query: { id: row.id, orgCode: row.orgCode, lineCode: row.lineCode, volumeTypeCode: row.volumeTypeCode },
         })
     }
 
@@ -222,7 +222,7 @@ export default class CaseSort extends Vue {
         const { archiveUrl } = row
         console.log(archiveUrl)
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: row.volumeUrl,
         })
     }
 }

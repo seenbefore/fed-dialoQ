@@ -249,6 +249,32 @@ export function selectVolumeDocumentList(data?: {
     })
 }
 
+/**
+ * 查询本部门非本人的卷宗列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function getaArchiveNoSelflist(data?: {
+/** 分页参数 页码数 默认1 */ pageNum?: number, 
+/** 分页参数 每页条数 默认10 */ length?: number, 
+/** 对象排序字段 */ orderField?: string, 
+/** 对象排序方式 asc,desc */ orderMethod?: string, 
+/** 综合监管：查询参数管辖单位过滤 */ deptSearchLikeStr?: string, 
+/** 卷宗类型 */ volumeType?: string, 
+/** 卷宗名称 */ volumeName?: string, 
+/** 对象名称 */ objectName?: string, 
+/** 归档号 */ archiveNumber?: string, 
+/** 申请状态(全部、待审批、审批通过、审批退回) */ applyStatus?: string, 
+/** 用户id */ userId?: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<PageResponse<VolumeNoSelfVO>>>({
+        url: "/my/volume/getaArchiveNoSelflist",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
 /** 枚举 - 查询类型 */
 export enum Cxlx {
     /** 按用户查询 */
@@ -1077,6 +1103,84 @@ export interface DocumentStageVO {
      * 文书列表
      */
     documentList: DocumentVO[]
+
+}
+
+export interface VolumeNoSelfVO$ButtonInfo {
+
+    /**
+     * 是否禁用(1:禁用,0:启用)
+     */
+    disabled: string
+
+    /**
+     * 按钮文本
+     */
+    text: string
+
+    /**
+     * 按钮代码
+     */
+    code: string
+
+}
+
+export interface VolumeNoSelfVO {
+
+    /**
+     * 卷宗类型
+     */
+    volumeType: string
+
+    /**
+     * 归档日期
+     */
+    archiveTime: string
+
+    /**
+     * 卷宗URL地址
+     */
+    volumeUrl: string
+
+    /**
+     * 编号
+     */
+    volumeNumber: string
+
+    /**
+     * 按钮信息
+     */
+    buttons: VolumeNoSelfVO$ButtonInfo[]
+
+    /**
+     * 卷宗名称
+     */
+    volumeName: string
+
+    /**
+     * 对象
+     */
+    objectName: string
+
+    /**
+     * 更新时间
+     */
+    updateTime: string
+
+    /**
+     * 主键
+     */
+    id: string
+
+    /**
+     * 归档号
+     */
+    archiveNumber: string
+
+    /**
+     * 申请状态
+     */
+    applyStatus: string
 
 }
 
