@@ -142,27 +142,26 @@ export default class CaseSave extends Vue {
                                 loading={this.loading.cover}
                                 disabled={this.loading.cover}
                                 onClick={async () => {
-                                    console.log(`点击下一步`)
+                                    console.log(`点击下一步`, this.paylaod.id)
                                     try {
+                                        const id = this.paylaod.id
                                         const currentComponent = handlers.getCurrentComponent() as CaseStepCoverClass
                                         const result = await currentComponent.save()
                                         console.log(`获取文书数据`, result)
-                                        if (this.action === 'add') {
-                                            if (result) {
-                                                this.loading.cover = true
-                                                const { data } = await saveVolumeCover({
-                                                    ...result,
-                                                    party: this.party,
-                                                    volumeConfigId: this.paylaod.volumeConfigId,
-                                                    caseId: this.paylaod.caseId,
-                                                    volumeNumber: this.paylaod.volumeNumber,
-                                                    //retentionPeriod: result.retentionPeriod,
-                                                    //archiveNumber: result.archiveNumber,
-                                                })
-                                                this.paylaod.id = data.id
-                                                this.loading.cover = false
-                                                handlers.next()
-                                            }
+                                        if (!id) {
+                                            this.loading.cover = true
+                                            const { data } = await saveVolumeCover({
+                                                ...result,
+                                                party: this.party,
+                                                volumeConfigId: this.paylaod.volumeConfigId,
+                                                caseId: this.paylaod.caseId,
+                                                volumeNumber: this.paylaod.volumeNumber,
+                                                //retentionPeriod: result.retentionPeriod,
+                                                //archiveNumber: result.archiveNumber,
+                                            })
+                                            this.paylaod.id = data.id
+                                            this.loading.cover = false
+                                            handlers.next()
                                         } else {
                                             await modifyVolumeCover({
                                                 id: this.paylaod.id,
