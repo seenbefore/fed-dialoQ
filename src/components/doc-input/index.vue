@@ -296,7 +296,11 @@ export default class DocInput extends Vue {
                         const { sendData, httpApiName: httpApiSave } = this.assembleSaveDocSendData(values, fileList || [])
                         if (this.isCustomSaveHttp) {
                             this.$emit('emitDataMap', tabIndex, values, sendData, resolve)
-                            return
+                            return resolve({
+                                tabIndex,
+                                values,
+                                sendData,
+                            })
                         }
                         this.isSubmiting = true
                         httpApiSave({ ...sendData, ...this.cusTemporaryParams })

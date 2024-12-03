@@ -46,6 +46,8 @@ export default class CaseSave extends Vue {
     @Prop({ type: String, default: '' }) caseName!: string
     /** 决定书编号 */
     @Prop({ type: String, default: '' }) decisionNumber!: string
+    /** 当事人 */
+    @Prop({ type: String, default: '' }) party!: string
     /** 当前步骤 0:卷宗封面 1:卷宗目录 2:完成 */
     @Prop({ type: Number, default: 0 }) step!: number
 
@@ -60,6 +62,7 @@ export default class CaseSave extends Vue {
             console.log(error)
         }
         await this.getArchiveConfig()
+        this.inited = true
     }
     async getArchiveConfig() {
         if (this.lineCode && this.volumeTypeCode && this.orgCode) {
@@ -75,23 +78,20 @@ export default class CaseSave extends Vue {
             const { id } = volumeConfig
             Object.assign(this.paylaod, {
                 volumeConfigId: id,
-                volumeNumber: caseNumberLimit === '1' ? this.decisionNumber : this.caseNumber,
-                retentionPeriod: '',
+                volumeName: data.volumeConfig.volumeName,
                 // 1:自动获取决定书编号,2:自动获取立案编号
+                caseNumber: caseNumberLimit === '1' ? this.decisionNumber : this.caseNumber,
+                volumeNumber: caseNumberLimit === '1' ? this.decisionNumber : this.caseNumber,
                 archiveNumber: caseNumberLimit === '1' ? this.decisionNumber : this.caseNumber,
             })
         }
-
-        this.inited = true
     }
 
     paylaod = {
         caseId: this.caseId,
         id: this.id,
         volumeConfigId: '',
-
         volumeNumber: '',
-        archiveCatalogContentList: [] as any[],
     }
     loading = {
         previewSave: false,
@@ -121,6 +121,7 @@ export default class CaseSave extends Vue {
 
                         ...this.$attrs,
                         ...this.$props,
+                        ...this.paylaod,
                     },
                 },
                 render: (h, { row, handlers }) => {
@@ -141,22 +142,25 @@ export default class CaseSave extends Vue {
                                 loading={this.loading.cover}
                                 disabled={this.loading.cover}
                                 onClick={async () => {
+                                    console.log(`点击下一步`)
                                     try {
-                                        this.loading.cover = true
                                         const currentComponent = handlers.getCurrentComponent() as CaseStepCoverClass
                                         const result = await currentComponent.save()
+                                        console.log(`获取文书数据`, result)
                                         if (this.action === 'add') {
                                             if (result) {
+                                                this.loading.cover = true
                                                 const { data } = await saveVolumeCover({
+                                                    ...result,
+                                                    party: this.party,
                                                     volumeConfigId: this.paylaod.volumeConfigId,
                                                     caseId: this.paylaod.caseId,
                                                     volumeNumber: this.paylaod.volumeNumber,
                                                     //retentionPeriod: result.retentionPeriod,
                                                     //archiveNumber: result.archiveNumber,
-                                                    ...result,
                                                 })
                                                 this.paylaod.id = data.id
-
+                                                this.loading.cover = false
                                                 handlers.next()
                                             }
                                         } else {
@@ -169,9 +173,9 @@ export default class CaseSave extends Vue {
                                                 //archiveNumber: result.archiveNumber,
                                                 ...result,
                                             })
+                                            this.loading.cover = false
                                             handlers.next()
                                         }
-                                        this.loading.cover = false
                                     } catch (err) {
                                         this.loading.cover = false
                                         console.error(err)

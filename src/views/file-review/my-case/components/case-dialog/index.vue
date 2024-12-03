@@ -47,7 +47,7 @@ export default class CaseDialog extends Vue {
     private body = {}
     async handleSelect(row: VO) {
         try {
-            const { id, caseName, caseAddress, caseNumber, filingTime, closingTime, decisionNumber, handler, party, punishmentResult, territoryCode, volumeType } = row
+            const { id, caseName, caseAddress, caseNumber, filingTime, closingTime, decisionNumber, handler, party, punishmentResult, territoryCode, volumeType, enforcementDepartment } = row
             const params = {
                 lineCode: territoryCode, // 条线编码
                 volumeTypeCode: volumeType, // 卷宗类型
@@ -66,6 +66,7 @@ export default class CaseDialog extends Vue {
                 handler,
                 party,
                 punishmentResult,
+                orgStandardName: enforcementDepartment,
                 ...params,
             })
             console.log(data)

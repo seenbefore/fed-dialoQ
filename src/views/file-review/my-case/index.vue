@@ -31,7 +31,10 @@ export default class MyCase extends Vue {
     @Ref('tableRef')
     tableRef!: TableRef
 
-    formModel: Record<string, any> = {}
+    formModel: Record<string, any> = {
+        // 1:按用户查询,2:按部门查询
+        queryType: '1',
+    }
 
     mounted() {}
     handleSearch() {
