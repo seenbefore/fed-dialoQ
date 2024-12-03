@@ -33,7 +33,7 @@ export default class CaseSave extends Vue {
         return [
             {
                 title: '卷宗封面',
-                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
+                component: () => import('./components/index.vue'),
                 props: {
                     // 传递给组件的属性
                     isEditVolume: true,
