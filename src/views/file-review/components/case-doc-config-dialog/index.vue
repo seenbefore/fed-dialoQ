@@ -155,15 +155,16 @@ export default class DirectoryDialog extends Vue {
                         return {
                             ...child,
                             id: child.documentId,
-                            label: child.caseStageName,
-                            value: child.caseStageCode,
+                            label: child.documentName,
+                            value: child.documentId,
                         }
                     })
                     return {
+                        ...node,
                         id: caseStageCode,
                         label: caseStageName,
-                        children,
                         value: caseStageCode,
+                        children,
                     }
                 } else {
                     return {

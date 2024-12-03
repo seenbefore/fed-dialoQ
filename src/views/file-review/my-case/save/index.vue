@@ -165,11 +165,7 @@ export default class CaseSave extends Vue {
                                         } else {
                                             await modifyVolumeCover({
                                                 id: this.paylaod.id,
-                                                volumeConfigId: this.paylaod.volumeConfigId,
-                                                caseId: this.paylaod.caseId,
-                                                volumeNumber: this.paylaod.volumeNumber,
-                                                //retentionPeriod: result.retentionPeriod,
-                                                //archiveNumber: result.archiveNumber,
+
                                                 ...result,
                                             })
                                             this.loading.cover = false
