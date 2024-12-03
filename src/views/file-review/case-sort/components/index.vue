@@ -34,7 +34,7 @@ export interface CaseStepCoverClass {
 }
 /** 卷宗封面 */
 @Component({
-    name: 'Step1',
+    name: 'CaseSortStep1',
     components: {
         DocInput,
     },
@@ -46,7 +46,6 @@ export default class Step1 extends Vue {
     @Prop({ type: String, default: '' }) lineCode!: string
     /**卷宗类型编码 */
     @Prop({ type: String, default: '' }) volumeTypeCode!: string
-    @Prop({ type: Boolean, default: false }) isEditVolume!: boolean
     @Prop({
         default: () => ({
             partyId: '',
