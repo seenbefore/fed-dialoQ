@@ -1,6 +1,6 @@
 <template>
     <el-dialog class="icinfo-ai DirectoryDialog" :title="title" :visible="true" width="600px" @close="cancel">
-        <div class="directory-content">
+        <div class="directory-content" id="DirectoryDialog">
             <!-- 搜索框 -->
             <div class="search-box">
                 <el-input v-model="searchText" placeholder="输入关键字进行过滤" clearable>
@@ -142,11 +142,19 @@ export default class DirectoryDialog extends Vue {
         this.loading = true
         try {
             /**树结构数据 */
-
-            const { data } = await list({
-                volumeRecordId: this.volumeRecordId,
-                volumeType: this.volumeType,
-            })
+            await this.$nextTick()
+            const { data } = await list(
+                {
+                    volumeRecordId: this.volumeRecordId,
+                    volumeType: this.volumeType,
+                },
+                {
+                    exShowLoading: true,
+                    exShowLoadingOption: {
+                        target: document.getElementById('DirectoryDialog'),
+                    },
+                },
+            )
 
             this.treeData = data.map((node, index) => {
                 const { caseStageCode, caseStageName } = node
@@ -230,6 +238,7 @@ export default class DirectoryDialog extends Vue {
         height: 500px;
         display: flex;
         flex-direction: column;
+        position: relative;
     }
 
     .search-box {

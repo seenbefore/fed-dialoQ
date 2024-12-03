@@ -134,7 +134,7 @@ export default class Step2 extends Vue {
                     },
                 },
                 { prop: 'documentCode', label: '文号', width: '300px' },
-                { prop: 'documentName', label: '文书/证据名称', minWidth: '200px' },
+                { prop: 'documentName', label: '文书/证据名称', flex: '1' },
                 { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
             ],
             actions: [

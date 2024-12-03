@@ -4,7 +4,7 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
-        <DraggableDirectory v-model="value" :columns="getMainTableAttrs.columns" :actions="getMainTableAttrs.actions" @change="handleChange"></DraggableDirectory>
+        <DraggableDirectory v-model="value" v-bind="getMainTableAttrs" @change="handleChange"></DraggableDirectory>
     </div>
 </template>
 
@@ -162,11 +162,11 @@ export default class DirectoryConfig extends Vue {
                         return <span>{index + 1}</span>
                     },
                 },
-                { prop: 'catalogName', label: '名称', minWidth: '200px' },
+                { prop: 'catalogName', label: '名称', flex: '1' },
                 {
                     prop: 'hasAttachment',
                     label: '含附件',
-                    width: '100px',
+                    width: '80px',
                     render: (h, { row }) => {
                         return (
                             <span>
@@ -188,6 +188,7 @@ export default class DirectoryConfig extends Vue {
                 },
             ],
             actions: [{ key: 'delete', icon: 'el-icon-delete', handler: this.handleDelete }],
+            actionsWidth: 60,
         }
     }
 

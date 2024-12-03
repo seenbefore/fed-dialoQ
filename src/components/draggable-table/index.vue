@@ -14,7 +14,7 @@
                     </template>
                 </div>
                 <div class="header-right">
-                    <span class="header-actions">操作</span>
+                    <span class="header-actions" :style="{ width: actionsWidth + 'px' }">操作</span>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                                 </template>
                             </div>
                             <div class="item-right">
-                                <div class="item-actions">
+                                <div class="item-actions" :style="{ width: actionsWidth + 'px' }">
                                     <template v-for="action in actions">
                                         <el-tooltip :key="action.key" :content="action.tooltip" :disabled="!action.tooltip">
                                             <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action, item, index)">
@@ -71,6 +71,7 @@ interface ColumnItem {
     hide?: boolean
     minWidth?: number | string
     align?: 'left' | 'center'
+    flex?: number | string
     render?: (h: any, params: { row: any }) => any
 }
 
@@ -101,6 +102,8 @@ interface ActionItem {
     },
 })
 export default class DraggableDirectory extends Vue {
+    @Prop({ type: Number, default: 120 })
+    actionsWidth!: number
     /**
      * 排序标识
      */
@@ -213,6 +216,9 @@ export default class DraggableDirectory extends Vue {
         if (column.align) {
             style.textAlign = column.align
         }
+        if (column.flex) {
+            style.flex = column.flex + ''
+        }
 
         return style
     }
@@ -311,6 +317,9 @@ export default class DraggableDirectory extends Vue {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            span {
+                line-height: 1.4;
+            }
         }
 
         .item-left {
