@@ -98,7 +98,14 @@ export default class Step1 extends Vue {
         }
     }
     public async save() {
-        await this.docInputRef.saveData()
+        const { sendData, values }: Obj = await this.docInputRef.saveData()
+        await firstSave(
+            {
+                ...(values || {}),
+                id: this.$route.query.id,
+            },
+            { exShowLoading: true },
+        )
     }
     public async preview() {
         console.log('step1 next')
@@ -133,17 +140,6 @@ export default class Step1 extends Vue {
             console.log(error)
         }
         return caseNumberConfig as ArchiveCaseNumberConfigVO
-    }
-    /**保存文书 */
-    async emitDataMap(tabIndex, values, sendData, resolve) {
-        if (tabIndex === -1) {
-            return
-        }
-        await useLoading(firstSave, {
-            ...(sendData.dataMap || {}),
-            id: this.$route.query.id,
-        })
-        resolve(true)
     }
     created() {}
 }
