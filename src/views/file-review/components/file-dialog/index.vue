@@ -102,7 +102,7 @@ export default {
             clear,
         }
         const { data } = await getUserInfoByToken()
-        const message = `${data.userName} ${data.phone.slice(-4)}`
+        const message = `${data.userName} ${data.phone}`
         this.handlers.setWatermark(message, {
             fixed: true,
         })
