@@ -29,30 +29,33 @@ const isProd = process.env.VUE_APP_ENV === 'prod'
  * @returns 解密后的数据
  */
 export async function getNewUrl(str: string, showFileType = false): Promise<any> {
-    // console.log('%c Line:31 🍊 str', 'background:#376ff3', str)
     if (!str) return ''
-    if (isIframeUrl(str)) {
-        //console.log('%c Line:38 🍊 str', 'background:#376ff3', str)
-        return str
-    }
-    if (str.startsWith('https:') || str.startsWith('data:') || str.startsWith('blob:') || handleSuffix(str)) {
-        if (showFileType) {
-            return {
-                url: str,
-                type: '',
-            }
-        }
-        return str
-    }
+    // pdf链接且不是生产环境直接使用地址
+    // if (isIframeUrl(str) && !isProd) {
+    //     console.log(12345)
+    //     return str
+    // }
+
+    // if (str.startsWith('https:') || str.startsWith('data:') || str.startsWith('blob:') || handleSuffix(str)) {
+    //     if (showFileType) {
+    //         return {
+    //             url: str,
+    //             type: '',
+    //         }
+    //     }
+    //     return str
+    // }
 
     let data = { fileType: '', fileByte: '' }
-    if (str.startsWith('http:')) {
-        const { data: dataByGetFileVisit } = await http.get(`/punish/common/file/operation/getFileVisitByFileUrl?fileUrl=${str}`)
+    // http地址先转化流
+    if (str.startsWith('http:') || str.startsWith('https:')) {
+        const { data: dataByGetFileVisit } = await http.get(`/common/volume/getFileVisitByFileUrl?fileUrl=${encodeURIComponent(str)}`)
         data = dataByGetFileVisit
     } else {
         const { data: dataByVisit } = await visit({ fileUrlEncrypt: str })
         data = dataByVisit
     }
+    data.fileType = data.fileType.split('?')[0]
     if (!data?.fileType) return ''
     data.fileType = data.fileType.toLowerCase()
     //避免base64的pdf很长 转成Blob地址显示
