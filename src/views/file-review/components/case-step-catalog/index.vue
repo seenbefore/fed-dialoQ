@@ -92,6 +92,7 @@ export default class Step2 extends Vue {
             let { data } = await list({
                 volumeRecordId: this.id,
             })
+            data.subVolumeList = data.subVolumeList || []
             this.mainVolumeList = data.mainVolumeList.map(item => {
                 return {
                     id: item.documentId,
@@ -121,6 +122,11 @@ export default class Step2 extends Vue {
     handleTabClick(tab: string) {}
     get getDraggableDirectoryAttrs() {
         const { activeTab } = this
+        let hide = false
+        // 如果正卷没有副卷，则不显示移动按钮
+        if (activeTab === '1' && this.subVolumeList.length === 0) {
+            hide = true
+        }
         return {
             columns: [
                 {
@@ -151,7 +157,15 @@ export default class Step2 extends Vue {
             ],
             actions: [
                 { key: 'delete', icon: 'el-icon-delete', handler: this.handleDelete },
-                { key: 'move', icon: 'el-icon-right', tooltip: activeTab === '1' ? '正卷移动到副卷' : '副卷移动到正卷', handler: this.handleMove },
+                {
+                    key: 'move',
+                    icon: 'el-icon-right',
+                    tooltip: activeTab === '1' ? '正卷移动到副卷' : '副卷移动到正卷',
+                    handler: this.handleMove,
+                    hide: () => {
+                        return hide
+                    },
+                },
             ],
         }
     }
