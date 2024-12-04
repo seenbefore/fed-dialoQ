@@ -9,7 +9,7 @@
 
         <div slot="footer">
             <el-button @click="cancel">取消</el-button>
-            <el-button type="primary" @click="confirm" :disabled="!selectedRow">确定</el-button>
+            <!-- <el-button type="primary" @click="confirm" :disabled="!selectedRow">确定</el-button> -->
         </div>
     </el-dialog>
 </template>
@@ -42,7 +42,7 @@ export default class CaseDialog extends Vue {
     }
 
     handleRowClick(row: any) {
-        this.selectedRow = row
+        //this.selectedRow = row
     }
     private body = {}
     async handleSelect(row: VO) {
@@ -89,7 +89,8 @@ export default class CaseDialog extends Vue {
             })
             console.log(data)
             this.selectedRow = row
-            this.$message.success('获取配置成功，请点击确认')
+            //this.$message.success('获取配置成功，请点击确认')
+            this.confirm()
         } catch (error) {
             console.log(error)
             //this.$message.error('获取配置异常')
@@ -189,7 +190,6 @@ export default class CaseDialog extends Vue {
     }
 
     async confirm() {
-        if (!this.selectedRow) return
         this.$options.confirm?.(this.body)
     }
 
