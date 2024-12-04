@@ -64,3 +64,10 @@ body #nprogress .spinner-icon {
 .sg-table-operator {
     margin-bottom: 7px;
 }
+
+// 修改windows下表格固定列最后一行高度异常导致底线上移
+.windows {
+    .el-table__fixed-right {
+        height: 100% !important;
+    }
+}

@@ -287,12 +287,12 @@ export default class DraggableDirectory extends Vue {
 
             .header-page {
                 width: 60px;
-                text-align: center;
+                text-align: left;
             }
 
             .header-actions {
                 width: 120px;
-                text-align: center;
+                text-align: left;
             }
         }
     }
@@ -363,14 +363,14 @@ export default class DraggableDirectory extends Vue {
 
             .item-page {
                 width: 60px;
-                text-align: center;
+                text-align: left;
                 color: #666;
             }
 
             .item-actions {
                 width: 120px;
                 display: flex;
-                justify-content: center;
+                text-align: left;
 
                 .el-button {
                     padding: 0 8px;

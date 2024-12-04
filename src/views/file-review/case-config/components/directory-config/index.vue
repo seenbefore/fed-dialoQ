@@ -173,6 +173,7 @@ export default class DirectoryConfig extends Vue {
                     prop: 'hasAttachment',
                     label: '含附件',
                     width: '80px',
+                    align: 'center',
                     render: (h, { row }) => {
                         return (
                             <span>

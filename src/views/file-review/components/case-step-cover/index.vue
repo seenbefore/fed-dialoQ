@@ -81,6 +81,7 @@ export default class Step1 extends Vue {
             }
         }
         return () => {
+            console.log('文书数据', this.row)
             return {
                 data: {
                     ...this.row,
