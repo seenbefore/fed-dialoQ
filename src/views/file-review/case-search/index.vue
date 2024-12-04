@@ -163,13 +163,6 @@ export default class CaseSearch extends Vue {
                 label: '卷宗名称',
                 prop: 'volumeName',
                 minWidth: '250px',
-                render: (h, { row }) => {
-                    return (
-                        <el-button type="text" onClick={() => this.handleView(row)}>
-                            {row.volumeName}
-                        </el-button>
-                    )
-                },
             },
             {
                 label: '编号',
