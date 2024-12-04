@@ -25,6 +25,7 @@ export default class MyIframePdf extends Mixins(DomEvent) {
     public pdfSrcNew = ''
     @Watch('pdfSrc', { immediate: true })
     async watchPdfSrc(val) {
+        console.log('%c Line:28 🍊 val', 'background:#376ff3', val)
         this.pdfSrcNew = await getNewUrl(val)
     }
 

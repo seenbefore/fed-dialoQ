@@ -31,7 +31,10 @@ const isProd = process.env.VUE_APP_ENV === 'prod'
 export async function getNewUrl(str: string, showFileType = false): Promise<any> {
     // console.log('%c Line:31 🍊 str', 'background:#376ff3', str)
     if (!str) return ''
-    if (isIframeUrl(str) && !isProd) return str
+    if (isIframeUrl(str)) {
+        //console.log('%c Line:38 🍊 str', 'background:#376ff3', str)
+        return str
+    }
     if (str.startsWith('https:') || str.startsWith('data:') || str.startsWith('blob:') || handleSuffix(str)) {
         if (showFileType) {
             return {
@@ -41,6 +44,7 @@ export async function getNewUrl(str: string, showFileType = false): Promise<any>
         }
         return str
     }
+
     let data = { fileType: '', fileByte: '' }
     if (str.startsWith('http:')) {
         const { data: dataByGetFileVisit } = await http.get(`/punish/common/file/operation/getFileVisitByFileUrl?fileUrl=${str}`)
