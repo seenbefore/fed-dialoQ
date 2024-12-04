@@ -248,7 +248,7 @@ export default class CaseSave extends Vue {
                                                 subVolumeList: result.subVolumeList,
                                             },
                                             {
-                                                timeout: 60 * 1000,
+                                                timeout: 120 * 1000,
                                             },
                                         )
                                         this.loading.preview = false
@@ -309,7 +309,7 @@ export default class CaseSave extends Vue {
                                                         subVolumeList: result.subVolumeList,
                                                     },
                                                     {
-                                                        //timeout: 5 * 1000,
+                                                        timeout: 120 * 1000,
                                                         exShowLoading: true,
                                                     },
                                                 )
@@ -325,7 +325,7 @@ export default class CaseSave extends Vue {
                                                         subVolumeList: result.subVolumeList,
                                                     },
                                                     {
-                                                        //timeout: 5 * 1000,
+                                                        timeout: 120 * 1000,
                                                         exShowLoading: true,
                                                     },
                                                 )
