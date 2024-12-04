@@ -22,9 +22,20 @@ export default class CaseNumberConfig extends Vue {
     get getTableAttrs() {
         const columns: TableColumn[] = [
             {
+                label: '是否生效',
+                prop: 'isTemplate',
+                width: '90px',
+                align: 'center',
+                render: (h, { row }) => {
+                    const isTemplate = row.isTemplate
+                    const result = isTemplate === '1' ? '是' : '否'
+                    return <span>{result}</span>
+                },
+            },
+            {
                 label: '卷宗类型',
                 prop: 'volumeTypeName',
-                minWidth: '120px',
+                minWidth: '150px',
             },
             {
                 label: '条线名称',
