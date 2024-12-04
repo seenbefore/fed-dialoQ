@@ -1,18 +1,18 @@
 <template>
     <el-drawer class="document-wrap sg-drawer" append-to-body title="查看文件" :visible.sync="dialogVisible" :size="size" @close="cancel">
         <div class="content" v-loading.lock="isLoading" id="FileDialog">
-            <my-iframe-pdf :pdf-src="fileUrl" iframe-width="100%" iframe-height="100%" v-if="fileUrl" zoom="100%"></my-iframe-pdf>
-            <!-- <video v-else-if="urlType === 'video'" style="height:60vh" controls>
+            <my-iframe-pdf :pdf-src="fileUrl" iframe-width="100%" iframe-height="100%" v-if="urlType === 'pdf' && newUrl" zoom="100%"></my-iframe-pdf>
+            <video v-else-if="urlType === 'video'" style="height:60vh" controls>
                 <source :src="newUrl" type="video/mp4" />
                 <source :src="newUrl" type="video/ogg" />
                 <source :src="newUrl" type="video/webm" />
             </video>
-            <img v-else-if="urlType === 'img'" class="el-image" :src="newUrl" @click="$ImageViewer([newUrl])" />
+            <img v-else-if="urlType === 'img'" class="el-image" :src="newUrl" @click="handlePreviewImage([newUrl])" />
             <iframe v-else-if="isBlob()" :src="newUrl" frameborder="0" width="100%" height="100%"></iframe>
             <div v-else>
                 不支持的格式，
                 <a :href="fileUrl" target="_blank">点击查看</a>
-            </div> -->
+            </div>
         </div>
         <!-- </el-dialog> -->
     </el-drawer>
@@ -22,6 +22,7 @@
 import { getNewUrl, getUrlType, isMp4, isVideo } from '@/utils/pdfAndImgUrl'
 import { useWatermark } from '@/scripts/utils/watermark'
 import { getUserInfoByToken } from '@/services/auto/volume/user'
+import { useImagePreview } from '@/components/image-preview/hooks/useImagePreview'
 export default {
     name: 'FileDialog',
     props: {
@@ -92,6 +93,9 @@ export default {
 
         cancel() {
             this.$options?.cancel()
+        },
+        handlePreviewImage(url) {
+            useImagePreview(url)
         },
     },
     async mounted() {
