@@ -2,6 +2,7 @@
     <div class="sg-page icinfo-ai CaseSave">
         <!-- {{ $props }}
         {{ $attrs }} -->
+        <!-- {{ action }} -->
         <StepForm v-model="currentStep" :steps="steps" v-if="inited"></StepForm>
     </div>
 </template>
@@ -288,6 +289,7 @@ export default class CaseSave extends Vue {
                                                     subVolumeList: result.subVolumeList,
                                                 },
                                                 {
+                                                    timeout: 120 * 1000,
                                                     exShowLoading: true,
                                                 },
                                             )

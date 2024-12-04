@@ -140,7 +140,11 @@ export default class Step2 extends Vue {
                     flex: '1',
                     render: (h, { index, row }) => {
                         const result = row['documentName']
-                        return <span onClick={() => this.handleDocumentNameClick(row)}>{result}</span>
+                        return (
+                            <el-button type="text" onClick={() => this.handleDocumentNameClick(row)}>
+                                {result}
+                            </el-button>
+                        )
                     },
                 },
                 { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
