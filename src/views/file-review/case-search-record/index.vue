@@ -221,7 +221,7 @@ export default class CaseSearchRecord extends Vue {
 
                     if (row.applyStatus === StatusEnum.REJECTED) {
                         return (
-                            <el-tooltip content={row.rejectReason || '无退回理由'} placement="top" effect="light">
+                            <el-tooltip content={row.approveRemark || '无退回理由'} placement="top" effect="light">
                                 <span style={{ color }}>{status?.label || '-'}</span>
                             </el-tooltip>
                         )
