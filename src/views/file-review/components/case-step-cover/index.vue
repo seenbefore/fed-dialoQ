@@ -15,6 +15,8 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import DocInput from '@/components/doc-input/index.vue'
+import { getArchiveVolumeRecordById } from '@/services/auto/my/volume'
+import { getDocBaseInfo } from '@/services/auto/common/volume'
 /** 卷宗封面 */
 export interface CaseStepCoverClass {
     /** 获取表单数据 */
@@ -62,17 +64,21 @@ export default class Step1 extends Vue {
     }
     /**自定义获取文书模板的接口 */
     get customGetDocBaseInfo() {
-        return () =>
-            this.$http.post('/common/volume/getDocBaseInfo', this.docParams).then(res => {
-                this.templateConfigKeys = Object.keys(res.data?.templateConfigMap || {})
-                return res
-            })
+        return async () => {
+            const res = await getDocBaseInfo(this.docParams)
+            this.templateConfigKeys = Object.keys(res.data?.templateConfigMap || {})
+            return res
+        }
     }
     /**自定义获取文书表单的接口 */
     get customGetDocForm() {
         const templateConfigKeys = this.templateConfigKeys
         if (this.docParams.volumeRecordId) {
-            return () => this.$http.post('/my/volume/getArchiveVolumeRecordById', this.docParams)
+            return async () => {
+                const res = await getArchiveVolumeRecordById(this.docParams)
+                this.$emit('init', res.data)
+                return res
+            }
         }
         return () => {
             const data = templateConfigKeys.reduce((acc, key) => {

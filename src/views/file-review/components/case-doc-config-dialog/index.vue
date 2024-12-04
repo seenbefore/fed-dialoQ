@@ -21,10 +21,12 @@
                     @check="handleCheck"
                     v-if="treeData.length"
                 >
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
-                        <span>{{ node.label }}</span>
-                    </span>
+                    <template v-slot="{ node, data }">
+                        <span class="custom-tree-node">
+                            <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
+                            <span>{{ node.label }}</span>
+                        </span>
+                    </template>
                 </el-tree>
             </div>
         </div>

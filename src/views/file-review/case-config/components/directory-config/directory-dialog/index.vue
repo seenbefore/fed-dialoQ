@@ -23,10 +23,12 @@
                     children="item"
                     v-if="treeData.length"
                 >
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
-                        <span>{{ node.label }}</span>
-                    </span>
+                    <template v-slot="{ node, data }">
+                        <span class="custom-tree-node">
+                            <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
+                            <span>{{ node.label }}</span>
+                        </span>
+                    </template>
                 </el-tree>
             </div>
         </div>
@@ -228,6 +230,10 @@ export default class DirectoryDialog extends Vue {
     async confirm() {
         const selectedNodes = this.selectedNodes
         const originKeys = this.value.map(item => item[this.nodeKey])
+        const selectedKeys = selectedNodes.map(node => node[this.nodeKey])
+        console.log('originKeys', originKeys)
+        console.log('selectedKeys', selectedKeys)
+
         // 通过比对获取新增的节点和删除的节点
         const addNodes = selectedNodes.filter(node => !originKeys.includes(node[this.nodeKey]))
         const deleteNodeKeys = originKeys.filter(key => !selectedNodes.map(node => node[this.nodeKey]).includes(key))

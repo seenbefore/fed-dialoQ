@@ -164,12 +164,14 @@ export default class MyCase extends Vue {
             {
                 label: '卷宗类型',
                 prop: 'volumeType',
-                minWidth: '160px',
+                minWidth: '140px',
+                align: 'left',
             },
             {
                 label: '卷宗名称',
                 prop: 'volumeName',
-                minWidth: '250px',
+                minWidth: '180px',
+                align: 'left',
                 render: (h, { row }) => {
                     return (
                         <el-button
@@ -191,14 +193,22 @@ export default class MyCase extends Vue {
                 },
             },
             {
+                label: '编号',
+                prop: 'volumeNumber',
+                align: 'left',
+                minWidth: '250px',
+            },
+            {
                 label: '对象',
                 prop: 'volumeObject',
-                minWidth: '120px',
+                align: 'left',
+                minWidth: '160px',
             },
             {
                 label: '归档日期',
                 prop: 'archiveDate',
-                width: '170px',
+                align: 'left',
+                width: '120px',
                 render: (h, { row }) => {
                     return <span>{moment(row.archiveDate).format('YYYY-MM-DD')}</span>
                 },
@@ -206,11 +216,13 @@ export default class MyCase extends Vue {
             {
                 label: '归档号',
                 prop: 'archiveNumber',
+                align: 'left',
                 minWidth: '250px',
             },
             {
                 label: '申请状态',
                 prop: 'applyStatus',
+                align: 'left',
                 minWidth: '100px',
                 render: (h, { row }) => {
                     const status = StatusEnumMap[row.applyStatus as keyof typeof StatusEnumMap]
@@ -236,6 +248,7 @@ export default class MyCase extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 width: '170px',
+                align: 'left',
                 render: (h, { row }) => {
                     return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
                 },
@@ -246,9 +259,10 @@ export default class MyCase extends Vue {
                 width: '120px',
                 fixed: 'right',
                 render: (h, { row }) => {
+                    const { volumeUrl } = row
                     return (
                         <div>
-                            <el-button type="text" onClick={() => this.handleView(row)}>
+                            <el-button type="text" onClick={() => this.handleView(row)} disabled={!volumeUrl}>
                                 查看
                             </el-button>
                             <el-button type="text" onClick={() => this.handleEdit(row)}>

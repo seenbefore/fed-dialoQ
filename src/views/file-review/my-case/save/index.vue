@@ -99,6 +99,8 @@ export default class CaseSave extends Vue {
         preview: false,
         cover: false,
     }
+    // 整理状态
+    arrangeStatus = ''
 
     /** 当前步骤 */
     currentStep = this.step
@@ -122,6 +124,13 @@ export default class CaseSave extends Vue {
                         ...this.$attrs,
                         ...this.$props,
                         ...this.paylaod,
+                    },
+                },
+                on: {
+                    init: (val: any) => {
+                        const { arrangeStatus } = val
+                        console.log('init', arrangeStatus)
+                        this.arrangeStatus = arrangeStatus
                     },
                 },
                 render: (h, { row, handlers }) => {
@@ -283,14 +292,34 @@ export default class CaseSave extends Vue {
                                             )
                                             this.loading.submit = false
                                         } else {
-                                            const model = await this.$modalDialog(() => import('./components/modify-dialog/index.vue'), {})
-                                            if (model.modifyContent) {
+                                            let modifyContent = ''
+                                            // 1:未整理 2:已整理  2 时需要走审批
+                                            if (this.arrangeStatus === '2') {
+                                                // 走审批
+                                                const model = await this.$modalDialog(() => import('./components/modify-dialog/index.vue'), {})
+                                                modifyContent = model.modifyContent
                                                 this.loading.submit = true
                                                 await submitDocument(
                                                     {
                                                         id: this.paylaod.id,
                                                         operateType: '1',
-                                                        modifyContent: model.modifyContent,
+                                                        modifyContent: modifyContent,
+                                                        mainVolumeList: result.mainVolumeList,
+                                                        subVolumeList: result.subVolumeList,
+                                                    },
+                                                    {
+                                                        //timeout: 5 * 1000,
+                                                        exShowLoading: true,
+                                                    },
+                                                )
+                                                this.loading.submit = false
+                                            } else {
+                                                this.loading.submit = true
+                                                await submitDocument(
+                                                    {
+                                                        id: this.paylaod.id,
+                                                        operateType: '1',
+                                                        modifyContent: '',
                                                         mainVolumeList: result.mainVolumeList,
                                                         subVolumeList: result.subVolumeList,
                                                     },

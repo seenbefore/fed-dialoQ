@@ -122,7 +122,7 @@ export default class DirectoryConfig extends Vue {
             return
         }
         const defaultCheckedKeys = this.value.map(item => item.catalogCode)
-        console.log('defaultCheckedKeys', defaultCheckedKeys)
+        console.log('defaultCheckedKeys', defaultCheckedKeys, this.value)
 
         const { addNodes }: DirectoryDialogResult = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
             type: 'add',
@@ -130,6 +130,8 @@ export default class DirectoryConfig extends Vue {
             defaultCheckedKeys,
             territoryCode: this.territoryCode,
             volumeType: this.volumeType,
+            nodeKey: 'catalogCode',
+            value: this.value,
         } as DirectoryDialog)
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
@@ -146,8 +148,8 @@ export default class DirectoryConfig extends Vue {
                     remark: '',
                 }
             })
+            console.log('_addNodes', _addNodes)
             this.value.push(..._addNodes)
-            console.log('this.value', this.value)
         }
     }
 
