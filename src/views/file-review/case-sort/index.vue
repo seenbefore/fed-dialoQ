@@ -11,7 +11,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { SORT_STATUS, SORT_STATUS_MAP } from './enum'
+import { ARRANGE_STATUS, ARRANGE_STATUS_MAP } from './enum'
 import { list, getDictList } from './api'
 import moment from 'moment'
 
@@ -87,13 +87,13 @@ export default class CaseSort extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'applyStatus',
+                        name: 'arrangeStatus',
                         itemAttrs: {
                             label: '整理状态',
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [{ label: '全部', value: '' }, ...Object.values(SORT_STATUS_MAP)],
+                            options: [{ label: '全部', value: '' }, ...Object.values(ARRANGE_STATUS_MAP)],
                         },
                     },
                     {
@@ -159,11 +159,11 @@ export default class CaseSort extends Vue {
             },
             {
                 label: '整理状态',
-                prop: 'applyStatus',
+                prop: 'arrangeStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const { applyStatus } = row
-                    const { label, color } = SORT_STATUS_MAP[applyStatus] || {}
+                    const { arrangeStatus } = row
+                    const { label, color } = ARRANGE_STATUS_MAP[arrangeStatus] || {}
                     return <span style={{ color }}>{label}</span>
                 },
             },
@@ -197,7 +197,8 @@ export default class CaseSort extends Vue {
 
         return {
             load: async (params: any = {}) => {
-                const { data } = await list({ ...params, ...this.formModel })
+                // queryType写死2 表示卷宗管理
+                const { data } = await list({ ...params, ...this.formModel, queryType: '2' })
                 return {
                     result: data.data,
                     total: data.recordsTotal,
@@ -219,10 +220,13 @@ export default class CaseSort extends Vue {
     }
 
     async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+        const { volumeUrl } = row
+        if (!volumeUrl) {
+            this.$message.warning('暂无文件可查看')
+            return
+        }
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: row.volumeUrl,
+            fileUrl: volumeUrl,
         })
     }
 }
