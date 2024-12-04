@@ -1,5 +1,6 @@
 <template>
     <div class="sg-page icinfo-ai CaseNumberConfig">
+        <div class="sg-mb-2" style="color: var(--color-danger);font-weight: bold;">是否生效说明：“是”代表配置后真正生效，“否”代表不会生效。</div>
         <!-- 列表 -->
         <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
     </div>
