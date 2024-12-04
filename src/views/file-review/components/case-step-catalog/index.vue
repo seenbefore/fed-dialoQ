@@ -134,7 +134,15 @@ export default class Step2 extends Vue {
                     },
                 },
                 { prop: 'documentCode', label: '文号', width: '300px' },
-                { prop: 'documentName', label: '文书/证据名称', flex: '1' },
+                {
+                    prop: 'documentName',
+                    label: '文书/证据名称',
+                    flex: '1',
+                    render: (h, { index, row }) => {
+                        const result = row['documentName']
+                        return <span onClick={() => this.handleDocumentNameClick(row)}>{result}</span>
+                    },
+                },
                 { prop: 'pageNumber', label: '页码', width: '50px', align: 'center' },
             ],
             actions: [
@@ -142,6 +150,13 @@ export default class Step2 extends Vue {
                 { key: 'move', icon: 'el-icon-right', tooltip: activeTab === '1' ? '正卷移动到副卷' : '副卷移动到正卷', handler: this.handleMove },
             ],
         }
+    }
+    async handleDocumentNameClick(row: any) {
+        const documentUrl = row.documentUrl
+        await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
+            fileUrl: documentUrl,
+        })
+        console.log('handleDocumentNameClick', row)
     }
     // 主卷
     mainVolumeList: any[] = []
