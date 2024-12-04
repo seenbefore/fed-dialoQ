@@ -1,7 +1,7 @@
 <template>
     <div class="DirectoryConfig">
         <div class="sg-flexbox align-center sg-mb-2">
-            <el-button type="primary" @click="handleAdd">新增</el-button>
+            <el-button type="primary" @click="handleAdd" :disabled="!enableAdd">新增</el-button>
         </div>
         <!-- 目录配置表格 -->
         <DraggableDirectory v-model="value" v-bind="getMainTableAttrs" @change="handleChange"></DraggableDirectory>
@@ -34,6 +34,9 @@ export default class DirectoryConfig extends Vue {
     @Watch('formModel.volumeTypeCode', { immediate: true, deep: true })
     onFormModelVolumeTypeChange(val: string) {
         this.volumeType = val
+    }
+    get enableAdd() {
+        return this.formModel?.mainAndSubVolume.includes(this.type)
     }
     private territoryCode = ''
     private volumeType = ''

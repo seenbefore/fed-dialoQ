@@ -328,7 +328,14 @@ export default class CaseConfigAdd extends Vue {
         try {
             await this.formRef.validate(() => {}, true)
             const formModel = this.formModel
-
+            const subCatalogList = formModel.mainAndSubVolume.includes('sub')
+                ? formModel.subCatalogList.map((item: any, index: any) => {
+                      return {
+                          ...item,
+                          sortNo: index + 1 + '',
+                      }
+                  })
+                : []
             const params: any = {
                 lineCode: formModel.lineCode,
                 lineName: formModel.lineName,
@@ -348,12 +355,7 @@ export default class CaseConfigAdd extends Vue {
                         sortNo: index + 1 + '',
                     }
                 }),
-                subCatalogList: formModel.subCatalogList.map((item: any, index: any) => {
-                    return {
-                        ...item,
-                        sortNo: index + 1 + '',
-                    }
-                }),
+                subCatalogList,
                 showQrcode: formModel.showQrcode,
                 showBarcode: formModel.showBarcode,
                 showPhotographer: formModel.showPhotographer,
