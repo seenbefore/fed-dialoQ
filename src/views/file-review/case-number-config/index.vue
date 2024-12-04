@@ -29,7 +29,7 @@ export default class CaseNumberConfig extends Vue {
                 align: 'center',
                 render: (h, { row }) => {
                     const isTemplate = row.isTemplate
-                    const result = isTemplate == '1' ? '否' : '是'
+                    const result = isTemplate == 1 ? '否' : '是'
                     return <span>{result}</span>
                 },
             },
