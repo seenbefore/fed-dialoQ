@@ -11,8 +11,9 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { SORT_STATUS, SORT_STATUS_MAP } from './enum'
-import { getList } from './api'
+import { ARRANGE_STATUS, ARRANGE_STATUS_MAP } from './enum'
+import { list, getDictList } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'CaseSort',
@@ -33,22 +34,26 @@ export default class CaseSort extends Vue {
                 columns: [
                     {
                         tag: 'select',
-                        name: 'caseType',
+                        name: 'volumeType',
                         itemAttrs: {
                             label: '卷宗类型',
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [
-                                { label: '全部', value: '' },
-                                { label: '行政处罚', value: '1' },
-                                { label: '行政检查', value: '2' },
-                            ],
+                            filterable: true,
+                            'default-first-option': true,
+                            options: async () => {
+                                const { data } = await getDictList({ dictType: 'archive_type' })
+                                return data.map((item: any) => ({
+                                    label: item.dictChineseName,
+                                    value: item.dictCode,
+                                }))
+                            },
                         },
                     },
                     {
                         tag: 'input',
-                        name: 'caseName',
+                        name: 'volumeName',
                         itemAttrs: {
                             label: '卷宗名称',
                         },
@@ -58,7 +63,7 @@ export default class CaseSort extends Vue {
                     },
                     {
                         tag: 'input',
-                        name: 'target',
+                        name: 'volumeObject',
                         itemAttrs: {
                             label: '对象',
                         },
@@ -72,7 +77,7 @@ export default class CaseSort extends Vue {
                 columns: [
                     {
                         tag: 'input',
-                        name: 'returnNo',
+                        name: 'archiveNumber',
                         itemAttrs: {
                             label: '归档号',
                         },
@@ -82,13 +87,13 @@ export default class CaseSort extends Vue {
                     },
                     {
                         tag: 'select',
-                        name: 'status',
+                        name: 'arrangeStatus',
                         itemAttrs: {
                             label: '整理状态',
                         },
                         attrs: {
                             placeholder: '请选择',
-                            options: [{ label: '全部', value: '' }, ...Object.values(SORT_STATUS_MAP)],
+                            options: [{ label: '全部', value: '' }, ...Object.values(ARRANGE_STATUS_MAP)],
                         },
                     },
                     {
@@ -124,41 +129,41 @@ export default class CaseSort extends Vue {
         const columns: TableColumn[] = [
             {
                 label: '卷宗类型',
-                prop: 'caseType',
+                prop: 'volumeType',
                 minWidth: '100px',
             },
             {
                 label: '卷宗名称',
-                prop: 'caseName',
+                prop: 'volumeName',
                 minWidth: '200px',
             },
             {
                 label: '编号',
-                prop: 'code',
+                prop: 'volumeNumber',
                 minWidth: '200px',
             },
             {
                 label: '对象',
-                prop: 'target',
+                prop: 'volumeObject',
                 minWidth: '120px',
             },
             {
                 label: '归档日期',
-                prop: 'returnDate',
+                prop: 'archiveDate',
                 minWidth: '120px',
             },
             {
                 label: '归档号',
-                prop: 'returnNo',
+                prop: 'archiveNumber',
                 minWidth: '200px',
             },
             {
                 label: '整理状态',
-                prop: 'status',
+                prop: 'arrangeStatus',
                 minWidth: '100px',
                 render: (h, { row }) => {
-                    const { status } = row
-                    const { label, color } = SORT_STATUS_MAP[status] || {}
+                    const { arrangeStatus } = row
+                    const { label, color } = ARRANGE_STATUS_MAP[arrangeStatus] || {}
                     return <span style={{ color }}>{label}</span>
                 },
             },
@@ -166,6 +171,9 @@ export default class CaseSort extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
@@ -189,7 +197,8 @@ export default class CaseSort extends Vue {
 
         return {
             load: async (params: any = {}) => {
-                const { data } = await getList({ ...params, ...this.formModel })
+                // queryType写死2 表示卷宗管理
+                const { data } = await list({ ...params, ...this.formModel, queryType: '2' })
                 return {
                     result: data.data,
                     total: data.recordsTotal,
@@ -206,15 +215,18 @@ export default class CaseSort extends Vue {
     handleSort(row: any) {
         this.$router.push({
             path: '/file-review/case-sort/save',
-            query: { id: row.id },
+            query: { id: row.id, orgCode: row.orgCode, lineCode: row.lineCode, volumeTypeCode: row.volumeTypeCode },
         })
     }
 
     async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+        const { volumeUrl } = row
+        if (!volumeUrl) {
+            this.$message.warning('暂无文件可查看')
+            return
+        }
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: volumeUrl,
         })
     }
 }

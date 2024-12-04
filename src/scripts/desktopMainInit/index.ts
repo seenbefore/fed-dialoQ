@@ -10,8 +10,15 @@ import Vue, { Component } from 'vue'
 import VueRouter from 'vue-router'
 import { Store } from 'vuex'
 import { getOS } from '../utils/os'
-import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme'
-
+/**
+ * 通用初始化
+ * @param App
+ * @param store
+ * @param router
+ * @param useStore
+ * @param defaultSettings
+ * @returns
+ */
 export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUserStore, S extends BaseSettingStore = BaseSettingStore>(
     App: Component,
     store: Store<T>,
@@ -33,16 +40,7 @@ export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUse
         // 此处添加获取全局配置等异步操作
         settings.isThirdParty = isThirdParty ? true : settings.isThirdParty
         settingsStore.changeSetting(settings as any)
-        // 设置自定义主题名称和色系
-        settingsStore.updateThemeName('blue')
-        let themeVariables: IDefinedThemeValue = {
-            '--color-primary': '#06f',
-            '--color-success': '#6DD400',
-            '--color-warning': '#FF7D00',
-            '--color-danger': '#F4333C',
-            '--color-info': '#666666',
-        }
-        settingsStore.updateThemeVariables(themeVariables)
+
         // 判断电脑系统
         document.documentElement.setAttribute('class', getOS())
     }).then(mount => mount({ router, store, themeStore: settingsStore, App }))

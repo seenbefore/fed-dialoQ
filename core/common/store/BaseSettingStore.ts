@@ -7,7 +7,7 @@ export interface IBaseSettingStore {
     tagsView: boolean
     theme: {
         name: string
-        variables: Record<string, any>
+        variable: Record<string, any>
     }
     isThirdParty: boolean
 }
@@ -26,7 +26,7 @@ export default class BaseSettingStore<T extends IBaseSettingStore = IBaseSetting
     /* 主题 */
     public theme = {
         name: '',
-        variables: {},
+        variable: {},
     }
 
     /* Whether need tagsView */
@@ -49,7 +49,7 @@ export default class BaseSettingStore<T extends IBaseSettingStore = IBaseSetting
 
     @Mutation
     public updateThemeVariables(variables: Record<string, any>): void {
-        this.theme.variables = variables
+        this.theme.variable = variables
     }
 
     @Mutation

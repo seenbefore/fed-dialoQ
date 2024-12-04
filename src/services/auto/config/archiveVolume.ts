@@ -333,6 +333,16 @@ export interface ArchiveVolumeCatalogDTO {
     hasAttachment: string
 
     /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
+
+    /**
      * 文书目录编码
      */
     catalogCode: string
@@ -346,6 +356,11 @@ export interface ArchiveVolumeCatalogDTO {
      * 备注
      */
     remark: string
+
+    /**
+     * 主键
+     */
+    id: string
 
 }
 
@@ -393,6 +408,16 @@ export interface ArchiveVolumeCatalogVO {
      * 正/副卷(1:正卷,2:副卷)
      */
     volumeType: string
+
+    /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
 
     /**
      * 创建人id
@@ -695,6 +720,11 @@ export interface ArchiveCaseNumberConfigVO {
      * 案卷号
      */
     caseNumber: string
+
+    /**
+     * 是否为模版(0:否,1:是)
+     */
+    isTemplate: number
 
     /**
      * 卷宗名称

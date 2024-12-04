@@ -10,7 +10,7 @@ export default {
         bodyClass: '',
         parent: 'Index',
         rank: 2,
-        title: '案卷配置',
+        title: '案卷配置表单',
         keepAlive: false,
         requireAuth: true,
         aliveOnlyTo: [],

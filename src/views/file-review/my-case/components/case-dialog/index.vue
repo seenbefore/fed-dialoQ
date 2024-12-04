@@ -3,6 +3,7 @@
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
+        <!-- {{ selectedRow }} -->
         <!-- 列表 -->
         <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
 
@@ -16,6 +17,7 @@
 <script lang="tsx">
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
+import { list, getArchiveVolumeAndCaseNumberConfig, VO } from './api'
 
 @Component({
     name: 'CaseDialog',
@@ -29,22 +31,7 @@ export default class CaseDialog extends Vue {
     selectedRow: any = null
 
     // 模拟数据
-    tableData = [
-        {
-            id: 1,
-            name: 'XXXXXXXXXXXXX',
-            code: 'XXXXX立字〔2022〕第XXXXXX号',
-            target: 'XXX等2个',
-            createDate: 'XXXX-XX-XX',
-        },
-        {
-            id: 2,
-            name: 'XXXXXXXXXXXXX',
-            code: 'XXXXX立字〔2022〕第XXXXXX号',
-            target: 'XXX',
-            createDate: 'XXXX-XX-XX',
-        },
-    ]
+    tableData = []
 
     get title() {
         return '新增'
@@ -57,20 +44,66 @@ export default class CaseDialog extends Vue {
     handleRowClick(row: any) {
         this.selectedRow = row
     }
+    private body = {}
+    async handleSelect(row: VO) {
+        try {
+            const {
+                id,
+                caseName,
+                caseAddress,
+                caseNumber,
+                filingTime,
+                closingTime,
+                decisionNumber,
+                handler,
+                party,
+                punishmentResult,
+                territoryCode,
+                volumeType,
+                enforcementDepartment,
+                mainHandlerId,
+                assistHandlerId,
+            } = row
+            const params = {
+                lineCode: territoryCode, // 条线编码
+                volumeTypeCode: volumeType, // 卷宗类型
+                orgCode: (row as any).orgCode, // 机构编码
+            }
+            const { data } = await getArchiveVolumeAndCaseNumberConfig(params)
 
-    handleSelect(row: any) {
-        this.selectedRow = row
-        this.confirm()
+            Object.assign(this.body, {
+                caseId: id,
+                caseName,
+                caseAddress,
+                caseNumber,
+                filingTime,
+                closingTime,
+                decisionNumber,
+                handler,
+                party,
+                punishmentResult,
+                orgStandardName: enforcementDepartment,
+                mainHandlerId,
+                assistHandlerId,
+                ...params,
+            })
+            console.log(data)
+            this.selectedRow = row
+            this.$message.success('获取配置成功，请点击确认')
+        } catch (error) {
+            console.log(error)
+            //this.$message.error('获取配置异常')
+        }
     }
 
     get getFormAttrs() {
         const fields: FormColumn[] = [
             {
                 tag: 'input',
-                name: 'name',
+                name: 'caseName',
                 label: '名称',
                 attrs: {
-                    placeholder: '输入文献名进行过滤',
+                    placeholder: '请输入',
                     clearable: true,
                     prefixIcon: 'el-icon-search',
                 },
@@ -105,22 +138,22 @@ export default class CaseDialog extends Vue {
         const columns: TableColumn[] = [
             {
                 label: '名称',
-                prop: 'name',
+                prop: 'caseName',
                 minWidth: '200px',
             },
             {
                 label: '编号',
-                prop: 'code',
+                prop: 'caseNumber',
                 minWidth: '200px',
             },
             {
                 label: '对象',
-                prop: 'target',
+                prop: 'party',
                 minWidth: '120px',
             },
             {
                 label: '创建日期',
-                prop: 'createDate',
+                prop: 'createTime',
                 width: '170px',
             },
             {
@@ -139,20 +172,16 @@ export default class CaseDialog extends Vue {
         ]
 
         return {
-            height: '400px',
+            auto: false,
             pageVisible: false,
             load: async (params: any = {}) => {
-                // 过滤数据
-                let result = this.tableData
-                if (this.formModel.name) {
-                    const searchText = this.formModel.name.toLowerCase()
-                    result = this.tableData.filter(
-                        item => item.name.toLowerCase().includes(searchText) || item.code.toLowerCase().includes(searchText) || item.target.toLowerCase().includes(searchText),
-                    )
+                const payload: any = {
+                    ...this.formModel,
                 }
+                const { data } = await list(payload)
                 return {
-                    result,
-                    total: result.length,
+                    result: data,
+                    total: data.length,
                 }
             },
             columns,
@@ -161,7 +190,7 @@ export default class CaseDialog extends Vue {
 
     async confirm() {
         if (!this.selectedRow) return
-        this.$options.confirm?.(this.selectedRow)
+        this.$options.confirm?.(this.body)
     }
 
     cancel() {

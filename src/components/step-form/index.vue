@@ -10,7 +10,7 @@
         <!-- Main content -->
         <div class="content">
             <keep-alive>
-                <component :is="currentComponent" v-bind="currentProps" ref="stepComponent"></component>
+                <component :is="currentComponent" v-bind="currentProps" ref="stepComponent" v-on="currentConfig.on"></component>
             </keep-alive>
         </div>
 
@@ -49,6 +49,7 @@ export interface StepConfig {
     component: any
     /** 传递给组件的属性 */
     props?: Record<string, any>
+    on?: Record<string, any>
     /** 步骤的其他操作 */
     actions?: any
     /** 自定义渲染函数 */

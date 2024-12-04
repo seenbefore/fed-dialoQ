@@ -4,6 +4,7 @@ import BaseUserStore from '../../../store/BaseUserStore'
 export function setupDesktopAuthGuard<T extends BaseUserStore>(router: VueRouter, userStore: T): void {
     router.beforeEach(async (to, from, next) => {
         const meta = to.meta || {}
+
         // 跳转到登录页面默认退出
         if (to.path === '/login') {
             userStore.clear()

@@ -1,5 +1,7 @@
 <template>
     <div class="DraggableDirectory">
+        <!-- {{ directoryList }} -->
+        <!-- {{ value }} -->
         <!-- 固定表头 -->
         <div class="directory-header-wrapper">
             <div class="directory-header">
@@ -12,16 +14,16 @@
                     </template>
                 </div>
                 <div class="header-right">
-                    <span class="header-actions">操作</span>
+                    <span class="header-actions" :style="{ width: actionsWidth + 'px' }">操作</span>
                 </div>
             </div>
         </div>
 
         <!-- 可滚动的内容区域 -->
         <div class="directory-content" :style="{ maxHeight: maxHeight + 'px' }">
-            <draggable v-model="directoryList" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
+            <draggable v-model="value" v-bind="dragOptions" class="directory-list" @start="onDragStart" @end="onDragEnd">
                 <transition-group type="transition">
-                    <div v-for="(item, index) in directoryList" :key="item.sort" class="directory-item">
+                    <div v-for="(item, index) in value" :key="item[idKey]" class="directory-item">
                         <div class="item-content">
                             <div class="item-left">
                                 <span class="drag-handle">
@@ -30,7 +32,7 @@
                                 <template v-for="column in columns">
                                     <span :key="column.prop" :class="['item-' + column.prop]" :style="getColumnStyle(column)" v-if="!column.hide">
                                         <template v-if="column.render">
-                                            <render-cell :render="column.render" :row="item"></render-cell>
+                                            <render-cell :render="column.render" :row="item" :index="index"></render-cell>
                                         </template>
                                         <template v-else>
                                             {{ item[column.prop] }}
@@ -39,10 +41,10 @@
                                 </template>
                             </div>
                             <div class="item-right">
-                                <div class="item-actions">
+                                <div class="item-actions" :style="{ width: actionsWidth + 'px' }">
                                     <template v-for="action in actions">
                                         <el-tooltip :key="action.key" :content="action.tooltip" :disabled="!action.tooltip">
-                                            <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action, item)">
+                                            <el-button :key="action.key" type="text" v-if="!action.hide || !action.hide(item)" @click="handleAction(action, item, index)">
                                                 <i :class="action.icon"></i>
                                                 <span v-if="action.label">{{ action.label }}</span>
                                             </el-button>
@@ -69,6 +71,7 @@ interface ColumnItem {
     hide?: boolean
     minWidth?: number | string
     align?: 'left' | 'center'
+    flex?: number | string
     render?: (h: any, params: { row: any }) => any
 }
 
@@ -77,7 +80,7 @@ interface ActionItem {
     icon: string
     label?: string
     tooltip?: string
-    handler?: (row: any, context: any) => Promise<any>
+    handler?: (row: any, context: any, index: number) => Promise<any>
     hide?: (row: any) => boolean
 }
 
@@ -90,18 +93,25 @@ interface ActionItem {
             props: {
                 render: Function,
                 row: Object,
+                index: Number,
             },
             render: (h: any, ctx: any) => {
-                return ctx.props.render(h, { row: ctx.props.row })
+                return ctx.props.render(h, { row: ctx.props.row, index: ctx.props.index })
             },
         },
     },
 })
 export default class DraggableDirectory extends Vue {
+    @Prop({ type: Number, default: 120 })
+    actionsWidth!: number
     /**
      * 排序标识
      */
     @Prop({ type: String, default: 'sort' }) sortKey!: string
+    /**
+     * 拖拽Key
+     */
+    @Prop({ type: String, default: 'id' }) idKey!: string
     @Prop({ type: Array, default: () => [] })
     value!: any[]
 
@@ -116,10 +126,7 @@ export default class DraggableDirectory extends Vue {
 
     @Prop({
         type: Array,
-        default: () => [
-            { key: 'delete', icon: 'el-icon-delete' },
-            { key: 'preview', icon: 'el-icon-view' },
-        ],
+        default: () => [{ key: 'delete', icon: 'el-icon-delete' }],
     })
     actions!: ActionItem[]
 
@@ -128,6 +135,14 @@ export default class DraggableDirectory extends Vue {
 
     @Prop({ type: String, default: '确定要删除吗？' })
     confirmMessage!: string
+
+    @Watch('value', { immediate: true, deep: true })
+    onValueChange(val: any) {
+        if (Array.isArray(val)) {
+            this.$emit('input', val)
+            this.$emit('change', val)
+        }
+    }
 
     get dragOptions() {
         return {
@@ -139,34 +154,19 @@ export default class DraggableDirectory extends Vue {
         }
     }
 
-    get directoryList() {
-        this.value.map((item, index) => {
-            item.sort = index + 1
-            // return {
-            //     ...item,
-            //     sort: index + 1,
-            //     index,
-            // }
-            return item
-        })
-        return this.value
-    }
-
-    set directoryList(value: any[]) {
-        this.$emit('input', value)
-        this.$emit('change', value)
-    }
-
-    handleAction(action: ActionItem, item: any) {
+    handleAction(action: ActionItem, item: any, index: number) {
         switch (action.key) {
             case 'delete':
-                action.handler ? action.handler(item, this) : this.handleDelete(item)
-                break
-            case 'preview':
-                action.handler ? action.handler(item, this) : this.handlePreview(item)
+                action.handler ? action.handler(item, this, index) : this.handleDelete(item)
                 break
             default:
-                action.handler ? action.handler(item, this) : this.$emit(action.key, item)
+                action.handler
+                    ? action.handler(item, this, index)
+                    : this.$emit(action.key, {
+                          row: item,
+                          index,
+                          context: this,
+                      })
         }
     }
 
@@ -175,27 +175,25 @@ export default class DraggableDirectory extends Vue {
     }
 
     onDragEnd() {
-        // 拖拽结束时的处理
         this.updateIndexes()
+        this.$emit('drag-end', this.value)
+        this.$emit('change', this.value)
     }
 
-    updateIndexes() {
-        // 更新序号
-        this.directoryList = this.directoryList.map((item, index) => ({
-            ...item,
-            sort: index + 1,
-            index,
-        }))
-    }
+    updateIndexes() {}
 
     handlePreview(item: any) {
         this.$emit('preview', item)
     }
     removeItem(item: any) {
-        const index = item.index
-        const newList = [...this.directoryList]
-        newList.splice(index, 1)
-        this.directoryList = newList
+        const uuid = item[this.idKey]
+        console.log(`removeItem`, uuid)
+        // 找到对应的索引号
+        const index = this.value.findIndex(item => item[this.idKey] === uuid)
+        console.log('removeItem index', index)
+        this.value.splice(index, 1)
+        this.updateIndexes()
+        this.$emit('remove', this.value)
     }
     async handleDelete(item: any) {
         await this.$confirm(this.confirmMessage, '提示', {
@@ -217,6 +215,9 @@ export default class DraggableDirectory extends Vue {
         }
         if (column.align) {
             style.textAlign = column.align
+        }
+        if (column.flex) {
+            style.flex = column.flex + ''
         }
 
         return style
@@ -316,6 +317,9 @@ export default class DraggableDirectory extends Vue {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            span {
+                line-height: 1.4;
+            }
         }
 
         .item-left {

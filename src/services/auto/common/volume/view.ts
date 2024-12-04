@@ -47,6 +47,25 @@ export function receiveApprovalResult(data?: {
     })
 }
 
+/**
+ * 发起审批
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function saveElecFileApprove(data?: {
+/** 卷宗文书唯一标识(ArchiveVolumeTemp的id或ArchiveVolumeQuery的id) */ uid: string, 
+/** 案件id */ caseId: string, 
+/** 卷宗编号 */ elecFileNo: string, 
+/** 卷宗审批详情页展示的json串 */ elecFileData: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<any>>({
+        url: "/common/volume/view/saveElecFileApprove",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
 /** 枚举 - 审批类型 */
 export enum Splx {
     /** 修改审批 */

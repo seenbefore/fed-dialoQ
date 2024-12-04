@@ -485,11 +485,10 @@ modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
 ```typescript
 import { tagsViewStore } from '@/store/useStore'
 /**
- * 关闭当前标签页
+ * 关闭当前标签页并跳转到对应路由
  */
-Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {
-    await tagsViewStore.delView(this.$route)
-    this.$router.push(params)
+Vue.prototype.$back = async function(params: any) {
+   
 }
 ```
 
@@ -499,7 +498,7 @@ Vue.prototype.$closeCurrentAndOpenView = async function(params: any) {
 declare module 'vue/types/vue' {
     class C {}
     interface Vue {
-        $closeCurrentAndOpenView: (params: any) => void
+        $back: (params: any) => void
     }
 }
 ```
@@ -517,8 +516,11 @@ import { Component, Vue } from 'vue-property-decorator'
     name: 'Step2',
 })
 export default class Step2 extends Vue {
+    // 关闭当前标签页并跳转到对应路由
     async closeCurrentView() {
-        await this.$closeCurrentAndOpenView('/file-review/case-config')
+        await this.$back({
+            path: '/file-review/case-config'
+        })
     }
 }
 </script>

@@ -17,7 +17,8 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list } from './api'
+import { list, getDictList, VO, save } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'MyCase',
@@ -30,35 +31,44 @@ export default class MyCase extends Vue {
     @Ref('tableRef')
     tableRef!: TableRef
 
-    formModel: Record<string, any> = {}
+    formModel: Record<string, any> = {
+        // 1:按用户查询,2:按部门查询
+        queryType: '1',
+    }
 
+    mounted() {}
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    async handleView(row: any) {
-        const { archiveUrl } = row
-        console.log(archiveUrl)
+    async handleView(row: VO) {
+        const { volumeUrl } = row
+        console.log(volumeUrl)
         await this.$modalDialog(() => import('@/views/file-review/components/file-dialog/index.vue'), {
-            fileUrl: archiveUrl,
+            fileUrl: volumeUrl,
         })
     }
 
     async handleEdit(row: any) {
-        const result = await this.$modalDialog(() => import('./components/case-drawer/index.vue'), {
-            id: row.id,
+        this.$router.push({
+            path: '/file-review/my-case/save',
+            query: {
+                id: row.id,
+                action: 'edit',
+            },
         })
-        if (result) {
-            this.handleSearch()
-        }
     }
 
     async handleAdd() {
         const result = await this.$modalDialog(() => import('./components/case-dialog/index.vue'), {})
         if (result) {
-            // TODO: 调用保存接口
-            this.$message.success('新增成功')
-            this.handleSearch()
+            this.$router.push({
+                path: '/file-review/my-case/save',
+                query: {
+                    type: 'add',
+                    ...result,
+                },
+            })
         }
     }
 
@@ -70,11 +80,14 @@ export default class MyCase extends Vue {
                 label: '卷宗类型',
                 attrs: {
                     placeholder: '请选择',
+                    filterable: true,
+                    'default-first-option': true,
                     options: async () => {
-                        return [
-                            { label: '行政处罚', value: '1' },
-                            { label: '行政检查', value: '2' },
-                        ]
+                        const { data } = await getDictList({ dictType: 'archive_type' })
+                        return data.map((item: any) => ({
+                            label: item.dictChineseName,
+                            value: item.dictCode,
+                        }))
                     },
                 },
             },
@@ -151,12 +164,14 @@ export default class MyCase extends Vue {
             {
                 label: '卷宗类型',
                 prop: 'volumeType',
-                minWidth: '120px',
+                minWidth: '140px',
+                align: 'left',
             },
             {
                 label: '卷宗名称',
                 prop: 'volumeName',
-                minWidth: '250px',
+                minWidth: '180px',
+                align: 'left',
                 render: (h, { row }) => {
                     return (
                         <el-button
@@ -178,23 +193,36 @@ export default class MyCase extends Vue {
                 },
             },
             {
+                label: '编号',
+                prop: 'volumeNumber',
+                align: 'left',
+                minWidth: '250px',
+            },
+            {
                 label: '对象',
                 prop: 'volumeObject',
-                minWidth: '120px',
+                align: 'left',
+                minWidth: '160px',
             },
             {
                 label: '归档日期',
                 prop: 'archiveDate',
-                width: '170px',
+                align: 'left',
+                width: '120px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.archiveDate).format('YYYY-MM-DD')}</span>
+                },
             },
             {
                 label: '归档号',
                 prop: 'archiveNumber',
+                align: 'left',
                 minWidth: '250px',
             },
             {
                 label: '申请状态',
                 prop: 'applyStatus',
+                align: 'left',
                 minWidth: '100px',
                 render: (h, { row }) => {
                     const status = StatusEnumMap[row.applyStatus as keyof typeof StatusEnumMap]
@@ -220,6 +248,10 @@ export default class MyCase extends Vue {
                 label: '更新时间',
                 prop: 'updateTime',
                 width: '170px',
+                align: 'left',
+                render: (h, { row }) => {
+                    return <span>{moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
@@ -227,9 +259,10 @@ export default class MyCase extends Vue {
                 width: '120px',
                 fixed: 'right',
                 render: (h, { row }) => {
+                    const { volumeUrl } = row
                     return (
                         <div>
-                            <el-button type="text" onClick={() => this.handleView(row)}>
+                            <el-button type="text" onClick={() => this.handleView(row)} disabled={!volumeUrl}>
                                 查看
                             </el-button>
                             <el-button type="text" onClick={() => this.handleEdit(row)}>
@@ -242,7 +275,6 @@ export default class MyCase extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
             pageActionLayout: [],
             load: async (params: any = {}) => {
                 const { data } = await list({

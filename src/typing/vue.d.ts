@@ -10,16 +10,12 @@ declare module 'vue/types/vue' {
         openNewPage: (path: string, query: any) => void
         $bus: EventBus
         /**
-         * h5页面回退
+         * h5、PC页面回退
          */
-        $back: (reload: boolean) => void
+        $back: (params: any) => void
         /**
          * 发送消息
          */
         $postMessage: (data: { type: string; name?: string; title?: string; data?: any }) => void
-        /**
-         * PC关闭当前标签页 并打开新页面
-         */
-        $closeCurrentAndOpenView: (params: any) => void
     }
 }

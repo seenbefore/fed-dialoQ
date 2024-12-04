@@ -1,6 +1,6 @@
 <template>
-    <el-drawer class="document-wrap sg-drawer" append-to-body title="查看文件" :visible.sync="dialogVisible" :size="size">
-        <div class="content" v-loading.lock="isLoading">
+    <el-drawer class="document-wrap sg-drawer" append-to-body title="查看文件" :visible.sync="dialogVisible" :size="size" @close="cancel">
+        <div class="content" v-loading.lock="isLoading" id="FileDialog">
             <my-iframe-pdf :pdf-src="newUrl" iframe-width="100%" iframe-height="100%" v-if="urlType === 'pdf' && newUrl" zoom="100%"></my-iframe-pdf>
             <video v-else-if="urlType === 'video'" style="height:60vh" controls>
                 <source :src="newUrl" type="video/mp4" />
@@ -21,7 +21,8 @@
 
 <script>
 import { getNewUrl, getUrlType, isMp4, isVideo } from '@/utils/pdfAndImgUrl'
-
+import { useWatermark } from '@/scripts/utils/watermark'
+import { getUserInfoByToken } from '@/services/auto/volume/user'
 export default {
     name: 'FileDialog',
     props: {
@@ -44,6 +45,7 @@ export default {
             dialogVisible: true,
             newUrl: '',
             isLoading: false,
+            handlers: {},
         }
     },
     watch: {
@@ -51,7 +53,6 @@ export default {
             async handler(newV) {
                 this.isLoading = true
                 const result = await getNewUrl(newV).finally(() => (this.isLoading = false))
-                console.log(3333, result)
                 this.newUrl = result
             },
             immediate: true,
@@ -89,6 +90,25 @@ export default {
         isBlob() {
             return this.fileUrl.startsWith('blob:')
         },
+
+        cancel() {
+            this.$options?.cancel()
+        },
+    },
+    async mounted() {
+        const { setWatermark, clear } = useWatermark()
+        this.handlers = {
+            setWatermark,
+            clear,
+        }
+        const { data } = await getUserInfoByToken()
+        const message = `${data.userName} ${data.phone}`
+        this.handlers.setWatermark(message, {
+            fixed: true,
+        })
+    },
+    destroyed() {
+        this.handlers.clear()
     },
 }
 </script>

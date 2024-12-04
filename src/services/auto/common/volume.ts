@@ -22,6 +22,22 @@ export function fileGenerate(data?: {
     })
 }
 
+/**
+ * 获取文书模板
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function getDocBaseInfo(data?: {
+/** 模板code */ templateCode: string, 
+}, options?: ExAxiosRequestConfig) {
+    return http.request<Result<DocumentCommonFormHtmlVo>>({
+        url: "/common/volume/getDocBaseInfo",
+        type: "POST",
+        data,
+        ...options
+    })
+}
+
 export interface ErrorInfo {
 
     /**
@@ -71,6 +87,30 @@ export interface VolumeFileGenerateVO {
      * 文件base64
      */
     fileBase64: string
+
+}
+
+export interface DocumentCommonFormHtmlVo {
+
+    /**
+     * 模板字段配置
+     */
+    templateConfigMap: {[key: string]: any}
+
+    /**
+     * 模板code
+     */
+    templateCode: string
+
+    /**
+     * 模板code
+     */
+    templateName: string
+
+    /**
+     * html内容
+     */
+    htmlContent: string
 
 }
 

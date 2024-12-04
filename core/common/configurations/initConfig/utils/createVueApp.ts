@@ -1,4 +1,4 @@
-import { useTheme } from 'icinfo-ui'
+import { useTheme } from '@@core/common/theme'
 import { Component, CreateElement } from 'vue'
 import { VueRouter } from 'vue-router/types/router'
 import { Store } from 'vuex'

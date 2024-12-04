@@ -14,5 +14,6 @@ export default {
         requireAuth: true,
         aliveOnlyTo: [],
         activeMenu: '/file-review/case-sort',
+        noCache: true,
     },
 }

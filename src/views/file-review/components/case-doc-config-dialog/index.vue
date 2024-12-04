@@ -1,6 +1,6 @@
 <template>
     <el-dialog class="icinfo-ai DirectoryDialog" :title="title" :visible="true" width="600px" @close="cancel">
-        <div class="directory-content">
+        <div class="directory-content" id="DirectoryDialog">
             <!-- 搜索框 -->
             <div class="search-box">
                 <el-input v-model="searchText" placeholder="输入关键字进行过滤" clearable>
@@ -13,7 +13,7 @@
                 <el-tree
                     ref="tree"
                     :data="treeData"
-                    :default-checked-keys="value"
+                    :default-checked-keys="defaultCheckedKeys"
                     node-key="id"
                     show-checkbox
                     default-expand-all
@@ -21,10 +21,12 @@
                     @check="handleCheck"
                     v-if="treeData.length"
                 >
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
-                        <span>{{ node.label }}</span>
-                    </span>
+                    <template v-slot="{ node, data }">
+                        <span class="custom-tree-node">
+                            <i :class="['node-icon', data.children ? 'el-icon-folder' : 'el-icon-document']"></i>
+                            <span>{{ node.label }}</span>
+                        </span>
+                    </template>
                 </el-tree>
             </div>
         </div>
@@ -38,19 +40,31 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { getDocumentKindInfoList, Result, DocumentKindInfoVo } from '@/services/custom/doc/kindInfo'
-import { getElectricArchiveList } from '@/services/custom/external'
+
+import { list } from './api'
 
 @Component({
     name: 'DirectoryDialog',
     components: {},
 })
 export default class DirectoryDialog extends Vue {
+    /**
+     * 匹配关键字
+     */
+    @Prop({ type: String, default: 'id' }) nodeKey!: string
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
-    @Prop({ type: String, default: '' }) caseId!: string
-    // default-checked-keys
+    @Prop({ type: String, default: '' }) volumeRecordId!: string
+    /**
+     * 默认选中的节点
+     *
+     */
     @Prop({ type: Array, default: () => [] }) value!: any[]
+    /**
+     * 默认选中的节点标识
+     * ['1-1','2-1']
+     */
+    @Prop({ type: Array, default: () => [] }) defaultCheckedKeys!: any[]
 
     @Ref('tree') tree!: any
 
@@ -138,36 +152,47 @@ export default class DirectoryDialog extends Vue {
         this.loading = true
         try {
             /**树结构数据 */
-            const treeData: any[] = []
-            const { data } = await getElectricArchiveList({
-                caseId: this.caseId || 'ef01c4aad3f942e38d7f6c6fc3284316',
-            })
-            let i = 0
-            data.forEach(it => (it._id = ++i))
-            if (data && data.length) {
-                for (let i = 0; i < data.length; i++) {
-                    const stageDocs = data[i].item || []
-                    if (stageDocs.length) {
-                        let currItem: any = {
-                            label: data[i].title,
-                            value: data[i]._id,
-                            isLeafNode: false, //此父节点数据不要，用于过滤
-                            children: [],
+            await this.$nextTick()
+            const { data } = await list(
+                {
+                    volumeRecordId: this.volumeRecordId,
+                    volumeType: this.volumeType,
+                },
+                {
+                    exShowLoading: true,
+                    exShowLoadingOption: {
+                        target: document.getElementById('DirectoryDialog'),
+                    },
+                },
+            )
+
+            this.treeData = data.map((node, index) => {
+                const { caseStageCode, caseStageName } = node
+                if (node.documentList) {
+                    const children = node.documentList.map((child, index) => {
+                        return {
+                            ...child,
+                            id: child.documentId,
+                            label: child.documentName,
+                            value: child.documentId,
                         }
-                        stageDocs.forEach((item: any) => {
-                            currItem.children.push({
-                                ...item,
-                                label: item.documentEvidenceName,
-                                value: item.documentEvidenceUrl,
-                                isLeafNode: true,
-                                children: null,
-                            })
-                        })
-                        treeData.push(currItem)
+                    })
+                    return {
+                        ...node,
+                        id: caseStageCode,
+                        label: caseStageName,
+                        value: caseStageCode,
+                        children,
+                    }
+                } else {
+                    return {
+                        ...node,
+                        id: caseStageCode,
+                        label: caseStageName,
+                        value: caseStageCode,
                     }
                 }
-            }
-            this.treeData = treeData
+            })
         } catch (error) {
             console.log(error)
         }
@@ -189,20 +214,22 @@ export default class DirectoryDialog extends Vue {
     }
 
     handleCheck(data: any, checked: any) {
-        //this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
-        this.selectedNodes = [...checked.checkedNodes]
-        console.log('selectedNodes', this.selectedNodes)
+        this.selectedNodes = checked.checkedNodes.filter((node: any) => !node.children)
     }
 
     async confirm() {
-        // 将选中的节点转换为目录项
-        const directories = this.selectedNodes
-            .filter(node => node.isLeafNode)
-            .map((node, index) => ({
-                ...node,
-                hasAttachment: false,
-            }))
-        this.$options.confirm?.(directories)
+        const selectedNodes = this.selectedNodes
+        const originKeys = this.value.map(item => item[this.nodeKey])
+        // 通过比对获取新增的节点和删除的节点
+        const addNodes = selectedNodes.filter(node => !originKeys.includes(node[this.nodeKey]))
+        const deleteNodeKeys = originKeys.filter(key => !selectedNodes.map(node => node[this.nodeKey]).includes(key))
+        console.log('addNodes', addNodes, 'deleteNodeKeys', deleteNodeKeys)
+        const result: any = {
+            addNodes,
+            deleteNodeKeys,
+            selectedNodes,
+        }
+        this.$options.confirm?.(result)
     }
 
     cancel() {
@@ -221,6 +248,7 @@ export default class DirectoryDialog extends Vue {
         height: 500px;
         display: flex;
         flex-direction: column;
+        position: relative;
     }
 
     .search-box {

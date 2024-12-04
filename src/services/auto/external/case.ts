@@ -13,9 +13,9 @@ import { http } from "@/scripts/http"
  * @author zhengqiang
  */
 export function list(data?: {
-/** 承办人ID，必须 */ handlerId: string, 
-/** 机构编码，必须 */ orgCode: string, 
 /** 案件名称, 模糊查询 */ caseName?: string, 
+/** 承办人ID -- 后端使用 */ handlerId?: string, 
+/** 机构编码 -- 后端使用 */ orgCode?: string, 
 }, options?: ExAxiosRequestConfig) {
     return http.request<Result<ExternalCaseVO[]>>({
         url: "/external/case/list",
@@ -142,9 +142,24 @@ export interface ExternalCaseVO {
     caseNumber: string
 
     /**
+     * 执法部门编码
+     */
+    orgCode: string
+
+    /**
+     * 主办人id
+     */
+    mainHandlerId: string
+
+    /**
      * 案件名称
      */
     caseName: string
+
+    /**
+     * 协办人id
+     */
+    assistHandlerId: string
 
     /**
      * 主键
@@ -180,9 +195,19 @@ export interface ExternalCaseAttachmentVO {
 export interface ExternalCaseCatalogVO {
 
     /**
+     * 案件阶段编码
+     */
+    caseStageCode: string
+
+    /**
      * 附件列表
      */
     attachments: ExternalCaseAttachmentVO[]
+
+    /**
+     * 案件阶段名称
+     */
+    caseStageName: string
 
     /**
      * 文号

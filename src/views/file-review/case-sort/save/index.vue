@@ -7,6 +7,8 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import StepForm, { StepConfig } from '@/components/step-form/index.vue'
+import { nextSave } from '@/services/auto/my/volume'
+import { useLoading } from '@/hooks/useLoading'
 
 @Component({
     name: 'CaseSave',
@@ -20,9 +22,9 @@ export default class CaseSave extends Vue {
     @Prop({ type: String, default: '' }) archiveId!: string
     @Prop({ type: Number, default: 0 }) step!: number
     paylaod = {
+        id: this.id,
         caseId: this.caseId,
         archiveId: this.archiveId,
-        archiveCatalogContentList: [] as any[],
     }
     loading = false
     /** 当前步骤 */
@@ -31,9 +33,11 @@ export default class CaseSave extends Vue {
         return [
             {
                 title: '卷宗封面',
-                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
+                component: () => import('../components/index.vue'),
                 props: {
                     // 传递给组件的属性
+                    isEditVolume: true,
+                    ...this.$attrs,
                 },
 
                 render: (h, { row, handlers }) => {
@@ -42,7 +46,10 @@ export default class CaseSave extends Vue {
                             <el-button
                                 type=""
                                 onClick={async () => {
-                                    console.log('取消')
+                                    this.$router.back()
+                                    this.$back({
+                                        path: '/file-review/case-sort',
+                                    })
                                 }}
                             >
                                 取消
@@ -76,7 +83,7 @@ export default class CaseSave extends Vue {
                                 onClick={async () => {
                                     const currentComponent = handlers.getCurrentComponent()
                                     const result = await currentComponent.submit?.()
-                                    this.paylaod.archiveCatalogContentList = result
+                                    Object.assign(this.paylaod, result)
                                     await this.handleSubmit()
                                 }}
                             >
@@ -124,11 +131,14 @@ export default class CaseSave extends Vue {
         })
     }
     async handleSubmit() {
-        const payload = this.paylaod
-        console.log('submit', payload)
-        // this.$http.get('/punish/common/getLoginUserInfo', {
-        //     exShowLoading: true,
-        // })
+        await useLoading(nextSave, {
+            ...this.paylaod,
+            id: this.id,
+        })
+        this.$message.success('操作成功')
+        this.$back({
+            path: '/file-review/case-sort',
+        })
     }
 }
 </script>
