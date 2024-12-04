@@ -121,7 +121,8 @@ export default class DirectoryConfig extends Vue {
             this.$message.warning('请先选择条线')
             return
         }
-        const defaultCheckedKeys = this.value.map(item => item.catalogCode)
+        const nodeKey = 'catalogCode'
+        const defaultCheckedKeys = this.value.map(item => item[nodeKey])
         console.log('defaultCheckedKeys', defaultCheckedKeys, this.value)
 
         const { addNodes }: DirectoryDialogResult = await this.$modalDialog(() => import('./directory-dialog/index.vue'), {
@@ -130,13 +131,16 @@ export default class DirectoryConfig extends Vue {
             defaultCheckedKeys,
             territoryCode: this.territoryCode,
             volumeType: this.volumeType,
-            nodeKey: 'catalogCode',
             value: this.value,
+            nodeKey,
         } as DirectoryDialog)
         if (addNodes) {
             const _addNodes = addNodes.map(item => {
                 return {
-                    id: item.catalogCode,
+                    id: '',
+                    documentEvidenceName: item.documentEvidenceName,
+                    documentEvidenceId: item.documentEvidenceId,
+                    documentEvidenceCode: item.documentEvidenceCode,
                     catalogName: item.catalogName,
                     volumeType: this.type === 'main' ? '1' : '2',
                     hasAttachment: '1',

@@ -286,9 +286,10 @@ export default class Step2 extends Vue {
         const defaultCheckedKeys = list.map(item => item.id)
         const { addNodes } = await this.$modalDialog(() => import('@/views/file-review/components/case-doc-config-dialog/index.vue'), {
             type: 'add',
-            value: defaultCheckedKeys,
+            defaultCheckedKeys: defaultCheckedKeys,
             volumeRecordId: this.id,
             volumeType: this.activeTab,
+            value: [...list],
         })
         console.log('addNodes', addNodes)
         if (addNodes) {

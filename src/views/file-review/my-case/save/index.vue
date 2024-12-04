@@ -20,6 +20,8 @@ import { saveVolumeCover, getArchiveVolumeAndCaseNumberConfig, submitDocument, m
     },
 })
 export default class CaseSave extends Vue {
+    /** 文书模板 */
+    @Prop({ type: String, default: 'DT2DZJZFM0000000001' }) templateCode!: string
     /**
      * action 类型
      * add:新增
@@ -34,8 +36,8 @@ export default class CaseSave extends Vue {
     @Prop({ type: String, default: '' }) volumeNumber!: string
     /** 案件id */
     @Prop({ type: String, default: '' }) caseId!: string
-    /** 条线编码 */
-    @Prop({ type: String, default: '' }) lineCode!: string
+    /** 条线编码  默认消防 */
+    @Prop({ type: String, default: 'A037' }) lineCode!: string
     /** 卷宗类型 */
     @Prop({ type: String, default: '' }) volumeTypeCode!: string
     /** 机构编码 */
@@ -46,8 +48,7 @@ export default class CaseSave extends Vue {
     @Prop({ type: String, default: '' }) caseName!: string
     /** 决定书编号 */
     @Prop({ type: String, default: '' }) decisionNumber!: string
-    /** 当事人 */
-    @Prop({ type: String, default: '' }) party!: string
+
     /** 当前步骤 0:卷宗封面 1:卷宗目录 2:完成 */
     @Prop({ type: Number, default: 0 }) step!: number
 
@@ -92,6 +93,7 @@ export default class CaseSave extends Vue {
         id: this.id,
         volumeConfigId: '',
         volumeNumber: '',
+        archiveNumber: '',
     }
     loading = {
         previewSave: false,
@@ -113,7 +115,7 @@ export default class CaseSave extends Vue {
                     // 传递给组件的属性
                     docParams: {
                         volumeRecordId: this.paylaod.id,
-                        templateCode: 'DT2DZJZFM0000000001',
+                        templateCode: this.templateCode,
                     },
                     row: {
                         // 归档号
@@ -161,12 +163,11 @@ export default class CaseSave extends Vue {
                                             this.loading.cover = true
                                             const { data } = await saveVolumeCover({
                                                 ...result,
-                                                party: this.party,
+
                                                 volumeConfigId: this.paylaod.volumeConfigId,
                                                 caseId: this.paylaod.caseId,
                                                 volumeNumber: this.paylaod.volumeNumber,
-                                                //retentionPeriod: result.retentionPeriod,
-                                                //archiveNumber: result.archiveNumber,
+                                                archiveNumber: this.paylaod.archiveNumber,
                                             })
                                             this.paylaod.id = data.id
                                             this.loading.cover = false

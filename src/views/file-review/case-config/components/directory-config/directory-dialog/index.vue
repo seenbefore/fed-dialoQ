@@ -113,6 +113,7 @@ export default class DirectoryDialog extends Vue {
                 if (node.item) {
                     const children = item.map((child, index) => {
                         return {
+                            ...child,
                             id: child.documentEvidenceCode,
                             label: child.documentEvidenceName,
                             value: child.documentEvidenceCode,

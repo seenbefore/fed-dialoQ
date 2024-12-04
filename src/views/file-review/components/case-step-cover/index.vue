@@ -81,13 +81,9 @@ export default class Step1 extends Vue {
             }
         }
         return () => {
-            const data = templateConfigKeys.reduce((acc, key) => {
-                acc[key] = this.row[key]
-                return acc
-            }, {})
             return {
                 data: {
-                    ...data,
+                    ...this.row,
                 },
             }
         }

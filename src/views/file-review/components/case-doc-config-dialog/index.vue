@@ -13,7 +13,7 @@
                 <el-tree
                     ref="tree"
                     :data="treeData"
-                    :default-checked-keys="value"
+                    :default-checked-keys="defaultCheckedKeys"
                     node-key="id"
                     show-checkbox
                     default-expand-all
@@ -55,8 +55,16 @@ export default class DirectoryDialog extends Vue {
     @Prop({ type: String }) type!: 'add' | 'edit'
     @Prop({ type: String }) volumeType!: string
     @Prop({ type: String, default: '' }) volumeRecordId!: string
-    // default-checked-keys
+    /**
+     * 默认选中的节点
+     *
+     */
     @Prop({ type: Array, default: () => [] }) value!: any[]
+    /**
+     * 默认选中的节点标识
+     * ['1-1','2-1']
+     */
+    @Prop({ type: Array, default: () => [] }) defaultCheckedKeys!: any[]
 
     @Ref('tree') tree!: any
 
