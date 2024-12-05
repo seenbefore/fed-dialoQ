@@ -235,7 +235,7 @@ export default class QuestionPaperList extends Vue {
     }
 
     async handlePreview(row: any) {
-        console.log(row)
+        this.$router.push(`/question-bank/paper/preview?id=${row.id}`)
     }
 
     mounted() {}

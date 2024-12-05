@@ -2367,6 +2367,7 @@ export default class AppChart extends Vue {
 - sg-data-view组件自带的有导出当前页面数据和导出全部的功能，操作栏不要再写导出的方法
 - 请不要移除class类`sg-page`、`icinfo-ai`
 - 使用枚举的时候请使用以下方式，确保ts解析正常`GenderEnumMap[key as keyof typeof GenderEnumMap]?.label`
+- `template`标签中不要使用`?.`的语法。比如`{{ item?.name }}`请写成`{{ item.name || '-' }}`
 
 
 # Workflow
