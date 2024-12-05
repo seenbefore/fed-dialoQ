@@ -82,6 +82,11 @@ export const LocalMenu: UserMenu[] = [
                 icon: 'el-icon-document',
                 uri: '/question-bank/list',
             },
+            {
+                label: '考卷列表',
+                icon: 'el-icon-document',
+                uri: '/question-bank/paper',
+            },
         ],
     },
 ]
