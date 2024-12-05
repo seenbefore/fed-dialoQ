@@ -4,8 +4,11 @@
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
         <!-- 在查询条件和列表之间添加 -->
-        <div class="sg-flexbox align-center justify-between" style="margin-bottom: 5px;">
-            <el-button type="primary" @click="handleAdd">新增题目</el-button>
+        <div class="sg-flexbox align-center justify-between" style="margin-bottom: 7px;">
+            <div>
+                <el-button type="primary" @click="handleAdd">新增题目</el-button>
+                <el-button type="primary" @click="handleImport">导入题库</el-button>
+            </div>
         </div>
 
         <!-- 列表 -->
@@ -181,7 +184,7 @@ export default class QuestionBankList extends Vue {
         ]
 
         return {
-            // 表格滚动吸顶 不要删减
+            // 表格滚动吸顶 不要���减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.QuestionBankList'),
             },
@@ -229,10 +232,14 @@ export default class QuestionBankList extends Vue {
         this.$message.success('删除成功')
         this.handleSearch()
     }
-
-    mounted() {
-        this.handleSearch()
+    async handleImport() {
+        const result = await this.$modalDialog(() => import('./components/import-drawer/index.vue'))
+        if (result) {
+            this.handleSearch()
+        }
     }
+
+    mounted() {}
 }
 </script>
 
