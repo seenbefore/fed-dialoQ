@@ -209,6 +209,12 @@ core
 # PC 端开发
 
 ## 环境配置
+**反向代理规则**：`VUE_APP_BASEURL_API`和`DEV_PROXY_TARGET_API`配对。如果要新增多个代理，可以按照上述变量新增，并在`_API`后缀添加相同变量，然后重启服务即可，比如：
+```bash
+# 代理地址2
+VUE_APP_BASEURL_API_ADMIN='/@API_ADMIN'
+DEV_PROXY_TARGET_API_ADMIN='http://192.168.1.155:8885/api'
+```
 
 ### 本地开发
 
@@ -225,6 +231,8 @@ core
 
 -   配置文件为`.env.production`
 -   如果走 nginx 反向代理，则配置`VUE_APP_BASEURL_API`为`/@API`，否则配置`VUE_APP_BASEURL_API`为生产地址。
+
+
 
 ## 请求管理
 

@@ -73,6 +73,37 @@ if (isDev) {
 
 const outputDir = env.outputDir || 'dist'
 
+/* 自动生成代理配置 */
+function generateProxyConfig() {
+    const proxyConfig = {}
+
+    // 获取所有环境变量
+    const envVars = process.env
+
+    // 查找所有 VUE_APP_BASEURL_ 开头的环境变量
+    Object.keys(envVars).forEach(key => {
+        if (key.startsWith('VUE_APP_BASEURL_')) {
+            const suffix = key.replace('VUE_APP_BASEURL_', '')
+            const targetKey = `DEV_PROXY_TARGET_${suffix}`
+            const proxyPath = envVars[key]
+            const targetUrl = envVars[targetKey]
+
+            // 只有当代理路径和目标URL都存在时才添加配置
+            if (proxyPath && targetUrl) {
+                proxyConfig[proxyPath] = {
+                    changeOrigin: true,
+                    pathRewrite: { [`^${proxyPath}`]: '' },
+                    target: targetUrl,
+                }
+
+                // 输出代理配置信息
+                Log.info(`配置代理: ${proxyPath} -> ${targetUrl}`)
+            }
+        }
+    })
+
+    return proxyConfig
+}
 /**
  * @return {import('@vue/cli-service').ConfigFunction}
  */
@@ -92,25 +123,13 @@ module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
             ].join('\n'),
         )
 
-    const devServerOptions = env.DEV_PROXY_TARGET_API
-        ? {
-              devServer: {
-                  host: '0.0.0.0',
-                  /* 更详细的配置规则：https://webpack.docschina.org/configuration/dev-server/#devserver-proxy */
-                  proxy: {
-                      [env.VUE_APP_BASEURL_API]: {
-                          changeOrigin: true,
-                          pathRewrite: { '^/@API': '' },
-                          target: env.DEV_PROXY_TARGET_API,
-                      },
-                  },
-              },
-          }
-        : {
-              devServer: {
-                  host: '0.0.0.0',
-              },
-          }
+    // 修改 devServerOptions 的生成逻辑
+    const devServerOptions = {
+        devServer: {
+            host: '0.0.0.0',
+            proxy: generateProxyConfig(),
+        },
+    }
     return {
         ...entry,
         outputDir,
