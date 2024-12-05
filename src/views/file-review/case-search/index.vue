@@ -12,7 +12,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list, getDictList, VolumeNoSelfVO } from './api'
+import { list, getDictList } from './api'
 import moment from 'moment'
 import { apply } from '@/services/auto/common/volume/view'
 import { useLoading } from '@/hooks/useLoading'
@@ -33,7 +33,7 @@ export default class CaseSearch extends Vue {
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
-    handleBtnClick(item: { code: string }, row: VolumeNoSelfVO) {
+    handleBtnClick(item: { code: string }, row: any) {
         switch (item.code) {
             //查看
             case 'view':
