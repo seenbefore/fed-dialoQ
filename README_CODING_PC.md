@@ -1255,7 +1255,6 @@ export default class UserManagement extends Vue {
                             </el-button>
                             <el-button
                                 type="text"
-                                class="sg-color-error"
                                 danger
                                 onClick={() => {
                                     this.handleDelete(row)

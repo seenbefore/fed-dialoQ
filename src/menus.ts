@@ -72,4 +72,16 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: '题库管理',
+        icon: 'el-icon-document',
+        uri: '/question-bank',
+        children: [
+            {
+                label: '题库列表',
+                icon: 'el-icon-document',
+                uri: '/question-bank/list',
+            },
+        ],
+    },
 ]
