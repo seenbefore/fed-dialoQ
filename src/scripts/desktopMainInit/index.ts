@@ -36,7 +36,6 @@ export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUse
         const { settings, user } = defaultSettings ?? {}
         userStore.set(user)
         const { isThirdParty } = getURLParameters(location.href)
-        console.log('settingsStore', settingsStore)
         // 此处添加获取全局配置等异步操作
         settings.isThirdParty = isThirdParty ? true : settings.isThirdParty
         settingsStore.changeSetting(settings as any)

@@ -3,6 +3,11 @@
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
+        <!-- 在查询条件和列表之间添加 -->
+        <div class="sg-flexbox align-center justify-between" style="margin-bottom: 5px;">
+            <el-button type="primary" @click="handleAdd">新增题目</el-button>
+        </div>
+
         <!-- 列表 -->
         <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
     </div>
@@ -176,7 +181,11 @@ export default class QuestionBankList extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
+            // 表格滚动吸顶 不要删减
+            tableHeaderSticky: {
+                scrollDom: () => document.querySelector('.QuestionBankList'),
+            },
+            pageActionLayout: [],
             load: async (params: any = {}) => {
                 const { data } = await list({
                     ...params,
@@ -190,11 +199,25 @@ export default class QuestionBankList extends Vue {
             columns,
         }
     }
-
-    handleEdit(row: any) {
-        this.$router.push({
-            path: `/question-bank/edit?id=${row.id}`,
+    async handleAdd() {
+        const result = await this.$modalDialog(() => import('./components/question-drawer/index.vue'), {
+            action: 'create',
         })
+        if (result) {
+            this.handleSearch()
+        }
+    }
+
+    // 修改handleEdit方法
+    async handleEdit(row: any) {
+        const result = await this.$modalDialog(() => import('./components/question-drawer/index.vue'), {
+            action: 'modify',
+            id: row.id,
+            data: row,
+        })
+        if (result) {
+            this.handleSearch()
+        }
     }
 
     async handleDelete(row: any) {

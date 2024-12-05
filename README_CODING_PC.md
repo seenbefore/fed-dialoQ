@@ -1273,7 +1273,7 @@ export default class UserManagement extends Vue {
             idKey: 'id',
             // 分页配置
             pagination: { pageSize: 10 },
-            // 表格滚动吸顶
+            // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.UserManagement'),
             },
