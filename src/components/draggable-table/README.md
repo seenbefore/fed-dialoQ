@@ -59,7 +59,7 @@ DraggableTable 是一个基于 Element UI Table 封装的可拖拽排序表格�
 
 ```vue
 <template>
-    <draggable-table :data="tableData" :columns="columns" :actions="actions" @drag-end="handleDragEnd"></draggable-table>
+    <draggable-table v-model="tableData" :columns="columns" :actions="actions" @drag-end="handleDragEnd"></draggable-table>
 </template>
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
@@ -67,20 +67,43 @@ import DraggableTable from '@/components/draggable-table/index.vue'
 
 export default class CaseSave extends Vue {
     tableData = [
-        { id: 1, name: '张三', age: 18, attachments: true },
-        { id: 2, name: '李四', age: 20, attachments: false },
+        { id: 1, name: '张三', age: 18, attachments: '1' },
+        { id: 2, name: '李四', age: 20, attachments: '0' },
     ]
     get tableAttrs() {
         return {
             columns: [
-                { prop: 'sort', label: '序号', width: '50px' },
+                {
+                    prop: 'sortNo',
+                    label: '序号',
+                    width: '50px',
+                    render: (h, { index }) => {
+                        return <span>{index + 1}</span>
+                    },
+                },
                 { prop: 'name', label: '名称', minWidth: '200px' },
                 {
-                    prop: 'attachments',
+                    prop: 'hasAttachment',
                     label: '含附件',
-                    width: '100px',
+                    width: '80px',
+                    align: 'center',
                     render: (h, { row }) => {
-                        return <el-checkbox v-model={row.attachments}></el-checkbox>
+                        return (
+                            <span>
+                                <el-checkbox
+                                    checked={row.hasAttachment === '1'}
+                                    true-label={'1'}
+                                    false-label={'0'}
+                                    onChange={(val: string) => {
+                                        const index = this.value.findIndex((item: any) => item.id === row.id)
+                                        if (index > -1) {
+                                            this.$set(this.value[index], 'hasAttachment', val)
+                                           
+                                        }
+                                    }}
+                                ></el-checkbox>
+                            </span>
+                        )
                     },
                 },
             ],

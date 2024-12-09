@@ -287,6 +287,11 @@ export interface LoginDTO {
 
 ## 项目类型定义
 ### sharegood-ui/index.d.ts
+使用
+```js
+import { FormColumn } from '@/sharegood-ui'
+```
+定义
 ```typescript
 import Vue, { CreateElement } from 'vue'
 

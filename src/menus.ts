@@ -73,19 +73,33 @@ export const LocalMenu: UserMenu[] = [
         ],
     },
     {
-        label: '题库管理',
+        label: '考试平台',
         icon: 'el-icon-document',
         uri: '/question-bank',
         children: [
             {
-                label: '题库列表',
+                label: '题库管理',
                 icon: 'el-icon-document',
-                uri: '/question-bank/list',
+                uri: '/题库管理',
+                children: [
+                    {
+                        label: '题库列表',
+                        icon: 'el-icon-document',
+                        uri: '/question-bank/list',
+                    },
+                ],
             },
             {
-                label: '考卷列表',
+                label: '考场管理',
                 icon: 'el-icon-document',
-                uri: '/question-bank/paper',
+                uri: '/考场管理',
+                children: [
+                    {
+                        label: '考卷列表',
+                        icon: 'el-icon-document',
+                        uri: '/question-bank/paper',
+                    },
+                ],
             },
         ],
     },

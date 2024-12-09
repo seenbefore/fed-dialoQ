@@ -125,7 +125,9 @@ export default class QuestionPaperPreview extends Vue {
     }
 
     goBack() {
-        this.$router.back()
+        this.$back({
+            path: '/question-bank/paper',
+        })
     }
 }
 </script>
