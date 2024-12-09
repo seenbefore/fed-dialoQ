@@ -161,8 +161,10 @@
         background-color: #ecf5ff;
         font-weight: bold;
     }
-    .has-colon .el-form-item__label:not(:empty)::after {
-        content: '：';
+    .has-colon {
+        .el-form-item__label:not(:empty)::after {
+            content: '：';
+        }
     }
     // 紧凑 8px
     &.tight {

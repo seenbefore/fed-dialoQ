@@ -13,7 +13,18 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
-    ...menu,
+    {
+        label: '系统管理',
+        icon: 'el-icon-document',
+        uri: '/系统管理',
+        children: [
+            {
+                label: '数据字典',
+                icon: 'el-icon-document',
+                uri: '/system/dict',
+            },
+        ],
+    },
     {
         label: '电子卷宗',
         icon: 'el-icon-document',
@@ -67,6 +78,37 @@ export const LocalMenu: UserMenu[] = [
                         label: '卷宗查询记录',
                         icon: 'el-icon-document',
                         uri: '/file-review/case-search-record',
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        label: '考试平台',
+        icon: 'el-icon-document',
+        uri: '/question-bank',
+        children: [
+            {
+                label: '题库管理',
+                icon: 'el-icon-document',
+                uri: '/题库管理',
+                children: [
+                    {
+                        label: '题库列表',
+                        icon: 'el-icon-document',
+                        uri: '/question-bank/list',
+                    },
+                ],
+            },
+            {
+                label: '考场管理',
+                icon: 'el-icon-document',
+                uri: '/考场管理',
+                children: [
+                    {
+                        label: '考卷列表',
+                        icon: 'el-icon-document',
+                        uri: '/question-bank/paper',
                     },
                 ],
             },

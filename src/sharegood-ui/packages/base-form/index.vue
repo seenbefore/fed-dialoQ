@@ -507,8 +507,21 @@ export default {
         getAutoTriggerSubComponentValidate(itemAttrs) {
             return itemAttrs?.autoTriggerSubComponentValidate ?? this.autoTriggerSubComponentValidate
         },
+        // label是否自动添加冒号
         hasColon(col) {
-            return col.itemAttrs?.colon ?? this.colon ? 'has-colon' : ''
+            // 如果明确设置了 colon 属性则使用设置值
+            if (col.itemAttrs?.colon !== undefined) {
+                return col.itemAttrs.colon ? 'has-colon' : ''
+            }
+
+            // 如果 label 已经以冒号结尾，则不添加 has-colon class
+            const label = col.itemAttrs?.label || ''
+            if (label.endsWith('：')) {
+                return ''
+            }
+
+            // 使用全局 colon 配置
+            return this.colon ? 'has-colon' : ''
         },
         getComponentClass(col) {
             if (col.attrs.appendSlotRender) {

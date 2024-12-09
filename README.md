@@ -10,7 +10,7 @@
 
 [git 地址](http://gitlab.icinfo.co/fed/base-vue-template)
 
-# 功能介绍
+## 功能介绍
 
 -   支持多项目模板
 -   配置支持动态更新
@@ -20,12 +20,11 @@
 ## 技术栈&工具
 
 -   Vue2、TypeScript、Vuex、Element、Nodejs、Nunjucks、inquirer
--   node：版本推荐 14.17.0
--   vscode：代码编辑器
+-   node：版本推荐 `14.19.1`
 
-### 安装使用步骤
+## 安装使用步骤
 
-#### clone
+### clone
 
 ```bash
 # 下载代码前设置下git（系统设置提交时转换为LF，检出时不转换 ）
@@ -37,7 +36,7 @@ git clone git@gitlab.icinfo.co:fed/base-vue-template.git
 ### install
 
 ```bash
-npm install
+npm install --registry https://registry.npmmirror.com
 ```
 
 ### run
@@ -60,7 +59,7 @@ npm run build
 # cross-env VUE_APP_ENTRY=${entryDirName} vue-cli-service build --mode=production
 ```
 
-# 其他脚本介绍
+### 其他脚本介绍
 
 -   `npm run base:init`
 
@@ -206,9 +205,9 @@ core
 
 ![image.png](http://cdn.qiniu.barebear.cn/aa8036fa-e36a-49c9-aff4-36457fe43521/dffca59470f2f60b793ec300d.png)
 
-# PC 端开发
 
 ## 环境配置
+### 反向代理
 **反向代理规则**：`VUE_APP_BASEURL_API`和`DEV_PROXY_TARGET_API`配对。如果要新增多个代理，可以按照上述变量新增，并在`_API`后缀添加相同变量，然后重启服务即可，比如：
 ```bash
 # 代理地址2
@@ -339,6 +338,18 @@ export interface UserInfoVo {
     token: string
 }
 ```
+-  vue组件中直接使用全局方法`$http`
+```html
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+@Component
+export default class ComponentName extends Vue {
+  mounted() {
+     this.$http.post('/api/user/list',{sex:1})
+  }
+}
+</script>
+```
 
 ## 路由
 
@@ -356,9 +367,10 @@ export interface UserInfoVo {
     -   `parent`：父级路由名称，默认值为`Index`，不需要修改。
     -   `title`：路由标题，用于设置当前路由的标题
     -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
-    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录
-    -   `aliveOnlyTo`：缓存页面仅在指定路由中缓存，用于设置当前路由缓存页面仅在指定路由中缓存，一般用于移动端。
+    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
     -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
+    -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
+    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
 
 ## 状态管理
 
@@ -440,7 +452,7 @@ export default class Step2 extends Vue {
 ```
 
 ## 动态弹窗组件
-
+可以通过vue全局函数`$modalDialog`动态打开弹窗、抽屉等组件。
 ### vue 组件中使用
 
 ```vue
@@ -458,8 +470,10 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class Step2 extends Vue {
     async openDialog() {
         const res = await this.$modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
-            isEdit: true,
+            // 弹窗props参数
+            action: 'modify',
         })
+        // 确认
         if (res) {
             console.log('确认')
         } else {
@@ -486,14 +500,14 @@ modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
 
 标签页位于`src/store/modules/tagsView.ts`文件中。
 
-### 关闭当前标签页并跳转
+### 返回并关闭当前标签页
 
 定义全局函数
 
 ```typescript
 import { tagsViewStore } from '@/store/useStore'
 /**
- * 关闭当前标签页并跳转到对应路由
+ * 关闭当前标签页并跳转到对应路由，参数同this.$router.push
  */
 Vue.prototype.$back = async function(params: any) {
    
@@ -524,7 +538,7 @@ import { Component, Vue } from 'vue-property-decorator'
     name: 'Step2',
 })
 export default class Step2 extends Vue {
-    // 关闭当前标签页并跳转到对应路由
+    // 关闭当前标签页并跳转到上一页路由
     async closeCurrentView() {
         await this.$back({
             path: '/file-review/case-config'
@@ -574,6 +588,66 @@ settingsStore.updateThemeVariables(themeVariables)
 -   全局组件位于`src/components/global`目录下。会自动注册，不需要在`main.ts`中手动注册。组件名称以`my-`开头。
 -   其他组件位于`src/components`目录下。不会自动注册，需要手动注册。
 
+### 组件命名
+- 组件名使用 PascalCase: MyComponent
+- 基础组件使用 Base 前缀: BaseButton
+- 特定功能组件使用相应前缀: MyCardNumber, MyPieLegend
+- 文件生成：`MyComponent/index.vue`
+
+### 组件文档化
+每个组件都应该包含:
+```html
+/**
+ * @description 组件描述
+ * @param {Type} propName - 参数描述
+ * @event eventName - 事件描述
+ */
+```
+### 组件结构
+```html
+<template>
+  <div class="component-name">
+    <!-- 模板内容 -->
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component
+export default class ComponentName extends Vue {
+  /**
+   * Props 定义
+   */
+  @Prop({ type: String, required: true }) readonly title!: string
+
+  // Data
+  private data = ''
+
+  // Computed
+  get computedValue() {
+    return this.data
+  }
+
+  // Methods
+  private handleClick() {
+    this.$emit('click')
+  }
+
+  // Lifecycle hooks
+  mounted() {
+    // 初始化逻辑
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.component-name {
+  // 样式定义
+}
+</style>
+```
+
 ### confirmDialog 确认框
 
 确认框组件，包含`warning`、`error`、`success`三种类型。[文档地址](./src/components/confirmDialog/README.md)
@@ -616,8 +690,8 @@ export default class CaseSave extends Vue {
 ```
 
 ### sg-base-form 基础表单
-
-基础表单组件，[文档地址](./src/sharegood-ui/packages/base-form/README.md)
+- [类型定义](./src/sharegood-ui/index.d.ts)
+- 基础表单组件，[文档地址](./src/sharegood-ui/packages/base-form/README.md)
 
 ```html
 <template>
@@ -756,8 +830,8 @@ export default class CaseSave extends Vue {
 ```
 
 ### sg-data-view 基础列表
-
-列表组件，[文档地址](./src/sharegood-ui/packages/data-view/README.md)
+- [类型定义](./src/sharegood-ui/index.d.ts)
+- 列表组件，[文档地址](./src/sharegood-ui/packages/data-view/README.md)
 
 ```html
 <template>
@@ -843,115 +917,12 @@ export default class CaseSave extends Vue {
 ```
 
 ### step-form 表单步骤
-
 表单步骤组件，可以通过 json 配置表单步骤。[文档地址](./src/components/step-form/README.md)
 
-```vue
-<template>
-    <div class="sg-page icinfo-ai CaseSave">
-        <StepForm v-model="currentStep" :steps="steps"></StepForm>
-    </div>
-</template>
-<script lang="tsx">
-import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import StepForm, { StepConfig } from '@/components/step-form/index.vue'
-@Component({
-    name: 'CaseSave',
-    components: {
-        StepForm,
-    },
-})
-export default class CaseSave extends Vue {
-    /** 当前步骤 */
-    currentStep = 0
-    get steps() {
-        return [
-            // 第一步
-            {
-                title: '卷宗封面',
-                component: () => import('@/views/file-review/components/case-step-cover/index.vue'),
-                props: {
-                    // 传递给组件的属性
-                },
-                render: (h, { row, handlers }) => {
-                    return (
-                        <div>
-                            <el-button
-                                type="primary"
-                                onClick={async () => {
-                                    // 获取当前组件
-                                    const currentComponent = handlers.getCurrentComponent()
-                                    // 保存当前组件数据
-                                    const result = await currentComponent.save()
-                                    // 下一步
-                                    handlers.next()
-                                }}
-                            >
-                                下一步
-                            </el-button>
-                        </div>
-                    )
-                },
-            },
-        ]
-    }
-}
-</script>
-```
 
 ### draggable-table 拖拽表格
+[文档地址](./src/components/draggable-table/README.md)
 
-拖拽表格组件，[文档地址](./src/components/draggable-table/README.md)
-
-示例代码
-
-```vue
-<template>
-    <draggable-table :data="tableData" :columns="columns" :actions="actions" @drag-end="handleDragEnd"></draggable-table>
-</template>
-<script lang="tsx">
-import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import DraggableTable from '@/components/draggable-table/index.vue'
-
-export default class CaseSave extends Vue {
-    tableData = [
-        { id: 1, name: '张三', age: 18, attachments: true },
-        { id: 2, name: '李四', age: 20, attachments: false },
-    ]
-    get tableAttrs() {
-        return {
-            columns: [
-                { prop: 'sort', label: '序号', width: '50px' },
-                { prop: 'name', label: '名称', minWidth: '200px' },
-                {
-                    prop: 'attachments',
-                    label: '含附件',
-                    width: '100px',
-                    render: (h, { row }) => {
-                        return <el-checkbox v-model={row.attachments}></el-checkbox>
-                    },
-                },
-            ],
-            actions: [
-                {
-                    key: 'delete',
-                    icon: 'el-icon-delete',
-                    handler: this.handleDelete,
-                    tooltip: '删除',
-                },
-            ],
-        }
-    }
-    handleDragEnd(newData: any) {
-        this.tableData = newData
-        // 可以在这里处理排序后的数据，如调用接口保存新的排序
-    }
-    async handleDelete(row: any, context: any) {
-        // 处理删除逻辑
-        await this.$confirm('确定删除吗？')
-        // 拖拽组件提供的删除行方法
-        context.removeItem(row)
-    }
-}
-</script>
-```
+## 实战
+- [PC后台管理系统](./README_CODING_PC.md)
+- [h5移动端](./README_CODING_H5.md)

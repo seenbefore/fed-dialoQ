@@ -18,7 +18,7 @@ import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme
  * 关闭当前标签页
  */
 Vue.prototype.$back = async function(params: any) {
-    const { path } = params
+    const { path } = params ?? {}
     const target: any = flatRoutes.find(item => {
         return item.path === path || item.fullPath === path
     })
@@ -28,7 +28,11 @@ Vue.prototype.$back = async function(params: any) {
         })
     }
     await tagsViewStore.delView(this.$route)
-    this.$router.push(params)
+    if (params) {
+        this.$router.push(params)
+    } else {
+        this.$router.go(-1)
+    }
 }
 // 自定义确认框风格样式
 const customConfirm = (options: IUseConfirm | string) => {
