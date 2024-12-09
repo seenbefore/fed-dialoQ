@@ -13,7 +13,18 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
-    ...menu,
+    {
+        label: '系统管理',
+        icon: 'el-icon-document',
+        uri: '/系统管理',
+        children: [
+            {
+                label: '数据字典',
+                icon: 'el-icon-document',
+                uri: '/system/dict',
+            },
+        ],
+    },
     {
         label: '电子卷宗',
         icon: 'el-icon-document',
