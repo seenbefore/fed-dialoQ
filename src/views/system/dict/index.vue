@@ -42,7 +42,7 @@ export default class DictManage extends Vue {
                 tag: 'input',
                 name: 'dictName',
                 itemAttrs: {
-                    label: '字典名称',
+                    label: '字典名称：',
                 },
                 attrs: {
                     placeholder: '请输入',

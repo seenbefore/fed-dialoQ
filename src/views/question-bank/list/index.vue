@@ -63,20 +63,6 @@ export default class QuestionBankList extends Vue {
             },
             {
                 tag: 'select',
-                name: 'category',
-                label: '所属分类',
-                attrs: {
-                    placeholder: '请选择',
-                    options: async () => {
-                        return [
-                            { label: '全部', value: '' },
-                            { label: '法律法规', value: '1' },
-                        ]
-                    },
-                },
-            },
-            {
-                tag: 'select',
                 name: 'type',
                 label: '题目类型',
                 attrs: {

@@ -3,13 +3,6 @@
         <div class="drawer-container">
             <div class="drawer-main">
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
-
-                <div class="tips">
-                    <p>导入说明：</p>
-                    <p>1. 请先下载模板文件</p>
-                    <p>2. 按照模板格式填写题目数据</p>
-                    <p>3. 上传填写好的Excel文件</p>
-                </div>
             </div>
 
             <div class="drawer-footer">
@@ -88,6 +81,19 @@ export default class ImportDrawer extends Vue {
                     rules: [{ required: true, message: '请上传文件' }],
                 },
             },
+            {
+                name: 'tips',
+                render: h => {
+                    return (
+                        <div class="tips">
+                            <p>导入说明：</p>
+                            <p>1. 请先下载模板文件</p>
+                            <p>2. 按照模板格式填写题目数据</p>
+                            <p>3. 上传填写好的Excel文件</p>
+                        </div>
+                    )
+                },
+            },
         ]
         return {
             span: 24,
@@ -128,19 +134,8 @@ export default class ImportDrawer extends Vue {
         try {
             this.loading = true
             await this.formRef.validate()
-
-            if (!this.formModel.file) {
-                this.$message.error('请选择文件')
-                return
-            }
-
-            const formData = new FormData()
-            formData.append('file', this.formModel.file)
-            formData.append('kind', this.formModel.kind)
-
             // 模拟上传
             await new Promise(resolve => setTimeout(resolve, 1500))
-
             this.$message.success('导入成功')
             this.confirm()
         } catch (error) {
@@ -161,7 +156,7 @@ export default class ImportDrawer extends Vue {
 </script>
 
 <style lang="less" scoped>
-.drawer-container {
+.drawer-container::v-deep {
     .tips {
         margin-top: 20px;
         padding: 15px;

@@ -370,6 +370,7 @@ export default class ComponentName extends Vue {
     -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
     -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
     -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
+    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
 
 ## 状态管理
 

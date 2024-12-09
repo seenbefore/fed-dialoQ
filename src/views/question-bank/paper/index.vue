@@ -85,7 +85,9 @@ export default class QuestionPaperList extends Vue {
             {
                 label: '试卷名称',
                 prop: 'title',
-                minWidth: '250px',
+                fixed: 'left',
+                width: '270px',
+                align: 'left',
             },
             {
                 label: '考试时长(分钟)',
@@ -149,7 +151,7 @@ export default class QuestionPaperList extends Vue {
             {
                 label: '操作',
                 prop: 'action',
-                width: '150px',
+                width: '180px',
                 fixed: 'right',
                 render: (h, { row }) => {
                     return (

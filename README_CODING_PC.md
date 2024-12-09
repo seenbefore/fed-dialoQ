@@ -142,7 +142,7 @@ export default class ComponentName extends Vue {
 ## 工具函数使用规范
 
 ### HTTP 请求封装
-- 默认在`@/services/auto`文件夹下
+默认在`@/services/auto`文件夹下
 ```typescript
  import { ExAxiosRequestConfig } from 'icinfo-request'
  import { http } from '@/scripts/http'
@@ -195,6 +195,27 @@ export interface LoginDTO {
      token: string
  
  }
+```
+### 参数exShowLoading
+是否显示loading
+```javascript
+import { list } from '@/services/auto/user'
+const { data } = await list(
+    {
+        sex:'1'
+    },
+    {
+        // 是否显示加载中 默认false
+        exShowLoading: true,
+        // 加载中配置 必须配合exShowLoading使用
+        exShowLoadingOption: {
+            // 加载区域 默认body
+            target: document.getElementById('DirectoryDialog'),
+            // 加载文字 默认加载中
+            text: '加载中',
+        },
+    },
+)
 ```
 
 ## prd模板
@@ -661,12 +682,46 @@ export default {
 }
 
 ```
+### 路由属性
+
+-   `name`：路由名称，用于在`router`中使用
+-   `meta`：路由元信息，用于在`router`中使用
+    -   `bodyClass`：设置`body`标签的`class`
+    -   `parent`：父级路由名称，默认值为`Index`，不需要修改。
+    -   `title`：路由标题，用于设置当前路由的标题
+    -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
+    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
+    -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
+    -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`不缓存。
+    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
+
 
 ## 接口模板 api.ts 
 请使用以下模板，注意不要改变数据结构
 ```typescript
+// 如果接口函数存在，则使用以下模板
+// import { catalogList,ExternalCaseCatalogVO } from '@/services/auto/external/case'
+// export type VO = ExternalCaseCatalogVO
+// 尽量不要修改页面组件中的接口函数名称
+// export { catalogList as list }
+
+// 如果接口函数不存在，则使用以下模板进行数据模拟
+export interface VO {
+    // 模拟数据结构
+    /** id */
+    id: string
+    /** 名称 */
+    name: string
+}
 // 仅模拟数据，不涉及具体业务逻辑，不要修改函数名称
-export const list = async (params?: any) => {
+export const list = async (
+    data?: {
+        /** 分页参数 页码数 */ pageNum?: number
+        /** 分页参数 每页条数 */ length?: number
+        /** 查询关键字 */ keyword?: string
+    },
+    options?: ExAxiosRequestConfig,
+) => {
     return {
         // 不要改变结构，必须保留
         code: 200,
@@ -682,7 +737,52 @@ export const list = async (params?: any) => {
         },
     }
 }
-
+// 新增编辑接口 ，不要修改函数名称
+export const save = async (data?: {
+    /** 名称 */ name?: string
+}, options?: ExAxiosRequestConfig) => {
+    return {
+        code: 200,
+        message: 'success',
+    }
+}
+// 删除接口 ，不要修改函数名称
+export const remove = async (data?: {
+    /** id */ id: number
+}, options?: ExAxiosRequestConfig) => {
+    return {
+        code: 200,
+        message: 'success',
+    }
+}
+// 批量删除接口 ，不要修改函数名称
+export const removeBatch = async (data?: {
+    /** id */ id: number
+}, options?: ExAxiosRequestConfig) => {
+    return {
+        code: 200,
+        message: 'success',
+    }
+}
+// 详情接口 ，不要修改函数名称
+export const detail = async (data?: {
+    /** id */ id: number
+}, options?: ExAxiosRequestConfig) => {
+    return {
+        code: 200,
+        message: 'success',
+        data: {
+            // 随机生成的数据，模拟数据
+            id: 1,
+            name: '张三',
+            username: 'zhangsan',
+            email: 'zhangsan@example.com',
+            age: 28,
+            gender: '0',
+            note: '爱好钓鱼',
+        },
+    }
+}
 ```
 
 ## 枚举模板 enum.ts
@@ -818,7 +918,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 // 此处引用不省略
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { GenderEnum, GenderEnumMap, REIMBURSE_STATUS, REIMBURSE_STATUS_MAP } from './enum'
-import { list } from './api'
+import { list, save, remove, removeBatch, detail, VO } from './api'
 @Component({
     name: 'UserManagement',
     components: {},
@@ -853,7 +953,7 @@ export default class UserManagement extends Vue {
         this.selected = val.map((item: any) => ({ id: item.id }))
     }
     // 跳转编辑 参数不要省略
-    handleEdit(row: any) {
+    handleEdit(row: VO) {
         // 不要删除
         console.log(row)
         this.$router.push({
@@ -861,13 +961,13 @@ export default class UserManagement extends Vue {
         })
     }
     // 跳转详情 参数不要省略
-    handleDetail(row: any) {
+    handleDetail(row: VO) {
         this.$router.push({
             path: `/user/deital?id=${row.id}`,
         })
     }
     // 删除单个数据 二次确认 row参数不要省略
-    async handleDelete(row: any) {
+    async handleDelete(row: VO) {
         console.log(row)
         await this.$confirm('删除后将无法找回', '确认删除？', {
             confirmButtonText: '确定',
@@ -1220,7 +1320,7 @@ export default class UserManagement extends Vue {
                 prop: 'reimburseStatus',
                 align: 'left',
                 minWidth: '80px',
-                render: (h, { row }) => {
+                render: (h, { row }: { row: VO }) => {
                     // 不同状态设置不同颜色
                     const classNameMap: any = {
                         [REIMBURSE_STATUS.APPLY]: 'green',
@@ -1531,14 +1631,45 @@ export default class UserDialog extends Vue {
                             ],
                         },
                     },
+                    // 带label和校验的自定义组件，一般用于复杂的交互场景，比如自定义的上传、自定义的数据列表、自定义的小标题等
                     {
-                        // 自定义组件
-                        tag: 'slot',
+                        tag: 'custom',
+                        name: 'file',
+                        label: '上传文件',
+                        appendRender: (h, { row }) => {
+                            return (
+                                <div>
+                                    <el-upload
+                                        action="#"
+                                        accept=".xlsx,.xls"
+                                        beforeUpload={this.beforeUpload}
+                                        onChange={this.handleFileChange}
+                                        fileList={this.formModel.fileList || []}
+                                        limit={1}
+                                        auto-upload={false}
+                                    >
+                                        <el-button size="small" type="primary">
+                                            选择文件
+                                        </el-button>
+                                        <div slot="tip" class="el-upload__tip">
+                                            只能上传xlsx/xls文件，且不超过10MB
+                                        </div>
+                                    </el-upload>
+                                    <el-button type="text" onClick={this.downloadTemplate}>
+                                        <i class="el-icon-download"></i>
+                                        下载模板
+                                    </el-button>
+                                </div>
+                            )
+                        },
+                        itemAttrs: {
+                            rules: [{ required: true, message: '请上传文件' }],
+                        },
+                    },
+                    // 不带label的自定义组件，占据整行，一般用于表单说明
+                    {
                         span: 24,
                         name: 'desc',
-                        itemAttrs: {
-                            label: '说明',
-                        },
                         render: (h, { row }) => {
                             return (
                                 <div class="el-input">
@@ -1550,7 +1681,6 @@ export default class UserDialog extends Vue {
                                 </div>
                             )
                         },
-                        attrs: {},
                     },
                 ],
             },
@@ -1613,6 +1743,182 @@ export default class UserDialog extends Vue {
     // 不要修改和删除
     .el-dialog__body {
         padding: 15px 20px;
+    }
+}
+</style>
+
+```
+
+### 抽屉组件模板
+```html
+<template>
+    <el-drawer title="导入题库" :visible="true" size="600px" @close="cancel" :before-close="cancel" custom-class="my-drawer">
+        <div class="drawer-container">
+            <div class="drawer-main">
+                <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
+            </div>
+
+            <div class="drawer-footer">
+                <el-button @click="cancel">取消</el-button>
+                <el-button type="primary" :loading="loading" @click="submit">确定</el-button>
+            </div>
+        </div>
+    </el-drawer>
+</template>
+
+<script lang="tsx">
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import { FormColumn, FormRef } from '@/sharegood-ui'
+
+@Component({
+    name: 'ImportDrawer',
+    components: {},
+})
+export default class ImportDrawer extends Vue {
+    @Ref('form')
+    formRef!: FormRef
+
+    loading = false
+    formModel: Record<string, any> = {
+        kind: '', // 所属大类
+        file: null, // 上传的文件
+    }
+
+    get getFormAttrs() {
+        const fields: FormColumn[] = [
+            {
+                tag: 'select',
+                name: 'kind',
+                label: '所属大类',
+                attrs: {
+                    placeholder: '请选择',
+                    options: async () => {
+                        return [{ label: '2024年全省协助执法文员考试', value: '1' }]
+                    },
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请选择所属大类' }],
+                },
+            },
+            {
+                tag: 'custom',
+                name: 'file',
+                label: '上传文件',
+                appendRender: (h, { row }) => {
+                    return (
+                        <div>
+                            <el-upload
+                                action="#"
+                                accept=".xlsx,.xls"
+                                beforeUpload={this.beforeUpload}
+                                onChange={this.handleFileChange}
+                                fileList={this.formModel.fileList || []}
+                                limit={1}
+                                auto-upload={false}
+                            >
+                                <el-button size="small" type="primary">
+                                    选择文件
+                                </el-button>
+                                <div slot="tip" class="el-upload__tip">
+                                    只能上传xlsx/xls文件，且不超过10MB
+                                </div>
+                            </el-upload>
+                            <el-button type="text" onClick={this.downloadTemplate}>
+                                <i class="el-icon-download"></i>
+                                下载模板
+                            </el-button>
+                        </div>
+                    )
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请上传文件' }],
+                },
+            },
+            {
+                name: 'tips',
+                render: h => {
+                    return (
+                        <div class="tips">
+                            <p>导入说明：</p>
+                            <p>1. 请先下载模板文件</p>
+                            <p>2. 按照模板格式填写题目数据</p>
+                            <p>3. 上传填写好的Excel文件</p>
+                        </div>
+                    )
+                },
+            },
+        ]
+        return {
+            span: 24,
+            fields,
+        }
+    }
+    // 下载模板
+    downloadTemplate() {
+        window.open('/api/question-bank/template/download')
+    }
+    // 文件上传前校验
+    beforeUpload(file: File) {
+        const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+        const isValidType = validTypes.includes(file.type)
+        if (!isValidType) {
+            this.$message.error('请上传Excel文件')
+            return false
+        }
+
+        const isLt10M = file.size / 1024 / 1024 < 10
+        if (!isLt10M) {
+            this.$message.error('文件大小不能超过10MB')
+            return false
+        }
+
+        return false // 阻止自动上传
+    }
+
+    // 文件变化时的回调
+    handleFileChange(file: any, fileList: any[]) {
+        this.formModel.file = file.raw
+        this.formModel.fileList = fileList.slice(-1)
+    }
+
+    async submit() {
+        try {
+            this.loading = true
+            await this.formRef.validate()
+            // 模拟上传
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            this.$message.success('导入成功')
+            this.confirm()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            this.loading = false
+        }
+    }
+
+    cancel() {
+        this.$options.cancel?.()
+    }
+
+    confirm() {
+        this.$options.confirm?.(true)
+    }
+}
+</script>
+
+<style lang="less" scoped>
+.drawer-container::v-deep {
+    .tips {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f5f7fa;
+        border-radius: 4px;
+
+        p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
     }
 }
 </style>
@@ -2387,9 +2693,9 @@ export default class AppChart extends Vue {
     - 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
     - 使用`$modalDialog`时确保import中的文件路径正确。。
     - 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
-    - 表单中出现尾随内容，请配置`attrs.appendSlotRender`方法。
-    - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
     - 调用接口时不需要判断`code`，直接使用`res.data`。
+    - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
+
 - 依次循环
 
 # Output

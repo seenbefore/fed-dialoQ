@@ -1,4 +1,13 @@
-export const list = async (params?: any) => {
+import { ExAxiosRequestConfig } from 'icinfo-request'
+
+export const list = async (
+    data?: {
+        /** 分页参数 页码数 */ pageNum?: number
+        /** 分页参数 每页条数 */ length?: number
+        /** 查询关键字 */ keyword?: string
+    },
+    options?: ExAxiosRequestConfig,
+) => {
     return {
         code: 200,
         message: 'success',
