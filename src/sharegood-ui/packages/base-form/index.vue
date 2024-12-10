@@ -250,6 +250,7 @@ import BaseSwitch from '../base-switch/src/index.vue'
 import BaseDateRange from '../base-daterange/src/index.vue'
 import BaseTimeRange from '../base-timerange/src/index.vue'
 import BaseSingleCheckbox from '../base-single-checkbox/src/index.vue'
+import BaseInputNumber from '../base-input-number/src/index.vue'
 import { ExSlot } from '../utils/ExSlot'
 import { deepMerge, handleFormValues, isObject } from '../utils/index'
 
@@ -269,6 +270,7 @@ const types = {
     daterange: 'BaseDateRange',
     timerange: 'BaseTimeRange',
     singleCheckbox: 'BaseSingleCheckbox',
+    'input-number': 'BaseInputNumber',
 }
 
 export default {
@@ -291,6 +293,7 @@ export default {
         BaseDateRange,
         BaseTimeRange,
         BaseSingleCheckbox,
+        BaseInputNumber,
         ReElFormItem,
     },
     props: {

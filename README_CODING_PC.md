@@ -78,10 +78,10 @@
 
 ## 组件开发规范
 
-### 组件命名
+### 公共组件命名
 - 组件名使用 PascalCase: MyComponent
 - 基础组件使用 Base 前缀: BaseButton
-- 特定功能组件使用相应前缀: MyCardNumber, MyPieLegend
+- 特定功能组件使用相应前缀: MyCardNumber
 - 文件生成：`MyComponent/index.vue`
 
 ### 组件文档化
@@ -108,9 +108,17 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component
 export default class ComponentName extends Vue {
   /**
-   * Props 定义
+   * Props 定义 请定义默认值
    */
-  @Prop({ type: String, required: true }) readonly title!: string
+  @Prop({ type: String, required: true, default: '' }) readonly title!: string
+  /**
+   * 如果是对象请给默认对象
+   */
+  @Prop({ default: () => ({}) }) row!: any
+  /**
+   * 如果是数组请给默认空数组
+   */
+  @Prop({ default: () => [] }) value!: any
 
   // Data
   private data = ''
@@ -137,6 +145,19 @@ export default class ComponentName extends Vue {
   // 样式定义
 }
 </style>
+```
+### 插槽
+优先使用插槽`v-slot`，其次使用`slot-scope`
+``` html
+<template>
+    <el-tree ref="tree" :data="treeData">
+        <template v-slot="{ node, data }">
+            <span class="custom-tree-node">
+                <span>{{ data.name }}</span>
+            </span>
+        </template>
+    </el-tree>
+</template>
 ```
 
 ## 工具函数使用规范
@@ -196,7 +217,7 @@ export interface LoginDTO {
  
  }
 ```
-### 参数exShowLoading
+### 参数 exShowLoading
 是否显示loading
 ```javascript
 import { list } from '@/services/auto/user'
@@ -217,6 +238,280 @@ const { data } = await list(
     },
 )
 ```
+## 路由
+
+### 路由属性
+
+-   `name`：路由名称，用于在`router`中使用
+-   `meta`：路由元信息，用于在`router`中使用
+    -   `bodyClass`：设置`body`标签的`class`
+    -   `parent`：父级路由名称，默认值为`Index`，不需要修改。
+    -   `title`：路由标题，用于设置当前路由的标题
+    -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
+    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
+    -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
+    -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
+    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
+
+## 状态管理
+
+状态管理位于`src/store`目录下，包含`modules`和`useStore.ts`文件。
+
+-   `modules/user.ts`为登录用户信息管理
+-   `modules/settings.ts`为系统配置管理
+-   `modules/tagsView.ts`为标签页管理
+-   `modules/app.ts`为系统业务配置管理
+
+### 使用案例
+
+#### 配置
+
+-   `Mutation`函数名称推荐使用小驼峰式`setXyz`
+-   `Action`函数名称推荐以`sync`开头，比如`syncSomething`
+-   项目业务相关的本地存储推荐在`app`模块中配置，属性名称推荐以`$`开头，比如`$dontShowDeleteConfirm`
+
+```typescript
+@Module({
+    name: 'app',
+    namespaced: true,
+    stateFactory: true,
+})
+export default class AppModule extends BaseAppStore {
+    /**
+     *  是否不显示移动出卷宗目录的确认框
+     * */
+    public $dontShowDeleteConfirm = false
+    /**
+     *  设置是否不显示移动出卷宗目录的确认框
+     * */
+    @Mutation
+    public setDontShowDeleteConfirm(value: boolean) {
+        this.$dontShowDeleteConfirm = value
+    }
+    @Action
+    public syncSomething() {
+        // 异步处理某些内容
+        return new Promise(resolve => {
+            this.setDontShowDeleteConfirm(false)
+            resolve('')
+        })
+    }
+}
+```
+
+#### 使用
+
+```typescript
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import { userStore, appStore } from '@/store/useStore'
+
+@Component({
+    name: 'Step2',
+    components: {},
+})
+export default class Step2 extends Vue {
+    async login() {
+        userStore.setPermissionMenus([])
+        userStore.login('token123')
+        userStore.setUserInfo({
+            name: '张三',
+            username: 'zhangsan',
+            sex: 1,
+            role: 'admin',
+            position: '开发',
+        })
+    }
+    async loginOut() {
+        await userStore.fedLogOut()
+    }
+    async syncData() {
+        const { $dontShowDeleteConfirm } = appStore
+        console.log($dontShowDeleteConfirm)
+        await appStore.syncSomething()
+    }
+}
+```
+
+# 动态弹窗组件
+可以通过vue全局函数`$modalDialog`动态打开弹窗、抽屉等组件。
+### vue 组件中使用
+
+```vue
+<template>
+    <div>
+        <button @click="openDialog">打开弹窗</button>
+    </div>
+</template>
+<script lang="tsx">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component({
+    name: 'Step2',
+})
+export default class Step2 extends Vue {
+    async openDialog() {
+        const res = await this.$modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
+            // 弹窗props参数
+            action: 'modify',
+        })
+        // 确认
+        if (res) {
+            console.log('确认')
+        } else {
+            console.log('取消')
+        }
+    }
+}
+</script>
+```
+
+### 非 vue 组件中使用
+
+```typescript
+import { initModalDialog } from '@/scripts/ModalDialog'
+import store from '@/store'
+import router from '@/router'
+const modalDialog = initModalDialog({ store, router })
+modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
+    isEdit: true,
+})
+```
+
+## 标签页
+
+标签页位于`src/store/modules/tagsView.ts`文件中。
+
+### 返回并关闭当前标签页
+
+定义全局函数
+
+```typescript
+import { tagsViewStore } from '@/store/useStore'
+/**
+ * 关闭当前标签页并跳转到对应路由，参数同this.$router.push
+ */
+Vue.prototype.$back = async function(params: any) {
+   
+}
+```
+
+`vue.d.ts`定义
+
+```typescript
+declare module 'vue/types/vue' {
+    class C {}
+    interface Vue {
+        $back: (params: any) => void
+    }
+}
+```
+
+使用
+
+```vue
+<template>
+    <button @click="closeCurrentView">关闭当前标签页</button>
+</template>
+<script lang="tsx">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component({
+    name: 'Step2',
+})
+export default class Step2 extends Vue {
+    // 关闭当前标签页并跳转到上一页路由
+    async closeCurrentView() {
+        await this.$back({
+            path: '/file-review/case-config'
+        })
+    }
+}
+</script>
+```
+
+## 表单组件 sg-base-form
+### 已有组件
+tag:
+- 'text'
+- 'input'
+- 'select'
+- 'date'
+- 'time'
+- 'checkbox'
+- 'radio'
+- 'cascader'
+- 'uploader'
+- 'autocomplete'
+- 'range'
+- 'switch'
+- 'timerange'
+- 'daterange'
+- 'singleCheckbox'
+- 'input-number'
+
+```javascript
+{
+    tag: 'input',
+    name: 'icon',
+    itemAttrs: {
+        label: '图标：',
+    },
+}
+```
+### 自定义组件配置
+```javascript
+{
+    // 组件类型 
+    tag: 'custom',
+    // 组件名称
+    name: 'icon',
+    // 组件属性
+    itemAttrs: {
+        label: '图标：',
+    },
+    // 组件渲染函数
+    appendRender: (h, { row }) => {
+        const onChange = (icon: string) => {
+            this.formModel.icon = icon
+        }
+        return (
+            <div class="icon-select">
+                <el-input value={this.formModel.icon} placeholder="请选择图标" maxlength={50}>
+                    <i slot="suffix" class={'el-icon-plus'} style="font-size: 16px"></i>
+                </el-input>
+                <el-popover placement="bottom" width="400" trigger="click">
+                    <div class="icon-list">
+                        {[
+                            'el-icon-edit',
+                            'el-icon-share',
+                            'el-icon-delete',
+                            'el-icon-setting',
+                            'el-icon-user',
+                            'el-icon-phone',
+                            'el-icon-star-on',
+                            'el-icon-message',
+                            'el-icon-location',
+                        ].map(icon => (
+                            <el-button
+                                type="text"
+                                info={icon !== this.formModel.icon}
+                                icon={icon}
+                                style="font-size: 18px; margin: 4px; cursor: pointer"
+                                onClick={() => onChange(icon)}
+                            ></el-button>
+                        ))}
+                    </div>
+                    <el-button slot="reference" type="text">
+                        选择图标
+                    </el-button>
+                </el-popover>
+            </div>
+        )
+    },
+}
+```
+
+
 
 ## prd模板
 ### 查询页面
@@ -1376,13 +1671,11 @@ export default class UserManagement extends Vue {
             multipleSelectionAll: [],
             // 唯一匹配的字段 仅当有批量操作时需要
             idKey: 'id',
-            // 分页配置
-            pagination: { pageSize: 10 },
             // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.UserManagement'),
             },
-            // 表格默认展示导出，如果prd中没有导出，请配置pageActionLayout为空 如 []
+            // 表格数据导出。默认不需要配置
             pageActionLayout: [
                 // 导出当页
                 {
@@ -1664,22 +1957,6 @@ export default class UserDialog extends Vue {
                         },
                         itemAttrs: {
                             rules: [{ required: true, message: '请上传文件' }],
-                        },
-                    },
-                    // 不带label的自定义组件，占据整行，一般用于表单说明
-                    {
-                        span: 24,
-                        name: 'desc',
-                        render: (h, { row }) => {
-                            return (
-                                <div class="el-input">
-                                    <div class="el-textarea__inner">
-                                        XXXXX有限公司（9133XXXXXXXXXXXXX） ：我局（厅/委）于 年 月 日收到你（单位）提交的文号为 的失信信息修复申请，经审查，因
-                                        <span class="inline-txt">{row.reason}</span>
-                                        等原因，决定不予受理
-                                    </div>
-                                </div>
-                            )
                         },
                     },
                 ],
@@ -2316,7 +2593,7 @@ export default class AppChart extends Vue {
         }
     }
     // 不要删除此处方法
-    async handleSearch(params: any = {}) {
+    async init(params: any = {}) {
         console.log(params)
         // 模拟数据 不要删除
         const data = await Promise.resolve({
@@ -2339,7 +2616,7 @@ export default class AppChart extends Vue {
     }
 
     async mounted() {
-        this.handleSearch()
+        this.init()
     }
 }
 </script>
@@ -2529,21 +2806,6 @@ export default class AppChart extends Vue {
             },
         ]
         return {
-            // 分页配置
-            pagination: { pageSize: 10 },
-            // 表格包含导出和导出全部功能，默认展示，不要修改此配置
-            pageActionLayout: [
-                // 功能基于筛选结果导出当前页面数据，prd的功能点中有导出时展示
-                {
-                    key: 'export',
-                    label: '导出',
-                },
-                // 功能基于筛选结果导出所有据，prd的功能点中有导出全部时展示
-                {
-                    key: 'exportAll',
-                    label: '导出全部',
-                },
-            ],
             // 返回数据格式要求 { result: [], total: 0 }
             load: async (params: any = {}) => {
                 const { receiptDate, ...rest } = this.formModel
@@ -2679,24 +2941,23 @@ export default class AppChart extends Vue {
 - 请不要移除class类`sg-page`、`icinfo-ai`
 - 使用枚举的时候请使用以下方式，确保ts解析正常`GenderEnumMap[key as keyof typeof GenderEnumMap]?.label`
 - `template`标签中不要使用`?.`的语法。比如`{{ item?.name }}`请写成`{{ item.name || '-' }}`
-
+- 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
+- 判断请求成功请不需要判断`res.code === 200`，直接使用`res.data`
+- 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
+- `TableColumn`属性必须包含`width`或者`minWidth`；如果属性中有`fixed`则配置`width`属性，否则配置`minWidth`属性。日期宽度一般为`170px`。
+- 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
+- `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
 
 # Workflow
 - 用户输入产品prd内容
-- 学习[README.md](./README.md)中的内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。并在`menus.ts`中添加菜单。
-    - 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-    - 枚举文件`enum.ts`请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
-    - 主视图文件`index.vue`生成后请再检查一遍ts校验问题，有问题则立刻修复。
-    - 路由文件`router.js`默认必须生成，组件可不生成。
-    - `TableColumn`属性必须包含`width`或者`minWidth`；如果属性中有`fixed`则配置`width`属性，否则配置`minWidth`属性。日期宽度一般为`170px`。
-    - 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
-    - 使用`$modalDialog`时确保import中的文件路径正确。。
-    - 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
-    - 调用接口时不需要判断`code`，直接使用`res.data`。
-    - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
-
+- 先学习[README.md](./README.md)中的内容
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成：
+    - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
+    - 接口文件`api.ts`：仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
+    - 主视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
+    - 路由文件`router.js`：默认必须生成，组件可不生成。
+    - PRD文档`prd.md`：默认不生成。如果用户提供的是图片则生成相关prd文档。
 - 依次循环
 
 # Output
-项目根目录为`src`，将生成的业务代码放在`views`下的一个文件夹下，不要输出文件的补充说明，直接创建文件。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。
+项目根目录为`src`，将生成的业务代码放在`views`下的一个文件夹下。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。如果有新的`router.js`文件，请在`src/menus.ts`中添加菜单。

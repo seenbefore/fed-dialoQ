@@ -26,7 +26,7 @@ export const desktopMainInit = async <T = any, U extends BaseUserStore = BaseUse
     useStore: { userStore: U; settingsStore: S },
     defaultSettings: Obj,
 ) => {
-    const { bootstrap } = desktopInit(Vue)
+    const { bootstrap } = desktopInit(Vue, defaultSettings)
 
     Vue.use(modalDialog, { store, router })
 

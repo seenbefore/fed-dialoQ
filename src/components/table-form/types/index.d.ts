@@ -47,6 +47,7 @@ export type FormFieldTag =
     | 'range'
     | 'action'
     | 'slot'
+    | 'input-number'
     | string
     | Component<any, any, any, any>
     | AsyncComponent<any, any, any, any>
