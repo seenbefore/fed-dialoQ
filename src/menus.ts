@@ -80,7 +80,7 @@ export const LocalMenu: UserMenu[] = [
                 uri: '/档案管理员',
                 children: [
                     {
-                        label: '卷宗整理',
+                        label: '卷宗管理',
                         icon: 'el-icon-document',
                         uri: '/file-review/case-sort',
                     },
@@ -121,9 +121,21 @@ export const LocalMenu: UserMenu[] = [
                 uri: '/考场管理',
                 children: [
                     {
-                        label: '考卷列表',
+                        label: '试卷列表',
                         icon: 'el-icon-document',
                         uri: '/question-bank/paper',
+                    },
+                ],
+            },
+            {
+                label: '考生管理',
+                icon: 'el-icon-document',
+                uri: '/考生管理',
+                children: [
+                    {
+                        label: '考生列表',
+                        icon: 'el-icon-document',
+                        uri: '/question-bank/student',
                     },
                 ],
             },

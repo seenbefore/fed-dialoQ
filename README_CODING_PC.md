@@ -949,7 +949,7 @@ export interface FormRef extends Vue {
 - 业务文件目录
     - 接口文件 api.ts
     - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
-    - 主视图文件 index.vue
+    - 视图文件 index.vue
     - 路由文件 router.js
 
 ## 路由模板 router.js
@@ -957,7 +957,7 @@ export interface FormRef extends Vue {
 - 路由地址对应匹配文件路径，比如`/system/user-manage`对应生成文件目录`system/user-manage`
 ```js
 /* eslint-disable */
-const SelfInspectionFormManagement = () => import(/* webpackChunkName: "SelfInspectionFormManagement" */ './index')
+const SelfInspectionFormManagement = () => import(/* webpackChunkName: "SelfInspectionFormManagement" */ './index.vue')
 export default {
     path: '/self-inspection-form-management',
     name: 'SelfInspectionFormManagement',
@@ -1655,7 +1655,7 @@ export default class UserManagement extends Vue {
                             </el-button>
                             <el-button
                                 type="text"
-                                danger
+                                danger={true}
                                 onClick={() => {
                                     this.handleDelete(row)
                                 }}>
@@ -2877,7 +2877,7 @@ export default class AppChart extends Vue {
 - style属性使用scoped,lang设置为less
 - 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
 - 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-- 主视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
+- 视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
 - 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
 ### 代码风格和结构
@@ -2954,9 +2954,8 @@ export default class AppChart extends Vue {
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成：
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-    - 主视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
+    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件可不生成。
-    - PRD文档`prd.md`：默认不生成。如果用户提供的是图片则生成相关prd文档。
 - 依次循环
 
 # Output
