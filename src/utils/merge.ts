@@ -21,7 +21,7 @@ export function deepMerge<T extends object>(target: T, source?: Partial<T>): T {
 
         // 如果源值是对象且不是数组，进行递归合并
         if (sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue) && targetValue && typeof targetValue === 'object' && !Array.isArray(targetValue)) {
-            result[key as keyof T] = deepMerge(targetValue as object, sourceValue) as any
+            result[key as keyof T] = deepMerge(targetValue as Record<string, any>, sourceValue as Record<string, any>) as any
         } else {
             // 如果是基本类型或数组，直接替换
             result[key as keyof T] = sourceValue as any
