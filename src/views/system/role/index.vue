@@ -167,9 +167,6 @@ export default class RoleManage extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
-            pageVisible: false,
-            'row-key': 'id',
             load: async (params: any = {}) => {
                 const { data } = await list({
                     ...params,
@@ -192,20 +189,15 @@ export default class RoleManage extends Vue {
     }
 
     // 批量删除
-    handleBatchOperation() {
+    async handleBatchOperation() {
         const selectedNodes = [...this.selectedRows]
         if (selectedNodes.length === 0) {
             this.$message.warning('请选择要删除的角色')
             return
         }
-        this.$confirm('确定要删除选中的角色吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-        }).then(() => {
-            this.$message.success('删除成功')
-            this.handleSearch()
-        })
+        await this.$confirm('确定要删除选中的角色吗?')
+        this.$message.success('删除成功')
+        this.handleSearch()
     }
 
     handleSearch() {

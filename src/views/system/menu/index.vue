@@ -227,7 +227,6 @@ export default class MenuManage extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
             pageVisible: false,
             'row-key': 'id',
             'tree-props': {
@@ -286,20 +285,15 @@ export default class MenuManage extends Vue {
     }
 
     // 批量删除
-    handleBatchOperation() {
+    async handleBatchOperation() {
         const selectedNodes = this.getSelectedNodes()
         if (selectedNodes.length === 0) {
             this.$message.warning('请选择要删除的菜单')
             return
         }
-        this.$confirm('确定要删除选中的菜单吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-        }).then(() => {
-            this.$message.success('删除成功')
-            this.handleSearch()
-        })
+        await this.$confirm('确定要删除选中的菜单吗?')
+        this.$message.success('删除成功')
+        this.handleSearch()
     }
 
     handleSearch() {

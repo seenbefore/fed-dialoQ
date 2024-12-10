@@ -87,4 +87,18 @@ let themeVariables: IDefinedThemeValue = {
     '--color-info': '#666666',
 }
 settingsStore.updateThemeVariables(themeVariables)
-desktopMainInit(App, store, router, { userStore, settingsStore }, defaultSettings).then(() => {})
+desktopMainInit(
+    App,
+    store,
+    router,
+    { userStore, settingsStore },
+    {
+        ...defaultSettings,
+        $ShareGood: {
+            DataView: {
+                pagination: { pageSize: 10 },
+                pageActionLayout: [],
+            },
+        },
+    },
+).then(() => {})

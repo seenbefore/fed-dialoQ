@@ -1671,13 +1671,11 @@ export default class UserManagement extends Vue {
             multipleSelectionAll: [],
             // 唯一匹配的字段 仅当有批量操作时需要
             idKey: 'id',
-            // 分页配置
-            pagination: { pageSize: 10 },
             // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.UserManagement'),
             },
-            // 表格默认展示导出，如果prd中没有导出，请配置pageActionLayout为空 如 []
+            // 表格数据导出。默认不需要配置
             pageActionLayout: [
                 // 导出当页
                 {
@@ -2808,21 +2806,6 @@ export default class AppChart extends Vue {
             },
         ]
         return {
-            // 分页配置
-            pagination: { pageSize: 10 },
-            // 表格包含导出和导出全部功能，默认展示，不要修改此配置
-            pageActionLayout: [
-                // 功能基于筛选结果导出当前页面数据，prd的功能点中有导出时展示
-                {
-                    key: 'export',
-                    label: '导出',
-                },
-                // 功能基于筛选结果导出所有据，prd的功能点中有导出全部时展示
-                {
-                    key: 'exportAll',
-                    label: '导出全部',
-                },
-            ],
             // 返回数据格式要求 { result: [], total: 0 }
             load: async (params: any = {}) => {
                 const { receiptDate, ...rest } = this.formModel

@@ -243,7 +243,6 @@ export default class DictManage extends Vue {
         ]
 
         return {
-            pagination: { pageSize: 10 },
             pageVisible: false,
             'row-key': 'id',
             'tree-props': {
