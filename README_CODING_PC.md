@@ -416,14 +416,61 @@ export default class Step2 extends Vue {
 </script>
 ```
 
+## 表单组件 sg-base-form
 
+### 自定义组件配置
+```javascript
+{
+    // 组件类型 
+    tag: 'custom',
+    // 组件名称
+    name: 'icon',
+    // 组件属性
+    itemAttrs: {
+        label: '图标：',
+    },
+    // 组件渲染函数
+    appendRender: (h, { row }) => {
+        const onChange = (icon: string) => {
+            this.formModel.icon = icon
+        }
+        return (
+            <div class="icon-select">
+                <el-input value={this.formModel.icon} placeholder="请选择图标" maxlength={50}>
+                    <i slot="suffix" class={'el-icon-plus'} style="font-size: 16px"></i>
+                </el-input>
+                <el-popover placement="bottom" width="400" trigger="click">
+                    <div class="icon-list">
+                        {[
+                            'el-icon-edit',
+                            'el-icon-share',
+                            'el-icon-delete',
+                            'el-icon-setting',
+                            'el-icon-user',
+                            'el-icon-phone',
+                            'el-icon-star-on',
+                            'el-icon-message',
+                            'el-icon-location',
+                        ].map(icon => (
+                            <el-button
+                                type="text"
+                                info={icon !== this.formModel.icon}
+                                icon={icon}
+                                style="font-size: 18px; margin: 4px; cursor: pointer"
+                                onClick={() => onChange(icon)}
+                            ></el-button>
+                        ))}
+                    </div>
+                    <el-button slot="reference" type="text">
+                        选择图标
+                    </el-button>
+                </el-popover>
+            </div>
+        )
+    },
+}
+```
 
-## 作为第三方应用
-
-项目中的页面可以作为第三方应用在其他项目中通过`iframe`引用。比如地址`http://127.0.0.1:8888/file-review/my-case/save?token=123&isThirdParty=1`。
-
--   `token`：主应用的登录 token，用于获取用户信息
--   `isThirdParty`：是否为第三方应用，用于标识当前应用为第三方应用，并且隐藏头部和侧边栏
 
 
 ## prd模板
@@ -1872,22 +1919,6 @@ export default class UserDialog extends Vue {
                         },
                         itemAttrs: {
                             rules: [{ required: true, message: '请上传文件' }],
-                        },
-                    },
-                    // 不带label的自定义组件，占据整行，一般用于表单说明
-                    {
-                        span: 24,
-                        name: 'desc',
-                        render: (h, { row }) => {
-                            return (
-                                <div class="el-input">
-                                    <div class="el-textarea__inner">
-                                        XXXXX有限公司（9133XXXXXXXXXXXXX） ：我局（厅/委）于 年 月 日收到你（单位）提交的文号为 的失信信息修复申请，经审查，因
-                                        <span class="inline-txt">{row.reason}</span>
-                                        等原因，决定不予受理
-                                    </div>
-                                </div>
-                            )
                         },
                     },
                 ],

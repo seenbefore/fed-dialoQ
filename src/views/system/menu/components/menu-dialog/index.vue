@@ -52,14 +52,48 @@ export default class MenuDialog extends Vue {
                 },
             },
             {
-                tag: 'input',
+                tag: 'custom',
                 name: 'icon',
                 itemAttrs: {
                     label: '图标：',
                 },
-                attrs: {
-                    placeholder: '请输入',
-                    maxlength: 50,
+                appendRender: (h, { row }) => {
+                    const onChange = (icon: string) => {
+                        this.formModel.icon = icon
+                    }
+                    return (
+                        <div class="icon-select">
+                            <el-input value={this.formModel.icon} placeholder="请选择图标" maxlength={50}>
+                                <i slot="suffix" class={'el-icon-plus'} style="font-size: 16px"></i>
+                            </el-input>
+                            <el-popover placement="bottom" width="400" trigger="click">
+                                <div class="icon-list">
+                                    {[
+                                        'el-icon-edit',
+                                        'el-icon-share',
+                                        'el-icon-delete',
+                                        'el-icon-setting',
+                                        'el-icon-user',
+                                        'el-icon-phone',
+                                        'el-icon-star-on',
+                                        'el-icon-message',
+                                        'el-icon-location',
+                                    ].map(icon => (
+                                        <el-button
+                                            type="text"
+                                            info={icon !== this.formModel.icon}
+                                            icon={icon}
+                                            style="font-size: 18px; margin: 4px; cursor: pointer"
+                                            onClick={() => onChange(icon)}
+                                        ></el-button>
+                                    ))}
+                                </div>
+                                <el-button slot="reference" type="text">
+                                    选择图标
+                                </el-button>
+                            </el-popover>
+                        </div>
+                    )
                 },
             },
             {
