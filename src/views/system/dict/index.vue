@@ -368,9 +368,7 @@ export default class DictManage extends Vue {
         }
     }
 
-    mounted() {
-        this.handleSearch()
-    }
+    mounted() {}
 
     updateParentCheckStatus(dataList: any[]) {
         let allChecked = true

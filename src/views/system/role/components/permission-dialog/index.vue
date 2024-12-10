@@ -7,9 +7,11 @@
             </div>
             <div class="permission-tree">
                 <el-tree ref="tree" :data="treeData" show-checkbox node-key="id" :props="defaultProps" :default-checked-keys="checkedKeys" :default-expanded-keys="expandedKeys">
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <span>{{ data.name }}</span>
-                    </span>
+                    <template v-slot="{ node, data }">
+                        <span class="custom-tree-node">
+                            <span>{{ data.name }}</span>
+                        </span>
+                    </template>
                 </el-tree>
             </div>
         </div>

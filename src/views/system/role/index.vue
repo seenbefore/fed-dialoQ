@@ -8,9 +8,8 @@
             <el-button type="primary" @click="handleAdd">新增</el-button>
             <el-button type="danger" @click="handleBatchOperation">批量删除</el-button>
         </div>
-
         <!-- 列表 -->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change="handleSelectionChange"></sg-data-view>
     </div>
 </template>
 
@@ -91,36 +90,13 @@ export default class RoleManage extends Vue {
 
     // 是否全选
     isAllSelected = false
-    private dataList: any[] = []
 
     get getTableAttrs() {
         const columns: TableColumn[] = [
             {
-                type: '全选',
+                type: 'selection',
                 width: '50px',
                 fixed: 'left',
-                renderHeader: (h, { column }) => {
-                    return (
-                        <el-checkbox
-                            value={this.isAllSelected}
-                            onChange={(val: boolean) => {
-                                this.isAllSelected = val
-                                this.handleSelectAll(val)
-                            }}
-                        ></el-checkbox>
-                    )
-                },
-                render: (h, { row }) => {
-                    return (
-                        <el-checkbox
-                            value={row.checked}
-                            onChange={(val: boolean) => {
-                                this.$set(row, 'checked', val)
-                                this.updateParentCheckStatus(this.dataList)
-                            }}
-                        ></el-checkbox>
-                    )
-                },
             },
             {
                 label: '序号',
@@ -202,7 +178,7 @@ export default class RoleManage extends Vue {
                 const result = data.data.map((item: any) => {
                     return item
                 })
-                this.dataList = result
+
                 return {
                     result,
                     total: data.recordsTotal,
@@ -211,27 +187,13 @@ export default class RoleManage extends Vue {
             columns,
         }
     }
-
-    // 全选反选
-    handleSelectAll(val: boolean) {
-        const dataSource = this.dataList
-        this.selectTree(dataSource, val)
-    }
-
-    selectTree(dataList: any[], val: boolean) {
-        dataList.forEach(item => {
-            this.$set(item, 'checked', val)
-        })
-    }
-
-    // 获取选中的节点
-    getSelectedNodes() {
-        return this.dataList.filter(item => item.checked)
+    handleSelectionChange(selection: any[]) {
+        this.selectedRows = selection
     }
 
     // 批量删除
     handleBatchOperation() {
-        const selectedNodes = this.getSelectedNodes()
+        const selectedNodes = [...this.selectedRows]
         if (selectedNodes.length === 0) {
             this.$message.warning('请选择要删除的角色')
             return
@@ -300,21 +262,7 @@ export default class RoleManage extends Vue {
         }
     }
 
-    mounted() {
-        this.handleSearch()
-    }
-
-    updateParentCheckStatus(dataList: any[]) {
-        let allChecked = true
-        for (const item of dataList) {
-            if (!item.checked) {
-                allChecked = false
-                break
-            }
-        }
-        this.isAllSelected = allChecked
-        return allChecked
-    }
+    mounted() {}
 }
 </script>
 

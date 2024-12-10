@@ -1,5 +1,5 @@
 <template>
-    <div class="sg-page icinfo-ai MenuManage">
+    <div class="sg-page icinfo-ai UserManage">
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
@@ -10,20 +10,20 @@
         </div>
 
         <!-- 列表 -->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change="handleSelectionChange"></sg-data-view>
     </div>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
-import { list, save, MenuVO } from './api'
-const subTypeLineIcon = require('./assets/sub_type_line.gif')
+import { list, save, UserVO } from './api'
+
 @Component({
-    name: 'MenuManage',
+    name: 'UserManage',
     components: {},
 })
-export default class MenuManage extends Vue {
+export default class UserManage extends Vue {
     @Ref('formRef')
     formRef!: FormRef
 
@@ -38,28 +38,13 @@ export default class MenuManage extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'input',
-                name: 'name',
+                name: 'keyword',
                 itemAttrs: {
-                    label: '菜单名称：',
+                    label: '姓名/账号：',
                 },
                 attrs: {
                     placeholder: '请输入',
                     maxlength: 50,
-                },
-            },
-            {
-                tag: 'select',
-                name: 'status',
-                itemAttrs: {
-                    label: '状态：',
-                },
-                attrs: {
-                    placeholder: '请选择',
-                    options: [
-                        { label: '全部', value: '' },
-                        { label: '显示', value: '1' },
-                        { label: '隐藏', value: '0' },
-                    ],
                 },
             },
             {
@@ -92,35 +77,13 @@ export default class MenuManage extends Vue {
     // 是否全选
     isAllSelected = false
     private dataList: any[] = []
-    subTypeLineIcon = subTypeLineIcon
+
     get getTableAttrs() {
         const columns: TableColumn[] = [
             {
-                type: '全选',
+                type: 'selection',
                 width: '50px',
                 fixed: 'left',
-                renderHeader: (h, { column }) => {
-                    return (
-                        <el-checkbox
-                            value={this.isAllSelected}
-                            onChange={(val: boolean) => {
-                                this.isAllSelected = val
-                                this.handleSelectAll(val)
-                            }}
-                        ></el-checkbox>
-                    )
-                },
-                render: (h, { row }) => {
-                    return (
-                        <el-checkbox
-                            value={row.checked}
-                            onChange={(val: boolean) => {
-                                this.$set(row, 'checked', val)
-                                this.updateParentCheckStatus(this.dataList)
-                            }}
-                        ></el-checkbox>
-                    )
-                },
             },
             {
                 label: '序号',
@@ -129,52 +92,34 @@ export default class MenuManage extends Vue {
                 fixed: 'left',
             },
             {
-                label: '名称',
+                label: '区划',
+                prop: 'area',
+                minWidth: '200px',
+                align: 'left',
+            },
+            {
+                label: '姓名',
                 prop: 'name',
+                minWidth: '150px',
+                align: 'left',
+            },
+            {
+                label: '手机号码',
+                prop: 'mobile',
+                minWidth: '150px',
+                align: 'left',
+            },
+            {
+                label: '角色',
+                prop: 'role',
+                minWidth: '150px',
+                align: 'left',
+            },
+            {
+                label: '备注',
+                prop: 'remark',
                 minWidth: '200px',
                 align: 'left',
-                render: (h, { row }) => {
-                    const isLeaf = !row.children || row.children.length === 0
-                    return (
-                        <div class="name-cell">
-                            {isLeaf && <img src={subTypeLineIcon} class="leaf-icon" />}
-                            <span>{row.name}</span>
-                        </div>
-                    )
-                },
-            },
-            {
-                label: '图标',
-                prop: 'icon',
-                minWidth: '100px',
-                align: 'left',
-                render: (h, { row }) => {
-                    return <i class={row.icon}></i>
-                },
-            },
-            {
-                label: '路由地址',
-                prop: 'uri',
-                minWidth: '200px',
-                align: 'left',
-            },
-            {
-                label: '排序',
-                prop: 'sort',
-                minWidth: '120px',
-                align: 'left',
-                render: (h, { row }) => {
-                    return (
-                        <el-input-number
-                            v-model={row.sort}
-                            controls-position="right"
-                            min={1}
-                            size="mini"
-                            style="width: 80px"
-                            onChange={(value: number) => this.handleSortChange(row, value)}
-                        ></el-input-number>
-                    )
-                },
             },
             {
                 label: '状态',
@@ -187,20 +132,14 @@ export default class MenuManage extends Vue {
                             v-model={row.status}
                             active-value="1"
                             inactive-value="0"
-                            active-text="显示"
-                            inactive-text="隐藏"
+                            active-text="启用"
+                            inactive-text="停用"
                             active-color="#67C23A"
                             inactive-color="#909399"
                             onChange={(value: string) => this.handleStatusChange(row, value)}
                         ></el-switch>
                     )
                 },
-            },
-            {
-                label: '创建时间',
-                prop: 'createTime',
-                align: 'left',
-                minWidth: '170px',
             },
             {
                 label: '操作',
@@ -211,9 +150,6 @@ export default class MenuManage extends Vue {
                 render: (h, { row }) => {
                     return (
                         <div>
-                            <el-button type="text" onClick={() => this.handleAdd(row)}>
-                                新增
-                            </el-button>
                             <el-button type="text" onClick={() => this.handleEdit(row)}>
                                 编辑
                             </el-button>
@@ -230,11 +166,6 @@ export default class MenuManage extends Vue {
             pagination: { pageSize: 10 },
             pageVisible: false,
             'row-key': 'id',
-            'tree-props': {
-                children: 'children',
-                hasChildren: 'hasChildren',
-            },
-            'default-expand-all': true,
             load: async (params: any = {}) => {
                 const { data } = await list({
                     ...params,
@@ -253,46 +184,18 @@ export default class MenuManage extends Vue {
         }
     }
 
-    // 全选反选 树的所有节点
-    handleSelectAll(val: boolean) {
-        const dataSource = this.dataList
-        this.selectTree(dataSource, val)
-    }
-
-    selectTree(dataList: any[], val: boolean) {
-        dataList.forEach(item => {
-            this.$set(item, 'checked', val)
-            if (item.children && item.children.length > 0) {
-                this.selectTree(item.children, val)
-            }
-        })
-    }
-
-    // 获取整颗树选中的节点
-    getSelectedNodes() {
-        const selectedNodes: any[] = []
-        const traverseTree = (nodes: any[]) => {
-            nodes.forEach(node => {
-                if (node.checked) {
-                    selectedNodes.push(node)
-                }
-                if (node.children && node.children.length > 0) {
-                    traverseTree(node.children)
-                }
-            })
-        }
-        traverseTree(this.dataList)
-        return selectedNodes
+    handleSelectionChange(selection: any[]) {
+        this.selectedRows = selection
     }
 
     // 批量删除
     handleBatchOperation() {
-        const selectedNodes = this.getSelectedNodes()
+        const selectedNodes = [...this.selectedRows]
         if (selectedNodes.length === 0) {
-            this.$message.warning('请选择要删除的菜单')
+            this.$message.warning('请选择要删除的用户')
             return
         }
-        this.$confirm('确定要删除选中的菜单吗?', '提示', {
+        this.$confirm('确定要删除选中的用户吗?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
@@ -306,18 +209,17 @@ export default class MenuManage extends Vue {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    async handleAdd(row?: MenuVO) {
-        const result = await this.$modalDialog(() => import('./components/menu-dialog/index.vue'), {
+    async handleAdd() {
+        const result = await this.$modalDialog(() => import('./components/user-dialog/index.vue'), {
             action: 'create',
-            parentRow: row,
         })
         if (result) {
             this.handleSearch()
         }
     }
 
-    async handleEdit(row: MenuVO) {
-        const result = await this.$modalDialog(() => import('./components/menu-dialog/index.vue'), {
+    async handleEdit(row: UserVO) {
+        const result = await this.$modalDialog(() => import('./components/user-dialog/index.vue'), {
             action: 'modify',
             id: row.id,
             row,
@@ -327,7 +229,7 @@ export default class MenuManage extends Vue {
         }
     }
 
-    async handleStatusChange(row: MenuVO, value: string) {
+    async handleStatusChange(row: UserVO, value: string) {
         try {
             await save({
                 id: row.id,
@@ -342,51 +244,18 @@ export default class MenuManage extends Vue {
         }
     }
 
-    async handleDelete(row: MenuVO) {
+    async handleDelete(row: UserVO) {
         await this.$confirm('删除后将无法恢复，是否继续？', '提示')
         this.$message.success('删除成功')
         this.handleSearch()
     }
 
-    async handleSortChange(row: MenuVO, value: number) {
-        try {
-            await save({
-                id: row.id,
-                sort: value,
-            })
-            this.$message.success('修改成功')
-            this.handleSearch()
-        } catch (error) {
-            console.error(error)
-            // 恢复原值
-            row.sort = row.sort
-        }
-    }
-
     mounted() {}
-
-    updateParentCheckStatus(dataList: any[]) {
-        let allChecked = true
-        for (const item of dataList) {
-            if (!item.checked) {
-                allChecked = false
-                break
-            }
-            if (item.children && item.children.length > 0) {
-                const childrenAllChecked = this.updateParentCheckStatus(item.children)
-                if (!childrenAllChecked) {
-                    allChecked = false
-                }
-            }
-        }
-        this.isAllSelected = allChecked
-        return allChecked
-    }
 }
 </script>
 
 <style lang="less" scoped>
-.MenuManage ::v-deep {
+.UserManage ::v-deep {
     padding: 10px;
     .el-table {
         .el-table__body {
@@ -410,7 +279,7 @@ export default class MenuManage extends Vue {
             background-color: transparent;
             background-color: transparent !important;
             &::before {
-                content: '隐藏';
+                content: '停用';
                 display: inline-block;
                 font-size: 12px;
                 margin-left: 20px;
@@ -426,7 +295,7 @@ export default class MenuManage extends Vue {
             .el-switch__core {
                 background-color: #67c23a !important;
                 &::before {
-                    content: '显示';
+                    content: '启用';
                     display: inline-block;
                     color: #fff;
                     font-size: 12px;

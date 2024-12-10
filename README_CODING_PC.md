@@ -78,10 +78,10 @@
 
 ## 组件开发规范
 
-### 组件命名
+### 公共组件命名
 - 组件名使用 PascalCase: MyComponent
 - 基础组件使用 Base 前缀: BaseButton
-- 特定功能组件使用相应前缀: MyCardNumber, MyPieLegend
+- 特定功能组件使用相应前缀: MyCardNumber
 - 文件生成：`MyComponent/index.vue`
 
 ### 组件文档化
@@ -145,6 +145,19 @@ export default class ComponentName extends Vue {
   // 样式定义
 }
 </style>
+```
+### 插槽
+优先使用插槽`v-slot`，其次使用`slot-scope`
+``` html
+<template>
+    <el-tree ref="tree" :data="treeData">
+        <template v-slot="{ node, data }">
+            <span class="custom-tree-node">
+                <span>{{ data.name }}</span>
+            </span>
+        </template>
+    </el-tree>
+</template>
 ```
 
 ## 工具函数使用规范
@@ -417,7 +430,34 @@ export default class Step2 extends Vue {
 ```
 
 ## 表单组件 sg-base-form
+### 已有组件
+tag:
+- 'text'
+- 'input'
+- 'select'
+- 'date'
+- 'time'
+- 'checkbox'
+- 'radio'
+- 'cascader'
+- 'uploader'
+- 'autocomplete'
+- 'range'
+- 'switch'
+- 'timerange'
+- 'daterange'
+- 'singleCheckbox'
+- 'input-number'
 
+```javascript
+{
+    tag: 'input',
+    name: 'icon',
+    itemAttrs: {
+        label: '图标：',
+    },
+}
+```
 ### 自定义组件配置
 ```javascript
 {
@@ -2555,7 +2595,7 @@ export default class AppChart extends Vue {
         }
     }
     // 不要删除此处方法
-    async handleSearch(params: any = {}) {
+    async init(params: any = {}) {
         console.log(params)
         // 模拟数据 不要删除
         const data = await Promise.resolve({
@@ -2578,7 +2618,7 @@ export default class AppChart extends Vue {
     }
 
     async mounted() {
-        this.handleSearch()
+        this.init()
     }
 }
 </script>
@@ -2923,6 +2963,7 @@ export default class AppChart extends Vue {
 - 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
 - `TableColumn`属性必须包含`width`或者`minWidth`；如果属性中有`fixed`则配置`width`属性，否则配置`minWidth`属性。日期宽度一般为`170px`。
 - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
+- `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
 
 # Workflow
 - 用户输入产品prd内容
