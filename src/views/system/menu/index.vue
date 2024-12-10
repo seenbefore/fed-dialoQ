@@ -1,5 +1,5 @@
 <template>
-    <div class="sg-page icinfo-ai DictManage">
+    <div class="sg-page icinfo-ai MenuManage">
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
@@ -17,15 +17,13 @@
 <script lang="tsx">
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
-import { list, save } from './api'
+import { list, save, MenuVO } from './api'
 const subTypeLineIcon = require('./assets/sub_type_line.gif')
-
 @Component({
-    name: 'DictManage',
+    name: 'MenuManage',
     components: {},
 })
-export default class DictManage extends Vue {
-    subTypeLineIcon = subTypeLineIcon
+export default class MenuManage extends Vue {
     @Ref('formRef')
     formRef!: FormRef
 
@@ -40,20 +38,9 @@ export default class DictManage extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'input',
-                name: 'dictName',
+                name: 'name',
                 itemAttrs: {
-                    label: '字典名称：',
-                },
-                attrs: {
-                    placeholder: '请输入',
-                    maxlength: 50,
-                },
-            },
-            {
-                tag: 'input',
-                name: 'dictCode',
-                itemAttrs: {
-                    label: '字典编码',
+                    label: '菜单名称：',
                 },
                 attrs: {
                     placeholder: '请输入',
@@ -64,14 +51,14 @@ export default class DictManage extends Vue {
                 tag: 'select',
                 name: 'status',
                 itemAttrs: {
-                    label: '状态',
+                    label: '状态：',
                 },
                 attrs: {
                     placeholder: '请选择',
                     options: [
                         { label: '全部', value: '' },
-                        { label: '启用', value: '1' },
-                        { label: '停用', value: '0' },
+                        { label: '显示', value: '1' },
+                        { label: '隐藏', value: '0' },
                     ],
                 },
             },
@@ -101,9 +88,11 @@ export default class DictManage extends Vue {
             fields,
         }
     }
+
     // 是否全选
     isAllSelected = false
     private dataList: any[] = []
+    subTypeLineIcon = subTypeLineIcon
     get getTableAttrs() {
         const columns: TableColumn[] = [
             {
@@ -155,15 +144,18 @@ export default class DictManage extends Vue {
                 },
             },
             {
-                label: '代码值',
-                prop: 'code',
-                minWidth: '150px',
+                label: '图标',
+                prop: 'icon',
+                minWidth: '100px',
                 align: 'left',
+                render: (h, { row }) => {
+                    return <i class={row.icon}></i>
+                },
             },
             {
-                label: '类型',
-                prop: 'type',
-                minWidth: '100px',
+                label: '路由地址',
+                prop: 'uri',
+                minWidth: '200px',
                 align: 'left',
             },
             {
@@ -185,12 +177,6 @@ export default class DictManage extends Vue {
                 },
             },
             {
-                label: '值',
-                prop: 'value',
-                minWidth: '200px',
-                align: 'left',
-            },
-            {
                 label: '状态',
                 prop: 'status',
                 minWidth: '120px',
@@ -203,8 +189,6 @@ export default class DictManage extends Vue {
                             inactive-value="0"
                             active-text="显示"
                             inactive-text="隐藏"
-                            active-icon-class="icon-show"
-                            inactive-icon-class="icon-hide"
                             active-color="#67C23A"
                             inactive-color="#909399"
                             onChange={(value: string) => this.handleStatusChange(row, value)}
@@ -274,6 +258,7 @@ export default class DictManage extends Vue {
         const dataSource = this.dataList
         this.selectTree(dataSource, val)
     }
+
     selectTree(dataList: any[], val: boolean) {
         dataList.forEach(item => {
             this.$set(item, 'checked', val)
@@ -282,6 +267,7 @@ export default class DictManage extends Vue {
             }
         })
     }
+
     // 获取整颗树选中的节点
     getSelectedNodes() {
         const selectedNodes: any[] = []
@@ -298,21 +284,30 @@ export default class DictManage extends Vue {
         traverseTree(this.dataList)
         return selectedNodes
     }
-    // 批量操作案例
+
+    // 批量删除
     handleBatchOperation() {
         const selectedNodes = this.getSelectedNodes()
-            .map(item => item.name)
-            .join(',')
-        console.log(selectedNodes)
-        this.$message.success(`已选中节点：${selectedNodes}`)
+        if (selectedNodes.length === 0) {
+            this.$message.warning('请选择要删除的菜单')
+            return
+        }
+        this.$confirm('确定要删除选中的菜单吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }).then(() => {
+            this.$message.success('删除成功')
+            this.handleSearch()
+        })
     }
 
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
 
-    async handleAdd(row: any) {
-        const result = await this.$modalDialog(() => import('./components/dict-dialog/index.vue'), {
+    async handleAdd(row?: MenuVO) {
+        const result = await this.$modalDialog(() => import('./components/menu-dialog/index.vue'), {
             action: 'create',
             parentRow: row,
         })
@@ -321,8 +316,8 @@ export default class DictManage extends Vue {
         }
     }
 
-    async handleEdit(row: any) {
-        const result = await this.$modalDialog(() => import('./components/dict-dialog/index.vue'), {
+    async handleEdit(row: MenuVO) {
+        const result = await this.$modalDialog(() => import('./components/menu-dialog/index.vue'), {
             action: 'modify',
             id: row.id,
             row,
@@ -332,35 +327,35 @@ export default class DictManage extends Vue {
         }
     }
 
-    async handleStatusChange(row: any, value: string) {
+    async handleStatusChange(row: MenuVO, value: string) {
         try {
-            row.status = value
-            // await save({
-            //     id: row.id,
-            //     status: value,
-            // })
-            // this.$message.success('修改成功')
-            //this.handleSearch()
+            await save({
+                id: row.id,
+                status: value,
+            })
+            this.$message.success('修改成功')
+            this.handleSearch()
         } catch (error) {
             console.error(error)
+            // 恢复原值
+            row.status = row.status === '1' ? '0' : '1'
         }
     }
 
-    async handleDelete(row: any) {
+    async handleDelete(row: MenuVO) {
         await this.$confirm('删除后将无法恢复，是否继续？', '提示')
         this.$message.success('删除成功')
         this.handleSearch()
     }
 
-    async handleSortChange(row: any, value: number) {
+    async handleSortChange(row: MenuVO, value: number) {
         try {
-            row.sort = value
-            // await save({
-            //     id: row.id,
-            //     sort: value,
-            // })
+            await save({
+                id: row.id,
+                sort: value,
+            })
             this.$message.success('修改成功')
-            //this.handleSearch()
+            this.handleSearch()
         } catch (error) {
             console.error(error)
             // 恢复原值
@@ -393,7 +388,7 @@ export default class DictManage extends Vue {
 </script>
 
 <style lang="less" scoped>
-.DictManage ::v-deep {
+.MenuManage ::v-deep {
     padding: 10px;
     .el-table {
         .el-table__body {
@@ -443,16 +438,6 @@ export default class DictManage extends Vue {
                     background-color: #fff !important;
                 }
             }
-        }
-    }
-    .name-cell {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        .leaf-icon {
-            width: 16px;
-            height: 16px;
-            object-fit: contain;
         }
     }
 }

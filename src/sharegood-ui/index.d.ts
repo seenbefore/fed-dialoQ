@@ -24,6 +24,7 @@ export type FormFieldTag =
     | 'custom'
     | 'switch'
     | 'daterange'
+    | 'input-number'
     | FC
 
 interface inputSlot {

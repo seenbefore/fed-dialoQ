@@ -23,6 +23,11 @@ export const LocalMenu: UserMenu[] = [
                 icon: 'el-icon-document',
                 uri: '/system/dict',
             },
+            {
+                label: '菜单管理',
+                icon: 'el-icon-document',
+                uri: '/system/menu',
+            },
         ],
     },
     {
