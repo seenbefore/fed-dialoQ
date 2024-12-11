@@ -1,12 +1,12 @@
 import { mock } from 'mockjs'
 export default [
     {
-        name: '/mock/getUserInfo',
+        name: '/user/getUserInfo',
         method: 'get',
         description: 'mockGetUserInfo',
         onMock(opt, query, body) {
             return mock({
-                code: 0,
+                code: 200,
                 data: {
                     roles: 'admin', // admin 超级管理员 developer 普通
                     menus: [

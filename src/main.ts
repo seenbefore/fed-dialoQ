@@ -87,6 +87,10 @@ let themeVariables: IDefinedThemeValue = {
     '--color-info': '#666666',
 }
 settingsStore.updateThemeVariables(themeVariables)
+/* 条件编译 (必须是运行时可用的环境变量，并且变量值不能为 undefined，否则模块必定会打包) */
+if (process.env.VUE_APP_MOCK === 'true') {
+    require('./mock')
+}
 desktopMainInit(
     App,
     store,

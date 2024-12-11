@@ -1,7 +1,7 @@
 import { mock } from 'mockjs'
 export default [
     {
-        name: '/mock/login',
+        name: '/user/login',
         method: 'post',
         description: 'mockLogin',
         onMock(opt, query, body) {
@@ -13,7 +13,7 @@ export default [
                 })
             }
             return mock({
-                code: 0,
+                code: 200,
                 data: {
                     username,
                     token: '123456',
