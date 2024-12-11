@@ -5,9 +5,9 @@ const myMock = createMock(process.env.VUE_APP_BASEURL_API)
 import customMockData from './custom'
 // 自动生成的mock json
 //import autoMockData from './auto'
-const modules = {
+const mockData = {
     //...autoMockData,
     ...customMockData,
 }
 
-registerMock(myMock, modules)
+registerMock(myMock, mockData)

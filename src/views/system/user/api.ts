@@ -31,7 +31,7 @@ export function list(
 ) {
     return http.request<Result<PageResponse<UserVO[]>>>({
         url: '/user/list',
-        type: 'POST',
+        method: 'POST',
         data,
         ...options,
     })
@@ -51,7 +51,7 @@ export function save(
 ) {
     return http.request<Result<any>>({
         url: '/user/save',
-        type: 'POST',
+        method: 'POST',
         data,
         ...options,
     })
@@ -65,7 +65,7 @@ export function remove(
 ) {
     return http.request<Result<any>>({
         url: '/user/remove',
-        type: 'GET',
+        method: 'GET',
         params: data,
         ...options,
     })
@@ -79,7 +79,7 @@ export function detail(
 ) {
     return http.request<Result<UserVO>>({
         url: '/user/detail',
-        type: 'GET',
+        method: 'GET',
         params: data,
         ...options,
     })

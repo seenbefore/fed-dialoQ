@@ -34,6 +34,11 @@ export const LocalMenu: UserMenu[] = [
                 uri: '/system/role',
             },
             {
+                label: '部门管理',
+                icon: 'el-icon-document',
+                uri: '/system/department',
+            },
+            {
                 label: '人员管理',
                 icon: 'el-icon-document',
                 uri: '/system/user',

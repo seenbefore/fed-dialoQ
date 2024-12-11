@@ -1029,7 +1029,7 @@ export function list(
 ) {
     return http.request<Result<PageResponse<VO[]>>>({
         url: '/user/list',
-        type: 'post',
+        method: 'post',
         data,
         ...options,
     })
@@ -1049,7 +1049,7 @@ export function save(
 ) {
     return http.request<Result<any>>({
         url: '/user/save',
-        type: 'post',
+        method: 'post',
         data,
         ...options,
     })
@@ -1063,7 +1063,7 @@ export function remove(
 ) {
     return http.request<Result<any>>({
         url: '/user/remove',
-        type: 'get',
+        method: 'get',
         params: data,
         ...options,
     })
@@ -1077,7 +1077,7 @@ export function detail(
 ) {
     return http.request<Result<VO>>({
         url: '/user/detail',
-        type: 'get',
+        method: 'get',
         params: data,
         ...options,
     })
@@ -1746,14 +1746,15 @@ export default class UserManagement extends Vue {
             },
         ]
         return {
-            // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
-            multipleSelectionAll: [],
-            // 唯一匹配的字段 仅当有批量操作时需要
-            idKey: 'id',
             // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.UserManagement'),
             },
+            // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
+            multipleSelectionAll: [],
+            // 唯一匹配的字段 仅当有批量操作时需要
+            idKey: 'id',
+        
             // 表格数据导出。默认不需要配置
             pageActionLayout: [
                 // 导出当页
@@ -1899,8 +1900,8 @@ export default class UserDetail extends Vue {
 ```html
 <template>
     <!-- 用户弹窗（visible属性始终为true，不可修改）  -->
-    <el-dialog class="icinfo-ai UserDialog" component="UserDialog" :title="title" :visible="true" width="800px" @close="cancel" v-loading="loading" type="dialog">
-        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
+    <el-dialog class="icinfo-ai UserDialog" component="UserDialog" :title="title" :visible="true" width="800px" @close="cancel" type="dialog">
+        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs" v-loading="loading"></sg-base-form>
         <template v-slot:footer>
             <el-button type="primary" @click="submit" :disabled="View.loading">确定</el-button>
             <el-button @click="cancel">取消</el-button>
@@ -2109,7 +2110,7 @@ export default class UserDialog extends Vue {
 ```html
 <template>
     <el-drawer title="导入题库" :visible="true" size="600px" @close="cancel" :before-close="cancel" custom-class="my-drawer">
-        <div class="drawer-container">
+        <div class="drawer-container" v-loading="loading">
             <div class="drawer-main">
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
             </div>
