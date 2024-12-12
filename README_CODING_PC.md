@@ -2955,10 +2955,6 @@ export default class AppChart extends Vue {
 - 技术栈：vue2 + typescript + element-ui + mockjs
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
-- 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
-- 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-- 视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
-- 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
 ### 代码风格和结构
 - 编写简洁、技术性强的TypeScript代码，并提供准确的例子。
@@ -3027,6 +3023,8 @@ export default class AppChart extends Vue {
 - `TableColumn`属性必须包含`width`或者`minWidth`；如果属性中有`fixed`则配置`width`属性，否则配置`minWidth`属性。日期宽度一般为`170px`。
 - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
 - `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
+- style中不要使用`:deep`，请使用`::v-deep`。
+- 请使用`this.$back()`返回上一页，默认清除上一页缓存。
 
 # Workflow
 - 用户输入产品prd内容
@@ -3036,7 +3034,7 @@ export default class AppChart extends Vue {
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
-    - 路由文件`router.js`：默认必须生成，组件可不生成。
+    - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。
 - 依次循环
 
 # Output

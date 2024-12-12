@@ -500,17 +500,40 @@ modalDialog(() => import('@/components/UserEditDialog/index.vue'), {
 
 标签页位于`src/store/modules/tagsView.ts`文件中。
 
-### 返回并关闭当前标签页
-
-定义全局函数
+### $back
+vue全局函数，返回并关闭当前标签页
 
 ```typescript
-import { tagsViewStore } from '@/store/useStore'
+// 路由树和一维路由数组
+import router, { flatRoutes } from './router'
+import { tagsViewStore } from './store/useStore'
 /**
- * 关闭当前标签页并跳转到对应路由，参数同this.$router.push
+ * 关闭当前标签页
+ * @param params 参数
+ * @param params.path 上一页路由路径
+ * @param params.reload 是否刷新上一页
+ * @example
+ * this.$back({ path: '/system/department', reload: false }) // 不刷新上一页
+ * this.$back({ path: '/system/department' }) // 刷新上一页
  */
 Vue.prototype.$back = async function(params: any) {
-   
+    const { path, reload = true } = params ?? {}
+    const target: any = flatRoutes.find(item => {
+        return item.path === path || item.fullPath === path
+    })
+    // 默认清除上一页缓存
+    if (reload && target && target.name) {
+        await tagsViewStore.delCachedView({
+            name: target.name,
+        })
+    }
+    await tagsViewStore.delView(this.$route)
+
+    if (params) {
+        this.$router.push(params)
+    } else {
+        this.$router.go(-1)
+    }
 }
 ```
 

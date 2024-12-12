@@ -3,7 +3,7 @@ import { getURLParameters } from 'icinfo-util'
 import Vue from 'vue'
 import App from './App.vue'
 import { LocalMenu } from './menus'
-// 路由
+// 路由树和一维路由数组
 import router, { flatRoutes } from './router'
 import http from './scripts/http'
 import defaultSettings from './settings'
@@ -16,18 +16,26 @@ import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme
 
 /**
  * 关闭当前标签页
+ * @param params 参数
+ * @param params.path 上一页路由路径
+ * @param params.reload 是否刷新上一页
+ * @example
+ * this.$back({ path: '/system/department', reload: false }) // 不刷新上一页
+ * this.$back({ path: '/system/department' }) // 刷新上一页
  */
 Vue.prototype.$back = async function(params: any) {
-    const { path } = params ?? {}
+    const { path, reload = true } = params ?? {}
     const target: any = flatRoutes.find(item => {
         return item.path === path || item.fullPath === path
     })
-    if (target && path) {
+    // 默认清除上一页缓存
+    if (reload && target && target.name) {
         await tagsViewStore.delCachedView({
             name: target.name,
         })
     }
     await tagsViewStore.delView(this.$route)
+
     if (params) {
         this.$router.push(params)
     } else {

@@ -4,7 +4,7 @@ export default {
     path: '/',
     name: 'Index',
     component,
-    redirect: '/readme',
+    redirect: '/exam/list',
     meta: {
         bodyClass: '',
         parent: '',
