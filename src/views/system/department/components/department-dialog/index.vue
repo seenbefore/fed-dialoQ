@@ -129,7 +129,7 @@ export default class DepartmentDialog extends Vue {
         try {
             this.loading = true
             await this.formRef.validate()
-            await save(this.formModel)
+            await save(this.formModel as any)
             this.$message.success('保存成功')
             this.confirm()
         } catch (error) {

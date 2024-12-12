@@ -1,9 +1,9 @@
 /** 状态 */
 export enum StatusEnum {
     /** 禁用 */
-    DISABLED = '0',
+    DISABLED = 2,
     /** 启用 */
-    ENABLED = '1',
+    ENABLED = 1,
 }
 
 export const StatusEnumMap: Record<string, any> = {

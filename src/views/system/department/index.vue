@@ -20,7 +20,7 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { StatusEnum, StatusEnumMap } from './enum'
-import { list, remove, DepartmentVO } from './api'
+import { tree, remove, DepartmentVO } from './api'
 
 @Component({
     name: 'DepartmentList',
@@ -83,7 +83,7 @@ export default class DepartmentList extends Vue {
                 align: 'left',
                 render: (h, { row }) => {
                     return (
-                        <el-tag type={row.status === '1' ? 'success' : 'danger'} size="mini">
+                        <el-tag type={row.status === StatusEnum.ENABLED ? 'success' : 'danger'} size="mini">
                             {StatusEnumMap[row.status as keyof typeof StatusEnumMap]?.label || '-'}
                         </el-tag>
                     )
@@ -132,7 +132,7 @@ export default class DepartmentList extends Vue {
                 scrollDom: () => document.querySelector('.DepartmentList'),
             },
             load: async (params: any = {}) => {
-                const { data } = await list({
+                const { data } = await tree({
                     name: this.keyword,
                 })
                 return {
