@@ -944,24 +944,26 @@ export interface FormRef extends Vue {
 }
 
 ```
+
 # Example
 默认依次生成以下文件：
 - 业务文件目录
-    - 接口文件 api.ts
     - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
-    - 主视图文件 index.vue
+    - 接口文件 api.ts
+    - 数据模拟文件 mock.js
+    - 视图文件 index.vue
     - 路由文件 router.js
 
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
-- 路由地址对应匹配文件路径，比如`/system/user-manage`对应生成文件目录`system/user-manage`
+- 路由地址对应匹配文件路径，比如`/system/user-manage/list`对应生成文件目录`system/user-manage/list`
 ```js
 /* eslint-disable */
-const SelfInspectionFormManagement = () => import(/* webpackChunkName: "SelfInspectionFormManagement" */ './index')
+const SystemUserManage = () => import(/* webpackChunkName: "SystemUserManage" */ './index.vue')
 export default {
-    path: '/self-inspection-form-management',
-    name: 'SelfInspectionFormManagement',
-    component: SelfInspectionFormManagement,
+    path: '/system/user-manage',
+    name: 'SystemUserManage',
+    component: SystemUserManage,
     // 此处不要删减
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
@@ -994,92 +996,169 @@ export default {
 ## 接口模板 api.ts 
 请使用以下模板，注意不要改变数据结构
 ```typescript
-// 如果接口函数存在，则使用以下模板
-// import { catalogList,ExternalCaseCatalogVO } from '@/services/auto/external/case'
-// export type VO = ExternalCaseCatalogVO
-// 尽量不要修改页面组件中的接口函数名称
-// export { catalogList as list }
-
-// 如果接口函数不存在，则使用以下模板进行数据模拟
+import { ExAxiosRequestConfig } from 'icinfo-request'
+import { http } from '@/scripts/http'
+import { Result, PageResponse } from '@/@types'
 export interface VO {
-    // 模拟数据结构
     /** id */
     id: string
-    /** 名称 */
+    /** 区划 */
+    area: string
+    /** 姓名 */
     name: string
+    /** 手机号码 */
+    mobile: string
+    /** 角色 */
+    role: string
+    /** 备注 */
+    remark: string
+    /** 状态 0停用 1启用 */
+    status: string
 }
-// 仅模拟数据，不涉及具体业务逻辑，不要修改函数名称
-export const list = async (
+
+/**
+ * 获取用户列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function list(
     data?: {
-        /** 分页参数 页码数 */ pageNum?: number
-        /** 分页参数 每页条数 */ length?: number
-        /** 查询关键字 */ keyword?: string
+        /** 姓名/账号 */ keyword?: string
     },
     options?: ExAxiosRequestConfig,
-) => {
-    return {
-        // 不要改变结构，必须保留
-        code: 200,
-        message: 'message',
-        data: {
-            // 随机生成的数据，模拟数据
-            data: [
-                { id: 1, name: '张三', username: 'zhangsan', email: 'zhangsan@example.com', age: 28, gender: '0', note: '爱好钓鱼' },
-                { id: 2, name: '李四', username: 'lisi', email: 'lisi@example.com', age: 32, gender: '1', note: '爱好打羽毛球' },
-                { id: 3, name: '王五', username: 'wangwu', email: 'wangwu@example.com', age: 24, gender: '2', note: '喜欢玩游戏' },
-            ],
-            recordsTotal: 3,
-        },
-    }
+) {
+    return http.request<Result<PageResponse<VO[]>>>({
+        url: '/user/list',
+        method: 'post',
+        data,
+        ...options,
+    })
 }
-// 新增编辑接口 ，不要修改函数名称
-export const save = async (data?: {
-    /** 名称 */ name?: string
-}, options?: ExAxiosRequestConfig) => {
-    return {
-        code: 200,
-        message: 'success',
-    }
-}
-// 删除接口 ，不要修改函数名称
-export const remove = async (data?: {
-    /** id */ id: number
-}, options?: ExAxiosRequestConfig) => {
-    return {
-        code: 200,
-        message: 'success',
-    }
-}
-// 批量删除接口 ，不要修改函数名称
-export const removeBatch = async (data?: {
-    /** id */ id: number
-}, options?: ExAxiosRequestConfig) => {
-    return {
-        code: 200,
-        message: 'success',
-    }
-}
-// 详情接口 ，不要修改函数名称
-export const detail = async (data?: {
-    /** id */ id: number
-}, options?: ExAxiosRequestConfig) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            // 随机生成的数据，模拟数据
-            id: 1,
-            name: '张三',
-            username: 'zhangsan',
-            email: 'zhangsan@example.com',
-            age: 28,
-            gender: '0',
-            note: '爱好钓鱼',
-        },
-    }
-}
-```
 
+export function save(
+    data?: {
+        /** id */ id?: string
+        /** 区划 */ area?: string
+        /** 姓名 */ name?: string
+        /** 手机号码 */ mobile?: string
+        /** 角色 */ role?: string
+        /** 备注 */ remark?: string
+        /** 状态 */ status?: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/user/save',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
+
+export function remove(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/user/remove',
+        method: 'get',
+        params: data,
+        ...options,
+    })
+}
+
+export function detail(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<VO>>({
+        url: '/user/detail',
+        method: 'get',
+        params: data,
+        ...options,
+    })
+}
+
+```
+## 数据模拟 mock.js
+```javascript
+import { mock } from 'mockjs'
+const roles = ['系统管理员', '平台管理员', '数据统计人员', '信息录入人员', '普通人员']
+export default [
+    {
+        name: '/user/list',
+        method: 'post',
+        description: '用户列表',
+        onMock(opt, query, body) {
+            let { page = 1, pageNum = 1, pageSize, length } = body
+            page = pageNum || 1
+            pageSize = length || 10
+            return mock({
+                code: 200,
+                data: {
+                    [`data|${pageSize}`]: [
+                        {
+                            'id|+1': page * pageSize + 1,
+                            name: '@cname',
+                            nickName: '@cname',
+                            'status|1': [0, 1],
+                            'role|1': roles,
+                            'isAdmin|1': [0, 1],
+                        },
+                    ],
+                    recordsTotal: 198,
+                },
+                message: '请求成功',
+            })
+        },
+    },
+    {
+        name: '/user/detail',
+        method: 'get',
+        description: '用户详情',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                data: {
+                    id: 1,
+                    name: 'admin',
+                    nickName: '管理员',
+                    status: 1,
+                    role: '系统管理员',
+                    isAdmin: 1,
+                },
+            })
+        },
+    },
+    {
+        name: '/user/remove',
+        method: 'get',
+        description: '删除用户',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                message: '删除成功',
+            })
+        },
+    },
+    {
+        name: '/user/save',
+        method: 'post',
+        description: '保存用户',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                message: '保存成功',
+            })
+        },
+    },
+]
+
+```     
 ## 枚举模板 enum.ts
 生成2种格式，一种以`类型+Enum`命名，一种以`类型+EnumMap`命名，`类型`来自查询条件字段，比如`性别`有多种结果，则输出`GenderEnum`。示例如下：
 ```typescript
@@ -1655,7 +1734,7 @@ export default class UserManagement extends Vue {
                             </el-button>
                             <el-button
                                 type="text"
-                                danger
+                                danger={true}
                                 onClick={() => {
                                     this.handleDelete(row)
                                 }}>
@@ -1667,14 +1746,15 @@ export default class UserManagement extends Vue {
             },
         ]
         return {
-            // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
-            multipleSelectionAll: [],
-            // 唯一匹配的字段 仅当有批量操作时需要
-            idKey: 'id',
             // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.UserManagement'),
             },
+            // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
+            multipleSelectionAll: [],
+            // 唯一匹配的字段 仅当有批量操作时需要
+            idKey: 'id',
+        
             // 表格数据导出。默认不需要配置
             pageActionLayout: [
                 // 导出当页
@@ -1820,8 +1900,8 @@ export default class UserDetail extends Vue {
 ```html
 <template>
     <!-- 用户弹窗（visible属性始终为true，不可修改）  -->
-    <el-dialog class="icinfo-ai UserDialog" component="UserDialog" :title="title" :visible="true" width="800px" @close="cancel" v-loading="loading" type="dialog">
-        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
+    <el-dialog class="icinfo-ai UserDialog" component="UserDialog" :title="title" :visible="true" width="800px" @close="cancel" type="dialog">
+        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs" v-loading="loading"></sg-base-form>
         <template v-slot:footer>
             <el-button type="primary" @click="submit" :disabled="View.loading">确定</el-button>
             <el-button @click="cancel">取消</el-button>
@@ -2030,7 +2110,7 @@ export default class UserDialog extends Vue {
 ```html
 <template>
     <el-drawer title="导入题库" :visible="true" size="600px" @close="cancel" :before-close="cancel" custom-class="my-drawer">
-        <div class="drawer-container">
+        <div class="drawer-container" v-loading="loading">
             <div class="drawer-main">
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
             </div>
@@ -2872,12 +2952,12 @@ export default class AppChart extends Vue {
 # Constrains
 
 ## 通用规范
-- 技术栈：vue2 + typescript + element-ui
+- 技术栈：vue2 + typescript + element-ui + mockjs
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
 - 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
 - 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-- 主视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
+- 视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
 - 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
 ### 代码风格和结构
@@ -2953,10 +3033,10 @@ export default class AppChart extends Vue {
 - 先学习[README.md](./README.md)中的内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成：
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
-    - 接口文件`api.ts`：仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-    - 主视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
+    - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
+    - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
+    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件可不生成。
-    - PRD文档`prd.md`：默认不生成。如果用户提供的是图片则生成相关prd文档。
 - 依次循环
 
 # Output

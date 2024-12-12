@@ -20,7 +20,7 @@ export const registerMock = (myMock, modules) => {
 
     function parseAPI(api) {
         /* eslint-disable*/
-        let { url, name, method, onSuccess } = api
+        let { url, name, method, onSuccess, description } = api
         const onMock = api.onMock || onSuccess
         url = url || name
         let reg = url
@@ -34,6 +34,7 @@ export const registerMock = (myMock, modules) => {
             method,
             reg,
             onMock,
+            description,
         }
     }
 
@@ -42,7 +43,7 @@ export const registerMock = (myMock, modules) => {
     })
     console.log('[---mock apis---]', apis)
     for (const api of apis) {
-        myMock(api.reg, api.method, api.onMock)
+        myMock(api.reg, api.method, api.onMock, api)
     }
 }
 

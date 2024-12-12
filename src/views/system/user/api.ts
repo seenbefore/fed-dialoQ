@@ -1,5 +1,6 @@
 import { ExAxiosRequestConfig } from 'icinfo-request'
-
+import { http } from '@/scripts/http'
+import { Result, PageResponse } from '@/@types'
 export interface UserVO {
     /** id */
     id: string
@@ -17,52 +18,26 @@ export interface UserVO {
     status: string
 }
 
-export const list = async (
+/**
+ * 获取用户列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function list(
     data?: {
         /** 姓名/账号 */ keyword?: string
     },
     options?: ExAxiosRequestConfig,
-) => {
-    // 模拟数据
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            data: [
-                {
-                    id: '31',
-                    area: '浙江省绍兴市',
-                    name: '吕小明',
-                    mobile: '18666666666',
-                    role: '系统管理员',
-                    remark: '',
-                    status: '1',
-                },
-                {
-                    id: '29',
-                    area: '浙江省',
-                    name: '杨小明',
-                    mobile: '15777777777',
-                    role: '系统管理员',
-                    remark: '',
-                    status: '1',
-                },
-                {
-                    id: '28',
-                    area: '浙江省',
-                    name: '陈小明',
-                    mobile: '13888888888',
-                    role: '系统管理员',
-                    remark: '',
-                    status: '1',
-                },
-            ],
-            recordsTotal: 3,
-        },
-    }
+) {
+    return http.request<Result<PageResponse<UserVO[]>>>({
+        url: '/user/list',
+        method: 'POST',
+        data,
+        ...options,
+    })
 }
 
-export const save = async (
+export function save(
     data?: {
         /** id */ id?: string
         /** 区划 */ area?: string
@@ -73,21 +48,39 @@ export const save = async (
         /** 状态 */ status?: string
     },
     options?: ExAxiosRequestConfig,
-) => {
-    return {
-        code: 200,
-        message: 'success',
-    }
+) {
+    return http.request<Result<any>>({
+        url: '/user/save',
+        method: 'POST',
+        data,
+        ...options,
+    })
 }
 
-export const remove = async (
+export function remove(
     data?: {
         /** id */ id: string
     },
     options?: ExAxiosRequestConfig,
-) => {
-    return {
-        code: 200,
-        message: 'success',
-    }
+) {
+    return http.request<Result<any>>({
+        url: '/user/remove',
+        method: 'GET',
+        params: data,
+        ...options,
+    })
+}
+
+export function detail(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<UserVO>>({
+        url: '/user/detail',
+        method: 'GET',
+        params: data,
+        ...options,
+    })
 }

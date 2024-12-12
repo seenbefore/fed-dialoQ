@@ -1,15 +1,12 @@
-import createMock from '@/mock/createMock'
-import registerMock from '@/mock/registerMock'
+import createMock from '@@core/common/mock/createMock'
+import registerMock from '@@core/common/mock/registerMock'
 const myMock = createMock(process.env.VUE_APP_BASEURL_API)
 // 自定义的mock 数据
-import myMockData from './modules'
-// 自动生成的mock json
-import autoMockData from './auto'
-import customMockData from './data'
-const modules = {
-    ...autoMockData,
-    ...myMockData,
-    ...customMockData,
-}
+const files = require.context('@/views', true, /mock\.js$/)
+const mockData = {}
 
-registerMock(myMock, modules)
+files.keys().forEach(key => {
+    mockData[key] = files(key).default || files(key)
+})
+
+registerMock(myMock, mockData)

@@ -46,15 +46,13 @@ export const createMock = (baseURL, isGroupOpened = false) =>
      * @param {Template} [tplFn]
      */
     /* eslint-disable*/
-    (url, method, tplFn) => {
+    (url, method, tplFn, api) => {
         if (typeof method === 'function') {
             tplFn = method
             method = 'get'
         }
 
-        const rurl = url.startsWith('reg:')
-            ? new RegExp(`^${_.escapeRegExp(baseURL)}${url.slice(4)}`)
-            : baseURL + url
+        const rurl = url.startsWith('reg:') ? new RegExp(`^${_.escapeRegExp(baseURL)}${url.slice(4)}`) : baseURL + url
 
         // new RegExp('/api/pub/core/menus(/.+)').test('/api/pub/core/menus/1/3')
         Mock.mock(rurl, method, function(opts) {
@@ -83,10 +81,10 @@ export const createMock = (baseURL, isGroupOpened = false) =>
                     }
                 })()
                 const _k = isGroupOpened ? 'group' : 'groupCollapsed'
-                console[_k](`mock:${method}:${urlParsed.pathname}`)
+                console[_k](`mock:${method}:${api.description}:${urlParsed.pathname}`)
                 !_.isEmpty(queryCopy) && console.log('query', queryCopy)
                 !_.isEmpty(bodyCopy) && console.log('body ', bodyCopy)
-                console.log('payload  ', resCopy)
+                console.log('response  ', resCopy)
                 console.groupEnd()
             }
             return res
