@@ -760,7 +760,7 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 ## 主视图模板
 ```vue
 <template>
-    <AppPage>
+    <AppPage class="component-name">
         <template #header>
             <div class="header">
                 头部内容
@@ -816,7 +816,8 @@ export default class ComponentName extends Vue {
 </script>
 
 <style lang="less" scoped>
-.component-name {
+// 不要删除 v-deep
+.component-name ::v-deep {
   // 样式定义
 }
 </style>

@@ -311,6 +311,10 @@ export default {
             type: [Number],
             default: 0,
         },
+        data: {
+            type: Array,
+            default: null,
+        },
     },
     data() {
         return {
@@ -443,6 +447,9 @@ export default {
                 return false
             }
             if (this.pages <= 1 && this.hideOnSinglePage) {
+                return false
+            }
+            if (Array.isArray(this.data)) {
                 return false
             }
             return true
@@ -712,7 +719,12 @@ export default {
 
             params = paramsSerializer ? paramsSerializer(params) : params
 
-            let promise = this.load(params)
+            let promise = Array.isArray(this.data)
+                ? Promise.resolve({
+                      result: this.data,
+                      total: this.data.length,
+                  })
+                : this.load(params)
             if (!promise.then) {
                 promise = Promise.resolve(promise)
             }

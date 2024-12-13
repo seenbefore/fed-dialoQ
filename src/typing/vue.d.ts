@@ -12,7 +12,7 @@ declare module 'vue/types/vue' {
         /**
          * h5、PC页面回退
          */
-        $back: (params: any) => void
+        $back: (params?: any) => void
         /**
          * 发送消息
          */

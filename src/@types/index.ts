@@ -67,6 +67,12 @@ export interface PageResponse<T> {
     recordsTotal: string
 
     /**
+     * 总记录数
+     */
+    total: number
+
+    /**
+    /**
      * 表头
      */
     tableHead: any

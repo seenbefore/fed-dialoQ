@@ -145,7 +145,10 @@
                                     </template>
                                 </component>
                                 <template v-if="col.appendRender && !types[col.tag]">
-                                    <ex-slot :render="col.appendRender" :row="col"></ex-slot>
+                                    <ex-slot :render="col.appendRender" :row="formData" :model="formData"></ex-slot>
+                                </template>
+                                <template v-if="col.render && !types[col.tag]">
+                                    <ex-slot :render="col.render" :row="formData" :model="formData"></ex-slot>
                                 </template>
                             </re-el-form-item>
                             <!-- 自定义表单域 -->
@@ -174,7 +177,7 @@
                             <!-- 操作表单域 -->
                             <template v-else-if="col.tag == 'action'">
                                 <div class="sg-data-form-action">
-                                    <ex-slot v-if="col.render" :render="col.render" :row="col"></ex-slot>
+                                    <ex-slot v-if="col.render" :render="col.render" :row="formData"></ex-slot>
                                     <template v-for="(button, z) in col.buttons || []">
                                         <template v-if="button.isSubmit">
                                             <el-button :key="z" type="primary" @click="submit" native-type="submit" v-bind="button" class="sg-base-form--search" :size="size">
@@ -218,7 +221,7 @@
                                 <slot :name="col.slot"></slot>
                             </template>
                             <template v-else-if="col.render">
-                                <ex-slot v-if="col.render" :render="col.render" :row="col"></ex-slot>
+                                <ex-slot v-if="col.render" :render="col.render" :row="formData"></ex-slot>
                             </template>
                         </el-col>
                     </template>
@@ -796,7 +799,7 @@ export default {
             const { name, tag, custom } = col
             const types = this.types
 
-            if (tag === 'slot' || tag === 'action' || col.render || col.slotName) {
+            if (tag === 'slot' || tag === 'action' || (col.render && tag !== 'custom') || col.slotName) {
                 return null
             } else if (types[tag]) {
                 return types[tag]
