@@ -10,8 +10,8 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import AppPage from '@/entry/h5/components/app-page/index.vue'
-import TabBar from '@/entry/h5/components/TabBar/index.vue'
+import AppPage from '@/components/h5/AppPage/index.vue'
+import TabBar from '@/components/h5/TabBar/index.vue'
 @Component({
     name: 'Readme',
     components: {
