@@ -3,7 +3,7 @@
         <van-collapse-item class="mobile-nav__item" :title="group.groupName" :name="group.groupName">
             <van-icon :name="group.icon" slot="right-icon" class="mobile-nav__icon" />
             <template v-for="(navItem, index) in group.list">
-                <van-cell v-if="!navItem.disabled" :key="index" :to="'/' + base + navItem.path" :title="navItem.title" is-link />
+                <van-cell v-if="!navItem.disabled" :key="index" :to="navItem.path" :title="navItem.title" is-link />
             </template>
         </van-collapse-item>
     </van-collapse>
@@ -12,13 +12,19 @@
 <script>
 export default {
     props: {
-        base: String,
-        group: Object,
+        base: {
+            type: String,
+            default: '',
+        },
+        group: {
+            type: Object,
+            default: () => ({}),
+        },
     },
 
     data() {
         return {
-            active: [],
+            active: ['基础组件'],
         }
     },
 }

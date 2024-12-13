@@ -1,25 +1,50 @@
 <!-- 文档 -->
 <template>
-    <div class="sg-page Readme">
-        <DemoList></DemoList>
-    </div>
+    <AppPage class="Readme">
+        <router-view></router-view>
+        <template #footer>
+            <TabBar :data="tabBarData" />
+        </template>
+    </AppPage>
 </template>
 
 <script lang="tsx">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import DemoList from './components/DemoList.vue'
+import AppPage from '@/entry/h5/components/app-page/index.vue'
+import TabBar from '@/entry/h5/components/TabBar/index.vue'
 @Component({
     name: 'Readme',
     components: {
-        DemoList,
+        AppPage,
+        TabBar,
     },
 })
 export default class Readme extends Vue {
     mounted() {}
+    private tabBarData = [
+        {
+            title: '首页',
+            to: {
+                path: '/readme/home',
+            },
+            icon: 'home-o',
+        },
+        {
+            title: '列表',
+            to: {
+                path: '/readme/list',
+            },
+            icon: 'user-o',
+        },
+        {
+            title: 'vant组件', // 菜单标题
+            to: {
+                path: '/readme/vant',
+            },
+            icon: 'user-o',
+        },
+    ]
 }
 </script>
 
-<style lang="less" scoped>
-.Readme ::v-deep {
-}
-</style>
+<style lang="less" scoped></style>

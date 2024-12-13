@@ -12,7 +12,11 @@ import modalDialog from './scripts/MobileModalDialog'
 import store from './store'
 import './styles/app.less'
 import { tagsViewStore } from '@h5/store/useStore'
-
+import * as filters from './filters'
+// 过滤器
+Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
+})
 Vue.prototype.$modalDialog = modalDialog
 Vue.prototype.$http = http
 /**

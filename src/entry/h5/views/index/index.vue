@@ -1,8 +1,9 @@
 <template>
-    <div class=" Index">
-        <keep-alive :include="cachedViews">
-            <router-view :key="key" />
+    <div class="Index">
+        <keep-alive :include="cachedViews" v-if="$route.meta.keepAlive">
+            <router-view :key="key"></router-view>
         </keep-alive>
+        <router-view v-else></router-view>
     </div>
 </template>
 
@@ -62,14 +63,15 @@ export default class Index extends Vue {
             }
         } else {
             // console.log('前进')
-
             this.addTags()
         }
-        // console.log('tagsViewStore.visitedViews', tagsViewStore.visitedViews)
     }
 
     addTags() {
         const { name, meta = {}, query, params, path, fullPath, hash } = this.$route
+        const keepAlive = meta.keepAlive || false
+        const noCache = meta.noCache || false
+
         const view: IBaseVisitedView = {
             title: meta.title || name,
             _: (query._ as string) || '',
@@ -101,5 +103,8 @@ export default class Index extends Vue {
 <style lang="less" scoped>
 .Index {
     font-size: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 </style>

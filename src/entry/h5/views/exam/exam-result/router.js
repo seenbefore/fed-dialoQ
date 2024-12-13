@@ -8,6 +8,5 @@ export default {
     meta: {
         parent: 'Index',
         title: '考试结果',
-        noCache: true,
     },
 }

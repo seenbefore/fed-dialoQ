@@ -518,14 +518,14 @@ export default {
     component: SelfInspectionFormManagement,
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
-        // 页面body样式 不要删除修改
+        // 页面body样式 不要删除
         bodyClass: '',
-        // 页面父级name 不要删除修改
+        // 页面父级name 不要删除和修改
         parent: 'Index',
-        // 页面标题 不要删除修改
+        // 页面标题 不要删除
         title: '',
-        // 页面不缓存 不要删除修改
-        noCache: true,
+        // 默认页面不缓存 不要删除
+        keepAlive: false,
     },
 }
 
@@ -760,18 +760,34 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 ## 主视图模板
 ```vue
 <template>
-  <div class="component-name">
-    <!-- 模板内容 -->
-  </div>
+    <AppPage>
+        <template #header>
+            <div class="header">
+                头部内容
+            </div>
+        </template>
+        <main>
+            主内容
+        </main>
+        <template #footer>
+            <div class="footer">
+                <van-button type="into">底部操作</van-button>
+            </div>
+        </template>
+    </AppPage>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { getExamList } from './api'
 import { ExamStatusEnum } from './enum'
+import AppPage from '@/components/h5/AppPage/index.vue'
 
 @Component({
-    name: 'ComponentName'
+    name: 'ComponentName',
+    components: {
+        AppPage,
+    },
 })
 export default class ComponentName extends Vue {
   /**

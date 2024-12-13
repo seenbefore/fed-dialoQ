@@ -1,13 +1,12 @@
-const component = () => import(/* webpackChunkName: "IndexPage1" */ './index')
+const component = () => import(/* webpackChunkName: "ReadmeVant" */ './index.vue')
 
 export default {
-    path: '/',
-    name: 'Index',
+    path: '/readme/vant',
+    name: 'ReadmeVant',
     component,
-    redirect: '/readme/home',
     meta: {
         bodyClass: '',
-        parent: '',
+        parent: 'Readme',
         title: '',
         requireAuth: false,
         keepAlive: false,

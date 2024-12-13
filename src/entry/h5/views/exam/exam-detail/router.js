@@ -9,6 +9,5 @@ export default {
         bodyClass: '',
         parent: 'Index',
         title: '答题',
-        noCache: true,
     },
 }
