@@ -1,9 +1,11 @@
 <template>
     <div class="sg-page icinfo-ai PrePublicity">
-        <div class="sg-button-group">
-            <el-button type="primary" @click="handleAdd">新增</el-button>
-        </div>
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef">
+            <!-- 顶部操作 -->
+            <template #header>
+                <el-button type="primary" @click="handleAdd">新增</el-button>
+            </template>
+        </sg-data-view>
     </div>
 </template>
 

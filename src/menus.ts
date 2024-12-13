@@ -146,4 +146,23 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: '执法监督',
+        icon: 'el-icon-document',
+        uri: '/law-supervision',
+        children: [
+            {
+                label: '执法公示',
+                icon: 'el-icon-document',
+                uri: '/law-supervision/publicity',
+                children: [
+                    {
+                        label: '事前信息公示',
+                        icon: 'el-icon-document',
+                        uri: '/law-supervision/publicity/pre-publicity',
+                    },
+                ],
+            },
+        ],
+    },
 ]

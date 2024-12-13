@@ -27,7 +27,9 @@
             </slot>
             <slot name="bar-foot"></slot>
         </el-row>
-        <slot name="header"></slot>
+        <div class="sg-data-view__header" v-if="$slots.header">
+            <slot name="header"></slot>
+        </div>
         <div class="sg-data-view__wrap sg-dataview-wrapper" ref="tableWrap">
             <el-table
                 :id="printId"

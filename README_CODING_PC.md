@@ -76,6 +76,60 @@
 └── package.json           # npm 配置文件
 ```
 
+## 菜单结构
+- 菜单结构位于`src/menus.ts`文件中。注意：只需要将视图列表的路由地址配置到菜单中，其他比如新增、详情等路由不需要配置菜单。
+```typescript
+import { UserMenu } from '@/@types/menu'
+const menu = require('./menu.json')
+export const LocalMenu: UserMenu[] = [
+    {
+        label: '我的工作台',
+        icon: 'el-icon-document',
+        uri: '/我的工作台',
+        children: [
+            {
+                label: '测试页面',
+                icon: 'el-icon-document',
+                uri: '/test',
+            },
+        ],
+    },
+    {
+        label: '系统管理',
+        icon: 'el-icon-document',
+        uri: '/系统管理',
+        children: [
+            {
+                label: '数据字典',
+                icon: 'el-icon-document',
+                uri: '/system/dict',
+            },
+            {
+                label: '菜单管理',
+                icon: 'el-icon-document',
+                uri: '/system/menu',
+            },
+            {
+                label: '角色管理',
+                icon: 'el-icon-document',
+                uri: '/system/role',
+            },
+            {
+                label: '部门管理',
+                icon: 'el-icon-document',
+                uri: '/system/department',
+            },
+            {
+                label: '人员管理',
+                icon: 'el-icon-document',
+                uri: '/system/user',
+            },
+        ],
+    },
+]
+
+```
+
 ## 组件开发规范
 
 ### 公共组件命名
@@ -1278,13 +1332,17 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
         <!-- 查询条件页面，需求内容中有查询条件字样时展示，别忘记formModel的定义   -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
-        <!-- 顶部操作 prd中包含新增操作、批量删除操作时。导出相关的功能点不用写  -->
-        <div>
-            <el-button type="primary" @click="handleAdd">新增</el-button>
-            <el-button type="primary" @click="handleDeleteBatch">批量删除</el-button>
-        </div>
+    
         <!-- 列表展示数据项页面，需求内容中有列表展示字样时展示 selection-change-all 数据列选择事件（仅当有批量操作时需要）  sort-change 排序事件-->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change-all="onChange" @sort-change="handleSortChange"></sg-data-view>
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change-all="onChange" @sort-change="handleSortChange">
+            <template #header>
+                 <!-- 顶部操作 prd中包含新增操作、批量删除操作时。导出相关的功能点不用写  -->
+                <div>
+                    <el-button type="primary" @click="handleAdd">新增</el-button>
+                    <el-button type="primary" @click="handleDeleteBatch">批量删除</el-button>
+                </div>
+            </template>
+        </sg-data-view>
     </div>
 </template>
 
@@ -2998,7 +3056,7 @@ export default class AppChart extends Vue {
 - 不要修改`import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'`。
 - 不要删减引入的内容`import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'`。
 - sg-base-form使用示例：`<sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>`不要删减属性和方法
-- sg-data-view使用示例：`<sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>`，`不要删减属性和方法
+- sg-data-view使用示例：`<sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>`，不要删减属性和方法。且配置`getTableAttrs.tableHeaderSticky`属性。
 - sg-base-form和sg-data-view是当前代码库的全局组件，可以直接使用
 - sg-base-form 是一个表单组件，通过 ref="formRef" 创建了一个引用，以便在组件的 TypeScript 部分中访问这个表单组件的实例。它绑定了 getFormAttrs 对象的属性（使用了 v-bind="getFormAttrs" 来绑定属性），并通过 v-model 绑定了 formModel。表单提交和重置时都会触发 handleSearch 方法
 - sg-data-view 是一个数据视图组件，通过 ref="tableRef" 创建了一个引用。它绑定了 getTableAttrs 对象的属性（使用 v-bind="getTableAttrs" 来绑定属性）
@@ -3026,6 +3084,7 @@ export default class AppChart extends Vue {
 - `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
 - style中不要使用`:deep`，请使用`::v-deep`。
 - 请使用`this.$back()`返回上一页，默认清除上一页缓存。
+- 
 
 # Workflow
 - 用户输入产品prd内容
