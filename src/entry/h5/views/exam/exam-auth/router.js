@@ -8,6 +8,5 @@ export default {
     meta: {
         parent: 'Index',
         title: '实名认证',
-        noCache: true,
     },
 }

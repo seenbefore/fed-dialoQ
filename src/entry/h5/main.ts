@@ -12,7 +12,11 @@ import modalDialog from './scripts/MobileModalDialog'
 import store from './store'
 import './styles/app.less'
 import { tagsViewStore } from '@h5/store/useStore'
-
+import * as filters from './filters'
+// 过滤器
+Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
+})
 Vue.prototype.$modalDialog = modalDialog
 Vue.prototype.$http = http
 /**
@@ -34,7 +38,10 @@ Vue.prototype.$back = async function(reload = true) {
 }
 
 const { bootstrap } = mobileInit(Vue)
-
+/* 条件编译 (必须是运行时可用的环境变量，并且变量值不能为 undefined，否则模块必定会打包) */
+if (process.env.VUE_APP_MOCK === 'true') {
+    require('./mock')
+}
 bootstrap(async () => {
     /* 嵌入第三方免登进入 */
     const { token = '' } = getURLParameters(location.href)

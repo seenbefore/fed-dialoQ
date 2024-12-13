@@ -1,5 +1,6 @@
 import { http } from '@/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
+import { Result, PageResponse } from '@/@types'
 
 // 考试状态枚举
 export enum ExamStatus {
@@ -8,6 +9,14 @@ export enum ExamStatus {
     FINISHED = 'finished', // 已结束
 }
 
+export interface ExamItem {
+    id: string
+    title: string
+    startTime: string
+    endTime: string
+    duration: string
+    status: ExamStatus
+}
 // 考试列表数据
 const EXAM_LIST = [
     {
@@ -56,17 +65,5 @@ export const getExamList = async (
     },
     options?: ExAxiosRequestConfig,
 ) => {
-    const page = params?.page || 1
-    const pageSize = params?.pageSize || 10
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-
-    // 模拟分页数据
-    const list = EXAM_LIST.slice(start, end)
-
-    return {
-        code: 200,
-        message: 'success',
-        data: list,
-    }
+    return http.post<Result<ExamItem[]>>('/exam/list', params, options)
 }

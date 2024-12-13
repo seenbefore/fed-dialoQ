@@ -22,6 +22,7 @@ module.exports = {
     nav: [
         {
             name: '开发指南',
+
             groups: [
                 {
                     list: [
@@ -70,8 +71,32 @@ module.exports = {
             ],
         },
         {
-            name: '组件',
+            name: '案例',
             showInMobile: true,
+            groups: [
+                {
+                    groupName: '基础组件',
+                    icon: 'https://img.yzcdn.cn/vant/basic-0401.svg',
+                    list: [
+                        {
+                            path: '/demo/fill-in-form',
+                            title: 'app-form 表单',
+                        },
+                        {
+                            path: '/demo/online-view',
+                            title: 'pdf-preview pdf预览',
+                        },
+                        {
+                            path: '/demo/scroll-list',
+                            title: 'my-list 滚动列表',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: '组件',
+            showInMobile: false,
             groups: [
                 {
                     groupName: '基础组件',

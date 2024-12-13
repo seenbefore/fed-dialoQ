@@ -1,13 +1,12 @@
-const component = () => import(/* webpackChunkName: "IndexPage1" */ './index')
+const component = () => import(/* webpackChunkName: "IndexHomePage1" */ './index')
 
 export default {
-    path: '/',
-    name: 'Index',
+    path: '/readme/home',
+    name: 'ReadmeHome',
     component,
-    redirect: '/readme/home',
     meta: {
         bodyClass: '',
-        parent: '',
+        parent: 'Readme',
         title: '',
         requireAuth: false,
         keepAlive: false,

@@ -502,6 +502,7 @@ export interface LoginDTO {
 - 业务文件目录
     - 接口文件 api.ts
     - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
+    - 数据模拟文件 mock.js
     - 主视图文件 index.vue
     - 路由文件 router.js
 
@@ -517,41 +518,185 @@ export default {
     component: SelfInspectionFormManagement,
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
-        // 页面body样式 不要删除修改
+        // 页面body样式 不要删除
         bodyClass: '',
-        // 页面父级name 不要删除修改
+        // 页面父级name 不要删除和修改
         parent: 'Index',
-        // 页面标题 不要删除修改
+        // 页面标题 不要删除
         title: '',
-        // 页面不缓存 不要删除修改
-        noCache: true,
+        // 默认页面不缓存 不要删除
+        keepAlive: false,
     },
 }
 
 ```
 
 ## 接口模板 api.ts 
-- 当没有接口文档时，请使用以下模板进行mock数据
+请使用以下模板，注意不要改变数据结构
 ```typescript
-// 仅模拟数据，不涉及具体业务逻辑，不要修改函数名称
-export const list = async (params?: any) => {
-    return {
-        // 不要改变结构，必须保留
-        code: 200,
-        message: 'message',
-        data: {
-            // 随机生成的数据，模拟数据
-            data: [
-                { id: 1, name: '张三', username: 'zhangsan', email: 'zhangsan@example.com', age: 28, gender: '0', note: '爱好钓鱼' },
-                { id: 2, name: '李四', username: 'lisi', email: 'lisi@example.com', age: 32, gender: '1', note: '爱好打羽毛球' },
-                { id: 3, name: '王五', username: 'wangwu', email: 'wangwu@example.com', age: 24, gender: '2', note: '喜欢玩游戏' },
-            ],
-            total: 3,
-        },
-    }
+import { ExAxiosRequestConfig } from 'icinfo-request'
+import { http } from '@/scripts/http'
+import { Result, PageResponse } from '@/@types'
+export interface VO {
+    /** id */
+    id: string
+    /** 区划 */
+    area: string
+    /** 姓名 */
+    name: string
+    /** 手机号码 */
+    mobile: string
+    /** 角色 */
+    role: string
+    /** 备注 */
+    remark: string
+    /** 状态 0停用 1启用 */
+    status: string
 }
+
+/**
+ * 获取用户列表
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
+ */
+export function list(
+    data?: {
+        /** 姓名/账号 */ keyword?: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<PageResponse<VO[]>>>({
+        url: '/user/list',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
+
+export function save(
+    data?: {
+        /** id */ id?: string
+        /** 区划 */ area?: string
+        /** 姓名 */ name?: string
+        /** 手机号码 */ mobile?: string
+        /** 角色 */ role?: string
+        /** 备注 */ remark?: string
+        /** 状态 */ status?: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/user/save',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
+
+export function remove(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/user/remove',
+        method: 'get',
+        params: data,
+        ...options,
+    })
+}
+
+export function detail(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<VO>>({
+        url: '/user/detail',
+        method: 'get',
+        params: data,
+        ...options,
+    })
+}
+
 ```
-- 当存在接口文档时，请使用接口文档中的数据结构
+## 数据模拟 mock.js
+```javascript
+import { mock } from 'mockjs'
+const roles = ['系统管理员', '平台管理员', '数据统计人员', '信息录入人员', '普通人员']
+export default [
+    {
+        name: '/user/list',
+        method: 'post',
+        description: '用户列表',
+        onMock(opt, query, body) {
+            let { page = 1, pageNum = 1, pageSize, length } = body
+            page = pageNum || 1
+            pageSize = length || 10
+            return mock({
+                code: 200,
+                data: {
+                    [`data|${pageSize}`]: [
+                        {
+                            'id|+1': page * pageSize + 1,
+                            name: '@cname',
+                            nickName: '@cname',
+                            'status|1': [0, 1],
+                            'role|1': roles,
+                            'isAdmin|1': [0, 1],
+                        },
+                    ],
+                    recordsTotal: 198,
+                },
+                message: '请求成功',
+            })
+        },
+    },
+    {
+        name: '/user/detail',
+        method: 'get',
+        description: '用户详情',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                data: {
+                    id: 1,
+                    name: 'admin',
+                    nickName: '管理员',
+                    status: 1,
+                    role: '系统管理员',
+                    isAdmin: 1,
+                },
+            })
+        },
+    },
+    {
+        name: '/user/remove',
+        method: 'get',
+        description: '删除用户',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                message: '删除成功',
+            })
+        },
+    },
+    {
+        name: '/user/save',
+        method: 'post',
+        description: '保存用户',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                message: '保存成功',
+            })
+        },
+    },
+]
+
+``` 
 
 ## 枚举模板 enum.ts
 生成2种格式，一种以`类型+Enum`命名，一种以`类型+EnumMap`命名，`类型`来自查询条件字段，比如`性别`有多种结果，则输出`GenderEnum`。示例如下：
@@ -615,18 +760,34 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 ## 主视图模板
 ```vue
 <template>
-  <div class="component-name">
-    <!-- 模板内容 -->
-  </div>
+    <AppPage>
+        <template #header>
+            <div class="header">
+                头部内容
+            </div>
+        </template>
+        <main>
+            主内容
+        </main>
+        <template #footer>
+            <div class="footer">
+                <van-button type="into">底部操作</van-button>
+            </div>
+        </template>
+    </AppPage>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { getExamList } from './api'
 import { ExamStatusEnum } from './enum'
+import AppPage from '@/components/h5/AppPage/index.vue'
 
 @Component({
-    name: 'ComponentName'
+    name: 'ComponentName',
+    components: {
+        AppPage,
+    },
 })
 export default class ComponentName extends Vue {
   /**
@@ -667,10 +828,6 @@ export default class ComponentName extends Vue {
 - 技术栈：vue2 + typescript + vant
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
-- 枚举文件：`enum.ts`。请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
-- 接口文件：`api.ts`。仅模拟数据，不涉及具体业务逻辑。请按照枚举中的值生成，如果是数组则生成10条数据。
-- 主视图文件：`index.vue`。生成后请再检查一遍ts校验问题，有问题则立刻修复。
-- 路由文件：`router.js`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/list`对应`exam/list/index.vue`和`exam/list/router.js`。
 
 ### 代码风格和结构
 - 编写简洁、技术性强的TypeScript代码，并提供准确的例子。
@@ -706,18 +863,20 @@ export default class ComponentName extends Vue {
 - 使用JSDoc注释函数和组件，以改善IDE智能感知。
 
 ## 自定义规范
-- 暂无
-
-
-
+- `vant`已安装，并全局注册，请直接使用。
+- 判断请求成功请不需要判断`res.code === 200`，直接使用`res.data`
+- `app-form`组件已全局注册。
+- style中不要使用`:deep`，请使用`::v-deep`。
 
 # Workflow
 - 用户输入产品prd内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；注意，`router.js`最后一个生成。
-    - 调用接口时不需要判断`code`，直接使用`res.data`。
-    - `vant`已安装，并全局注册，请直接使用。
-    - `app-form`组件已全局注册。
-    - style中不要使用`:deep`，请使用`::v-deep`。
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`。请按照以下顺序生成：
+    - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
+    - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
+    - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
+    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
+    - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。
+    
 - 依次循环
 
 # Output

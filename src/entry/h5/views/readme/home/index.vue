@@ -1,41 +1,34 @@
 <template>
     <div class="side-nav">
-        <h1 class="vant-title">
+        <h2 class="vant-title">
             <span>Vant</span>
-        </h1>
+        </h2>
         <h2 class="vant-desc">{{ description }}</h2>
         <template v-for="item in navList">
-            <mobile-nav v-for="(group, index) in item.groups" :group="group" :base="$vantLang" :key="index" />
+            <mobile-nav v-for="(group, index) in item.groups" :group="group" :key="index" />
         </template>
     </div>
 </template>
-
-<script>
-import docConfig from '../doc.config'
-import MobileNav from './MobileNav'
-
-export default {
+<script lang="tsx">
+import { Component, Vue } from 'vue-property-decorator'
+import docConfig from './doc.config'
+import MobileNav from './MobileNav.vue'
+@Component({
+    name: 'ReadmeHome',
     components: {
         MobileNav,
     },
+})
+export default class ReadmeHome extends Vue {
+    docConfig = docConfig
 
-    data() {
-        return {
-            docConfig,
-        }
-    },
+    get navList() {
+        return (this.docConfig.nav || []).filter(item => item.showInMobile)
+    }
 
-    computed: {
-        navList() {
-            return (this.docConfig.nav || []).filter(item => item.showInMobile)
-        },
-
-        description() {
-            return '轻量、可靠的移动端 Vue 组件库'
-        },
-    },
-
-    methods: {},
+    get description() {
+        return '轻量、可靠的移动端 Vue 组件库'
+    }
 }
 </script>
 

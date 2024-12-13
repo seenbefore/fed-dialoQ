@@ -7,6 +7,5 @@ export default {
     meta: {
         parent: 'Index',
         title: '考试列表',
-        noCache: true,
     },
 }
