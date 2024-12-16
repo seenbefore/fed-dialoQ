@@ -109,7 +109,7 @@ export default {
 function getDefaultColumn(column) {
     const { fixed, ...rest } = column
     return {
-        width: ['index', '$index'].includes(column.type) ? '50px' : column.width,
+        width: ['index', '$index', 'selection'].includes(column.type) ? '50px' : column.width,
         align: 'center',
         showOverflowTooltip: column.type === 'action' ? false : true,
         overflowCount: 1,
