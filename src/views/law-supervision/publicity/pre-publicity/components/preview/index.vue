@@ -1,13 +1,20 @@
 <template>
-    <div class="sg-page icinfo-ai PrePublicityPreview">
+    <admin-page class="PrePublicityPreview" back-url="/law-supervision/publicity/pre-publicity">
+        <!-- 标题 -->
+        <template #title>
+            <span>预览公示信息</span>
+        </template>
+        <!-- 表单 -->
         <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
-        <div class="sg-button-group">
-            <el-button @click="handleBack">返回</el-button>
-        </div>
-    </div>
+        <!-- 底部固定操作 -->
+        <template #footer="{ back }">
+            <el-button @click="back">返回</el-button>
+        </template>
+    </admin-page>
 </template>
 
 <script lang="tsx">
+import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn } from '@/sharegood-ui'
 import { PublicityStatusEnum, PublicityStatusEnumMap } from '../../enum'
@@ -15,7 +22,9 @@ import { detail } from '../../api'
 
 @Component({
     name: 'PrePublicityPreview',
-    components: {},
+    components: {
+        AdminPage,
+    },
 })
 export default class PrePublicityPreview extends Vue {
     /** ID */
@@ -141,9 +150,7 @@ export default class PrePublicityPreview extends Vue {
 
 <style lang="less" scoped>
 .PrePublicityPreview ::v-deep {
-    padding: 0px;
     .sg-button-group {
-        margin-top: 20px;
         text-align: center;
     }
 }

@@ -83,18 +83,6 @@ import { UserMenu } from '@/@types/menu'
 const menu = require('./menu.json')
 export const LocalMenu: UserMenu[] = [
     {
-        label: '我的工作台',
-        icon: 'el-icon-document',
-        uri: '/我的工作台',
-        children: [
-            {
-                label: '测试页面',
-                icon: 'el-icon-document',
-                uri: '/test',
-            },
-        ],
-    },
-    {
         label: '系统管理',
         icon: 'el-icon-document',
         uri: '/系统管理',
@@ -102,116 +90,19 @@ export const LocalMenu: UserMenu[] = [
             {
                 label: '数据字典',
                 icon: 'el-icon-document',
+                // 路由地址
                 uri: '/system/dict',
             },
             {
                 label: '菜单管理',
                 icon: 'el-icon-document',
+                // 路由地址
                 uri: '/system/menu',
-            },
-            {
-                label: '角色管理',
-                icon: 'el-icon-document',
-                uri: '/system/role',
-            },
-            {
-                label: '部门管理',
-                icon: 'el-icon-document',
-                uri: '/system/department',
-            },
-            {
-                label: '人员管理',
-                icon: 'el-icon-document',
-                uri: '/system/user',
             },
         ],
     },
 ]
 
-```
-
-## 组件开发规范
-
-### 公共组件命名
-- 组件名使用 PascalCase: MyComponent
-- 基础组件使用 Base 前缀: BaseButton
-- 特定功能组件使用相应前缀: MyCardNumber
-- 文件生成：`MyComponent/index.vue`
-
-### 组件文档化
-每个组件都应该包含:
-```html
-/**
- * @description 组件描述
- * @param {Type} propName - 参数描述
- * @event eventName - 事件描述
- */
-```
-
-### 组件结构
-```html
-<template>
-  <div class="component-name">
-    <!-- 模板内容 -->
-  </div>
-</template>
-
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-
-@Component
-export default class ComponentName extends Vue {
-  /**
-   * Props 定义 请定义默认值
-   */
-  @Prop({ type: String, required: true, default: '' }) readonly title!: string
-  /**
-   * 如果是对象请给默认对象
-   */
-  @Prop({ default: () => ({}) }) row!: any
-  /**
-   * 如果是数组请给默认空数组
-   */
-  @Prop({ default: () => [] }) value!: any
-
-  // Data
-  private data = ''
-
-  // Computed
-  get computedValue() {
-    return this.data
-  }
-
-  // Methods
-  private handleClick() {
-    this.$emit('click')
-  }
-
-  // Lifecycle hooks
-  mounted() {
-    // 初始化逻辑
-  }
-}
-</script>
-
-<style lang="less" scoped>
-.component-name {
-  // 样式定义
-}
-</style>
-```
-### 插槽
-优先使用插槽`v-slot`，其次使用`slot-scope`
-``` html
-<template>
-    <el-tree ref="tree" :data="treeData">
-        <template v-slot="{ node, data }">
-            <span class="custom-tree-node">
-                <span>{{ data.name }}</span>
-            </span>
-        </template>
-    </el-tree>
-</template>
 ```
 
 ## 工具函数使用规范
@@ -386,7 +277,7 @@ export default class Step2 extends Vue {
 }
 ```
 
-# 动态弹窗组件
+## 动态弹窗组件
 可以通过vue全局函数`$modalDialog`动态打开弹窗、抽屉等组件。
 ### vue 组件中使用
 
@@ -482,26 +373,194 @@ export default class Step2 extends Vue {
 }
 </script>
 ```
+## 组件开发规范
+
+### 公共组件命名
+- 组件名使用 PascalCase: MyComponent
+- 基础组件使用 Base 前缀: BaseButton
+- 特定功能组件使用相应前缀: MyCardNumber
+- 文件生成：`MyComponent/index.vue`
+
+### 组件文档化
+每个组件都应该包含:
+```html
+/**
+ * @description 组件描述
+ * @param {Type} propName - 参数描述
+ * @event eventName - 事件描述
+ */
+```
+
+### 组件结构
+```html
+<template>
+  <div class="component-name">
+    <!-- 模板内容 -->
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component
+export default class ComponentName extends Vue {
+  /**
+   * Props 定义 请定义默认值
+   */
+  @Prop({ type: String, required: true, default: '' }) readonly title!: string
+  /**
+   * 如果是对象请给默认对象
+   */
+  @Prop({ default: () => ({}) }) row!: any
+  /**
+   * 如果是数组请给默认空数组
+   */
+  @Prop({ default: () => [] }) value!: any
+
+  // Data
+  private data = ''
+
+  // Computed
+  get computedValue() {
+    return this.data
+  }
+
+  // Methods
+  private handleClick() {
+    this.$emit('click')
+  }
+
+  // Lifecycle hooks
+  mounted() {
+    // 初始化逻辑
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.component-name {
+  // 样式定义
+}
+</style>
+```
+### 插槽
+优先使用插槽`v-slot`，其次使用`slot-scope`
+``` html
+<template>
+    <el-tree ref="tree" :data="treeData">
+        <template v-slot="{ node, data }">
+            <span class="custom-tree-node">
+                <span>{{ data.name }}</span>
+            </span>
+        </template>
+    </el-tree>
+</template>
+```
 
 ## 表单组件 sg-base-form
-### 已有组件
-tag:
-- 'text'
-- 'input'
-- 'select'
-- 'date'
-- 'time'
-- 'checkbox'
-- 'radio'
-- 'cascader'
-- 'uploader'
-- 'autocomplete'
-- 'range'
-- 'switch'
-- 'timerange'
-- 'daterange'
-- 'singleCheckbox'
-- 'input-number'
+- 全局组件
+- 已内置的组件`tag`包含：
+    - 'text'
+    - 'input'
+    - 'select'
+    - 'date'
+    - 'time'
+    - 'checkbox'
+    - 'radio'
+    - 'cascader'
+    - 'uploader'
+    - 'autocomplete'
+    - 'range'
+    - 'switch'
+    - 'timerange'
+    - 'daterange'
+    - 'singleCheckbox'
+    - 'input-number'
+    - 'action'
+
+### 基础属性
+
+| 参数          | 说明            | 类型             | 可选值 | 默认值 |
+| ------------- | --------------- | ---------------- | ------ | ------ |
+| fields        | rows or columns 表单数据        | Array            | —      | -      |
+| rules         | 校验规则        | Object           | —      | -      |
+| labelWidth    | 全局 label 宽度 | [Number, String] | —      | 120px  |
+| type          | 布局模式        | String           | —      | flex   |
+| span          | 每列宽度,每列宽度为24/列数 | [Number, String] | [1, 24] | 8      |
+| justify       | 水平布局        | String           | —      | -      |
+| isFieldInline | 表单域布局      | Boolean          | —      | true   |
+| autoAppendAction | 是否自动添加查询、重置、更多按钮 | Boolean | — | false |
+| autoLayout | 是否自动布局 | Boolean | — | true |
+
+### 方法
+
+| 事件名称     | 说明     | 回调参数  |
+| ------------ | -------- | --------- |
+| validate     | 校验数据 |           |
+| reset        | 重置数据 |           |
+| getFieldProps | 获取field对象 |  |
+| validateField | 校验某个域 | (prop, cb) |
+| clearValidate | 清空校验信息 | |
+
+### 事件
+
+| 事件名称 | 说明     | 回调参数     |
+| -------- | -------- | ------------ |
+| submit   | 提交数据 |              |
+| reset    | 数据重置 |              |
+
+### rows
+包含columns
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| ------ | ----- | ------- | ------ | -------- |
+| columns  | 列配置  |     |   |    |
+| class  | 按钮配置  |     |   |    |
+| span  | 每列宽度  |     |   |    |
+| offset  | 偏移量  |     |   |    |
+| push  | 栅格向右移动格数  |     |   |    |
+| pull  | 栅格向左移动格数  |     |   |    |
+| xs  | 响应式：超小屏幕 xs  |     |   |    |
+| sm  | 响应式：小屏幕 sm  |     |   |    |
+| md  | 响应式：中等屏幕 md  |     |   |    |
+| lg  | 响应式：大屏幕 lg  |     |   |    |
+
+
+### columns
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| ------ | ----- | ------- | ------ | -------- |
+| tag |    |    |    | ['input', 'select', 'date', 'checkbox', 'radio', 'autocomplete', 'cascader', 'slot', 'custom', 'action'] |
+| label  | 表单名称  |     |   |    |
+| name  | 接口字段   |     |  |     |
+| value  | 初始数据   |  |  |     |
+| visible | 是否显示 |    |    | true |
+| ifRender | 是否渲染 |  Function  |  (model)  |    |
+| appendRender | 自定义渲染数据内容，配合tag=custom使用 |     |    |     |
+| render | 自定义渲染整行，配合tag=slot使用 |     |    |     |
+
+
+### column.attrs属性
+
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| ------ | ----- | ------- | ------ | -------- |
+| inputSlots | input组件对应插槽 [prefix, suffix,prepend,append] |     |    |     |
+| autocompleteSlot  | autocomplete组件模板插槽  |     |   |      |
+| listeners  | 组件事件集合   |     |  |        |
+| onChange | 数据变化        | （{name,value,option}）    |    |           |
+| options | select、checkbox、radio、cascader 数据源 |             |    |       |
+| load | autocomplete组件获取数据函数 |             |    |       |
+| isTriggerSubmit | enter的时候是否触发submit |             |    |       |
+| rules | 校验规则 |             |    |       |
+| 其他 | 参考对应element组件的属性 |             |    |       |
+
+### column.itemAttrs属性
+
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| ------ | ----- | ------- | ------ | -------- |
+| label  | 表单label名称  |     |   |     |
+| labelWidth  | 宽度  |     |   |     |
+| showLabelTooltip | 是否显示 label 的 tip | Boolean  |    |       |
+
+
 
 ```javascript
 {
@@ -564,100 +623,49 @@ tag:
         )
     },
 }
-```
-
-
-
-## prd模板
-### 查询页面
-```markdown
-功能：获取抽取自查结果列表
-菜单路径：监管一件事/企业自治自查/抽取自查结果
-功能描述：抽取自查结果
-使用步骤：点击菜单 监管一件事/企业自治自查/抽取自查结果
-
-查询条件：
-- “任务编号”：输入框，placeholder为"请输入"
-- “任务名称”：输入框，placeholder为"请输入证照类型名称(国家或本地)"
-- “对象名称”：输入框，placeholder为"请输入"
-- “统一代码”：输入框，placeholder为"精准查询"
-- “地址”：输入框，placeholder为"请输入"
-- “查阅状态”：下拉单选。未查阅、已查阅。默认全部
-
-功能点:
-1. 查询: 点击"查询"按钮,根据设置的筛选条件查询匹配的任务记录
-2. 重置: 点击"重置"按钮,清空所有筛选条件,恢复默认状态
-
-
-列表展示数据项：
-- “序号”：序号。
-- “名称”：名称。
-- “统一社会信用代码”：统一社会信用代码。
-- “查阅状态”：查阅状态。
-- “地址”：地址。
-- “自查日期”：自查日期。
-- “任务编号”：任务编号。
-- “操作”：操作，总共一个状态，查阅。
-
-其他说明：
-1. 列表顶部显示成功/失败/进行中的数量统计
-2. 状态使用不同颜色标识:成功(绿色)、失败(红色)
 
 ```
+## 表格组件 sg-data-view
+- 全局组件
+### 基础属性
 
-### 弹窗组件模板
-```markdown
-功能：予以受理
-页面类型：弹窗
-菜单路径：受理信用修复协同/信用修复收件/予以受理
+| 参数          | 说明               | 类型     | 可选值 | 默认值 |
+| ------------- | ------------------ | -------- | ------ | ------ |
+| columns       | 列配置             | Array    | —      | -      |
+| auto          | 第一次是否自动请求 | Boolean  | —      | true   |
+| pagination    | 页面配置 ,参考element-ui         | Object   | —      |  `{page: 1, pageSize: 10, pageSizes: [10, 20, 50, 100, 200]}`      |
+| load          | 数据请求返回一个`Promise`,成功后`resolve({result:[],total:1000}) `          | Function |        |    result为数据集,total为总数    |
+| paramsSerializer  | 返回新的页码参数对象           | Function({page,pageSize,size}) |        |        |
+| multipleSelectionAll       | 跨页初始数据             | Array    | —      | -      |
+| idKey       | 跨页匹配字段             | String    | —      | -      |
+| tableHeaderSticky       | 表格滚动吸顶，提供滚动容器，比如：`{ scrollDom: () => document.querySelector('.UserManagement')`, }             | Object    | —      | -      |
 
 
-表单说明：
-1.“意见内容”：多行输入框。校验：不超过500字。尾随内容：按钮“同意”，点击输入”同意“。
+### columns
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| ------ | ----- | ------- | ------ | -------- |
+| label | 列名 |     |    |     |
+| prop | 接口字段 |     |    |     |
+| minWidth | 最小宽度 |     |    |     |
+| align | 对齐方式 |     |    |     |
+| type | 类型 |     |    |     |
+| fixed | 固定列 |     |    |     |
+| sortable | 是否排序 |     |    |     |
+| render | 自定义渲染 |     |    |     |
+### 方法
 
-列表展示数据项：
-1.“序号”：序号。
+| 事件名称 | 说明         | 回调参数 |
+| -------- | ------------ | -------- |
+| onLoad   | 重新获取数据 | {page:1,pageSize} ,不传则表示当前页|
 
+### 事件
+参考 element table
 
-操作：
-1.“提交”：保存并提交数据；
-2.“取消”：关闭当前窗口。
-```
+| 事件名称 | 说明 | 回调参数 |
+| -------- | ---- | -------- |
+| selection-change-all | 跨页勾选变化 | 勾选的数组 |
 
-### 数据统计模板
-```markdown
-功能：运营数据
-页面类型：数据统计
-菜单路径：运营数据
-
-数据概览：
-1. 授权总数
-2. 鉴权总数
-3. 有效授权数
-4. 撤销授权数
-
-图表：
-标题：授权数据趋势分析
-查询条件：
-1. 机构：下拉选择。默认全部
-2. 统计类型：单选框（按钮风格）。不显示标题。选项：授权数量、撤销数量，默认授权数量。
-内容：
-- 折线图：授权总数、鉴权总数按照日期如`2024/01`统计
-
-数据列表
-标题：授权数据统计
-查询条件：
-1. 类型：单选框（按钮风格）。选项：授权数量、鉴权数量、撤销数量，默认授权数量。
-2. 创建日期：日期范围。
-列表字段：
-1. 序号
-2. 机构名称
-3. 总数
-4. 创建日期
-```
-
-## 项目类型定义
-### sharegood-ui/index.d.ts
+## 表单组件sg-base-form和表格组件sg-data-view的类型定义
 使用
 ```js
 import { FormColumn } from '@/sharegood-ui'
@@ -1000,6 +1008,170 @@ export interface FormRef extends Vue {
 
 ```
 
+## 公共页面 admin-page
+AdminPage 是一个通用的管理页面布局组件，提供了统一的页面结构，包括页头、内容区域和页脚。该组件支持灵活的插槽配置，可以根据需要展示不同的页面内容。
+
+### 组件特点
+- 统一的页面布局结构
+- 自适应高度的内容区域
+- 可配置的返回按钮
+- 灵活的插槽系统
+
+### 属性说明
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| backUrl | string | '' | 返回按钮跳转的路径，为空时不显示返回按钮 |
+
+### 插槽说明
+
+| 插槽名 | 说明 |
+|--------|------|
+| header | 页头区域的自定义内容 |
+| title | 页面标题内容 |
+| meta | 页头右侧区域内容，默认显示返回按钮 |
+| default | 页面主要内容区域 |
+| footer | 页脚区域内容 |
+
+### 样式说明
+组件提供了以下主要样式类：
+
+- `.admin-page`: 整体容器
+- `.admin-page__header`: 页头区域
+- `.admin-page__content`: 内容区域
+- `.admin-page__footer`: 页脚区域
+
+### 注意事项
+1. 内容区域会自动出现滚动条，确保页面内容不会溢出
+2. 页头和页脚区域高度固定，内容区域自适应剩余高度
+3. 返回按钮的显示依赖于 backUrl 属性的设置
+
+### 示例
+```html
+<template>
+    <admin-page class="PrePublicityPreview" back-url="/previous-page">
+        <!-- 标题 -->
+        <template #title>
+            <span>预览公示信息</span>
+        </template>
+        <!-- 表单 -->
+        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
+        <!-- 底部固定操作 -->
+        <template #footer="{ back }">
+            <el-button @click="back">返回</el-button>
+        </template>
+    </admin-page>
+</template>
+
+<script lang="tsx">
+import AdminPage from '@/components/admin/admin-page/index.vue'
+
+@Component({
+    name: 'PrePublicityPreview',
+    components: {
+        AdminPage,
+    },
+})
+export default class PrePublicityPreview extends Vue {
+   
+}
+</script>
+
+
+```
+
+
+## prd模板
+### 查询页面
+```markdown
+功能：获取抽取自查结果列表
+菜单路径：监管一件事/企业自治自查/抽取自查结果
+功能描述：抽取自查结果
+使用步骤：点击菜单 监管一件事/企业自治自查/抽取自查结果
+
+查询条件：
+- “任务编号”：输入框，placeholder为"请输入"
+- “任务名称”：输入框，placeholder为"请输入证照类型名称(国家或本地)"
+- “对象名称”：输入框，placeholder为"请输入"
+- “统一代码”：输入框，placeholder为"精准查询"
+- “地址”：输入框，placeholder为"请输入"
+- “查阅状态”：下拉单选。未查阅、已查阅。默认全部
+
+功能点:
+1. 查询: 点击"查询"按钮,根据设置的筛选条件查询匹配的任务记录
+2. 重置: 点击"重置"按钮,清空所有筛选条件,恢复默认状态
+
+
+列表展示数据项：
+- “序号”：序号。
+- “名称”：名称。
+- “统一社会信用代码”：统一社会信用代码。
+- “查阅状态”：查阅状态。
+- “地址”：地址。
+- “自查日期”：自查日期。
+- “任务编号”：任务编号。
+- “操作”：操作，总共一个状态，查阅。
+
+其他说明：
+1. 列表顶部显示成功/失败/进行中的数量统计
+2. 状态使用不同颜色标识:成功(绿色)、失败(红色)
+
+```
+
+### 弹窗组件模板
+```markdown
+功能：予以受理
+页面类型：弹窗
+菜单路径：受理信用修复协同/信用修复收件/予以受理
+
+
+表单说明：
+1.“意见内容”：多行输入框。校验：不超过500字。尾随内容：按钮“同意”，点击输入”同意“。
+
+列表展示数据项：
+1.“序号”：序号。
+
+
+操作：
+1.“提交”：保存并提交数据；
+2.“取消”：关闭当前窗口。
+```
+
+### 数据统计模板
+```markdown
+功能：运营数据
+页面类型：数据统计
+菜单路径：运营数据
+
+数据概览：
+1. 授权总数
+2. 鉴权总数
+3. 有效授权数
+4. 撤销授权数
+
+图表：
+标题：授权数据趋势分析
+查询条件：
+1. 机构：下拉选择。默认全部
+2. 统计类型：单选框（按钮风格）。不显示标题。选项：授权数量、撤销数量，默认授权数量。
+内容：
+- 折线图：授权总数、鉴权总数按照日期如`2024/01`统计
+
+数据列表
+标题：授权数据统计
+查询条件：
+1. 类型：单选框（按钮风格）。选项：授权数量、鉴权数量、撤销数量，默认授权数量。
+2. 创建日期：日期范围。
+列表字段：
+1. 序号
+2. 机构名称
+3. 总数
+4. 创建日期
+```
+
+
+
+
 # Example
 默认依次生成以下文件：
 - 业务文件目录
@@ -1280,7 +1452,7 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
 ```html
 <template>
     <!-- 用户管理  -->
-    <div class="sg-page icinfo-ai UserManagement">
+     <admin-page class="UserManagement">
         <!-- 标签页 -->
         <el-tabs type="card" v-model="tabActiveName">
             <el-tab-pane label="待收件" name="pending">
@@ -1337,16 +1509,17 @@ export const REIMBURSE_STATUS_MAP: Record<string, any> = {
         <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change-all="onChange" @sort-change="handleSortChange">
             <template #header>
                  <!-- 顶部操作 prd中包含新增操作、批量删除操作时。导出相关的功能点不用写  -->
-                <div>
+                <div class="sg-flexbox align-center">
                     <el-button type="primary" @click="handleAdd">新增</el-button>
                     <el-button type="primary" @click="handleDeleteBatch">批量删除</el-button>
                 </div>
             </template>
         </sg-data-view>
-    </div>
+    </admin-page>
 </template>
 
 <script lang="tsx">
+import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 // 此处引用不省略
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
@@ -1354,7 +1527,9 @@ import { GenderEnum, GenderEnumMap, REIMBURSE_STATUS, REIMBURSE_STATUS_MAP } fro
 import { list, save, remove, removeBatch, detail, VO } from './api'
 @Component({
     name: 'UserManagement',
-    components: {},
+    components: {
+        AdminPage,
+    },
 })
 export default class UserManagement extends Vue {
     @Ref('formRef')
@@ -1629,40 +1804,10 @@ export default class UserManagement extends Vue {
                     },
                 },
             },
-            // 不可以删除，不可以改变
-            {
-                // 不要删除span属性，且默认24
-                span: 24,
-                tag: 'action',
-                buttons: [
-                    {
-                        isSubmit: true,
-                        type: 'primary',
-                        text: '查询',
-                        svgIcon: 'icon-search',
-                        icon: 'search-btn',
-                    },
-                    {
-                        isReset: true,
-                        type: 'reset',
-                        text: '重置',
-                        svgIcon: 'icon-reset',
-                        icon: 'icon-reset',
-                    },
-                    // 查询条件>9时，返回以下按钮
-                    {
-                        isMore: true,
-                        text: '展开',
-                        svgIcon: 'icon-expand',
-                        icon: 'icon-expand',
-                        hiddenText: '收起',
-                    },
-                ],
-            },
         ]
         return {
-            //默认3列展示，不要修改
-            span: 8,
+            // 自动添加查询、重置、更多按钮
+            autoAppendAction: true,
             fields,
         }
     }
@@ -1873,19 +2018,32 @@ export default class UserManagement extends Vue {
 ```html
 <template>
     <!-- 用户详情  -->
-    <div type="sg-page icinfo-ai UserDetail" class="UserDetail" component="UserDetail">
+    <admin-page class="UserDetail" component="UserDetail">
+        <!-- 标题 -->
+        <template #title>
+            <span>用户详情</span>
+        </template>
         <!-- 表单 -->
         <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
-    </div>
+        <!-- 按钮 -->
+        <template #footer>
+            <div class="sg-flexbox align-center">
+                <el-button type="primary" @click="$back">返回</el-button>
+            </div>
+        </template>
+    </admin-page>
 </template>
 
 <script lang="tsx">
+import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
 import { get } from './api'
 @Component({
     name: 'UserDetail',
-    components: {},
+    components: {
+        AdminPage,
+    },
 })
 export default class UserDetail extends Vue {
     /**
