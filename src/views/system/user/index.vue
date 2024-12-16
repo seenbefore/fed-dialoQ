@@ -1,27 +1,32 @@
 <template>
-    <div class="sg-page icinfo-ai UserManage">
+    <AdminPage class="UserManage">
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
-        <!-- 操作按钮 -->
-        <div class="sg-flexbox align-center mb-10">
-            <el-button type="primary" @click="handleAdd">新增</el-button>
-            <el-button type="danger" @click="handleBatchOperation">批量删除</el-button>
-        </div>
-
         <!-- 列表 -->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change="handleSelectionChange"></sg-data-view>
-    </div>
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef" @selection-change="handleSelectionChange">
+            <template #header>
+                <!-- 操作按钮 -->
+                <div class="sg-flexbox align-center">
+                    <el-button type="primary" @click="handleAdd">新增</el-button>
+                    <el-button type="danger" @click="handleBatchOperation">批量删除</el-button>
+                </div>
+            </template>
+        </sg-data-view>
+    </AdminPage>
 </template>
 
 <script lang="tsx">
+import AdminPage from '@/components/admin/AdminPage/index.vue'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { list, save, UserVO } from './api'
 
 @Component({
     name: 'UserManage',
-    components: {},
+    components: {
+        AdminPage,
+    },
 })
 export default class UserManage extends Vue {
     @Ref('formRef')
@@ -47,29 +52,10 @@ export default class UserManage extends Vue {
                     maxlength: 50,
                 },
             },
-            {
-                span: 24,
-                tag: 'action',
-                buttons: [
-                    {
-                        isSubmit: true,
-                        type: 'primary',
-                        text: '查询',
-                        svgIcon: 'icon-search',
-                        icon: 'search-btn',
-                    },
-                    {
-                        isReset: true,
-                        type: 'reset',
-                        text: '重置',
-                        svgIcon: 'icon-reset',
-                        icon: 'icon-reset',
-                    },
-                ],
-            },
         ]
         return {
-            span: 8,
+            // 是否自动添加查询按钮
+            autoAppendAction: true,
             fields,
         }
     }

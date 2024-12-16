@@ -20,6 +20,11 @@ export const store: Store<StateType> = new Vuex.Store({
             paths: ['user', 'settings.theme', 'app'],
             storage: window.localStorage,
         }),
+        createPersistedState({
+            key: 'key',
+            paths: ['tagsView.visitedViews'],
+            storage: window.sessionStorage,
+        }),
     ],
 })
 

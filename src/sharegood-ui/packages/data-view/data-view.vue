@@ -1,6 +1,6 @@
 <template>
     <div class="sg-dataview-container sg-base-table" ref="wrap">
-        <el-row type="flex" class="sg-row no-print sg-data-view__bar" v-if="hasBar">
+        <div type="flex" class="sg-flexbox no-print sg-data-view__bar" v-if="hasBar || $slots.bar">
             <slot name="bar-head">
                 <div class="sg-flex-1"></div>
             </slot>
@@ -26,7 +26,7 @@
                 </div>
             </slot>
             <slot name="bar-foot"></slot>
-        </el-row>
+        </div>
         <div class="sg-data-view__header" v-if="$slots.header">
             <slot name="header"></slot>
         </div>
