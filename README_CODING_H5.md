@@ -77,7 +77,8 @@
 ```
 
 
-## 移动端信息录入表单app-form
+## 移动端信息录入表单 app-form
+- 一般需要设置`showFootBtns`为false，底部按钮由页面组件自行设置
 
 ### 基础属性
 
@@ -496,6 +497,72 @@ export interface LoginDTO {
  
  }
 ```
+
+## 公共页面 app-page
+AppPage 是一个通用的移动端页面布局组件，提供了统一的页面结构，包括页头、内容区域和页脚。该组件支持灵活的插槽配置，可以根据需要展示不同的页面内容。
+
+### 组件特点
+- 统一的页面布局结构
+- 自适应高度的内容区域
+- 可配置的返回按钮
+- 灵活的插槽系统
+
+### 属性说明
+
+| 属性名 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+
+### 插槽说明
+
+| 插槽名 | 说明 |
+|--------|------|
+| header | 页头区域的自定义内容 |
+| default | 页面主要内容区域 |
+| footer | 页脚区域内容 |
+
+### 样式说明
+组件提供了以下主要样式类：
+
+- `.app-page`: 整体容器
+- `.app-page__header`: 页头区域
+- `.app-page__content`: 内容区域
+- `.app-page__footer`: 页脚区域
+
+### 注意事项
+1. 内容区域会自动出现滚动条，确保页面内容不会溢出
+2. 页头和页脚区域高度固定，内容区域自适应剩余高度
+
+### 示例
+```html
+<template>
+    <app-page class="PrePublicityPreview">
+        <div>
+            内容
+        </div>
+        <!-- 底部固定操作 -->
+        <template #footer>
+            <el-button>确认</el-button>
+        </template>
+    </app-page>
+</template>
+
+<script lang="tsx">
+import AppPage from '@/components/h5/AppPage/index.vue'
+
+@Component({
+    name: 'PrePublicityPreview',
+    components: {
+        AppPage,
+    },
+})
+export default class PrePublicityPreview extends Vue {
+   
+}
+</script>
+
+
+```
+
 
 # Example
 默认依次生成以下文件：
