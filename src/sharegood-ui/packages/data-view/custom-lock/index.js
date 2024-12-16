@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import styles from './index.module.less'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 const vm = new Vue()
 const h = vm.$createElement
-export default function useCustomLock() {
+export default function useCustomLock({ fixedKey = 'fixed', callback } = {}) {
     /**自定义锁列配置 */
     const customLockColumn = {
         /**显示锁的开始列索引 */
@@ -35,24 +36,25 @@ export default function useCustomLock() {
             iniOptions(scope)
             // 非范围内的列，不显示锁
             if (!isCustomLockColumn($index)) return null
-
-            const { fixed } = column
-            return h('span', { class: [styles['custom-lock'], 'sg-m-l-4'] }, [
-                h('svg-icon', {
+            const fixed = column[fixedKey]
+            const vnode = h('span', { class: [styles['custom-lock'], 'sg-m-l-4'] }, [
+                h(SvgIcon, {
                     props: { icon: fixed ? 'lock' : 'unlock' },
                     nativeOn: {
                         click: event => {
+                            event.stopPropagation()
                             // 自定义锁列范围内的列处理逻辑
                             const _columns = store.states._columns || []
+                            console.log('columns', _columns)
                             _columns.forEach((_column, _index) => {
                                 if (!isCustomLockColumn(_index)) return true
                                 // 上锁操作
                                 if (_index <= $index && !fixed) {
-                                    _column.fixed = !fixed
+                                    _column[fixedKey] = !fixed
                                 }
                                 // 解锁操作
                                 else if (_index >= $index && fixed) {
-                                    _column.fixed = !fixed
+                                    _column[fixedKey] = !fixed
                                 }
                             })
                             // 自定义锁列开始范围前的列处理逻辑
@@ -60,21 +62,22 @@ export default function useCustomLock() {
                             _columns.some((_column, _index) => {
                                 if (_index >= customLockColumn.startIndex) return true
                                 // 如果开始索引被锁，则开始索引前的列强制锁定
-                                if (_columns?.[customLockColumn.startIndex].fixed) {
-                                    _column.fixed = true
+                                if (_columns?.[customLockColumn.startIndex]?.[fixedKey]) {
+                                    _column[fixedKey] = true
                                 } else {
                                     // 否则，将其还原
-                                    _column.fixed = columnsConfig[_index].fixed
+                                    _column[fixedKey] = columnsConfig[_index]?.[fixedKey]
                                 }
                                 return false
                             })
                             // 更新table
                             store.scheduleLayout(true)
-                            event.stopPropagation()
+                            callback?.()
                         },
                     },
                 }),
             ])
+            return vnode
         },
     }
 }

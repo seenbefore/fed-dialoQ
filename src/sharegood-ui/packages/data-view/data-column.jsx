@@ -1,5 +1,6 @@
 import ReElTableColumn from './re-el-table-column.vue'
 import EllipsisTooltip from '../ellipsis-tooltip/index.vue'
+import { VirtualColumn } from '../el-table-virtual-scroll'
 
 /**table中的column  函数式组件 */
 export default {
@@ -66,18 +67,18 @@ export default {
         const columnRender = col => {
             switch (col.type) {
                 case 'selection':
-                    return <ReElTableColumn key={col.key} type="selection" selectable={restProps.handleSelectAble} props={getDefaultColumn(col)} />
+                    return <VirtualColumn key={col.key} type="selection" selectable={restProps.handleSelectAble} attrs={getDefaultColumn(col)} />
                 case 'index':
-                    return <ReElTableColumn key={col.key} type="index" props={getDefaultColumn(col)} />
+                    return <VirtualColumn key={col.key} type="index" attrs={getDefaultColumn(col)} />
                 case '$index':
-                    return <ReElTableColumn key={col.key} type="index" props={getDefaultColumn(col)} />
+                    return <VirtualColumn key={col.key} type="index" attrs={getDefaultColumn(col)} />
                 case 'slot':
                     return ctx.scopedSlots[col.name || col.prop]?.()
                 default:
                     return (
-                        <ReElTableColumn key={col.key} props={{ ...getDefaultColumn(col), showOverflowTooltip: false }}>
+                        <VirtualColumn key={col.key} attrs={{ ...getDefaultColumn(col), showOverflowTooltip: false }}>
                             {col.children?.length ? (
-                                <data-column columns={col.children} props={restProps} scopedSlots={ctx.scopedSlots} />
+                                <data-column columns={col.children} attrs={restProps} scopedSlots={ctx.scopedSlots} />
                             ) : (
                                 scope => {
                                     if (col.slotName) {
@@ -92,7 +93,7 @@ export default {
                                     return <span class={col.class}>{handleDefaultValue(scope, col)}</span>
                                 }
                             )}
-                        </ReElTableColumn>
+                        </VirtualColumn>
                     )
             }
         }
@@ -106,12 +107,13 @@ export default {
  * @return {*}
  */
 function getDefaultColumn(column) {
+    const { fixed, ...rest } = column
     return {
         width: ['index', '$index'].includes(column.type) ? '50px' : column.width,
-        fixed: false,
         align: 'center',
         showOverflowTooltip: column.type === 'action' ? false : true,
         overflowCount: 1,
-        ...column,
+        vfixed: fixed,
+        ...rest,
     }
 }
