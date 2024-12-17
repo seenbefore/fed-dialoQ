@@ -31,37 +31,44 @@
             <slot name="header"></slot>
         </div>
         <div class="sg-data-view__wrap sg-dataview-wrapper" ref="tableWrap">
-            <el-table
-                :id="printId"
-                class="sg-data-view__table sg-table-container"
-                v-loading="listLoading"
-                :data="dataSource"
-                style="width: 100%;"
-                :max-height="maxHeight$"
-                ref="table"
-                :border="border"
-                v-bind="$attrs"
-                v-on="$listeners"
-                @select="selectionChange"
-                @select-all="selectionChange"
-                @row-click="rowClickChange"
-                :load="treeLoad"
-                v-el-table-sticky-header="vElTableStickyHeaderConfig"
-            >
-                <data-column :columns="columns" :handle-select-able="handleSelectAble" :default-value="defaultValue" :disabled-tooltip-set="disabledTooltipSet">
-                    <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-                        <slot :name="name" v-bind="data"></slot>
-                    </template>
-                </data-column>
-                <div class="" slot="empty">
-                    <slot name="empty" v-if="!isVirgin">
-                        暂无数据
-                    </slot>
-                    <slot name="virgin" v-else>
-                        请先查询数据
-                    </slot>
-                </div>
-            </el-table>
+            <virtual-scroll ref="virtualScroll" :virtualized="virtualized" :data="dataSource" :item-size="itemSize" :key-prop="virtualKey" @change="onChange">
+                <template slot-scope="{ headerCellFixedStyle, cellFixedStyle }">
+                    <el-table
+                        :id="printId"
+                        class="sg-data-view__table sg-table-container"
+                        v-loading="listLoading"
+                        :data="tableData"
+                        :header-cell-style="rest => setHeaderCellStyle(rest, headerCellFixedStyle)"
+                        :cell-style="cellFixedStyle"
+                        style="width: 100%;"
+                        :max-height="maxHeight$"
+                        ref="table"
+                        :border="border"
+                        v-bind="$attrs"
+                        v-on="$listeners"
+                        @select="selectionChange"
+                        @select-all="selectionChange"
+                        @row-click="rowClickChange"
+                        :load="treeLoad"
+                        :row-key="virtualKey"
+                        v-el-table-sticky-header="vElTableStickyHeaderConfig"
+                    >
+                        <data-column :columns="columns" :handle-select-able="handleSelectAble" :default-value="defaultValue" :disabled-tooltip-set="disabledTooltipSet">
+                            <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+                                <slot :name="name" v-bind="data"></slot>
+                            </template>
+                        </data-column>
+                        <div class="" slot="empty">
+                            <slot name="empty" v-if="!isVirgin">
+                                暂无数据
+                            </slot>
+                            <slot name="virgin" v-else>
+                                请先查询数据
+                            </slot>
+                        </div>
+                    </el-table>
+                </template>
+            </virtual-scroll>
 
             <sg-pagination
                 ref="page"
@@ -125,6 +132,8 @@
 import { addResizeListener, removeResizeListener } from '../../src/utils/resize-event'
 import printJS from 'print-js'
 import dataColumn from './data-column'
+import VirtualScroll from '../el-table-virtual-scroll'
+import { orderBy } from 'element-ui/packages/table/src/util'
 function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = (Math.random() * 16) | 0,
@@ -149,6 +158,7 @@ export default {
     name: 'SgDataView',
     components: {
         dataColumn,
+        VirtualScroll,
     },
     props: {
         // 底部按钮布局
@@ -317,6 +327,16 @@ export default {
             type: Array,
             default: null,
         },
+        /**启用虚拟滚动 */
+        virtualized: {
+            type: Boolean,
+            default: false,
+        },
+        /**虚拟滚动-每行高度 */
+        itemSize: {
+            type: Number,
+            default: 40,
+        },
     },
     data() {
         return {
@@ -339,6 +359,9 @@ export default {
             pages: 0,
             firstIndex: 0,
             lastIndex: 0,
+            tableData: [],
+            /** 排序信息 */
+            sortInfo: {},
         }
     },
     computed: {
@@ -504,6 +527,10 @@ export default {
                 return this.multipleSelection
             }
             return this.exportData
+        },
+        /** 虚拟滚动-每条数据的key */
+        virtualKey() {
+            return this.idKey || '$uuid'
         },
     },
     directives: { initTooltip },
@@ -741,7 +768,10 @@ export default {
                     result.forEach((item, index) => {
                         item.$index = (page - 1) * pageSize$ + index + 1
                     })
-                    this.dataSource = [...result]
+                    this.dataSource = [...result].map(item => {
+                        if (this.idKey) return item
+                        return { ...item, [this.virtualKey]: guid() }
+                    })
                     this.exportData = [...result]
 
                     this.total = +total || 0
@@ -783,6 +813,43 @@ export default {
                     this.scrollTop()
                 })
         },
+        /********************虚拟滚动相关方法 start ********************/
+        objectToString(obj) {
+            // 检查变量是否是对象
+            if (typeof obj === 'object' && obj !== null && !Array.isArray(obj)) {
+                // 使用 Object.entries 遍历对象的键值对
+                return Object.entries(obj)
+                    .map(function(entry) {
+                        let key = entry[0]
+                        let value = entry[1]
+                        // 返回每个键值对的字符串形式，包括冒号和引号
+                        return key + ': ' + value
+                    })
+                    .join('; ') // 使用 join 方法将数组转换为字符串，并用分号分隔
+            }
+            // 如果参数不是对象，返回空字符串
+            return obj
+        },
+        /** 自定义表头样式方法 */
+        setHeaderCellStyle(data, headerCellFixedStyle) {
+            /** 虚拟滚动固定表头设置 */
+            const virtualHeaderCellStyle = this.objectToString(headerCellFixedStyle(data))
+            /** element原生自定义表头设置 */
+            let defaultHeaderCellStyle = ''
+            // 是否有表头方法headerCellStyle
+            if (!Object.keys(this.$attrs).includes('headerCellStyle')) {
+                defaultHeaderCellStyle = ''
+            } else {
+                defaultHeaderCellStyle = this.objectToString(this.$attrs?.headerCellStyle(data) ?? '')
+            }
+            // 虚拟滚动的样式不建议修改，放在后面
+            return defaultHeaderCellStyle + virtualHeaderCellStyle
+        },
+        /**虚拟滚动组件的change */
+        onChange(renderData) {
+            this.tableData = renderData
+        },
+        /********************虚拟滚动相关方法 end ********************/
     },
 }
 </script>
