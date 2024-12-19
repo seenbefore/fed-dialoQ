@@ -114,8 +114,8 @@ export default abstract class BaseUserStore<T = any, U = any> extends VuexModule
         this.defaultPath = ''
         this.token = ''
         this.info = {} as U
-        this.menus = []
-        this.topMenus = []
+        // this.menus = []
+        // this.topMenus = []
         this.redirect = ''
     }
 

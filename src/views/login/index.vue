@@ -27,14 +27,12 @@
                             <el-button :loading="View.loading" type="primary" class="my-login-form-submit" size="large" @click="onSubmit">登录</el-button>
                         </div>
                     </sg-base-form>
-                    <div class="sg-pt-5 sg-flexbox justify-between">
+                    <!-- <div class="sg-pt-5 sg-flexbox justify-between">
                         <a id="step1" href="javascript:void(0)" class="sg-link" @click="toThirdLogin">GitLab授权登录</a>
                         <div>
-                            <!-- <span><router-link to="/register" class="sg-link">注册</router-link></span>
-                            <span class="sg-ml-2 sg-mr-2">|</span> -->
                             <span><router-link to="/forget-password" class="sg-link">找回账号/密码?</router-link></span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -46,8 +44,6 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { LocalMenu } from '@/menus'
 import { FormColumn } from '@/sharegood-ui'
 import { userStore, settingsStore } from '@/store/useStore'
-import introJs from 'intro.js'
-import 'intro.js/introjs.css'
 import { URLJoin } from 'icinfo-util'
 
 const state = {
@@ -65,37 +61,7 @@ export default class LoginSimple extends Vue {
     get title() {
         return settingsStore.title
     }
-    guide() {
-        const intro = introJs()
-        intro.setOptions({
-            nextLabel: '下一步', // 下一个的按钮文字
-            prevLabel: '上一步', // 上一个按钮文字
-            skipLabel: '跳过', // 跳过指引的按钮文字
-            doneLabel: '完成', // 完成按钮的文字
-            hidePrev: false, // 是否在第一步中隐藏“上一步”按钮;不隐藏，将呈现为一个禁用的按钮
-            hideNext: false, // 是否在最后一步中隐藏“下一步”按钮（同时会隐藏完成按钮);不隐藏，将呈现为一个禁用的按钮
-            exitOnEsc: false, // 点击键盘的ESC按钮是否退出指引
-            exitOnOverlayClick: false, // 点击遮罩层时是否退出介绍
-            showStepNumbers: false, // 是否显示步骤编号
-            disableInteraction: true, // 是否禁用高亮显示框内元素的交互
-            showBullets: true, // 是否显示面板的指示点
-            overlayOpacity: 0.7, // 遮罩层的透明度 0-1之间
-            helperElementPadding: 10, // 选中的指引元素周围的填充距离
-            steps: [
-                {
-                    element: '#step1', // 定位到相应的元素位置，如果不设置element，则默认展示在屏幕中央
-                    title: '引导', // 标题
-                    intro: '开发人员请通过gitlab授权登录，或者通过账号密码获取信息', // 内容
-                },
-            ],
-        })
-        intro.oncomplete(function() {
-            userStore.setLoginGuide()
-        })
-        if (!userStore.loginGuide) {
-            intro.start()
-        }
-    }
+
     mounted() {
         if (userStore.alwaysRemember || this.action === 'AutoLogin') {
             this.View.model.username = userStore.username
@@ -104,11 +70,6 @@ export default class LoginSimple extends Vue {
         if (this.action === 'AutoLogin') {
             this.onSubmit()
         }
-        this.$nextTick(() => {
-            this.guide()
-        })
-        //userStore.setRedirect(decodeURIComponent(this.redirect))
-        //console.log(11, this.View)
     }
     private View = {
         alwaysRemember: userStore.alwaysRemember,
@@ -196,10 +157,12 @@ export default class LoginSimple extends Vue {
         location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
     }
     async login(model: State) {
+        const username = model.username || '匿名'
         // TODO send request
         const data = {
-            token: 'xxx',
-            name: 'xxx',
+            token: 'token123456',
+            name: username,
+            username: username,
             role: '',
             position: '',
         }
@@ -207,7 +170,7 @@ export default class LoginSimple extends Vue {
         userStore.login(data.token)
         userStore.setUserInfo({
             name: data.name,
-            username: model.username,
+            username: data.username,
             sex: 1,
             role: data.role,
             position: data.position || '',

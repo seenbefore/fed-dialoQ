@@ -625,6 +625,32 @@ export default class ComponentName extends Vue {
 }
 
 ```
+- 也可以封装成一个组件，然后在`sg-base-form`中使用。
+
+```javascript
+// 富文本编辑器
+import QuillEditor from '@/components/quill-editor'
+
+// 表单配置
+[
+    {
+        tag: 'custom',
+        custom: QuillEditor,
+        name: 'content',
+        itemAttrs: {
+            label: '文章内容',
+            rules: [{ required: true, message: '请输入文章内容' }],
+        },
+        attrs: {
+            
+        },
+    },
+]
+
+```
+
+
+
 ## 表格组件 sg-data-view
 - 全局组件
 ### 基础属性
@@ -1565,7 +1591,7 @@ export default class UserManagement extends Vue {
         // 不要删除
         console.log(row)
         this.$router.push({
-            path: `/user/edit?id=${row.id}`,
+            path: `/user/save?id=${row.id}&action=edit&_=编辑用户`,
         })
     }
     // 跳转详情 参数不要省略
@@ -1593,6 +1619,9 @@ export default class UserManagement extends Vue {
     /** 新增 */
     handleAdd() {
         // todo
+        this.$router.push({
+            path: `/user/save?action=add&_=新增用户`,
+        })
     }
     async openDialog() {
         const prop = {
@@ -2018,7 +2047,7 @@ export default class UserManagement extends Vue {
 ```html
 <template>
     <!-- 用户详情  -->
-    <admin-page class="UserDetail" component="UserDetail">
+    <admin-page class="UserDetail" component="UserDetail" back-url="/system/user">
         <!-- 标题 -->
         <template #title>
             <span>用户详情</span>
@@ -2028,7 +2057,8 @@ export default class UserManagement extends Vue {
         <!-- 按钮 -->
         <template #footer>
             <div class="sg-flexbox align-center">
-                <el-button type="primary" @click="$back">返回</el-button>
+                <el-button type="primary" @click="handleBack">返回</el-button>
+                <el-button type="primary" @click="handleSave">保存</el-button>
             </div>
         </template>
     </admin-page>
@@ -2102,6 +2132,15 @@ export default class UserDetail extends Vue {
         }
     }
     async mounted() {}
+    handleBack() {
+        this.$back()
+    }
+    handleSave() {
+        // 保存后刷新列表
+        this.$back({
+            reload: true,
+        })
+    }
 }
 </script>
 <style scoped lang="less">
@@ -3242,7 +3281,9 @@ export default class AppChart extends Vue {
 - `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
 - style中不要使用`:deep`，请使用`::v-deep`。
 - 请使用`this.$back()`返回上一页，默认清除上一页缓存。
-- 
+- sg-data-view操作中有危险操作的比如删除，请在按钮上添加`danger`属性，然后使用`this.$confirm`方法弹窗确认。
+- 页面中的返回操作请新增一个`handleBack`方法，然后使用`this.$back`方法返回上一页。如果需要修改了内容需要刷新上一页，请在`handleBack`方法中调用`this.$back({ reload: true })`。
+- 标签页的标题可以动态修改，比如在路由参数中添加`_=新增`、`_=编辑`、`_=详情`等。
 
 # Workflow
 - 用户输入产品prd内容

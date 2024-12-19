@@ -165,4 +165,16 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: '内容管理',
+        icon: 'el-icon-document',
+        uri: '/content',
+        children: [
+            {
+                label: '文章管理',
+                icon: 'el-icon-document',
+                uri: '/content/article',
+            },
+        ],
+    },
 ]

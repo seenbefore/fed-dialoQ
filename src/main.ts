@@ -24,7 +24,7 @@ import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme
  * this.$back({ path: '/system/department' }) // 刷新上一页
  */
 Vue.prototype.$back = async function(params: any) {
-    const { path, reload = true } = params ?? {}
+    const { path, reload = false } = params ?? {}
     const target: any = flatRoutes.find(item => {
         return item.path === path || item.fullPath === path
     })
@@ -36,8 +36,10 @@ Vue.prototype.$back = async function(params: any) {
     }
     await tagsViewStore.delView(this.$route)
 
-    if (params) {
-        this.$router.push(params)
+    if (path) {
+        this.$router.push({
+            path,
+        })
     } else {
         this.$router.go(-1)
     }

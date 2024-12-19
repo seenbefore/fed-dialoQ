@@ -141,7 +141,6 @@ export default class Index extends Vue {
         }
     }
     logOut() {
-        userStore.toggleRemember(1)
         userStore.fedLogOut()
     }
     get title() {
