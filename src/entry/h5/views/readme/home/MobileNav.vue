@@ -20,11 +20,15 @@ export default {
             type: Object,
             default: () => ({}),
         },
+        activeKeys: {
+            type: Array,
+            default: () => [],
+        },
     },
 
     data() {
         return {
-            active: ['基础组件'],
+            active: this.activeKeys,
         }
     },
 }

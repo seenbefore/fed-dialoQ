@@ -1,11 +1,11 @@
 <template>
     <div class="side-nav">
-        <h2 class="vant-title">
+        <!-- <h2 class="vant-title">
             <span>Vant</span>
         </h2>
-        <h2 class="vant-desc">{{ description }}</h2>
+        <h2 class="vant-desc">{{ description }}</h2> -->
         <template v-for="item in navList">
-            <mobile-nav v-for="(group, index) in item.groups" :group="group" :key="index" />
+            <mobile-nav v-for="(group, index) in item.groups" :group="group" :key="index" :active-keys="activeKeys" />
         </template>
     </div>
 </template>
@@ -13,6 +13,28 @@
 import { Component, Vue } from 'vue-property-decorator'
 import docConfig from './doc.config'
 import MobileNav from './MobileNav.vue'
+import { routes } from '@/entry/h5/router'
+const indexRoute = routes.filter(item => item.name === 'Index')[0]
+const secondRoutes = indexRoute.children || []
+const businessGroup = {
+    name: '业务',
+    showInMobile: true,
+    groups: [
+        {
+            groupName: '业务',
+            icon: 'https://img.yzcdn.cn/vant/basic-0401.svg',
+            list: secondRoutes
+                .filter(item => item.path.indexOf('/demo') === -1)
+                .filter(item => item.path.indexOf('/readme') === -1)
+                .map(item => ({
+                    path: item.path,
+                    title: item.path + ' ' + item.meta?.title,
+                })),
+        },
+    ],
+}
+
+console.log(11, businessGroup)
 @Component({
     name: 'ReadmeHome',
     components: {
@@ -21,9 +43,12 @@ import MobileNav from './MobileNav.vue'
 })
 export default class ReadmeHome extends Vue {
     docConfig = docConfig
+    activeKeys = ['业务', '基础组件']
 
     get navList() {
-        return (this.docConfig.nav || []).filter(item => item.showInMobile)
+        const result = this.docConfig.nav.filter(item => item.showInMobile)
+        result.unshift(businessGroup)
+        return result
     }
 
     get description() {
@@ -36,7 +61,7 @@ export default class ReadmeHome extends Vue {
 .side-nav {
     width: 100%;
     box-sizing: border-box;
-    padding: 64px 20px 20px;
+    padding: 24px 20px 20px;
 
     .vant-title,
     .vant-desc {
