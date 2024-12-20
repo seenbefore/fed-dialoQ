@@ -1583,7 +1583,7 @@ export default class UserManagement extends Vue {
     // 仅当有批量操作时需要 表格选中的数据row
     selected: any = []
     //  查询条件表单属性设置，必要字段，不要省略
-    formModel: Record<string, any> = {}
+    formModel: any = {}
     // 表格项选中
     onChange(val: any) {
         this.selected = val.map((item: any) => ({ id: item.id }))
@@ -2084,7 +2084,7 @@ export default class UserDetail extends Vue {
     @Prop() id!: string
 
     // 必须保留
-    formModel: Record<string, any> = {}
+    formModel: any = {}
     View = {
         loading: false,
     }
@@ -2185,7 +2185,7 @@ export default class UserDialog extends Vue {
      */
     @Prop({ default: 'modify' }) action!: 'modify' | 'create'
     // 必须保留
-    formModel: Record<string, any> = {
+    formModel: any = {
         id: this.id,
     }
     View = {
