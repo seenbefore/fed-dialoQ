@@ -151,7 +151,23 @@
                                     <ex-slot :render="col.render" :row="formData" :model="formData"></ex-slot>
                                 </template>
                             </re-el-form-item>
-                            <!-- 自定义表单域 -->
+                            <!-- 自定义render表单域 -->
+                            <template v-else-if="(types[col.tag] || col.tag === 'custom') && col.render">
+                                <el-form-item class="sg-form-item" v-bind="col.itemAttrs" :class="col.name">
+                                    <template slot="label" v-if="col.itemAttrs.showLabelTooltip && col.itemAttrs.label">
+                                        <span style="position:relative">
+                                            <el-tooltip class="item" effect="dark" :content="col.itemAttrs.label" placement="top-start">
+                                                <div class="sg-form-item__label">
+                                                    {{ col.itemAttrs.label }}
+                                                </div>
+                                            </el-tooltip>
+                                        </span>
+                                    </template>
+
+                                    <ex-slot :render="col.render" :row="formData" :column="col"></ex-slot>
+                                </el-form-item>
+                            </template>
+                            <!-- 自定义slot表单域 -->
                             <template v-else-if="col.tag === 'slot'">
                                 <el-form-item class="sg-form-item" v-bind="col.itemAttrs" :class="col.name">
                                     <template slot="label" v-if="col.itemAttrs.showLabelTooltip && col.itemAttrs.label">
@@ -220,6 +236,7 @@
                             <template v-else-if="col.slot">
                                 <slot :name="col.slot"></slot>
                             </template>
+                            <!-- 整个表单项 -->
                             <template v-else-if="col.render">
                                 <ex-slot v-if="col.render" :render="col.render" :row="formData"></ex-slot>
                             </template>
@@ -799,7 +816,7 @@ export default {
             const { name, tag, custom } = col
             const types = this.types
 
-            if (tag === 'slot' || tag === 'action' || (col.render && tag !== 'custom') || col.slotName) {
+            if (tag === 'slot' || tag === 'action' || col.render || col.slotName) {
                 return null
             } else if (types[tag]) {
                 return types[tag]
