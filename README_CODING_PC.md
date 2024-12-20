@@ -77,7 +77,7 @@
 ```
 
 ## 菜单结构
-- 菜单结构位于`src/menus.ts`文件中。注意：只需要将视图列表的路由地址配置到菜单中，其他比如新增、详情等路由不需要配置菜单。
+- 菜单结构位于`src/menus.ts`文件中。
 ```typescript
 import { UserMenu } from '@/@types/menu'
 const menu = require('./menu.json')
@@ -3294,7 +3294,8 @@ export default class AppChart extends Vue {
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
+- 添加地址到菜单文件。注意：只需要将视图列表的路由地址配置到菜单中，其他比如新增、详情等带参的路由不需要配置菜单。
 - 依次循环
 
 # Output
-项目根目录为`src`，将生成的业务代码放在`views`下的一个文件夹下。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。如果有新的`router.js`文件，请在`src/menus.ts`中添加菜单。
+项目根目录为`src`，将生成的业务代码放在`views`下的一个文件夹下。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。菜单文件地址为`src/menus.ts`。
