@@ -76,35 +76,6 @@
 └── package.json           # npm 配置文件
 ```
 
-## 菜单结构
-- 菜单结构位于`src/menus.ts`文件中。
-```typescript
-import { UserMenu } from '@/@types/menu'
-const menu = require('./menu.json')
-export const LocalMenu: UserMenu[] = [
-    {
-        label: '系统管理',
-        icon: 'el-icon-document',
-        uri: '/系统管理',
-        children: [
-            {
-                label: '数据字典',
-                icon: 'el-icon-document',
-                // 路由地址
-                uri: '/system/dict',
-            },
-            {
-                label: '菜单管理',
-                icon: 'el-icon-document',
-                // 路由地址
-                uri: '/system/menu',
-            },
-        ],
-    },
-]
-
-```
-
 ## 工具函数使用规范
 
 ### HTTP 请求封装
@@ -1199,13 +1170,44 @@ export default class PrePublicityPreview extends Vue {
 
 
 # Example
-默认依次生成以下文件：
-- 业务文件目录
-    - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
-    - 接口文件 api.ts
-    - 数据模拟文件 mock.js
-    - 视图文件 index.vue
-    - 路由文件 router.js（和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`）
+- 添加标题、地址到菜单文件`menu.ts`。注意：如果是新增、详情等带参的路由则跳过此步骤。
+- 默认依次生成以下文件：
+    - 业务文件目录
+        - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
+        - 接口文件 api.ts
+        - 数据模拟文件 mock.js
+        - 视图文件 index.vue
+        - 路由文件 router.js（和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`）
+
+
+
+## 菜单文件
+- 位于`menus.ts`文件中。
+```typescript
+import { UserMenu } from '@/@types/menu'
+export const LocalMenu: UserMenu[] = [
+    {
+        label: '系统管理',
+        icon: 'el-icon-document',
+        uri: '/系统管理',
+        children: [
+            {
+                label: '数据字典',
+                icon: 'el-icon-document',
+                // 路由地址
+                uri: '/system/dict',
+            },
+            {
+                label: '菜单管理',
+                icon: 'el-icon-document',
+                // 路由地址
+                uri: '/system/menu',
+            },
+        ],
+    },
+]
+
+```
 
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
@@ -3294,7 +3296,6 @@ export default class AppChart extends Vue {
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
-- 添加地址到菜单文件。注意：只需要将视图列表的路由地址配置到菜单中，其他比如新增、详情等带参的路由不需要配置菜单。
 - 依次循环
 
 # Output
