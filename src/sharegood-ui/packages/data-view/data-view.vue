@@ -50,7 +50,6 @@
                         @select-all="selectionChange"
                         @row-click="rowClickChange"
                         :load="treeLoad"
-                        :row-key="virtualKey"
                         v-el-table-sticky-header="vElTableStickyHeaderConfig"
                     >
                         <data-column :columns="columns" :handle-select-able="handleSelectAble" :default-value="defaultValue" :disabled-tooltip-set="disabledTooltipSet">
@@ -142,6 +141,7 @@ function guid() {
     })
 }
 import _ from 'lodash'
+import { dfsTreeMap } from '@/components/region-org-tree/utils'
 // 初始化溢出省略是否显示tooltip指令
 const initTooltip = (() => {
     function handler(el, binding, vnode, oldVnode) {
@@ -768,7 +768,7 @@ export default {
                     result.forEach((item, index) => {
                         item.$index = (page - 1) * pageSize$ + index + 1
                     })
-                    this.dataSource = [...result].map(item => {
+                    this.dataSource = dfsTreeMap([...(result ?? [])], item => {
                         if (this.idKey) return item
                         return { ...item, [this.virtualKey]: guid() }
                     })

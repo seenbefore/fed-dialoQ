@@ -180,3 +180,19 @@ export function handleFormValues(values: any) {
     }
     return res
 }
+
+/**
+ * 深度遍历树(map)
+ * @param {*} tree 树
+ * @param {*} callback 回调
+ * @return {*}
+ */
+export const dfsTreeMap = (tree: any[], callback: (node: any) => any) => {
+    return tree.map(node => {
+        let children: any[] = node.children
+        if (Array.isArray(node.children)) {
+            children = dfsTreeMap(node.children, callback)
+        }
+        return callback({ ...node, children })
+    })
+}
