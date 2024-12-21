@@ -34,6 +34,8 @@
 ```
 
 # Background
+- 项目技术栈：vue@2.6.12 + typescript@4.1.6 + element-ui@2.13.2 + vue-class-component@7.2.6 + mockjs@1.1.0
+
 ## 目录
 
 ```bash
@@ -76,12 +78,23 @@
 └── package.json           # npm 配置文件
 ```
 
+## 代码规范
+- 视图中`<template>`标签中禁止使用`?.`（可选链）语法，请使用`||`（或）语法。因为它会导致模板渲染时报错。
+- style中不要使用`:deep`，请使用`::v-deep`。
+- 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
+- 视图中的`script`属性lang设置为'tsx'。
+- 视图中的`style`属性lang设置为'less',属性使用`scoped`。默认第一行生成组件名称的class类；
+- 接口判断请求成功后返回的`res`对象，不需要判断`res.code === 200`，请直接使用`res.data`。
+- 字段注释请使用`/** 注释内容 **/`。函数注释请参照`JSDoc`注释。
+
+
 ## 工具函数使用规范
 
 ### HTTP 请求封装
 默认在`@/services/auto`文件夹下
 ```typescript
  import { ExAxiosRequestConfig } from 'icinfo-request'
+ import { Result, PageResponse } from '@/@types'
  import { http } from '@/scripts/http'
  
  /**
@@ -2098,6 +2111,7 @@ export default class UserDetail extends Vue {
             {
                 columns: [
                     {
+                        // 表单项占整行
                         span: 24,
                         name: 'username',
                         label: '用户名：',
@@ -2109,6 +2123,7 @@ export default class UserDetail extends Vue {
             {
                 columns: [
                     {
+                        // 表单项占整行
                         span: 24,
                         name: 'name',
                         label: '用户名称：',
@@ -2229,6 +2244,7 @@ export default class UserDialog extends Vue {
                     {
                         // 多行输入框 input
                         tag: 'input',
+                        // 表单项占整行
                         span: 24,
                         name: 'reason',
                         label: '原因',
@@ -3209,11 +3225,6 @@ export default class AppChart extends Vue {
 
 # Constrains
 
-## 通用规范
-- 技术栈：vue2 + typescript + element-ui + mockjs
-- script属性lang设置为'tsx'
-- style属性使用scoped,lang设置为less
-
 ### 代码风格和结构
 - 编写简洁、技术性强的TypeScript代码，并提供准确的例子。
 - 使用函数式和声明式编程模式；避免使用类。
@@ -3264,8 +3275,6 @@ export default class AppChart extends Vue {
 - 查询条件中有级联字样，请使用级联组件
 - 需求内容中如果没有查询条件字样，代码中不要输出有关查询条件相关的代码
 - 需求内容中如果没有列表展示数据项字样，代码中不要输出有关列表展示数据项相关的代码
-- script属性lang设置为'tsx'
-- style属性使用scoped,lang设置为less,默认第一行生成组件名称的class类；不要新增内容
 - 不要修改`getFormAttrs`和`getTableAttrs`名称和字段定义规则
 - 不要对formRef和tableRef自定义方法
 - 跳转页面$router的path请结合菜单对象中的uri+页面名称
@@ -3274,29 +3283,29 @@ export default class AppChart extends Vue {
 - sg-data-view组件自带的有导出当前页面数据和导出全部的功能，操作栏不要再写导出的方法
 - 请不要移除class类`sg-page`、`icinfo-ai`
 - 使用枚举的时候请使用以下方式，确保ts解析正常`GenderEnumMap[key as keyof typeof GenderEnumMap]?.label`
-- `template`标签中不要使用`?.`的语法。比如`{{ item?.name }}`请写成`{{ item.name || '-' }}`
-- 请确保`<script>`标签正常闭合，不要遗漏`</script>`。
-- 判断请求成功请不需要判断`res.code === 200`，直接使用`res.data`
 - 表单条件默认不配置`rules`，除非明确说明了`校验规则`。
 - `TableColumn`属性必须包含`width`或者`minWidth`；如果属性中有`fixed`则配置`width`属性，否则配置`minWidth`属性。日期宽度一般为`170px`。
 - 表单配置`FormColumn`中的标题`label`不为空则默认加`：`，如果出现不显示或者隐藏则`label`为空。
 - `mounted`中不需要调用表格组件`sg-data-view`的`onLoad`方法。
-- style中不要使用`:deep`，请使用`::v-deep`。
-- 请使用`this.$back()`返回上一页，默认清除上一页缓存。
 - sg-data-view操作中有危险操作的比如删除，请在按钮上添加`danger`属性，然后使用`this.$confirm`方法弹窗确认。
-- 页面中的返回操作请新增一个`handleBack`方法，然后使用`this.$back`方法返回上一页。如果需要修改了内容需要刷新上一页，请在`handleBack`方法中调用`this.$back({ reload: true })`。
+- 页面中的返回操作请新增一个`handleBack`方法，然后使用`this.$back({ path: '/xxx' })`方法返回上一页。如果需要修改了内容需要刷新上一页，请在`handleBack`方法中调用`this.$back({ reload: true, path: '/xxx' })`。
 - 标签页的标题可以动态修改，比如在路由参数中添加`_=新增`、`_=编辑`、`_=详情`等。
+- `sg-base-form`组件中的`span`属性默认值为`8`，当`span`为`24`时，表单项占整行。如果是新增、修改、详情页面，请使用`span`为`24`。
+
+
+
 
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成：
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释：
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
 - 修改菜单文件`menus.ts`，添加菜单项。
+- 再检查一遍生成的文件，确保无乱码问题，确保遵守了代码规范。
 - 依次循环
 
 # Output
