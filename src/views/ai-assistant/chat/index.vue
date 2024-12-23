@@ -246,21 +246,45 @@ export default class AiChat extends Vue {
     async handleSend() {
         if (!this.inputMessage.trim()) return
 
-        const message = {
+        const message: ChatMessage = {
+            id: String(Date.now()),
+            sessionId: this.currentSession?.id || 'temp',
+            sender: 'user',
             content: this.inputMessage,
-            sessionId: (this.currentSession && this.currentSession.id) || '',
-            sender: 'user' as const,
+            createTime: new Date().toLocaleString('zh-CN'),
+            status: 'completed',
         }
 
-        this.messageList.push(message as ChatMessage)
+        this.messageList.push(message)
         this.inputMessage = ''
+        this.$nextTick(() => {
+            this.scrollToBottom()
+        })
 
         try {
-            const { data } = await sendMessage(message)
+            const { data } = await sendMessage({
+                sessionId: this.currentSession?.id || 'temp',
+                content: message.content,
+            })
             this.messageList.push(data)
         } catch (error) {
-            this.$message.error('发送失败')
+            console.error('发送消息失败:', error)
+            this.$message.error('发送失败，请重试')
+            // 可以在消息列表中显示错误状态
+            const errorMessage: ChatMessage = {
+                id: String(Date.now()),
+                sessionId: this.currentSession?.id || 'temp',
+                sender: 'ai',
+                content: '抱歉，我遇到了一些问题，请稍后重试。',
+                createTime: new Date().toLocaleString('zh-CN'),
+                status: 'error',
+            }
+            this.messageList.push(errorMessage)
         }
+
+        this.$nextTick(() => {
+            this.scrollToBottom()
+        })
     }
 
     async handleDeleteSession(session: ChatSession) {

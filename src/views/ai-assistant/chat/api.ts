@@ -1,38 +1,36 @@
+import { API_CONFIG } from './config'
+import axios from 'axios'
 import { ExAxiosRequestConfig } from 'icinfo-request'
 import { http } from '@/scripts/http'
-import { Result, PageResponse } from '@/@types'
-
-export interface ChatMessage {
-    /** 消息ID */
-    id: string
-    /** 会话ID */
-    sessionId: string
-    /** 发送者类型(user/ai) */
-    sender: 'user' | 'ai'
-    /** 消息内容 */
-    content: string
-    /** 发送时间 */
-    createTime: string
-    /** 状态(generating/completed/error) */
-    status?: string
-}
+import { Result } from '@/@types'
 
 export interface ChatSession {
-    /** 会话ID */
     id: string
-    /** 会话标题 */
     title: string
-    /** 最后消息 */
     lastMessage: string
-    /** 更新时间 */
     updateTime: string
-    /** 消息数量 */
     messageCount: number
-    /** 是否收藏 */
     isFavorite: boolean
-    /** 是否置顶 */
     isTop: boolean
 }
+
+export interface ChatMessage {
+    id: string
+    sessionId: string
+    sender: 'user' | 'ai'
+    content: string
+    createTime: string
+    status: 'pending' | 'completed' | 'error'
+}
+
+// 创建axios实例
+const chatAPI = axios.create({
+    baseURL: API_CONFIG.baseURL,
+    headers: {
+        Authorization: `Bearer ${API_CONFIG.token}`,
+        'Content-Type': 'application/json',
+    },
+})
 
 /**
  * 获取会话列表
@@ -68,22 +66,32 @@ export function getMessageList(
     })
 }
 
-/**
- * 发送消息
- */
-export function sendMessage(
-    data: {
-        sessionId: string
-        content: string
-    },
-    options?: ExAxiosRequestConfig,
-) {
-    return http.request<Result<ChatMessage>>({
-        url: '/chat/messages/send',
-        method: 'post',
-        data,
-        ...options,
+export async function sendMessage(data: { sessionId: string; content: string }) {
+    const response = await chatAPI.post('/chat/completions', {
+        model: API_CONFIG.model,
+        messages: [
+            {
+                role: 'user',
+                content: data.content,
+            },
+        ],
     })
+
+    // 处理响应
+    const aiMessage = response.data.choices[0].message.content
+
+    return {
+        code: 200,
+        data: {
+            id: response.data.id,
+            sessionId: data.sessionId,
+            sender: 'ai' as const, // 使用类型断言确保类型正确
+            content: aiMessage,
+            createTime: new Date().toLocaleString('zh-CN'),
+            status: 'completed' as const,
+        },
+        message: '发送成功',
+    }
 }
 
 /**

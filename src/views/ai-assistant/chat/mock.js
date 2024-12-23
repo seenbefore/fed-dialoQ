@@ -80,43 +80,6 @@ export default [
         },
     },
     {
-        name: '/chat/messages/send',
-        method: 'post',
-        description: '发送消息',
-        onMock(opt, query, body) {
-            const { sessionId, content } = body
-            // AI回复模板
-            const replies = ['我明白您的意思。', '这个想法很有趣。', '让我们继续探讨这个话题。', '您说得很对。', '确实如此。']
-
-            // 随机选择一个回复模板
-            const template = replies[Math.floor(Math.random() * replies.length)]
-            const reply = template
-
-            return mock({
-                code: 200,
-                data: {
-                    id: '@id',
-                    sessionId,
-                    sender: 'ai',
-                    content: reply,
-                    createTime: new Date()
-                        .toLocaleString('zh-CN', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false,
-                        })
-                        .replace(/\//g, '-'),
-                    status: 'completed',
-                },
-                message: '发送成功',
-            })
-        },
-    },
-    {
         name: '/chat/sessions/delete',
         method: 'post',
         description: '删除会话',
