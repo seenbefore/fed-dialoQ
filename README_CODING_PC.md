@@ -2608,7 +2608,7 @@ export default class DemoStat extends Vue {
 <template>
     <div class="AnalyticInsightSummary">
         <div class="item">
-            <span class="text-desc font-size-md">产品覆盖率</span>
+            <span class="text-desc font-size-md">{{ formModel.other && formModel.other.name }}</span>
             <span class="text-danger text-number" v-text="formModel.a"></span>
         </div>
         <!-- 分割线 不要删除 -->
@@ -2640,7 +2640,11 @@ import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 })
 export default class AnalyticInsightSummary extends Vue {
     // 必要字段，不要省略
-    formModel: Record<string, any> = {}
+    formModel: Record<string, any> = {
+        other: {
+            name: '产品覆盖率',
+        },
+    }
     async mounted() {
         // 模拟数据 不要删除
         const { data } = await Promise.resolve({

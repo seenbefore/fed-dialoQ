@@ -3,7 +3,7 @@
         <!-- 历史会话 -->
         <div class="chat-history" v-show="showSessionList">
             <div class="sidebar-header">
-                <span class="title">历史会话</span>
+                <span class="title">{{ formModel && formModel.other && formModel.other.name }}</span>
                 <el-button type="text" icon="el-icon-plus" @click="handleNewSession"></el-button>
             </div>
             <div class="session-list">
@@ -126,7 +126,11 @@ export default class AiChat extends Vue {
     @Ref('sessionListRef') sessionListRef!: TableRef
     @Ref('settingsForm') settingsForm!: FormRef
     @Ref('messageContainer') messageContainer!: HTMLElement
-
+    formModel: Record<string, any> = {
+        other: {
+            name: '历史会话',
+        },
+    }
     // 是否显示会话列表
     showSessionList = true
 

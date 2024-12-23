@@ -6,6 +6,7 @@
     "bin": {},
     "scripts": {
         "start": "npm install --registry https://registry.npmmirror.com",
+        "reset": "git reset --hard && git clean -df",
         "dev": "vue-cli-service serve --open",
         "build": "vue-cli-service build --mode=production",
         "build:fat": "vue-cli-service build --mode=fat",
