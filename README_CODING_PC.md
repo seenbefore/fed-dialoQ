@@ -3293,7 +3293,19 @@ export default class AppChart extends Vue {
 - `sg-base-form`组件中的`span`属性默认值为`8`，当`span`为`24`时，表单项占整行。如果是新增、修改、详情页面，请使用`span`为`24`。
 
 
-
+# 重要约束
+1. 模板语法约束
+   - ❌ 禁止在 template 中使用可选链 `?.` 
+   - ✅ 应使用 `&&` 或 `||` 运算符
+   - 示例：
+     ```vue
+     <!-- 错误 -->
+     {{ user?.name }}
+     
+     <!-- 正确 -->
+     {{ user && user.name }}
+     {{ user || defaultUser }}
+     ```
 
 # Workflow
 - 用户输入产品prd内容
@@ -3305,7 +3317,6 @@ export default class AppChart extends Vue {
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
 - 修改菜单文件`menus.ts`，添加菜单项。
-- 再检查一遍生成的文件，确保无乱码问题，确保遵守了代码规范。
 - 依次循环
 
 # Output

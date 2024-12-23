@@ -182,4 +182,16 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: 'AI助手',
+        icon: 'el-icon-chat-dot-round',
+        uri: '/ai-assistant',
+        children: [
+            {
+                label: '聊天室',
+                icon: 'el-icon-chat-line-round',
+                uri: '/ai-assistant/chat',
+            },
+        ],
+    },
 ]
