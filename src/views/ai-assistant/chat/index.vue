@@ -236,7 +236,7 @@ export default class AiChat extends Vue {
         // 加载会话列表
         try {
             const { data } = await getSessionList()
-            this.sessionList = data
+            this.sessionList = Array.isArray(data) ? data : []
             // 添加默认欢迎消息
             if (!this.messageList.length) {
                 this.messageList = [
