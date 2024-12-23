@@ -1,42 +1,40 @@
 <template>
     <div class="sg-page AiChat" :class="{ 'show-sidebar': showSessionList, 'show-settings': showSettings }">
-        <!-- 左侧会话列表 -->
-        <div class="chat-sidebar" v-show="showSessionList">
+        <!-- 历史会话 -->
+        <div class="chat-history" v-show="showSessionList">
             <div class="sidebar-header">
-                <el-button type="primary" icon="el-icon-plus" @click="handleNewSession">新建会话</el-button>
+                <span class="title">历史会话</span>
+                <el-button type="text" icon="el-icon-plus" @click="handleNewSession"></el-button>
             </div>
             <div class="session-list">
-                <sg-data-view ref="sessionListRef" v-bind="getSessionListAttrs">
-                    <template #item="{ row }">
-                        <div class="session-item" :class="{ active: currentSession && currentSession.id === row.id }" @click="handleSelectSession(row)">
-                            <div class="session-title">{{ row.title }}</div>
+                <div class="session-items">
+                    <template v-for="session in sessionList">
+                        <div :key="session.id" class="session-item" :class="{ active: currentSession && currentSession.id === session.id }" @click="handleSelectSession(session)">
+                            <div class="session-title">{{ session.title || '新的对话' }}</div>
                             <div class="session-meta">
-                                <span class="last-message">{{ row.lastMessage }}</span>
-                                <span class="update-time">{{ row.updateTime }}</span>
+                                <span class="last-message">{{ session.lastMessage }}</span>
+                                <span class="update-time">{{ session.updateTime }}</span>
                             </div>
                             <div class="session-actions">
-                                <el-button type="text" @click.stop="handlePinSession(row)">
-                                    <i :class="row.isTop ? 'el-icon-top' : 'el-icon-bottom'"></i>
+                                <el-button type="text" @click.stop="handlePinSession(session)">
+                                    <i :class="session.isTop ? 'el-icon-top' : 'el-icon-bottom'"></i>
                                 </el-button>
-                                <el-button type="text" @click.stop="handleFavoriteSession(row)">
-                                    <i :class="row.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
+                                <el-button type="text" @click.stop="handleFavoriteSession(session)">
+                                    <i :class="session.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
                                 </el-button>
-                                <el-button type="text" danger @click.stop="handleDeleteSession(row)">
+                                <el-button type="text" danger @click.stop="handleDeleteSession(session)">
                                     <i class="el-icon-delete"></i>
                                 </el-button>
                             </div>
                         </div>
                     </template>
-                </sg-data-view>
+                </div>
             </div>
         </div>
 
-        <!-- 主聊天区域 -->
+        <!-- 当前会话 -->
         <div class="chat-main">
             <div class="chat-header">
-                <el-button type="text" @click="showSessionList = !showSessionList">
-                    <i :class="showSessionList ? 'el-icon-s-fold' : 'el-icon-s-unfold'"></i>
-                </el-button>
                 <span class="title">{{ (currentSession && currentSession.title) || '新的对话' }}</span>
                 <div class="actions">
                     <el-button type="text" @click="handleExport">
@@ -130,7 +128,7 @@ export default class AiChat extends Vue {
     @Ref('messageContainer') messageContainer!: HTMLElement
 
     // 是否显示会话列表
-    showSessionList = false
+    showSessionList = true
 
     currentSession: ChatSession | null = null
     messageList: ChatMessage[] = []
@@ -147,6 +145,8 @@ export default class AiChat extends Vue {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAdVJREFUaN7tmMENgjAQRU83cQRGcARGYARGcARGcARGcARGcAQ3cARGsOTSNJTSu9YWEmO4kRDg/p/7e4WQBbYEAsACyAIbIAtsgCywAbLABsgCGyALbIAsGKvwn+v8xZoGNmbVOAvzAPKYD5CF6g2YB5DHfIAs/N6+iHkAecwHyAIbIAtsgCywAbLABsgCGyALbIAssMEGxDFYuOY1FxNQ1uAzV0Gw7uXiUkjVIFwbEGJCXwP2zggXBsS+gWOPAa4MCHkJjz0GeDEg9jVM9hjgw4AhbuLYY4AzA4a6i2WPAU4MGPIyjj0GODVg6Os49hjgxIAULyTYY4ATA1K8kWGPAdYNSPVKij0GWDUg5Ts59hhgzYDULyXZY4AVA+Z4Kx3MHgOED5jzvXwQewwQOmBOAwaxB4nGDkKGvhvlWPYgUeQBhA5BnFhvZw8SRR5A6BDEifV29iBR5AGEDkGcWG9nDxJFHkDoEMSJ9Xb2INGYQchgBHuQaOwgZDCCPUg0dhAyGMEeJBo7CBmMYA8SjR2EDEawB4nGDkIGI9iDRGMHIYMR7EGisYOQwQj2INHYQchgBHuQaOwgZDCCPUg0dhAyGMEeJEodxCLwR0FIEItFEItFEItFEItFEItFEP8U/AJlXn5s1pDvmwAAAABJRU5ErkJggg=='
     aiAvatar =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAdVJREFUaN7tmMENgjAQRU83cQRGcARGYARGcARGcARGcARGcAQ3cARGsOTSNJTSu9YWEmO4kRDg/p/7e4WQBbYEAsACyAIbIAtsgCywAbLABsgCGyALbIAsGKvwn+v8xZoGNmbVOAvzAPKYD5CF6g2YB5DHfIAs/N6+iHkAecwHyAIbIAtsgCywAbLABsgCGyALbIAssMEGxDFYuOY1FxNQ1uAzV0Gw7uXiUkjVIFwbEGJCXwP2zggXBsS+gWOPAa4MCHkJjz0GeDEg9jVM9hjgw4AhbuLYY4AzA4a6i2WPAU4MGPIyjj0GODVg6Os49hjgxIAULyTYY4ATAyZ7I8MeA6wbkOqVFHsMsGpAyndS7DHAmgGp30myxwArBszxVjqYPQYIHzDne/kg9hggdMCcBgxiDxKNHYQMfTfKsexBosgDCB2COLHezh4kijyA0CGIE+vt7EGiyAMIHYI4sd7OHiSKPIDQIYgT6+3sQaKxg5DBCPYg0dhByGAEe5Bo7CBkMII9SDR2EDIYwR4kGjsIGYxgDxKNHYQMRrAHicYOQgYj2INEYwchgxHsQaKxg5DBCPYg0dhByGAEe5Bo7CBkMII9SDR2EDIYwR4kSh3EIvBHQUgQi0UQi0UQi0UQi0UQi0UQ/xT8AmVefmzWkO+bAAAAAElFTkSuQmCC'
+
+    sessionList: ChatSession[] = []
 
     get getSessionListAttrs() {
         return {
@@ -210,7 +210,15 @@ export default class AiChat extends Vue {
         }
     }
 
-    async mounted() {}
+    async mounted() {
+        // 加载会话列表
+        try {
+            const { data } = await getSessionList()
+            this.sessionList = data
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     @Watch('messageList')
     onMessageListChange() {
@@ -262,7 +270,9 @@ export default class AiChat extends Vue {
             })
             await deleteSession({ sessionId: session.id })
             this.$message.success('删除成功')
-            this.sessionListRef.onLoad()
+            // 重新加载会话列表
+            const { data } = await getSessionList()
+            this.sessionList = data
             if (this.currentSession?.id === session.id) {
                 this.currentSession = null
                 this.messageList = []
@@ -398,7 +408,7 @@ export default class AiChat extends Vue {
 
 <style lang="less" scoped>
 .AiChat {
-    display: flex;
+    display: flex !important;
     position: absolute;
     top: 0;
     left: 0;
@@ -407,7 +417,7 @@ export default class AiChat extends Vue {
     background: #f5f7fa;
     overflow: hidden;
 
-    .chat-sidebar {
+    .chat-history {
         width: 300px;
         background: #fff;
         box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05);
@@ -419,11 +429,19 @@ export default class AiChat extends Vue {
         .sidebar-header {
             padding: 16px;
             border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .title {
+                font-size: 16px;
+                font-weight: 500;
+                color: #333;
+            }
 
             .el-button {
-                width: 100%;
-                height: 40px;
                 font-size: 14px;
+                padding: 0;
             }
         }
 
@@ -495,6 +513,7 @@ export default class AiChat extends Vue {
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
         height: 100%;
         overflow: hidden;
+        margin-left: 1px;
 
         .chat-header {
             padding: 16px;
@@ -504,22 +523,11 @@ export default class AiChat extends Vue {
             align-items: center;
             background: #fff;
             flex-shrink: 0;
-
-            .el-button {
-                padding: 0;
-                margin-right: 12px;
-                font-size: 18px;
-                color: #606266;
-
-                &:hover {
-                    color: #409eff;
-                }
-            }
+            transition: left 0.3s ease;
 
             .title {
                 font-size: 16px;
                 font-weight: 500;
-                flex: 1;
                 color: #333;
             }
         }
