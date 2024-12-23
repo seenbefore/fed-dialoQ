@@ -54,7 +54,8 @@ export default [
                         id: '1',
                         sessionId,
                         sender: 'ai',
-                        content: '您好！我是Claude，一个AI助手。很高兴为您服务。',
+                        content:
+                            '您好！我是智谱AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 解决问题和技术支持\n\n请问有什么我可以帮您的吗？',
                         createTime: '@datetime("yyyy-MM-dd HH:mm:ss")',
                         status: 'completed',
                     },

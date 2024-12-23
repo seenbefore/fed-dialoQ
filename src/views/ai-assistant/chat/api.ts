@@ -3,6 +3,7 @@ import axios from 'axios'
 import { ExAxiosRequestConfig } from 'icinfo-request'
 import { http } from '@/scripts/http'
 import { Result } from '@/@types'
+import { MessageStatusEnum } from './enum'
 
 export interface ChatSession {
     id: string
@@ -20,7 +21,7 @@ export interface ChatMessage {
     sender: 'user' | 'ai'
     content: string
     createTime: string
-    status: 'pending' | 'completed' | 'error'
+    status: MessageStatusEnum
 }
 
 // 创建axios实例
@@ -85,10 +86,10 @@ export async function sendMessage(data: { sessionId: string; content: string }) 
         data: {
             id: response.data.id,
             sessionId: data.sessionId,
-            sender: 'ai' as const, // 使用类型断言确保类型正确
+            sender: 'ai' as const,
             content: aiMessage,
             createTime: new Date().toLocaleString('zh-CN'),
-            status: 'completed' as const,
+            status: MessageStatusEnum.COMPLETED,
         },
         message: '发送成功',
     }

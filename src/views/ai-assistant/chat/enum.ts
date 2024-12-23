@@ -1,7 +1,7 @@
 /** 消息状态 */
 export enum MessageStatusEnum {
-    /** 生成中 */
-    GENERATING = 'generating',
+    /** 加载中 */
+    LOADING = 'loading',
     /** 已完成 */
     COMPLETED = 'completed',
     /** 错误 */
@@ -9,9 +9,9 @@ export enum MessageStatusEnum {
 }
 
 export const MessageStatusEnumMap: Record<string, any> = {
-    [MessageStatusEnum.GENERATING]: {
-        label: '生成中',
-        value: MessageStatusEnum.GENERATING,
+    [MessageStatusEnum.LOADING]: {
+        label: '加载中',
+        value: MessageStatusEnum.LOADING,
         color: '#E6A23C',
     },
     [MessageStatusEnum.COMPLETED]: {

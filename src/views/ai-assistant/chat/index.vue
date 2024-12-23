@@ -56,7 +56,9 @@
                             <img :src="message.sender === 'user' ? userAvatar : aiAvatar" />
                         </div>
                         <div class="content">
-                            <div class="message-content" v-html="renderMessage(message.content)"></div>
+                            <div class="message-content">
+                                {{ message.content }}
+                            </div>
                             <div class="message-meta">
                                 <span class="time">{{ message.createTime }}</span>
                                 <div class="actions">
@@ -81,6 +83,16 @@
                         </div>
                     </div>
                 </template>
+            </div>
+
+            <!-- 加载状态 -->
+            <div class="chat-loading" v-if="isLoading">
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="loading-text">正在思考...</div>
             </div>
 
             <!-- 固定的输入区域 -->
@@ -126,6 +138,11 @@ export default class AiChat extends Vue {
     @Ref('sessionListRef') sessionListRef!: TableRef
     @Ref('settingsForm') settingsForm!: FormRef
     @Ref('messageContainer') messageContainer!: HTMLElement
+
+    // 将枚举声明为组件属性
+    readonly MessageStatusEnum = MessageStatusEnum
+    readonly MessageStatusEnumMap = MessageStatusEnumMap
+
     formModel: Record<string, any> = {
         other: {
             name: '历史会话',
@@ -147,10 +164,11 @@ export default class AiChat extends Vue {
 
     userAvatar =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAdVJREFUaN7tmMENgjAQRU83cQRGcARGYARGcARGcARGcARGcAQ3cARGsOTSNJTSu9YWEmO4kRDg/p/7e4WQBbYEAsACyAIbIAtsgCywAbLABsgCGyALbIAsGKvwn+v8xZoGNmbVOAvzAPKYD5CF6g2YB5DHfIAs/N6+iHkAecwHyAIbIAtsgCywAbLABsgCGyALbIAssMEGxDFYuOY1FxNQ1uAzV0Gw7uXiUkjVIFwbEGJCXwP2zggXBsS+gWOPAa4MCHkJjz0GeDEg9jVM9hjgw4AhbuLYY4AzA4a6i2WPAU4MGPIyjj0GODVg6Os49hjgxIAULyTYY4ATA1K8kWGPAdYNSPVKij0GWDUg5Ts59hhgzYDULyXZY4AVA+Z4Kx3MHgOED5jzvXwQewwQOmBOAwaxB4nGDkKGvhvlWPYgUeQBhA5BnFhvZw8SRR5A6BDEifV29iBR5AGEDkGcWG9nDxJFHkDoEMSJ9Xb2INGYQchgBHuQaOwgZDCCPUg0dhAyGMEeJBo7CBmMYA8SjR2EDEawB4nGDkIGI9iDRGMHIYMR7EGisYOQwQj2INHYQchgBHuQaOwgZDCCPUg0dhAyGMEeJEodxCLwR0FIEItFEItFEItFEItFEItFEP8U/AJlXn5s1pDvmwAAAABJRU5ErkJggg=='
-    aiAvatar =
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAdVJREFUaN7tmMENgjAQRU83cQRGcARGYARGcARGcARGcARGcAQ3cARGsOTSNJTSu9YWEmO4kRDg/p/7e4WQBbYEAsACyAIbIAtsgCywAbLABsgCGyALbIAsGKvwn+v8xZoGNmbVOAvzAPKYD5CF6g2YB5DHfIAs/N6+iHkAecwHyAIbIAtsgCywAbLABsgCGyALbIAssMEGxDFYuOY1FxNQ1uAzV0Gw7uXiUkjVIFwbEGJCXwP2zggXBsS+gWOPAa4MCHkJjz0GeDEg9jVM9hjgw4AhbuLYY4AzA4a6i2WPAU4MGPIyjj0GODVg6Os49hjgxIAULyTYY4ATAyZ7I8MeA6wbkOqVFHsMsGpAyndS7DHAmgGp30myxwArBszxVjqYPQYIHzDne/kg9hggdMCcBgxiDxKNHYQMfTfKsexBosgDCB2COLHezh4kijyA0CGIE+vt7EGiyAMIHYI4sd7OHiSKPIDQIYgT6+3sQaKxg5DBCPYg0dhByGAEe5Bo7CBkMII9SDR2EDIYwR4kGjsIGYxgDxKNHYQMRrAHicYOQgYj2INEYwchgxHsQaKxg5DBCPYg0dhByGAEe5Bo7CBkMII9SDR2EDIYwR4kSh3EIvBHQUgQi0UQi0UQi0UQi0UQi0UQ/xT8AmVefmzWkO+bAAAAAElFTkSuQmCC'
+    aiAvatar = 'https://chatglm.cn/img/pc_20speed-min.e4bebda4.gif'
 
     sessionList: ChatSession[] = []
+
+    isLoading = false
 
     get getSessionListAttrs() {
         return {
@@ -219,6 +237,20 @@ export default class AiChat extends Vue {
         try {
             const { data } = await getSessionList()
             this.sessionList = data
+            // 添加默认欢迎消息
+            if (!this.messageList.length) {
+                this.messageList = [
+                    {
+                        id: String(Date.now()),
+                        sessionId: 'default',
+                        sender: 'ai',
+                        content:
+                            '您好！我是智谱AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 解决问题和技术支持\n\n请问有什么我可以帮您的吗？',
+                        createTime: new Date().toLocaleString('zh-CN'),
+                        status: MessageStatusEnum.COMPLETED,
+                    },
+                ]
+            }
         } catch (error) {
             console.error(error)
         }
@@ -256,7 +288,7 @@ export default class AiChat extends Vue {
             sender: 'user',
             content: this.inputMessage,
             createTime: new Date().toLocaleString('zh-CN'),
-            status: 'completed',
+            status: MessageStatusEnum.COMPLETED,
         }
 
         this.messageList.push(message)
@@ -265,25 +297,31 @@ export default class AiChat extends Vue {
             this.scrollToBottom()
         })
 
+        this.isLoading = true
+
         try {
             const { data } = await sendMessage({
                 sessionId: this.currentSession?.id || 'temp',
                 content: message.content,
             })
-            this.messageList.push(data)
+            this.messageList.push({
+                ...data,
+                status: MessageStatusEnum.COMPLETED,
+            })
         } catch (error) {
             console.error('发送消息失败:', error)
-            this.$message.error('发送失败，请重试')
-            // 可以在消息列表中显示错误状态
             const errorMessage: ChatMessage = {
-                id: String(Date.now()),
+                id: String(Date.now() + 2),
                 sessionId: this.currentSession?.id || 'temp',
                 sender: 'ai',
                 content: '抱歉，我遇到了一些问题，请稍后重试。',
                 createTime: new Date().toLocaleString('zh-CN'),
-                status: 'error',
+                status: MessageStatusEnum.ERROR,
             }
             this.messageList.push(errorMessage)
+            this.$message.error('发送失败，请重试')
+        } finally {
+            this.isLoading = false
         }
 
         this.$nextTick(() => {
@@ -293,7 +331,7 @@ export default class AiChat extends Vue {
 
     async handleDeleteSession(session: ChatSession) {
         try {
-            await this.$confirm('确认删除该会话？', '提示', {
+            await this.$confirm('确认删除该会话���', '提示', {
                 type: 'warning',
             })
             await deleteSession({ sessionId: session.id })
@@ -312,7 +350,16 @@ export default class AiChat extends Vue {
 
     handleNewSession() {
         this.currentSession = null
-        this.messageList = []
+        this.messageList = [
+            {
+                id: String(Date.now()),
+                sessionId: 'default',
+                sender: 'ai',
+                content: '您好！我是智谱AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 解决问题和技术支持\n\n请问有什么我可以帮您的吗？',
+                createTime: new Date().toLocaleString('zh-CN'),
+                status: MessageStatusEnum.COMPLETED,
+            },
+        ]
     }
 
     handleSettings() {
@@ -421,7 +468,7 @@ export default class AiChat extends Vue {
     }
 
     /**
-     * 语音输入
+     * ��音输入
      */
     async handleVoiceInput() {
         try {
@@ -693,6 +740,47 @@ export default class AiChat extends Vue {
                 }
             }
         }
+
+        .chat-loading {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            // border-top: 1px solid #f0f2f5;
+
+            .loading-dots {
+                display: flex;
+                gap: 8px;
+
+                span {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: #409eff;
+                    display: inline-block;
+                    animation: loading-bounce 1s infinite ease-in-out;
+
+                    &:nth-child(1) {
+                        animation-delay: 0s;
+                    }
+
+                    &:nth-child(2) {
+                        animation-delay: 0.2s;
+                    }
+
+                    &:nth-child(3) {
+                        animation-delay: 0.4s;
+                    }
+                }
+            }
+
+            .loading-text {
+                font-size: 14px;
+                color: #909399;
+            }
+        }
     }
 
     .chat-settings {
@@ -738,6 +826,16 @@ export default class AiChat extends Vue {
     }
     to {
         opacity: 1;
+    }
+}
+
+@keyframes loading-bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
     }
 }
 </style>
