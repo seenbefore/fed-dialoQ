@@ -57,7 +57,12 @@
                         </div>
                         <div class="content">
                             <div class="message-content">
-                                {{ message.content }}
+                                <template v-if="message.sender === 'ai'">
+                                    <div v-html="message.content"></div>
+                                </template>
+                                <template v-else>
+                                    {{ message.content }}
+                                </template>
                             </div>
                             <div class="message-meta">
                                 <span class="time">{{ message.createTime }}</span>
@@ -130,6 +135,7 @@ import { Component, Vue, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { MessageStatusEnum, MessageStatusEnumMap } from './enum'
 import { getSessionList, getMessageList, sendMessage, deleteSession, ChatSession, ChatMessage } from './api'
+const md = require('markdown-it')({ html: true })
 
 @Component({
     name: 'AiChat',
@@ -306,6 +312,7 @@ export default class AiChat extends Vue {
             })
             this.messageList.push({
                 ...data,
+                content: md.render(data.content),
                 status: MessageStatusEnum.COMPLETED,
             })
         } catch (error) {
