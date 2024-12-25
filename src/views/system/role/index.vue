@@ -262,17 +262,7 @@ export default class RoleManage extends Vue {
 <style lang="less" scoped>
 .RoleManage ::v-deep {
     padding: 10px;
-    .el-table {
-        .el-table__body {
-            .cell {
-                display: flex;
-                align-items: center;
-                .ellipsis-tooltip {
-                    width: auto;
-                }
-            }
-        }
-    }
+
     .el-switch {
         .el-switch__label {
             display: none;

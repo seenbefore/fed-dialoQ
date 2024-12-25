@@ -397,9 +397,6 @@ export default class DictManage extends Vue {
             .cell {
                 display: flex;
                 align-items: center;
-                .ellipsis-tooltip {
-                    width: auto;
-                }
             }
         }
     }

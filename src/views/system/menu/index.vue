@@ -205,7 +205,7 @@ export default class MenuManage extends Vue {
             {
                 label: '操作',
                 prop: 'action',
-                width: '120px',
+                width: '150px',
                 align: 'left',
                 fixed: 'right',
                 render: (h, { row }) => {
@@ -387,9 +387,6 @@ export default class MenuManage extends Vue {
             .cell {
                 display: flex;
                 align-items: center;
-                .ellipsis-tooltip {
-                    width: auto;
-                }
             }
         }
     }
