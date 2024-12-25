@@ -648,8 +648,27 @@ import QuillEditor from '@/components/quill-editor'
 | paramsSerializer  | 返回新的页码参数对象           | Function({page,pageSize,size}) |        |        |
 | multipleSelectionAll       | 跨页初始数据             | Array    | —      | -      |
 | idKey       | 跨页匹配字段             | String    | —      | -      |
-| tableHeaderSticky       | 表格滚动吸顶，提供滚动容器，比如：`{ scrollDom: () => document.querySelector('.UserManagement')`, }             | Object    | —      | -      |
+| tableHeaderSticky       | 表格滚动吸顶，提供滚动容器，比如：`{ scrollDom: () => document.querySelector('.UserManagement') }`             | Object    | —      | -      |
+| pageActionLayout       | 分页按钮布局，包含导出和全部导出             | Array    | —      | -      |
 
+```javascript
+{
+    pageActionLayout: [
+        [
+            // 显示导出按钮
+            {
+                key: 'export',
+                label: '导出',
+            },
+            // 显示导出全部按钮
+            {
+                key: 'exportAll',
+                label: '导出全部',
+            },
+        ]
+    ],
+}
+```
 
 ### columns
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
@@ -3262,6 +3281,38 @@ export default class AppChart extends Vue {
 
 ```
 
+### 简单页面
+- 用户要求直接展示或者插入图片，请使用以下模板。
+- 图片保存在当前业务目录的`assets`文件夹下
+```html
+<template>
+    <!-- 用户详情  -->
+    <admin-page class="OtherPage">
+       <img src="xxx" alt="xxx" />
+    </admin-page>
+</template>
+
+<script lang="tsx">
+import AdminPage from '@/components/admin/admin-page/index.vue'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+@Component({
+    name: 'OtherPage',
+    components: {
+        AdminPage,
+    },
+})
+export default class OtherPage extends Vue {
+   
+}
+</script>
+<style scoped lang="less">
+.OtherPage ::v-deep {
+    padding: 0px;
+}
+</style>
+
+```
+
 
 # Constrains
 
@@ -3350,7 +3401,7 @@ export default class AppChart extends Vue {
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释：
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。

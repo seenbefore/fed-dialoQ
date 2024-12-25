@@ -11,6 +11,11 @@ export const LocalMenu: UserMenu[] = [
                 icon: 'el-icon-document',
                 uri: '/test',
             },
+            {
+                label: '分析页',
+                icon: 'el-icon-data-analysis',
+                uri: '/workbench/analysis',
+            },
         ],
     },
     {

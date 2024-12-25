@@ -111,7 +111,16 @@ desktopMainInit(
         $ShareGood: {
             DataView: {
                 pagination: { pageSize: 10 },
-                pageActionLayout: [],
+                pageActionLayout: [
+                    {
+                        key: 'export',
+                        label: '导出',
+                    },
+                    {
+                        key: 'exportAll',
+                        label: '导出全部',
+                    },
+                ],
             },
         },
     },
