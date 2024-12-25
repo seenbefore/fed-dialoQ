@@ -8,6 +8,7 @@
             :clearable="clearable"
             v-loading="loading"
             :filter-method="filterMethod || filterMethod$"
+            :remote-method="remoteMethod$"
             @change="onSelectChange"
             :multiple="multiple"
         >
@@ -80,6 +81,10 @@ export default {
             },
         },
         filterMethod: {
+            type: Function,
+            default: null,
+        },
+        remoteMethod: {
             type: Function,
             default: null,
         },
@@ -167,6 +172,13 @@ export default {
         this.parseOptions()
     },
     methods: {
+        async remoteMethod$(val) {
+            if (this.remoteMethod) {
+                const result = await this.remoteMethod(val)
+
+                this.dataList = result
+            }
+        },
         onSelectChange(val) {
             if (this.multiple && this.selectAllValue) {
                 this.bindSelectAllChange(val)
@@ -206,15 +218,15 @@ export default {
             //储存当前最后的结果 作为下次的老数据
             this.oldOptions[1] = this.currentValue
         },
-        parseOptions() {
+        async parseOptions(...rest) {
             if (Array.isArray(this.options)) {
                 this.initOptions(this.options)
             } else if (typeof this.options === 'function') {
-                const result = this.options()
+                const result = this.options(this.formModel, ...rest)
 
                 if (result.then) {
                     this.loading = true
-                    result
+                    await result
                         .then(list => {
                             this.initOptions(list)
                             this.loading = false

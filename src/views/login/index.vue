@@ -1,7 +1,5 @@
 <template>
     <div class="sg-page page-login">
-        <nav class="navbar"></nav>
-
         <div class="login-container">
             <div class="login-form sg-flexbox">
                 <div class="login-form-left">
@@ -27,14 +25,11 @@
                             <el-button :loading="View.loading" type="primary" class="my-login-form-submit" size="large" @click="onSubmit">登录</el-button>
                         </div>
                     </sg-base-form>
-                    <!-- <div class="sg-pt-5 sg-flexbox justify-between">
-                        <a id="step1" href="javascript:void(0)" class="sg-link" @click="toThirdLogin">GitLab授权登录</a>
-                        <div>
-                            <span><router-link to="/forget-password" class="sg-link">找回账号/密码?</router-link></span>
-                        </div>
-                    </div> -->
                 </div>
             </div>
+        </div>
+        <div class="copyright">
+            Copyright © 2022 - 浙江汇信科技 版权所有 · 浙ICP备20025217号-1
         </div>
     </div>
 </template>
@@ -45,6 +40,8 @@ import { LocalMenu } from '@/menus'
 import { FormColumn } from '@/sharegood-ui'
 import { userStore, settingsStore } from '@/store/useStore'
 import { URLJoin } from 'icinfo-util'
+import { http } from '@/scripts/http'
+import { encrypt } from './helper'
 
 const state = {
     username: '',
@@ -62,15 +59,7 @@ export default class LoginSimple extends Vue {
         return settingsStore.title
     }
 
-    mounted() {
-        if (userStore.alwaysRemember || this.action === 'AutoLogin') {
-            this.View.model.username = userStore.username
-            this.View.model.password = userStore.password
-        }
-        if (this.action === 'AutoLogin') {
-            this.onSubmit()
-        }
-    }
+    mounted() {}
     private View = {
         alwaysRemember: userStore.alwaysRemember,
         loading: false,
@@ -147,37 +136,37 @@ export default class LoginSimple extends Vue {
             console.error(err)
         }
     }
-    toThirdLogin() {
-        userStore.setRedirect(decodeURIComponent(this.redirect))
-        this.$router.push('/test')
-    }
+
     toQrcodeLogin() {
         let BASE_URL = process.env.BASE_URL
         let redirect = encodeURIComponent(`${location.origin}${BASE_URL}login-free`)
         location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
     }
-    async login(model: State) {
-        const username = model.username || '匿名'
-        // TODO send request
-        const data = {
-            token: 'token123456',
-            name: username,
-            username: username,
-            role: '',
-            position: '',
-        }
-        userStore.setPermissionMenus(LocalMenu)
-        userStore.login(data.token)
-        userStore.setUserInfo({
-            name: data.name,
-            username: data.username,
-            sex: 1,
-            role: data.role,
-            position: data.position || '',
+    async login(model: any) {
+        const { password, username } = model
+        const encryptPasswor = await encrypt(password)
+        console.log(username, encryptPasswor)
+        const { data } = await http.request({
+            url: '/usercenter/user/login',
+            method: 'post',
+            data: {
+                username,
+                password: encryptPasswor,
+            },
         })
-        if (this.View.alwaysRemember) {
-            userStore.rememberAccount(model)
-        }
+        const { user, token } = data
+        // TODO send request
+
+        userStore.setPermissionMenus(LocalMenu)
+        userStore.login(token)
+        userStore.setUserInfo({
+            name: user.realName,
+            username: data.loginName,
+            sex: user.sex,
+            role: data.role,
+            position: data.position,
+        })
+
         return data.token
     }
 }
@@ -195,6 +184,8 @@ export default class LoginSimple extends Vue {
     justify-content: center;
     min-height: 450px;
     height: 100%;
+    position: relative;
+    min-height: 100vh;
 
     .login-type-bar {
         display: flex;
@@ -358,6 +349,15 @@ export default class LoginSimple extends Vue {
                 text-align: right;
             }
         }
+    }
+    .copyright {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
     }
 }
 </style>

@@ -1650,7 +1650,7 @@ export default class UserManagement extends Vue {
     get getFormAttrs() {
         // 没有查询条件时，直接return {}
         const fields: FormColumn[] = [
-            //  第1个查询条件 输入组件
+            //  输入组件
             {
                 tag: 'input',
                 // 接口字段
@@ -1662,7 +1662,7 @@ export default class UserManagement extends Vue {
                     maxlength: 20,
                 },
             },
-            //  第2个查询条件 日期选择组件
+            //  日期选择组件
             {
                 tag: 'date',
                 name: 'date',
@@ -1673,7 +1673,7 @@ export default class UserManagement extends Vue {
                     placeholder: '请选择',
                 },
             },
-            // 第3个查询条件 日期范围组件
+            // 日期范围组件
             {
                 tag: 'daterange',
                 name: 'receiptDate',
@@ -1742,6 +1742,42 @@ export default class UserManagement extends Vue {
                         }
                     },
                 },
+            },
+            {
+                // 下拉搜索
+                tag: 'select',
+                name: 'company',
+                itemAttrs: {
+                    label: '单位名称：',
+                },
+                attrs: {
+                    placeholder: '请输入进行查询',
+                    // 是否可搜索
+                    filterable: true,
+                    // 搭配remoteMethod
+                    remote: true,
+                    // 远程查询方法
+                    remoteMethod: async (val: any) => {
+                        const {data} = await this.$http.request({
+                            url: '/company/query',
+                            method: 'post',
+                            data: {
+                                // 搜索条件
+                                search: val
+                            },
+                        })
+                        const result = data.map((item: any) => {
+                            return {
+                                label: item.name,
+                                value: item.id,
+                            }
+                        })
+                        return result
+                    },
+
+                    
+                },
+                
             },
             {
                 tag: 'input',

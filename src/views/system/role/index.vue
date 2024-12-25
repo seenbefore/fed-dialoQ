@@ -115,6 +115,7 @@ export default class RoleManage extends Vue {
                 prop: 'description',
                 minWidth: '300px',
                 align: 'left',
+                overflowCount: 1,
             },
             {
                 label: '状态',

@@ -29,7 +29,7 @@ export const list = async (
                 {
                     id: '1',
                     name: '系统管理员',
-                    description: '最高权限,可进行系统权限配置、系统管理等',
+                    description: '最高权限,可进行系统权限配置、系统管理、菜单管理、操作日志管理等',
                     status: '1',
                     createTime: '2024-01-01 12:00:00',
                 },

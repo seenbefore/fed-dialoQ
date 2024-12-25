@@ -1,8 +1,7 @@
 import { createBaseDesktopHttp } from '@@core/common/http'
 import exAuth from './exAuth'
-
 export const http = createBaseDesktopHttp({
-    //baseURL: 'http://192.168.1.155:8885/api/v2',
+    baseURL: process.env.VUE_APP_BASEURL_API,
     exHooks: ['BaseDataHook', exAuth, 'BaseApiHook', 'BaseConsoleHook', 'BaseDesktopLoadingHook', 'BaseShowDesktopErrorMessageHook'],
 })
 export const httpPDFURL = createBaseDesktopHttp({
