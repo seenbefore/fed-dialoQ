@@ -2083,7 +2083,7 @@ export default class UserManagement extends Vue {
                     ...rest,
                     receiptDateStart,
                     receiptDateEnd,
-                })
+                } as any)
                 return {
                     result: data.data,
                     total: data.recordsTotal,
@@ -3396,6 +3396,25 @@ export default class OtherPage extends Vue {
      <!-- 正确 -->
      {{ user && user.name }}
      {{ user || defaultUser }}
+     ```
+
+2. 接口提交约束
+   - 调用接口函数时，传入的参数定义为`any`类型
+   - 示例：
+     ```javascript
+     import { save } from './api'
+     // 错误
+     await save(this.formModel)
+     
+     // 正确 
+     const formModel = this.formModel
+     const payload: any = {
+        name: formModel.name,
+        status: formModel.status,
+     }
+     await save(payload)
+     // 或者
+     await save(this.formModel as any)
      ```
 
 # Workflow
