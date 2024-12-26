@@ -7,7 +7,8 @@ interface Rule {
     [propName: string]: any
 }
 type FC = () => void
-export type FormFieldTag =
+
+export type FormFieldTagLiteral =
     | 'text'
     | 'input'
     | 'select'
@@ -25,7 +26,8 @@ export type FormFieldTag =
     | 'switch'
     | 'daterange'
     | 'input-number'
-    | FC
+
+export type FormFieldTag = FormFieldTagLiteral | (string & {}) | FC
 
 interface inputSlot {
     slotType?: string
