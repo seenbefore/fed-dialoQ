@@ -949,3 +949,52 @@ export default class CaseSave extends Vue {
 ## 实战
 - [PC后台管理系统](./README_CODING_PC.md)
 - [h5移动端](./README_CODING_H5.md)
+
+## DataV 分享链接生成
+
+项目提供了一个用于生成 DataV 大屏分享链接的工具函数，该方式通过认证和授权机制，保证了数据看板分享过程的安全，位于 `src/scripts/utils/datav.js`。
+
+### 使用方法
+
+```javascript
+const generateDataVShareUrl = require('./datav')
+
+// 使用 screenID
+const url1 = generateDataVShareUrl({
+    token: '93TWnmeBtxxxxxxxxxx3thGyAgzennsS',
+    screenID: 'b92xxxxxxxxxxxxxxxxxx27b4c538cd4',
+    params: {
+        datav_sign_no: 123998
+    }
+})
+
+// 使用完整 URL
+const url2 = generateDataVShareUrl({
+    token: '93TWnmeBtxxxxxxxxxx3thGyAgzennsS',
+    url: 'https://datav.aliyuncs.com/share/page/b92xxxxxxxxxxxxxxxxxx27b4c538cd4',
+    params: {
+        datav_sign_no: 123998
+    }
+})
+```
+
+### 参数说明
+
+- `token`：DataV 项目的 token（必填）
+- `screenID`：DataV 项目的 screenID，格式为 `/page/${screenID}`
+- `url`：DataV 项目的完整 URL，与 screenID 二选一
+- `params`：自定义参数对象，以 `datav_sign_` 开头的参数将参与签名（可选，默认为空对象）
+
+### 注意事项
+
+1. `token` 参数为必填项
+2. `screenID` 和 `url` 必须提供其中之一
+3. 如果同时提供 `url` 和 `screenID`，优先使用 `screenID`
+4. 自定义参数中，只有以 `datav_sign_` 开头的参数才会参与签名计算
+
+### 依赖
+
+- crypto
+- querystring
+
+更多详细信息请参考 [DataV 官方文档](https://help.aliyun.com/zh/datav/datav-7-0/user-guide/use-signature-authentication-to-verify-token-parameters-of-a-published-datav-project)
