@@ -115,3 +115,5 @@ export default {
 }
 </script>
 ```
+### AppForm 表单组件
+移动端表单组件，基于Vant的Form组件封装。[文档地址](./components/global/app-form/readme.md)

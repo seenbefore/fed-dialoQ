@@ -17,6 +17,30 @@ import MobileNav from './MobileNav.vue'
 import { LocalMenu } from '@/entry/h5/menu'
 //const indexRoute = routes.filter(item => item.name === 'Index')[0]
 //const secondRoutes = indexRoute.children || []
+
+// 添加一个获取叶子节点的辅助函数
+function getLeafNodes(menu: any[]): any[] {
+    const result: any[] = []
+
+    const traverse = (items: any[]) => {
+        items.forEach(item => {
+            if (!item.children || item.children.length === 0) {
+                // 叶子节点
+                result.push({
+                    path: item.uri,
+                    title: item.label,
+                })
+            } else {
+                // 继续遍历子节点
+                traverse(item.children)
+            }
+        })
+    }
+
+    traverse(menu)
+    return result
+}
+
 const businessGroup = {
     name: '业务',
     showInMobile: true,
@@ -24,18 +48,8 @@ const businessGroup = {
         {
             groupName: '业务',
             icon: 'https://img.yzcdn.cn/vant/basic-0401.svg',
-            // list: secondRoutes
-            //     .filter(item => item.path.indexOf('/demo') === -1)
-            //     .filter(item => item.path.indexOf('/readme') === -1)
-            //     .filter(item => item.path.indexOf('/exam') === -1)
-            //     .map(item => ({
-            //         path: item.path,
-            //         title: item.path + ' ' + item.meta?.title,
-            //     })),
-            list: LocalMenu.map(item => ({
-                path: item.uri,
-                title: item.label,
-            })),
+            // 使用getLeafNodes获取所有叶子节点
+            list: getLeafNodes(LocalMenu),
         },
     ],
 }

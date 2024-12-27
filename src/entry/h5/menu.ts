@@ -1,7 +1,17 @@
-// 请不要删除此文件，如果需要添加菜单请在此文件中添加，且没有children
+// 移动端菜单
 export const LocalMenu = [
     {
         label: '登录',
         uri: '/login',
+    },
+    {
+        label: '考试',
+        uri: '/exam',
+        children: [
+            {
+                label: '考试列表',
+                uri: '/exam/list',
+            },
+        ],
     },
 ]
