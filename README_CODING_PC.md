@@ -1237,6 +1237,18 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: '关于项目',
+        icon: 'el-icon-document',
+        uri: '',
+        children: [
+            {
+                label: '接口文档',
+                icon: 'el-icon-document',
+                uri: 'http://api.fed.icinfo.co/unifiedcase/electric-archive-service/electric-archive-service/dev',
+            },
+        ],
+    },
 ]
 
 ```

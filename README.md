@@ -2,13 +2,40 @@
 
 该项目为一个基于 `Vue2` + `TypeScript` 的多应用模板模板项目。包含多个基础项目的模板。
 
+```mermaid
+graph TD
+    subgraph 核心功能模块
+        G[路由管理] --> G1[自动生成路由]
+        G --> G2[标签页管理]
+        G --> G3[权限控制]
+
+        H[状态管理] --> H1[用户信息]
+        H --> H2[系统配置]
+        H --> H3[业务状态]
+
+        I[请求管理] --> I1[请求拦截器]
+        I --> I2[响应处理]
+        I --> I3[重复请求控制]
+
+        J[组件系统] --> J1[全局组件]
+        J --> J2[动态弹窗]
+        J --> J3[基础表单/列表]
+    end
+
+    style G fill:#f96,stroke:#333
+    style H fill:#9cf,stroke:#333
+    style I fill:#9f9,stroke:#333
+    style J fill:#f9f,stroke:#333
+```
+
+
 -   后台管理系统：[src](./README.md)
 -   移动端：[src/entry/h5](./src/entry/h5/README.md)
 -   浙里办：[src/entry/zlb-h5](./src/entry/zlb-h5/README.md)
 -   门户网站：[src/entry/library](./src/entry/library/README.md)
 -   大屏：[src/entry/bigscreen](./src/entry/bigScreen/README.md)
 
-[git 地址](http://gitlab.icinfo.co/fed/base-vue-template)
+
 
 ## 功能介绍
 
@@ -36,7 +63,7 @@ git clone git@gitlab.icinfo.co:fed/base-vue-template.git
 ### install
 
 ```bash
-npm install --registry https://registry.npmmirror.com
+npm run start
 ```
 
 ### run
@@ -44,6 +71,9 @@ npm install --registry https://registry.npmmirror.com
 ```bash
 # 执行最外层（src）下的管理系统运行
 npm run dev
+
+# 执行最外层（src）下的移动端h5运行
+npm run dev:h5-demo
 
 # 如果想要运行 entry 下的子项目，需要自行在 package.json 中增加脚本
 # cross-env VUE_APP_ENTRY=${entryDirName} vue-cli-service serve --open --mode=development
@@ -60,7 +90,8 @@ npm run build
 ```
 
 ### 其他脚本介绍
-
+-   `npm run reset`：git 还原代码到上个版本
+-   `npm run save`：git 保存代码到本地
 -   `npm run base:init`
 
     -   初始化整个项目，去掉 `src/entry` 下的所有子项目，并且删除 `package.json` 中多余的脚本，将项目变为一个单纯的 `后台管理系统` 不带任何子项目。（注意：通过蜻蜓云效新建项目的时候，如果模板选择的是 `纯净模板` 则会默认执行 `base:init` 脚本）
