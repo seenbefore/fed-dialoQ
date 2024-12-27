@@ -11,12 +11,8 @@
 </template>
 <script lang="tsx">
 import { Component, Vue } from 'vue-property-decorator'
-import docConfig from './doc.config'
 import MobileNav from './MobileNav.vue'
-//import { routes } from '@/entry/h5/router'
-import { LocalMenu } from '@/entry/h5/menu'
-//const indexRoute = routes.filter(item => item.name === 'Index')[0]
-//const secondRoutes = indexRoute.children || []
+import { LocalMenu } from '../../../menu'
 
 // 添加一个获取叶子节点的辅助函数
 function getLeafNodes(menu: any[]): any[] {
@@ -28,7 +24,7 @@ function getLeafNodes(menu: any[]): any[] {
                 // 叶子节点
                 result.push({
                     path: item.uri,
-                    title: item.label,
+                    title: item.label + ' ' + item.uri,
                 })
             } else {
                 // 继续遍历子节点
@@ -61,11 +57,39 @@ const businessGroup = {
     },
 })
 export default class ReadmeHome extends Vue {
-    docConfig = docConfig
     activeKeys = ['业务', '基础组件']
 
     get navList() {
-        const result = this.docConfig.nav.filter(item => item.showInMobile)
+        const result = [
+            {
+                name: '案例',
+                showInMobile: true,
+                groups: [
+                    {
+                        groupName: '基础组件',
+                        icon: 'https://img.yzcdn.cn/vant/basic-0401.svg',
+                        list: [
+                            {
+                                path: '/demo/sign',
+                                title: '电子签名',
+                            },
+                            {
+                                path: '/demo/fill-in-form',
+                                title: 'app-form 表单',
+                            },
+                            {
+                                path: '/demo/online-view',
+                                title: 'pdf-preview pdf预览',
+                            },
+                            {
+                                path: '/demo/scroll-list',
+                                title: 'my-list 滚动列表',
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
         result.unshift(businessGroup)
         return result
     }

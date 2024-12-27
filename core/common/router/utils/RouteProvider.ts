@@ -29,7 +29,14 @@ export class RouteProvider {
             contexts.forEach(c => {
                 c.keys().forEach((key: string) => {
                     if (key.indexOf('router.js') > -1) {
-                        modules[key] = c(key).default
+                        const route = c(key).default
+                        if (Array.isArray(route)) {
+                            route.forEach((item: any, index: number) => {
+                                modules[key + '_' + index] = item
+                            })
+                        } else {
+                            modules[key] = route
+                        }
                     }
                 })
             })
@@ -105,7 +112,7 @@ export class RouteProvider {
             }
 
             Object.keys(map).forEach(name => {
-                if (!map[name]['meta']['parent']) {
+                if (!map[name]?.['meta']?.['parent']) {
                     result.push(map[name])
                 }
             })
