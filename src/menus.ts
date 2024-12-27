@@ -4,7 +4,7 @@ export const LocalMenu: UserMenu[] = [
     {
         label: '我的工作台',
         icon: 'el-icon-document',
-        uri: '/我的工作台',
+        uri: '',
         children: [
             {
                 label: '测试页面',
@@ -15,6 +15,11 @@ export const LocalMenu: UserMenu[] = [
                 label: '分析页',
                 icon: 'el-icon-data-analysis',
                 uri: '/workbench/analysis',
+            },
+            {
+                label: '聊天室',
+                icon: 'el-icon-chat-line-round',
+                uri: '/ai-assistant/chat',
             },
         ],
     },
@@ -184,18 +189,6 @@ export const LocalMenu: UserMenu[] = [
                 label: '文章管理',
                 icon: 'el-icon-document',
                 uri: '/content/article',
-            },
-        ],
-    },
-    {
-        label: 'AI助手',
-        icon: 'el-icon-chat-dot-round',
-        uri: '/ai-assistant',
-        children: [
-            {
-                label: '聊天室',
-                icon: 'el-icon-chat-line-round',
-                uri: '/ai-assistant/chat',
             },
         ],
     },

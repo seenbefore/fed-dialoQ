@@ -89,11 +89,18 @@ if (process.env.VUE_APP_MOCK === 'true') {
 }
 
 async function bootstrap() {
+    // 如果token存在，则通过token登录
     let { token } = getURLParameters(location.href)
     console.log('token :>> ', token)
     if (token) {
         await userStore.syncLoginWithToken(token)
+    } else if (userStore.token) {
+        // 菜单权限更新后，不需要重新登录
+        if (process.env.VUE_APP_MOCK === 'true') {
+            await userStore.syncLoginWithToken(userStore.token)
+        }
     }
+
     desktopMainInit(
         App,
         store,

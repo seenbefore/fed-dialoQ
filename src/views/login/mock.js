@@ -24,32 +24,13 @@ export default [
                 message: '成功',
                 data: {
                     user: {
-                        realName: '马大强',
-                        phone: '13806532625',
+                        realName: '楚光',
                     },
                     token:
                         'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwNjUzMjYyNSIsInp6ZEN1cnJlbnREZXB0Q29kZSI6IkdPX2NlOWVmN2JmNjliNjQ1NjhiMjc0OGY4MGZlNDFlM2ZhIiwic3lzVHlwZSI6IjAiLCJpc3MiOiJpY2luZm8uY24iLCJ1c2VyWnpkSWQiOiI2NDYwMDczNyIsInVzZXJJZCI6NjU0LCJTb3VyY2UiOiJ3ei1jb21tYW5kIiwiZW1wbG95ZWVDb2RlIjoiR0VfNjA5ZTczZTkwYzdjNDY4ZThiMTdjMmI5N2IzYmNhMGIiLCJhdWQiOiJ3ZWIiLCJjdXJyZW50RGVwdENvZGUiOiIzMzAzODEwMTQwMDBKMDAxQjAwMDAwMiIsInJvbGVMZXZlbCI6IjAiLCJ4enpmQ3VycmVudERlcHRDb2RlIjoiMzMwMzgxMDE0MDAwSjAwMUIwMDAwMDIiLCJleHAiOjE3MzU2MTE1MjF9.4NNzO86WMPS4U7p84l1bwc2cnI7TsTebZIpuUJqRs-0_SICxpcFCzsQtiJFC1ee6AdjI3OzIAWAn2_tl3DCJSw',
                     applicationTypeList: [],
                     xzzfToken: null,
-                    applicationMenuList: [
-                        {
-                            label: '我的工作台',
-                            icon: 'el-icon-document',
-                            uri: '/我的工作台',
-                            children: [
-                                {
-                                    label: '测试页面',
-                                    icon: 'el-icon-document',
-                                    uri: '/test',
-                                },
-                                {
-                                    label: '分析页',
-                                    icon: 'el-icon-data-analysis',
-                                    uri: '/workbench/analysis',
-                                },
-                            ],
-                        },
-                    ],
+                    applicationMenuList: [...LocalMenu],
                 },
             })
         },
@@ -103,7 +84,7 @@ export default [
                         hasPassword: '1',
                         userId: '654',
                         loginName: '06532625',
-                        phone: '13806532625',
+                        phone: '',
                         deptCode: '330381014000J001B000002',
                         xzzfDeptCode: '330381014000J001B000002',
                         sex: '1',
