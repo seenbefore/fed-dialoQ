@@ -4,8 +4,4 @@ export const LocalMenu = [
         label: '登录',
         uri: '/login',
     },
-    {
-        label: '测试',
-        uri: '/exam/list',
-    },
 ]
