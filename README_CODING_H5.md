@@ -52,6 +52,11 @@
             ├── components  # 用户管理组件
     ├── entry              # 子应用
         ├── h5             # 移动端H5
+            ├── views      # 移动端H5页面
+                ├── login   # 登录页面
+                ├── home    # 首页
+                ├── test    # 测试页面
+
 ├── tests                  # 测试文件
 ├── .editorconfig          # 编辑器配置
 ├── .env                   # 环境变量
@@ -75,306 +80,6 @@
 ├── package-lock.json      # npm 锁定文件
 └── package.json           # npm 配置文件
 ```
-
-
-## 移动端信息录入表单 app-form
-- 一般需要设置`showFootBtns`为false，底部按钮由页面组件自行设置
-
-### 基础属性
-
-| 参数            | 说明                 | 类型                 | 可选值       | 默认值 |
-| --------------- | -------------------- | -------------------- | ------------ | ------ |
-| value / v-model | 绑定值               | object               | —            | -      |
-| fields          | 列配置               | [GroupField]/[Field] | -            | -      |
-| showFootBtns    | 底部按钮显隐         | boolean              | -            | true   |
-| disabled        | 全局禁用             | boolean              | —            | false  |
-| forceSameSet    | 强制设成一个分组     | boolean              | —            | false  |
-| httpRequest     | 自定义 http          | Function             | -          | -      |
-| extraParams     | 自定义函数里额外参数 | object               | —            | -      |
-
-### 方法
-
-| 方法名称             | 说明                                       | 参数                                                  |
-| -------------------- | ------------------------------------------ | ----------------------------------------------------- |
-| getRefField          | 获取对应组件的实例                         | Function(name: string)，name 为表单 key 键值          |
-| getFieldAttrs        | 获取对应表单组件实例属性                   | Function(name: string)                                |
-| setFieldAttrs        | 重设对应表单组件属性                       | Function(name: string, fieldName: string, value: any) |
-| resetVlidateFormItem | 重置表单项的验证提示                       | Function(name?: string / string[])，name 非必传       |
-| scrollToFormAnchor   | 滚动到对应表单项的位置                     | Function(name: string)                                |
-| validate             | 表单校验,返回一个 promise, .then()校验成功 | -                                                     |
-| submit               | 表单自带校验成功提交按钮                   | -                                                     |
-| cancel               | 表单自带取消按钮                           | -                                                     |
-
-### GroupField
-
-| 参数      | 说明           | 类型    | 可选值 | 默认值 |
-| --------- | -------------- | ------- | ------ | ------ |
-| groupName | 分组名         | string  | -      | -      |
-| groupId   | 分组 Id        | string  | -      | -      |
-| children  | 分组表单项集合 | [Field] | -      | []     |
-
-### Field
-
-| 参数        | 说明               | 类型    | 可选值                                                                              | 默认值   |
-| ----------- | ------------------ | ------- | -------------------------------------------------------------------------------- | -------- |
-| groupName   | 分组名             | string  | -                                                                                          | 不是必须 |
-| groupId     | 分组 Id            | string  | -                                                                                          | 不是必须 |
-| tag         | 组件类型           | string  | [text/input/radio/checkbox/cascader/uploader/number-input/date-picker/select-picker/table] | -        |
-| name        | 提交表单键值 key   | string  | -                                                                                          | -        |
-| label       | 输入框左侧文本     | string  | -                                                                                          | -        |
-| hiddenLabel | 隐藏输入框左侧文本 | boolean | -                                                                                          | -        |
-| required | 是否必填              | boolean | -                                         | false        |
-| defaultValue | 初始默认值 | any | -                                                                                          | -        |
-| props | 各组件其余配置参数 | Record<string, any> | -                                    |-   |
-| on | 各组件自定义映射事件集合 | Record<string, any> | -                                     | -        |
-| rules | 校验规则 | any[] | -                                     | -        |
-| sort | 排序 | Record<string, any> | -                                     | -        |
-| hidden | 隐藏本项 | Record<string, any> | -                                     | -        |
-| slotName | 自定义组件插槽类名 | string | -                                     | -        |
-| ifRender | 动态渲染表单控制 | Function | -                                     | -        |
-| LinkageWatcher | 联动规则 |[LinkageWatcher] | -                                     | -        |
-
-### TableFormColumn.props
-
-| 参数    | 说明                                  | 类型 | 可选值 | 默认值 |
-| ------- | ------------------------------------- | ---- | ------ | ------ |
-| value   | 初始值                                | -    | -      | -      |
-| options | select/checkbox/radio/cascader 数据源 | -    | -      | -      |
-| 其他    | 参考对应 element 组件的属性           | -    | -      | -      |
-
-### LinkageWatcher
-
-| 参数    | 说明                                | 类型                                    | 可选值 | 默认值 |
-| ------- | ----------------------------------- | --------------------------------------- | ------ | ------ |
-| watch   | 监听的值                            | string[]                                | -      | -      |
-| handler | 监听的值变化后的操作函数            | (values: any) => Promise                | -      | -      |
-| options | deep: 深度监听; immediate: 立即监听 | { deep?: boolean; immediate?: boolean } | -      | -      |
-
-### 使用示例
-
-#### 1. 基础表单示例
-
-```vue
-<template>
-  <app-form
-    ref="formRef"
-    v-model="formData"
-    :fields="formFields"
-    @submit="handleSubmit"
-    @cancel="handleCancel"
-  />
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      formData: {},
-      formFields: [
-        // 文本展示
-        {
-          tag: 'text',
-          name: 'displayText',
-          label: '文本展示',
-          props: { value: '这是一段展示文本' }
-        },
-        // 输入框
-        {
-          tag: 'input',
-          name: 'username',
-          label: '用户名',
-          required: true,
-          props: {
-            placeholder: '请输入用户名',
-            maxlength: 20
-          },
-          rules: [
-            { required: true, message: '请输入用户名' }
-          ]
-        },
-        // 单选框
-        {
-          tag: 'radio',
-          name: 'gender',
-          label: '性别',
-          props: {
-            options: [
-              { label: '男', value: 1 },
-              { label: '女', value: 2 }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      try {
-        await this.$refs.formRef.validate()
-        console.log('表单数据:', this.formData)
-      } catch (error) {
-        console.error('表单验证失败:', error)
-      }
-    },
-    handleCancel() {
-      this.formData = {}
-    }
-  }
-}
-</script>
-```
-
-#### 2. 分组表单示例
-
-```vue
-<template>
-  <app-form
-    ref="formRef"
-    v-model="formData"
-    :fields="groupFields"
-    @submit="handleSubmit"
-  />
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      formData: {},
-      groupFields: [
-        {
-          groupName: '基本信息',
-          groupId: 'basic',
-          children: [
-            {
-              tag: 'input',
-              name: 'name',
-              label: '姓名',
-              required: true
-            },
-            {
-              tag: 'input',
-              name: 'phone',
-              label: '电话',
-              required: true
-            }
-          ]
-        },
-        {
-          groupName: '详细信息',
-          groupId: 'detail',
-          children: [
-            {
-              tag: 'input',
-              name: 'address',
-              label: '地址'
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-</script>
-```
-
-#### 3. 表单联动示例
-
-```vue
-<template>
-  <app-form
-    ref="formRef"
-    v-model="formData"
-    :fields="linkageFields"
-  />
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      formData: {},
-      linkageFields: [
-        {
-          tag: 'select-picker',
-          name: 'province',
-          label: '省份',
-          props: {
-            options: [
-              { label: '广东省', value: 'guangdong' },
-              { label: '浙江省', value: 'zhejiang' }
-            ]
-          }
-        },
-        {
-          tag: 'select-picker',
-          name: 'city',
-          label: '城市',
-          props: { options: [] },
-          LinkageWatcher: [
-            {
-              watch: ['province'],
-              handler: async (values) => {
-                // 根据省份获取城市列表
-                const cityOptions = await this.getCityOptions(values.province)
-                return {
-                  props: { options: cityOptions }
-                }
-              },
-              options: { immediate: true }
-            }
-          ]
-        }
-      ]
-    }
-  },
-  methods: {
-    async getCityOptions(province) {
-      // 模拟获取城市数据
-      const cityMap = {
-        guangdong: [
-          { label: '广州', value: 'guangzhou' },
-          { label: '深圳', value: 'shenzhen' }
-        ],
-        zhejiang: [
-          { label: '杭州', value: 'hangzhou' },
-          { label: '宁波', value: 'ningbo' }
-        ]
-      }
-      return cityMap[province] || []
-    }
-  }
-}
-</script>
-```
-
-### 常见场景说明
-
-1. **基础表单**
-   - 支持多种表单控件：text、input、radio、checkbox等
-   - 可配置验证规则
-   - 提供提交和取消事件处理
-
-2. **分组表单**
-   - 通过groupName和groupId进行分组
-   - 每个分组可包含多个表单项
-   - 支持分组的显示/隐藏控制
-
-3. **表单联动**
-   - 使用LinkageWatcher配置联动规则
-   - 支持监听多个字段变化
-   - 可异步获取联动数据
-   - 支持immediate立即触发和deep深度监听
-
-4. **常用配置说明**
-   - required: 必填项配置
-   - rules: 验证规则配置
-   - props: 组件属性配置
-   - on: 事件监听配置
-   - hidden: 显隐控制
-   - slotName: 自定义插槽
-
-
 
 
 ## 组件开发规范
@@ -571,7 +276,7 @@ export default class PrePublicityPreview extends Vue {
     - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
     - 数据模拟文件 mock.js
     - 主视图文件 index.vue
-    - 路由文件 router.js
+    - 路由文件 router.js（和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`）
 
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
@@ -896,54 +601,52 @@ export default class ComponentName extends Vue {
 - 技术栈：vue2 + typescript + vant
 - script属性lang设置为'tsx'
 - style属性使用scoped,lang设置为less
-
-### 代码风格和结构
-- 编写简洁、技术性强的TypeScript代码，并提供准确的例子。
-- 使用函数式和声明式编程模式；避免使用类。
-- 倾向于迭代和模块化，而不是代码重复。
-- 使用带有辅助动词的描述性变量名（例如，`isLoading`，`hasError`）。
-- 使用导出组件、子组件、辅助函数、静态内容和类型的文件结构。
-- 对目录名称使用小写字母和破折号（例如，`components/auth-wizard`）。
-
-### 优化和最佳实践
-- 实现动态导入以进行代码分割和优化。
-- 使用响应式设计，采用移动优先的方法。
-
-### 错误处理和验证
-- 优先考虑错误处理和边缘情况：
-  - 对于错误条件，使用早期返回。
-  - 实现守卫子句，早期处理前提条件和无效状态。
-  - 使用自定义错误类型进行一致的错误处理。
-
-### UI和样式
-- 使用现代UI框架（例如Element UI）进行样式设计。
-- 在各个平台上实现一致的设计和响应式模式。
-
-### 状态管理和数据获取
-- 使用现代状态管理解决方案（例如vuex）来处理全局状态和数据获取。
-
-### 安全性和性能
-- 实施适当的错误处理、用户输入验证和安全编码实践。
-- 遵循性能优化技术，如减少加载时间和提高渲染效率。
-
-### 测试和文档
-- 为复杂逻辑提供清晰简洁的注释。
-- 使用JSDoc注释函数和组件，以改善IDE智能感知。
-
-## 自定义规范
 - `vant`已安装，并全局注册，请直接使用。
-- 判断请求成功请不需要判断`res.code === 200`，直接使用`res.data`
-- `app-form`组件已全局注册。
-- style中不要使用`:deep`，请使用`::v-deep`。
+
+
+
+# 重要约束
+1. 模板语法约束
+   - ❌ 禁止在 template 中使用可选链 `?.` 
+   - ✅ 应使用 `&&` 或 `||` 运算符
+   - 示例：
+     ```vue
+     <!-- 错误 -->
+     {{ user?.name }}
+     
+     <!-- 正确 -->
+     {{ user && user.name }}
+     {{ user || defaultUser }}
+     ```
+
+2. 接口提交约束
+   - 调用接口函数时，传入的参数定义为`any`类型
+   - 示例：
+     ```javascript
+     import { save } from './api'
+     // 错误
+     await save(this.formModel)
+     
+     // 正确 
+     const formModel = this.formModel
+     const payload: any = {
+        name: formModel.name,
+        status: formModel.status,
+     }
+     await save(payload)
+     // 或者
+     await save(this.formModel as any)
+     ```
+
 
 # Workflow
 - 用户输入产品prd内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`。请按照以下顺序生成：
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。如果没有提供图片素材请不要在代码中插入图片。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
-    - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。
+    - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。`meta.parent`属性设置为`Index`。
     
 - 依次循环
 

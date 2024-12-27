@@ -26,6 +26,7 @@ const businessGroup = {
             list: secondRoutes
                 .filter(item => item.path.indexOf('/demo') === -1)
                 .filter(item => item.path.indexOf('/readme') === -1)
+                .filter(item => item.path.indexOf('/exam') === -1)
                 .map(item => ({
                     path: item.path,
                     title: item.path + ' ' + item.meta?.title,
@@ -34,7 +35,7 @@ const businessGroup = {
     ],
 }
 
-console.log(11, businessGroup)
+console.log(`业务菜单`, businessGroup)
 @Component({
     name: 'ReadmeHome',
     components: {
