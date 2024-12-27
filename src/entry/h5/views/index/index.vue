@@ -4,6 +4,7 @@
             <router-view :key="key"></router-view>
         </keep-alive>
         <router-view v-else></router-view>
+        <BackToHome />
     </div>
 </template>
 
@@ -12,10 +13,13 @@ import { IBaseVisitedView } from '@@core/common/store/BaseTagsViewStore'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 import { tagsViewStore } from '@h5/store/useStore'
+import BackToHome from '@/components/h5/BackToHome/index.vue'
 
 @Component({
     name: 'Index',
-    components: {},
+    components: {
+        BackToHome,
+    },
 })
 export default class Index extends Vue {
     getHistory() {

@@ -12,6 +12,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import AppPage from '@/components/h5/AppPage/index.vue'
 import TabBar from '@/components/h5/TabBar/index.vue'
+
 @Component({
     name: 'Readme',
     components: {

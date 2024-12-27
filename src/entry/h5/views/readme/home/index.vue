@@ -13,9 +13,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import docConfig from './doc.config'
 import MobileNav from './MobileNav.vue'
-import { routes } from '@/entry/h5/router'
-const indexRoute = routes.filter(item => item.name === 'Index')[0]
-const secondRoutes = indexRoute.children || []
+//import { routes } from '@/entry/h5/router'
+import { LocalMenu } from '@/entry/h5/menu'
+//const indexRoute = routes.filter(item => item.name === 'Index')[0]
+//const secondRoutes = indexRoute.children || []
 const businessGroup = {
     name: '业务',
     showInMobile: true,
@@ -23,19 +24,22 @@ const businessGroup = {
         {
             groupName: '业务',
             icon: 'https://img.yzcdn.cn/vant/basic-0401.svg',
-            list: secondRoutes
-                .filter(item => item.path.indexOf('/demo') === -1)
-                .filter(item => item.path.indexOf('/readme') === -1)
-                .filter(item => item.path.indexOf('/exam') === -1)
-                .map(item => ({
-                    path: item.path,
-                    title: item.path + ' ' + item.meta?.title,
-                })),
+            // list: secondRoutes
+            //     .filter(item => item.path.indexOf('/demo') === -1)
+            //     .filter(item => item.path.indexOf('/readme') === -1)
+            //     .filter(item => item.path.indexOf('/exam') === -1)
+            //     .map(item => ({
+            //         path: item.path,
+            //         title: item.path + ' ' + item.meta?.title,
+            //     })),
+            list: LocalMenu.map(item => ({
+                path: item.uri,
+                title: item.label,
+            })),
         },
     ],
 }
 
-console.log(`业务菜单`, businessGroup)
 @Component({
     name: 'ReadmeHome',
     components: {

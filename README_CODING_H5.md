@@ -270,17 +270,31 @@ export default class PrePublicityPreview extends Vue {
 
 
 # Example
-默认依次生成以下文件：
-- 业务文件目录
-    - 接口文件 api.ts
-    - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
-    - 数据模拟文件 mock.js
-    - 主视图文件 index.vue
-    - 路由文件 router.js（和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`）
+- 添加标题、地址到菜单文件`menu.ts`。
+- 默认依次生成以下文件：
+    - 业务文件目录
+        - 枚举文件 enum.ts（默认不生成，除非强调或者有接口文档）
+        - 接口文件 api.ts
+        - 数据模拟文件 mock.js
+        - 视图文件 index.vue
+        - 路由文件 router.js（和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`）
+
+## 菜单文件
+- 位于`menus.ts`文件中。且只有一级菜单，没有子菜单。
+```typescript
+export const LocalMenu = [
+    {
+        label: '考试列表',
+        uri: '/exam/list',
+    },
+]
+
+```
 
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
 - 路由地址对应匹配文件路径，比如`/system/user-manage`对应生成文件目录`system/user-manage`
+- 不要移除`meta`中的`bodyClass`、`parent`、`title`、`keepAlive`属性，`parent`属性值固定为`Index`。
 ```js
 /* eslint-disable */
 const SelfInspectionFormManagement = () => import(/* webpackChunkName: "SelfInspectionFormManagement" */ './index')
@@ -647,8 +661,8 @@ export default class ComponentName extends Vue {
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。`meta.parent`属性设置为`Index`。
-    
+- 修改菜单文件`menus.ts`，添加菜单项。
 - 依次循环
 
 # Output
-项目根目录为`src/entry/h5`，将生成的业务代码放在`views`下的一个文件夹下，不要输出文件的补充说明，直接创建文件。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。
+项目根目录为`src/entry/h5`，将生成的业务代码放在`views`下的一个文件夹下，不要输出文件的补充说明，直接创建文件。组件请放在文件夹下的`components`文件夹下，比如`detail-dialog/index.vue`。菜单文件地址为`src/entry/h5/menu.ts`。
