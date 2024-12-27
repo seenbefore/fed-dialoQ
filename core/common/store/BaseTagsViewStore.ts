@@ -193,7 +193,7 @@ export default class BaseTagsViewStore<T extends IBaseVisitedView = IBaseVisited
     }
 
     @Action
-    public delAllViews(view: Partial<T>): Promise<IBaseTagsViewStore> {
+    public delAllViews(view?: Partial<T>): Promise<IBaseTagsViewStore> {
         return new Promise(resolve => {
             this.context.dispatch('delAllVisitedViews', view)
             this.context.dispatch('delAllCachedViews', view)

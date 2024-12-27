@@ -11,6 +11,6 @@ export default {
         title: '分析页',
         keepAlive: true,
         requireAuth: true,
-        activeMenu: '/workbench',
+        activeMenu: '',
     },
 }

@@ -42,7 +42,7 @@ export const activateTooltip = debounce((tooltipRef?: any) => {
 /**获取tooltip */
 export function getTooltip() {
     if (!tooltip) {
-        console.log('生成tooltip')
+        // console.log('生成tooltip')
         const Profile = Vue.extend(Tooltip)
         tooltip = new Profile().$mount()
     }

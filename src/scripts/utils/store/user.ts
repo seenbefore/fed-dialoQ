@@ -7,18 +7,22 @@ import { isExternalPath, isSubAppPath } from '@/scripts/utils'
 export const generatePermissionMenu = function(menus: UserMenu[]): PermissionMenu[] {
     const loop = (curRoutes: UserMenu[]) =>
         curRoutes.map((menu: UserMenu) => {
-            const { uri, label, icon, children } = menu
+            let { uri, label, icon, children } = menu
             const newMenu = {} as PermissionMenu
             let isExternal = false
-            let path = uri || `/${guid()}`
-            const title = label || '未定义'
-            if (uri) {
-                if (isSubAppPath(uri)) {
-                    const origin = encodeURIComponent(uri)
+            let path = uri || menu.url || `/${guid()}`
+            const title = label || menu.menuName || menu.title || '未定义'
+
+            if (path) {
+                if (isSubAppPath(path)) {
+                    const origin = encodeURIComponent(path)
                     path = '/sub-app/' + origin
-                } else if (isExternalPath(uri)) {
+                } else if (isExternalPath(path)) {
                     isExternal = true
                 }
+            }
+            if (path === '#') {
+                path = `/${guid()}`
             }
 
             newMenu.path = path
@@ -83,6 +87,10 @@ export const getIndexUri = function(menus: Array<UserMenu | PermissionMenu>): st
             }
             if (!pop.children && pop.path) {
                 result = pop.path
+                break
+            }
+            if (!pop.children && pop.url) {
+                result = pop.url
                 break
             }
         }

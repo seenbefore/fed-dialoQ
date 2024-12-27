@@ -12,6 +12,6 @@ export const encrypt = async (data: string) => {
     const publicKey = await getPublicKey()
     const enc = KJUR.crypto.Cipher.encrypt('0000' + data, publicKey)
     const encrypted = hextob64(enc)
-    console.log('encrypted :>> ', encrypted)
+    // console.log('encrypted :>> ', encrypted)
     return encrypted
 }

@@ -18,7 +18,7 @@ export default {
     },
     computed: {
         getClassName() {
-            console.log(this.updateGetClassNameFlag)
+            // console.log(this.updateGetClassNameFlag)
             const classnames = []
             const classname = this.$attrs['class-name'] || this.$attrs.className
             classname && classnames.push(classname)

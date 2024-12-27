@@ -36,16 +36,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { LocalMenu } from '@/menus'
 import { FormColumn } from '@/sharegood-ui'
-import { userStore, settingsStore } from '@/store/useStore'
-import { URLJoin } from 'icinfo-util'
-import { http } from '@/scripts/http'
-import { encrypt } from './helper'
+import { userStore, settingsStore, tagsViewStore } from '@/store/useStore'
 
 const state = {
-    username: '',
-    password: '',
+    username: 'admin',
+    password: '123456',
 }
 type State = typeof state
 @Component({
@@ -85,28 +81,7 @@ export default class LoginSimple extends Vue {
                 type: 'password',
                 placeholder: '请输入密码',
                 isTriggerSubmit: true,
-                appendSlotRender: h => {
-                    return h('div', {}, [
-                        h(
-                            'el-checkbox',
-                            {
-                                props: {
-                                    value: this.View.alwaysRemember,
-                                    trueLabel: 1,
-                                    falseLabel: 0,
-                                },
-                                on: {
-                                    change: (value: any) => {
-                                        console.log(value)
-                                        this.View.alwaysRemember = value
-                                        userStore.toggleRemember(value)
-                                    },
-                                },
-                            },
-                            '记住我',
-                        ),
-                    ])
-                },
+                clearable: false,
             },
         },
     ]
@@ -121,15 +96,13 @@ export default class LoginSimple extends Vue {
         try {
             this.View.loading = true
             const model = this.View.model
-            const access_token = await this.login(model)
+            // 登录
+            await userStore.syncLogin(model)
             this.$message.success('登录成功')
             this.View.loading = false
             let redirect = this.redirect || userStore.redirect || userStore.defaultPath || '/'
-            redirect = decodeURIComponent(redirect)
-            if (redirect.indexOf('http://') > -1) {
-                location.href = URLJoin.apply(null, [redirect, `?token=${access_token}`] as any)
-                return
-            }
+            // 登录后清除所有标签
+            await tagsViewStore.delAllViews()
             this.$router.push(redirect).catch(() => {})
         } catch (err) {
             this.View.loading = false
@@ -141,33 +114,6 @@ export default class LoginSimple extends Vue {
         let BASE_URL = process.env.BASE_URL
         let redirect = encodeURIComponent(`${location.origin}${BASE_URL}login-free`)
         location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
-    }
-    async login(model: any) {
-        const { password, username } = model
-        const encryptPasswor = await encrypt(password)
-        console.log(username, encryptPasswor)
-        const { data } = await http.request({
-            url: '/usercenter/user/login',
-            method: 'post',
-            data: {
-                username,
-                password: encryptPasswor,
-            },
-        })
-        const { user, token } = data
-        // TODO send request
-
-        userStore.setPermissionMenus(LocalMenu)
-        userStore.login(token)
-        userStore.setUserInfo({
-            name: user.realName,
-            username: data.loginName,
-            sex: user.sex,
-            role: data.role,
-            position: data.position,
-        })
-
-        return data.token
     }
 }
 </script>

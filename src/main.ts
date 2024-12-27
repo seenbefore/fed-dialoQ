@@ -2,7 +2,6 @@ import { desktopMainInit } from '@/scripts/desktopMainInit'
 import { getURLParameters } from 'icinfo-util'
 import Vue from 'vue'
 import App from './App.vue'
-import { LocalMenu } from './menus'
 // 路由树和一维路由数组
 import router, { flatRoutes } from './router'
 import http from './scripts/http'
@@ -71,20 +70,7 @@ Vue.prototype.$postMessage = function(data: any) {
         console.error(error)
     }
 }
-/**
- * 初始化用户信息
- */
-const { settings, user } = defaultSettings ?? {}
-userStore.set(user)
-// 本地调试的时候 加载全量菜单 可删除
-if (process.env.NODE_ENV === 'development' || process.env.VUE_APP_ENV === 'fat') {
-    userStore.setPermissionMenus(LocalMenu)
-}
-const { token } = getURLParameters(location.href)
-if (token) {
-    userStore.login(token)
-    // TODO do something
-}
+
 /**
  * 设置自定义主题名称和色系
  */
@@ -101,27 +87,36 @@ settingsStore.updateThemeVariables(themeVariables)
 if (process.env.VUE_APP_MOCK === 'true') {
     require('./mock')
 }
-desktopMainInit(
-    App,
-    store,
-    router,
-    { userStore, settingsStore },
-    {
-        ...defaultSettings,
-        $ShareGood: {
-            DataView: {
-                pagination: { pageSize: 10 },
-                pageActionLayout: [
-                    {
-                        key: 'export',
-                        label: '导出',
-                    },
-                    {
-                        key: 'exportAll',
-                        label: '导出全部',
-                    },
-                ],
+
+async function bootstrap() {
+    let { token } = getURLParameters(location.href)
+    console.log('token :>> ', token)
+    if (token) {
+        await userStore.syncLoginWithToken(token)
+    }
+    desktopMainInit(
+        App,
+        store,
+        router,
+        { userStore, settingsStore },
+        {
+            ...defaultSettings,
+            $ShareGood: {
+                DataView: {
+                    pagination: { pageSize: 10 },
+                    pageActionLayout: [
+                        {
+                            key: 'export',
+                            label: '导出',
+                        },
+                        {
+                            key: 'exportAll',
+                            label: '导出全部',
+                        },
+                    ],
+                },
             },
         },
-    },
-).then(() => {})
+    ).then(() => {})
+}
+bootstrap()
