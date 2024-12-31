@@ -1221,19 +1221,12 @@ export const LocalMenu: UserMenu[] = [
     {
         label: '系统管理',
         icon: 'el-icon-document',
-        uri: '/系统管理',
+        uri: '',
         children: [
             {
                 label: '数据字典',
-                icon: 'el-icon-document',
                 // 路由地址
                 uri: '/system/dict',
-            },
-            {
-                label: '菜单管理',
-                icon: 'el-icon-document',
-                // 路由地址
-                uri: '/system/menu',
             },
         ],
     },
@@ -1244,7 +1237,7 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '接口文档',
-                icon: 'el-icon-document',
+                // 外链地址
                 uri: 'http://api.fed.icinfo.co/unifiedcase/electric-archive-service/electric-archive-service/dev',
             },
         ],
@@ -3429,16 +3422,22 @@ export default class OtherPage extends Vue {
      await save(this.formModel as any)
      ```
 
+# 响应约束
+- 除非必要，否则不要删除任何现有代码。
+- 除非必要，否则不要删除我的注释或被注释掉的代码。
+- 不要改变我的导入格式。
+- 除非对新功能很重要，否则不要改变我的代码格式。
+
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。
-    - 菜单文件`menus.ts`：请按照`LocalMenu`的示例生成菜单内容。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
+    - 菜单文件`menus.ts`：根据`router.js`的`path`添加菜单项，不要删减文件的内容。
 - 依次循环
 
 # Output

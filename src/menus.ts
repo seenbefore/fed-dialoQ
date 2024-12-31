@@ -8,17 +8,14 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '测试页面',
-                icon: 'el-icon-document',
                 uri: '/test',
             },
             {
                 label: '分析页',
-                icon: 'el-icon-data-analysis',
                 uri: '/workbench/analysis',
             },
             {
                 label: '聊天室',
-                icon: 'el-icon-chat-line-round',
                 uri: '/ai-assistant/chat',
             },
         ],
@@ -30,32 +27,26 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '数据字典',
-                icon: 'el-icon-document',
                 uri: '/system/dict',
             },
             {
                 label: '菜单管理',
-                icon: 'el-icon-document',
                 uri: '/system/menu',
             },
             {
                 label: '操作日志',
-                icon: 'el-icon-document',
                 uri: '/system/operation-log',
             },
             {
                 label: '角色管理',
-                icon: 'el-icon-document',
                 uri: '/system/role',
             },
             {
                 label: '部门管理',
-                icon: 'el-icon-document',
                 uri: '/system/department',
             },
             {
                 label: '人员管理',
-                icon: 'el-icon-document',
                 uri: '/system/user',
             },
         ],
@@ -67,51 +58,42 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '系统管理员',
-                icon: 'el-icon-document',
                 uri: '/系统管理员',
                 children: [
                     {
                         label: '案卷配置',
-                        icon: 'el-icon-document',
                         uri: '/file-review/case-config',
                     },
                 ],
             },
             {
                 label: '案件承办人',
-                icon: 'el-icon-document',
                 uri: '/案件承办人',
                 children: [
                     {
                         label: '我的卷宗',
-                        icon: 'el-icon-document',
                         uri: '/file-review/my-case',
                     },
                     {
                         label: '卷宗查询',
-                        icon: 'el-icon-document',
                         uri: '/file-review/case-search',
                     },
                 ],
             },
             {
                 label: '档案管理员',
-                icon: 'el-icon-document',
                 uri: '/档案管理员',
                 children: [
                     {
                         label: '卷宗管理',
-                        icon: 'el-icon-document',
                         uri: '/file-review/case-sort',
                     },
                     {
                         label: '卷宗号配置',
-                        icon: 'el-icon-document',
                         uri: '/file-review/case-number-config',
                     },
                     {
                         label: '卷宗查询记录',
-                        icon: 'el-icon-document',
                         uri: '/file-review/case-search-record',
                     },
                 ],
@@ -125,36 +107,30 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '题库管理',
-                icon: 'el-icon-document',
                 uri: '/题库管理',
                 children: [
                     {
                         label: '题库列表',
-                        icon: 'el-icon-document',
                         uri: '/question-bank/list',
                     },
                 ],
             },
             {
                 label: '考场管理',
-                icon: 'el-icon-document',
                 uri: '/考场管理',
                 children: [
                     {
                         label: '试卷列表',
-                        icon: 'el-icon-document',
                         uri: '/question-bank/paper',
                     },
                 ],
             },
             {
                 label: '考生管理',
-                icon: 'el-icon-document',
                 uri: '/考生管理',
                 children: [
                     {
                         label: '考生列表',
-                        icon: 'el-icon-document',
                         uri: '/question-bank/student',
                     },
                 ],
@@ -168,12 +144,10 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '执法公示',
-                icon: 'el-icon-document',
                 uri: '/law-supervision/publicity',
                 children: [
                     {
                         label: '事前信息公示',
-                        icon: 'el-icon-document',
                         uri: '/law-supervision/publicity/pre-publicity',
                     },
                 ],
@@ -187,7 +161,6 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '文章管理',
-                icon: 'el-icon-document',
                 uri: '/content/article',
             },
         ],
@@ -199,7 +172,6 @@ export const LocalMenu: UserMenu[] = [
         children: [
             {
                 label: '接口文档',
-                icon: 'el-icon-document',
                 uri: 'http://api.fed.icinfo.co/unifiedcase/electric-archive-service/electric-archive-service/dev',
             },
         ],

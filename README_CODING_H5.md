@@ -656,12 +656,12 @@ export default class ComponentName extends Vue {
 # Workflow
 - 用户输入产品prd内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。如果没有提供图片素材请不要在代码中插入图片。
-    - 菜单文件`menus.ts`：请按照`LocalMenu`的示例生成菜单内容。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
     - 路由文件`router.js`：默认必须生成，组件可不生成。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。`meta.parent`属性设置为`Index`。
+    - 菜单文件`menus.ts`：根据`router.js`的`path`添加菜单项，不要删减文件的内容。
 - 依次循环
 
 # Output
