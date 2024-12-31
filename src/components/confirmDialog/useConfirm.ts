@@ -7,7 +7,7 @@ export enum ConfirmResultEnum {
 }
 
 export interface IUseConfirm {
-    message: string | JSX.Element
+    message: string | JSX.Element | (() => JSX.Element)
     title?: string | JSX.Element
     titleIcon?: any
     titleIconClass?: string
@@ -22,10 +22,14 @@ export interface IUseConfirm {
     showNoRemind?: boolean
     noRemindText?: string
     onNoRemindChange?: (checked: boolean) => void
+    render?: (h: any) => JSX.Element
 }
 
 const defaultOptions: Omit<IUseConfirm, 'message'> = {
     title: '提示',
+    titleIcon: 'el-icon-warning',
+    titleIconClass: 'el-icon-warning',
+    titleIconStyle: 'color: var(--color-warning)',
     closeOnClickModal: false,
     width: '390px',
     closeOnPressEscape: true,

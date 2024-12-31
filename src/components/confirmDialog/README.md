@@ -53,6 +53,53 @@ useConfirm({
 })
 ```
 
+如果有表单交互，可以使用render函数
+```vue
+<template>
+    <div>
+        <button @click="handleClick">点击</button>
+    </div>
+</template>
+
+<script lang="tsx">
+import { useConfirm } from '@/components/confirmDialog/useConfirm'
+
+@Component({
+    name: 'UserManage',
+})
+export default class UserManage extends Vue {
+    // 确认框对象
+    dialogForm = {
+        radioValue: '',
+    }
+    async handleClick() {
+        await useConfirm({
+            message: () => (
+                <div>
+                    <el-radio-group
+                        props={{
+                            value: this.dialogForm.radioValue,
+                        }}
+                        on={{
+                            input: (val: string) => {
+                                this.dialogForm.radioValue = val
+
+                                console.log('radio value changed:', val)
+                            },
+                        }}
+                    >
+                        <el-radio props={{ label: '1' }}>男</el-radio>
+                        <el-radio props={{ label: '2' }}>女</el-radio>
+                    </el-radio-group>
+                </div>
+            ),
+        })
+        console.log('dialog result:', this.dialogForm.radioValue)
+    }
+}
+</script>
+```
+
 ## 带图标的弹框
 
 ### 自定义icon和颜色

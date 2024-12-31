@@ -4,6 +4,18 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component({
     name: 'ConfirmDialog',
+    components: {
+        RenderCell: {
+            functional: true,
+            props: {
+                render: Function,
+                row: Object,
+            },
+            render: (h: any, ctx: any) => {
+                return ctx.props.render(h, { row: ctx.props.row })
+            },
+        },
+    },
 })
 export default class ConfirmDialog extends Vue {
     @Prop({ type: Object })
@@ -47,7 +59,20 @@ export default class ConfirmDialog extends Vue {
     }
 
     public render() {
-        const { message, footerCancelText, footerConfirmText, beforeClose, title, titleIcon, titleIconClass, titleIconStyle, showNoRemind, noRemindText = '不再提醒', ...bindOptions } = this.options
+        const {
+            message,
+            footerCancelText,
+            footerConfirmText,
+            beforeClose,
+            title,
+            titleIcon,
+            titleIconClass,
+            titleIconStyle,
+            showNoRemind,
+            noRemindText = '不再提醒',
+            render,
+            ...bindOptions
+        } = this.options
 
         return (
             <el-dialog
@@ -66,7 +91,7 @@ export default class ConfirmDialog extends Vue {
                     title: () => this.getTitle(title!, titleIcon, titleIconClass, titleIconStyle),
                 }}
             >
-                <div class="confirm-dialog__body">{message}</div>
+                <div class="confirm-dialog__body">{typeof message === 'function' ? <render-cell render={message} row={message} /> : message}</div>
                 <div class="confirm-dialog__footer">
                     <el-button onClick={this.confirm} type="primary">
                         {footerConfirmText}

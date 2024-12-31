@@ -153,9 +153,15 @@
                             </re-el-form-item>
                             <!-- 自定义render表单域 -->
                             <template v-else-if="(types[col.tag] || col.tag === 'custom') && col.render">
-                                <el-form-item class="sg-form-item" v-bind="col.itemAttrs" :class="col.name">
+                                <!-- 内部提供的表单域 -->
+                                <re-el-form-item
+                                    class="sg-form-item"
+                                    :class="[col.name, col.class, col.itemAttrs ? col.itemAttrs.class : '', hasColon(col)]"
+                                    :auto-trigger-sub-component-validate="getAutoTriggerSubComponentValidate(col.itemAttrs)"
+                                    v-bind="col.itemAttrs"
+                                >
                                     <template slot="label" v-if="col.itemAttrs.showLabelTooltip && col.itemAttrs.label">
-                                        <span style="position:relative">
+                                        <span style="position:relative;">
                                             <el-tooltip class="item" effect="dark" :content="col.itemAttrs.label" placement="top-start">
                                                 <div class="sg-form-item__label">
                                                     {{ col.itemAttrs.label }}
@@ -163,9 +169,19 @@
                                             </el-tooltip>
                                         </span>
                                     </template>
+                                    <template slot="label" v-if="col.itemAttrs.helpMessage && col.itemAttrs.label">
+                                        <span v-text="col.itemAttrs.label"></span>
+                                        <BaseHelp :text="col.itemAttrs.helpMessage" :icon="col.itemAttrs.helpIcon"></BaseHelp>
+                                    </template>
+                                    <template slot="label" v-if="col.itemAttrs.labelRender">
+                                        <ex-slot v-if="col.itemAttrs.labelRender" :render="col.itemAttrs.labelRender" :row="col"></ex-slot>
+                                    </template>
+                                    <template slot="label" v-if="col.itemAttrs.labelSlot">
+                                        <slot :name="col.itemAttrs.labelSlot"></slot>
+                                    </template>
 
                                     <ex-slot :render="col.render" :row="formData" :column="col"></ex-slot>
-                                </el-form-item>
+                                </re-el-form-item>
                             </template>
                             <!-- 自定义slot表单域 -->
                             <template v-else-if="col.tag === 'slot'">
