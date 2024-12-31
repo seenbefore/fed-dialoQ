@@ -120,8 +120,6 @@ export default class UserManage extends Vue {
                             inactive-value="0"
                             active-text="启用"
                             inactive-text="停用"
-                            active-color="#67C23A"
-                            inactive-color="#909399"
                             onChange={(value: string) => this.handleStatusChange(row, value)}
                         ></el-switch>
                     )
@@ -214,7 +212,7 @@ export default class UserManage extends Vue {
                 status: value,
             })
             this.$message.success('修改成功')
-            this.handleSearch()
+            //this.handleSearch()
         } catch (error) {
             console.error(error)
             // 恢复原值
@@ -235,45 +233,5 @@ export default class UserManage extends Vue {
 <style lang="less" scoped>
 .UserManage ::v-deep {
     padding: 10px;
-
-    .el-switch {
-        .el-switch__label {
-            display: none;
-        }
-        .el-switch__core {
-            width: 50px !important;
-            display: flex !important;
-            align-items: center;
-            background-color: transparent;
-            background-color: transparent !important;
-            &::before {
-                content: '停用';
-                display: inline-block;
-                font-size: 12px;
-                margin-left: 20px;
-                color: #999;
-                line-height: 1;
-            }
-            &::after {
-                background-color: #d2d2d2 !important;
-            }
-        }
-
-        &.is-checked {
-            .el-switch__core {
-                background-color: #67c23a !important;
-                &::before {
-                    content: '启用';
-                    display: inline-block;
-                    color: #fff;
-                    font-size: 12px;
-                    margin-left: 3px;
-                }
-                &::after {
-                    background-color: #fff !important;
-                }
-            }
-        }
-    }
 }
 </style>

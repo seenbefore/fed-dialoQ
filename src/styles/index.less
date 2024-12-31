@@ -116,3 +116,49 @@ body #nprogress .spinner-icon {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+// 修改el-switch样式
+.el-switch {
+    .el-switch__label {
+        display: none;
+        font-size: 12px;
+        position: absolute;
+        top: 2px;
+        line-height: 1;
+        margin: 0;
+        transform: scale(0.8);
+        &.is-active.el-switch__label--left {
+            display: inline-block;
+            color: #999;
+            left: 20px;
+        }
+        &.is-active.el-switch__label--right {
+            display: inline-block;
+            color: #fff;
+            right: 20px;
+        }
+    }
+    .el-switch__core {
+        width: 50px !important;
+        display: flex !important;
+        align-items: center;
+        background-color: transparent;
+        background-color: transparent !important;
+
+        &::after {
+            background-color: #d2d2d2 !important;
+            border-color: #d2d2d2 !important;
+        }
+    }
+
+    &.is-checked {
+        .el-switch__core {
+            background-color: var(--color-success) !important;
+            border-color: var(--color-success) !important;
+
+            &::after {
+                background-color: #fff !important;
+            }
+        }
+    }
+}

@@ -189,8 +189,6 @@ export default class MenuManage extends Vue {
                             inactive-value="0"
                             active-text="显示"
                             inactive-text="隐藏"
-                            active-color="#67C23A"
-                            inactive-color="#909399"
                             onChange={(value: string) => this.handleStatusChange(row, value)}
                         ></el-switch>
                     )
@@ -387,45 +385,6 @@ export default class MenuManage extends Vue {
             .cell {
                 display: flex;
                 align-items: center;
-            }
-        }
-    }
-    .el-switch {
-        .el-switch__label {
-            display: none;
-        }
-        .el-switch__core {
-            width: 50px !important;
-            display: flex !important;
-            align-items: center;
-            background-color: transparent;
-            background-color: transparent !important;
-            &::before {
-                content: '隐藏';
-                display: inline-block;
-                font-size: 12px;
-                margin-left: 20px;
-                color: #999;
-                line-height: 1;
-            }
-            &::after {
-                background-color: #d2d2d2 !important;
-            }
-        }
-
-        &.is-checked {
-            .el-switch__core {
-                background-color: #67c23a !important;
-                &::before {
-                    content: '显示';
-                    display: inline-block;
-                    color: #fff;
-                    font-size: 12px;
-                    margin-left: 3px;
-                }
-                &::after {
-                    background-color: #fff !important;
-                }
             }
         }
     }
