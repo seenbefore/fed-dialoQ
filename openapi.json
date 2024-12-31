@@ -1,0 +1,685 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Admin API",
+        "description": "Admin API Documentation",
+        "version": "1.0.0"
+    },
+    "tags": [
+        {
+            "name": "字典管理 API",
+            "description": "字典相关接口"
+        },
+        {
+            "name": "部门管理 API",
+            "description": "部门相关接口"
+        }
+    ],
+    "paths": {
+        "/system/dict/list": {
+            "post": {
+                "summary": "获取字典列表",
+                "deprecated": false,
+                "description": "获取字典列表",
+                "operationId": "getDictList",
+                "tags": ["字典管理 API"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DictListReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RPageDictVO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dict/save": {
+            "post": {
+                "summary": "保存字典",
+                "deprecated": false,
+                "description": "保存字典",
+                "operationId": "saveDict",
+                "tags": ["字典管理 API"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DictSaveReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RBaseResp"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dict/detail": {
+            "get": {
+                "summary": "获取字典详情",
+                "deprecated": false,
+                "description": "获取字典详情",
+                "operationId": "getDictDetail",
+                "tags": ["字典管理 API"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "字典ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RDictVO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/department/list": {
+            "post": {
+                "summary": "获取部门分页列表",
+                "deprecated": false,
+                "description": "获取部门分页列表",
+                "operationId": "getDepartmentList",
+                "tags": ["部门管理 API"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepartmentListReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RPageDepartmentVO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/department/tree": {
+            "get": {
+                "summary": "获取部门树",
+                "deprecated": false,
+                "description": "获取部门树",
+                "operationId": "getDepartmentTree",
+                "tags": ["部门管理 API"],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "名称",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "状态",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "enum": [1, 2],
+                            "description": "状态<span style='color:red'>{1=启用, 2=禁用}</span>"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RDepartmentVOArray"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/department/save": {
+            "post": {
+                "summary": "保存部门",
+                "deprecated": false,
+                "description": "保存部门",
+                "operationId": "saveDepartment",
+                "tags": ["部门管理 API"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepartmentSaveReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RBaseResp"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/department/remove": {
+            "get": {
+                "summary": "删除部门",
+                "deprecated": false,
+                "description": "删除部门",
+                "operationId": "removeDepartment",
+                "tags": ["部门管理 API"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "部门ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RBaseResp"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/system/department/detail": {
+            "get": {
+                "summary": "获取部门详情",
+                "deprecated": false,
+                "description": "获取部门详情",
+                "operationId": "getDepartmentDetail",
+                "tags": ["部门管理 API"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "部门ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RDepartmentVO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "DictListReq": {
+                "type": "object",
+                "properties": {
+                    "pageNum": {
+                        "type": "integer",
+                        "description": "分页参数 页码数",
+                        "format": "int32",
+                        "examples": [1]
+                    },
+                    "length": {
+                        "type": "integer",
+                        "description": "分页参数 每页条数",
+                        "format": "int32",
+                        "examples": [10]
+                    },
+                    "keyword": {
+                        "type": "string",
+                        "description": "查询关键字",
+                        "examples": ["系统"]
+                    }
+                }
+            },
+            "DictSaveReq": {
+                "type": "object",
+                "required": ["name", "code", "type"],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "名称",
+                        "examples": ["网站名称"]
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "编码",
+                        "examples": ["webname"]
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "类型",
+                        "examples": ["系统"]
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "值",
+                        "examples": ["浙江省消防救援总队消防考试平台"]
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序",
+                        "format": "int32",
+                        "examples": [1]
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "状态",
+                        "enum": ["0", "1"],
+                        "examples": ["1"]
+                    }
+                }
+            },
+            "DictVO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "名称"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "编码"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "类型"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "值"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "状态"
+                    },
+                    "createTime": {
+                        "type": "string",
+                        "description": "创建时间"
+                    },
+                    "children": {
+                        "type": "array",
+                        "description": "子节点",
+                        "items": {
+                            "$ref": "#/components/schemas/DictVO"
+                        }
+                    }
+                }
+            },
+            "DepartmentListReq": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "名称"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "状态",
+                        "enum": [1, 2],
+                        "format": "int32"
+                    }
+                }
+            },
+            "DepartmentSaveReq": {
+                "type": "object",
+                "required": ["name", "status"],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "部门名称",
+                        "examples": ["研发部"]
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "状态(1=启用,2=禁用)",
+                        "format": "int32",
+                        "enum": [1, 2],
+                        "examples": [1]
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    },
+                    "parentId": {
+                        "type": "string",
+                        "description": "上级部门ID"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序",
+                        "format": "int32"
+                    }
+                }
+            },
+            "DepartmentVO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "ID"
+                    },
+                    "createUserString": {
+                        "type": "string",
+                        "description": "创建人"
+                    },
+                    "createTime": {
+                        "type": "string",
+                        "description": "创建时间"
+                    },
+                    "disabled": {
+                        "type": "boolean",
+                        "description": "是否禁用修改"
+                    },
+                    "updateUserString": {
+                        "type": "string",
+                        "description": "修改人"
+                    },
+                    "updateTime": {
+                        "type": "string",
+                        "description": "修改时间"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "部门名称"
+                    },
+                    "parentId": {
+                        "type": "string",
+                        "description": "上级部门ID"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "状态(1=启用,2=禁用)",
+                        "format": "int32",
+                        "enum": [1, 2]
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序",
+                        "format": "int32"
+                    },
+                    "isSystem": {
+                        "type": "boolean",
+                        "description": "是否为系统内置数据"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    },
+                    "children": {
+                        "type": "array",
+                        "description": "子部门",
+                        "items": {
+                            "$ref": "#/components/schemas/DepartmentVO"
+                        }
+                    }
+                }
+            },
+            "RBaseResp": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码",
+                        "examples": ["200"]
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息",
+                        "examples": ["success"]
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功",
+                        "examples": [true]
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64",
+                        "examples": [1691453288000]
+                    }
+                }
+            },
+            "RPageDictVO": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功"
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/DictVO"
+                                }
+                            },
+                            "recordsTotal": {
+                                "type": "integer",
+                                "description": "总记录数",
+                                "format": "int32"
+                            }
+                        }
+                    }
+                }
+            },
+            "RDictVO": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功"
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/DictVO"
+                    }
+                }
+            },
+            "RPageDepartmentVO": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功"
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/DepartmentVO"
+                                }
+                            },
+                            "recordsTotal": {
+                                "type": "integer",
+                                "description": "总记录数",
+                                "format": "int32"
+                            }
+                        }
+                    }
+                }
+            },
+            "RDepartmentVO": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功"
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/DepartmentVO"
+                    }
+                }
+            },
+            "RDepartmentVOArray": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "状态信息"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "是否成功"
+                    },
+                    "timestamp": {
+                        "type": "integer",
+                        "description": "时间戳",
+                        "format": "int64"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DepartmentVO"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

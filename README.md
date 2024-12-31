@@ -29,25 +29,102 @@ graph TD
 ```
 
 
--   后台管理系统：[src](./README.md)
--   移动端：[src/entry/h5](./src/entry/h5/README.md)
--   浙里办：[src/entry/zlb-h5](./src/entry/zlb-h5/README.md)
--   门户网站：[src/entry/library](./src/entry/library/README.md)
--   大屏：[src/entry/bigscreen](./src/entry/bigScreen/README.md)
+- 后台管理系统：[src](./README.md)
+- 移动端：[src/entry/h5](./src/entry/h5/README.md)
+- 浙里办：[src/entry/zlb-h5](./src/entry/zlb-h5/README.md)
+- 门户网站：[src/entry/library](./src/entry/library/README.md)
+- 大屏：[src/entry/bigscreen](./src/entry/bigScreen/README.md)
 
 
 
 ## 功能介绍
 
--   支持多项目模板
--   配置支持动态更新
--   动态生成项目
--   动态拉取第三方项目模板
+- 支持多项目模板
+- 配置支持动态更新
+- 动态生成项目
+- 动态拉取第三方项目模板
 
 ## 技术栈&工具
 
--   Vue2、TypeScript、Vuex、Element、Nodejs、Nunjucks、inquirer
--   node：版本推荐 `14.19.1`
+- Vue2、TypeScript、Vuex、Element、Nodejs、Nunjucks、inquirer
+- node：版本推荐 `14.19.1`
+
+### cursor
+- 一款集成了人工智能技术的代码编辑器。
+- 地址：[https://www.cursor.com/](https://www.cursor.com/)
+
+#### 插件
+插件的位置在【左侧边栏】，有个形式俄罗斯方块的标签页。
+
+- Chinese (Simplified) (简体中文)：适用于 VS Code 的中文（简体）语言包。
+- ESLint：代码规范检测。
+- Prettier：代码格式化。
+- Prettier ESLint：确保 ESLint 和 Prettier 的规则不会相互冲突。
+- Vue Official：vue语法高亮和格式化。
+- Markdown Preview Mermaid Support：markdown支持预览图表。
+
+### apifox（可选）
+- API 管理平台，提供接口文档、接口调试、接口Mock、接口自动化测试等功能。支持软件和web版。
+- 地址：[https://apifox.com/compare/postman-vs-apifox/?utm_source=baidu&utm_medium=sem&utm_campaign=352505605&utm_content=8777274736&utm_term=%E8%87%AA%E5%8A%A8%E5%AE%9A%E5%90%91&bd_vid=8236617204237704428](https://apifox.com/compare/postman-vs-apifox/?utm_source=baidu&utm_medium=sem&utm_campaign=352505605&utm_content=8777274736&utm_term=%E8%87%AA%E5%8A%A8%E5%AE%9A%E5%90%91&bd_vid=8236617204237704428)
+
+
+
+## 基于cursor的开发
+### PC端
+#### PC管理端开发-启动项目
+1、打开项目：项目模板在cursor中打开。
+
+2、安装依赖：点击执行NPM脚本中的`start`命令。
+
+3、启动项目：点击执行NPM脚本中的`dev`命令，成功后会出现项目访问地址，打开浏览器点击登录后可进入后台管理系统。
+
+#### PC管理端开发-输出PRD
+1、整理需要：只需要有大概的内容即可，比如考试平台的后台需要题库管理、试卷管理等功能。
+
+2、分步优化：`Ctrl+I`进入composer聊天框，确保上下文选中`README_CODING_PC.md`。输入比如“需求内容：xxxx。请帮我生成题库管理功能的prd”。
+
+3、内容微调：将完善的PRD内容保存在`prd.md`文件中，然后进行字段或者交互上的微调。
+
+#### PC管理端开发-实现前端界面
+1、功能实现：`Ctrl+I`进入comoser聊天框，上下文选中`README_CODING_PC.md`，将prd文档中的一个功能点文档复制上去，提交即可。等代码生成完成后点击聊天框右下角的`Accept all`即可。如果内容过长没有全部生成，可以输入“继续”来二次生成，最后同样点击`Accept all`即可。可以在浏览器直接查看效果。
+
+2、菜单生成：有时候左侧菜单不一定生成，此时在聊天框继续对话比如输入“请将文章管理添加到菜单中”。然后在浏览器中查看效果。
+
+3、错误处理：控制台遇到报错可直接复制错误信息，粘帖到对话框输入“修复”即可。
+
+4、功能优化：针对界面中不符合要求的地方，继续提出改进意见，可以优先点击`Save all`查看效果，如果满意则点击`Accept all`。
+
+### 移动端
+#### H5移动端开发-启动项目
+1、启动项目：点击执行NPM脚本中的`dev:h5-demo`命令，成功后会出现项目访问地址。
+
+2、访问页面：点击业务中的对应页面进行跳转。
+
+#### H5移动端开发-输出PRD
+1、整理需要：只需要有大概的内容即可，比如考试平台的移动端需要实名认证、试卷列表、在线考试等功能。
+
+2、分步优化：`Ctrl+I`进入聊天框。输入比如“帮我实现移动端在线考试功能的prd”。
+
+3、内容整合：将所有的功能prd保存在`src/prd_h5.md`中。
+
+#### H5移动端开发-实现前端界面
+1、功能实现：打开`README_CODING_H5.md`代码生成规范、然后`Ctrl+I`进入聊天框，将PRD文档中的一个功能点文档复制上去，提交即可。等代码生成完成后点击聊天框右下角的`Accept all`即可。如果内容过长没有全部生成，可以输入“继续”来二次生成，最后同样点击`Accept all`即可。
+
+2、功能优化：针对界面中不符合要求的地方，继续提出改进意见，可以优先点击`Save all`查看效果，如果满意则点击`Accept all`。
+
+3、界面优化：可以找一个类似场景的设计稿来进行界面的美化，比如输入“请参考这个设计优化xxx处”。
+
+
+### 其他
+#### 生成openapi格式的接口文档
+> 接口文档`openapi.json`可以使用`apifox`工具导入，然后生成对应的接口文档。方便快速进行接口评审。
+
+方式一：上下文选中`openapi.json`文件和需求文档`prd.md`文件，`Ctrl+I`进入聊天框，输入“请基于需求文档，帮我生成openapi格式的接口文档，写到openapi.json中”。
+
+方式二：上下文选中`openapi.json`文件，Ctrl+I进入聊天框，输入“请基于src/views/user-manage/api.ts文件，帮我生成openapi格式的接口文档，写到openapi.json中”。
+
+
+
 
 ## 安装使用步骤
 
@@ -90,58 +167,58 @@ npm run build
 ```
 
 ### 其他脚本介绍
--   `npm run reset`：git 还原代码到上个版本
--   `npm run save`：git 保存代码到本地
--   `npm run base:init`
+- `npm run reset`：git 还原代码到上个版本
+- `npm run save`：git 保存代码到本地
+- `npm run base:init`
 
-    -   初始化整个项目，去掉 `src/entry` 下的所有子项目，并且删除 `package.json` 中多余的脚本，将项目变为一个单纯的 `后台管理系统` 不带任何子项目。（注意：通过蜻蜓云效新建项目的时候，如果模板选择的是 `纯净模板` 则会默认执行 `base:init` 脚本）
+    - 初始化整个项目，去掉 `src/entry` 下的所有子项目，并且删除 `package.json` 中多余的脚本，将项目变为一个单纯的 `后台管理系统` 不带任何子项目。（注意：通过蜻蜓云效新建项目的时候，如果模板选择的是 `纯净模板` 则会默认执行 `base:init` 脚本）
 
--   `npm run update:core`
+- `npm run update:core`
 
-    -   更新 `core` 文件夹的内容，首先会从 `http://gitlab.icinfo.co/fed/base-vue-template` 拉取 `master` 分支的 `core` 文件夹到 `.tmp` 临时文件夹中，然后对比 `core/config.json` 中的 `version` 和本地是否有差异。如果有差异，则会自动将拉取的 `core` 文件夹覆盖本地的 `core` 文件夹，并且会对比 `package.json` 文件是否有更新，如果有新增 `包/脚本`，会自动加入并且执行 `install`。
-    -   `强制更新`：如果想要不对比版本直接覆盖整个 `core` 文件夹，可以执行：`npm run update:core force`
+    - 更新 `core` 文件夹的内容，首先会从 `http://gitlab.icinfo.co/fed/base-vue-template` 拉取 `master` 分支的 `core` 文件夹到 `.tmp` 临时文件夹中，然后对比 `core/config.json` 中的 `version` 和本地是否有差异。如果有差异，则会自动将拉取的 `core` 文件夹覆盖本地的 `core` 文件夹，并且会对比 `package.json` 文件是否有更新，如果有新增 `包/脚本`，会自动加入并且执行 `install`。
+    - `强制更新`：如果想要不对比版本直接覆盖整个 `core` 文件夹，可以执行：`npm run update:core force`
 
--   `npm run get:entry`
+- `npm run get:entry`
 
-    -   用于获取子项目，子项目对应的内容存放位置
-        -   后台管理系统：src/entry/admin
-        -   移动端 h5：src/entry/h5
-        -   浙里办 h5：src/entry/zlb-h5
-        -   大屏：src/entry/bigscreen
-        -   门户：src/entry/library
-    -   依照提示选择对应的类型，并且输入子项目名称即可
-        -   `是否为定制项目`：关于该选项是用于处理项目是否要作为子项目独立存在还是作为外部项目的一个扩展（用外部项目的路由/store 等）
+    - 用于获取子项目，子项目对应的内容存放位置
+        - 后台管理系统：src/entry/admin
+        - 移动端 h5：src/entry/h5
+        - 浙里办 h5：src/entry/zlb-h5
+        - 大屏：src/entry/bigscreen
+        - 门户：src/entry/library
+    - 依照提示选择对应的类型，并且输入子项目名称即可
+        - `是否为定制项目`：关于该选项是用于处理项目是否要作为子项目独立存在还是作为外部项目的一个扩展（用外部项目的路由/store 等）
 
--   `npm run load`
+- `npm run load`
 
-    -   用于获取远程的指定文件内容
-        -   npm run load <sourceUrl> [targetUrl]
-    -   examples：把远程的 src/components 拉取到 src/abc/
-        -   npm run load src/components src/abc
-            -   如果不带 `http` 链接默认会从本仓库目录下查找
-    -   examples：从别的参考获取内容。将 `icinfo-ui` 的 `master` 分支 的 `lib` 文件夹 拉取到我本地项目的 `test` 目录
-        -   npm run load http://gitlab.icinfo.co/fed/icinfo-ui/-/tree/master/lib test
+    - 用于获取远程的指定文件内容
+        - npm run load <sourceUrl> [targetUrl]
+    - examples：把远程的 src/components 拉取到 src/abc/
+        - npm run load src/components src/abc
+            - 如果不带 `http` 链接默认会从本仓库目录下查找
+    - examples：从别的参考获取内容。将 `icinfo-ui` 的 `master` 分支 的 `lib` 文件夹 拉取到我本地项目的 `test` 目录
+        - npm run load http://gitlab.icinfo.co/fed/icinfo-ui/-/tree/master/lib test
 
--   `npm run gen:report <fileName> <title> [insertToViews]`
+- `npm run gen:report <fileName> <title> [insertToViews]`
 
-    -   说明：用于快速生成一个 `表格列表页面`（包含页面和 router）
-    -   参数说明
-        -   `fileName`：用于生成的文件夹的名称（router 的名称也会用该名称），如果名称中包含 `-` 则组件名称会自动去掉并且将首字母转换为大写（test-page => TestPage）
-        -   `title`：用于生成 `router` 的 `title`
-        -   `insertToViews`：是否将文件生成到 `src/views` 目录下。如果设置为 `false` 则会将文件生成在当前执行的目录下
-    -   examples：`npm run gen:report test-report 测试报表`
+    - 说明：用于快速生成一个 `表格列表页面`（包含页面和 router）
+    - 参数说明
+        - `fileName`：用于生成的文件夹的名称（router 的名称也会用该名称），如果名称中包含 `-` 则组件名称会自动去掉并且将首字母转换为大写（test-page => TestPage）
+        - `title`：用于生成 `router` 的 `title`
+        - `insertToViews`：是否将文件生成到 `src/views` 目录下。如果设置为 `false` 则会将文件生成在当前执行的目录下
+    - examples：`npm run gen:report test-report 测试报表`
 
     ![image.png](http://cdn.qiniu.barebear.cn/74856a69-4099-4b3a-9538-8ee9baed95bc/dffca59470f2f60b793ec300c.png)
 
--   `npm run gen:form <fileName> <title> [insertToViews]`
+- `npm run gen:form <fileName> <title> [insertToViews]`
 
-    -   说明：用于快速生成一个 `表单页面`（包含页面和 router）
-    -   使用方式参考：`gen:report`
+    - 说明：用于快速生成一个 `表单页面`（包含页面和 router）
+    - 使用方式参考：`gen:report`
 
--   `npm run gen:detail <fileName> <title> [insertToViews]`
+- `npm run gen:detail <fileName> <title> [insertToViews]`
 
-    -   说明：用于快速生成一个 `详情页面`（包含页面和 router）
-    -   使用方式参考：`gen:report`
+    - 说明：用于快速生成一个 `详情页面`（包含页面和 router）
+    - 使用方式参考：`gen:report`
 
 ## 目录
 
@@ -248,19 +325,19 @@ DEV_PROXY_TARGET_API_ADMIN='http://192.168.1.155:8885/api'
 
 ### 本地开发
 
--   基于`.env.development` 复制一份`.env.development.local`
--   在`.env.development.local`进行修改。接口前缀`VUE_APP_BASEURL_API`固定配置为`/@API`，接口代理`DEV_PROXY_TARGET_API`配置为联调地址，比如`http://127.0.0.1:8888/api`
--   接口函数自动生成：修改`api-generator.js`中`apis`（文档地址+/api.json），再执行`npm run api`
+- 基于`.env.development` 复制一份`.env.development.local`
+- 在`.env.development.local`进行修改。接口前缀`VUE_APP_BASEURL_API`固定配置为`/@API`，接口代理`DEV_PROXY_TARGET_API`配置为联调地址，比如`http://127.0.0.1:8888/api`
+- 接口函数自动生成：修改`api-generator.js`中`apis`（文档地址+/api.json），再执行`npm run api`
 
 ### 测试环境
 
--   配置文件为`.env.uat`
--   如果走 nginx 反向代理，则配置`VUE_APP_BASEURL_API`为`/@API`，否则配置`VUE_APP_BASEURL_API`为测试地址。
+- 配置文件为`.env.uat`
+- 如果走 nginx 反向代理，则配置`VUE_APP_BASEURL_API`为`/@API`，否则配置`VUE_APP_BASEURL_API`为测试地址。
 
 ### 生产环境
 
--   配置文件为`.env.production`
--   如果走 nginx 反向代理，则配置`VUE_APP_BASEURL_API`为`/@API`，否则配置`VUE_APP_BASEURL_API`为生产地址。
+- 配置文件为`.env.production`
+- 如果走 nginx 反向代理，则配置`VUE_APP_BASEURL_API`为`/@API`，否则配置`VUE_APP_BASEURL_API`为生产地址。
 
 
 
@@ -270,18 +347,18 @@ DEV_PROXY_TARGET_API_ADMIN='http://192.168.1.155:8885/api'
 
 ### 核心配置
 
--   `exHooks`：请求拦截器，可以配置多个拦截器，拦截器名称对应`core/common/http/hooks`目录下的文件名称。
--   `baseURL`：请求基础 URL，如果配置了该值，则会使用该值作为基础 URL，否则使用`VUE_APP_BASEURL_API`作为基础 URL。
--   `isResponseSuccess`：是否为成功响应，默认值为`(res) => res.code == undefined || res.code === 0 || res.code === 200`。
--   `getResponseSuccess`：获取成功响应内容，默认值为`(res) => res`。
--   `getResponseError`：获取错误响应内容，默认值为`(res) => ({ message: res.message || '网络走神了', code: res.code || '-1' })`。
--   `notDeduplicate`：是否不允许重复请求（针对于单独请求），默认值为`false`。
--   `useDeduplicate`：是否开启不允许重复请求功能，默认值为`false`。
--   `deduplicateFilter`：重复请求过滤配置，默认值为`() => false`。
+- `exHooks`：请求拦截器，可以配置多个拦截器，拦截器名称对应`core/common/http/hooks`目录下的文件名称。
+- `baseURL`：请求基础 URL，如果配置了该值，则会使用该值作为基础 URL，否则使用`VUE_APP_BASEURL_API`作为基础 URL。
+- `isResponseSuccess`：是否为成功响应，默认值为`(res) => res.code == undefined || res.code === 0 || res.code === 200`。
+- `getResponseSuccess`：获取成功响应内容，默认值为`(res) => res`。
+- `getResponseError`：获取错误响应内容，默认值为`(res) => ({ message: res.message || '网络走神了', code: res.code || '-1' })`。
+- `notDeduplicate`：是否不允许重复请求（针对于单独请求），默认值为`false`。
+- `useDeduplicate`：是否开启不允许重复请求功能，默认值为`false`。
+- `deduplicateFilter`：重复请求过滤配置，默认值为`() => false`。
 
 ### 使用案例
 
--   一般接口函数位于`src/services`目录下。由`api-generator.js`自动生成。
+- 一般接口函数位于`src/services`目录下。由`api-generator.js`自动生成。
 
 ```typescript
 /**
@@ -369,7 +446,7 @@ export interface UserInfoVo {
     token: string
 }
 ```
--  vue组件中直接使用全局方法`$http`
+- vue组件中直接使用全局方法`$http`
 ```html
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
@@ -386,39 +463,39 @@ export default class ComponentName extends Vue {
 
 路由由系统自动生成，无需手动配置。满足以下条件即可：
 
--   在`src/views`目录下新建业务文件夹
--   包含路由文件`router.js`
--   包含页面文件`index.vue`
+- 在`src/views`目录下新建业务文件夹
+- 包含路由文件`router.js`
+- 包含页面文件`index.vue`
 
 ### 路由属性
 
--   `name`：路由名称，用于在`router`中使用
--   `meta`：路由元信息，用于在`router`中使用
-    -   `bodyClass`：设置`body`标签的`class`
-    -   `parent`：父级路由名称，默认值为`Index`，不需要修改。
-    -   `title`：路由标题，用于设置当前路由的标题
-    -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
-    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
-    -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
-    -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
-    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
+- `name`：路由名称，用于在`router`中使用
+- `meta`：路由元信息，用于在`router`中使用
+    - `bodyClass`：设置`body`标签的`class`
+    - `parent`：父级路由名称，默认值为`Index`，不需要修改。
+    - `title`：路由标题，用于设置当前路由的标题
+    - `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
+    - `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
+    - `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
+    - `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
+    - `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
 
 ## 状态管理
 
 状态管理位于`src/store`目录下，包含`modules`和`useStore.ts`文件。
 
--   `modules/user.ts`为登录用户信息管理
--   `modules/settings.ts`为系统配置管理
--   `modules/tagsView.ts`为标签页管理
--   `modules/app.ts`为系统业务配置管理
+- `modules/user.ts`为登录用户信息管理
+- `modules/settings.ts`为系统配置管理
+- `modules/tagsView.ts`为标签页管理
+- `modules/app.ts`为系统业务配置管理
 
 ### 使用案例
 
 #### 配置
 
--   `Mutation`函数名称推荐使用小驼峰式`setXyz`
--   `Action`函数名称推荐以`sync`开头，比如`syncSomething`
--   项目业务相关的本地存储推荐在`app`模块中配置，属性名称推荐以`$`开头，比如`$dontShowDeleteConfirm`
+- `Mutation`函数名称推荐使用小驼峰式`setXyz`
+- `Action`函数名称推荐以`sync`开头，比如`syncSomething`
+- 项目业务相关的本地存储推荐在`app`模块中配置，属性名称推荐以`$`开头，比如`$dontShowDeleteConfirm`
 
 ```typescript
 @Module({
@@ -621,8 +698,8 @@ settingsStore.updateThemeVariables(themeVariables)
 
 ## 全局 svg
 
--   全局 svg 位于`src/components/SvgIcon/icons`目录下，会自动注册。
--   `mt-`前缀为多色图标。
+- 全局 svg 位于`src/components/SvgIcon/icons`目录下，会自动注册。
+- `mt-`前缀为多色图标。
 
 ```vue
 <template>
@@ -634,13 +711,13 @@ settingsStore.updateThemeVariables(themeVariables)
 
 项目中的页面可以作为第三方应用在其他项目中通过`iframe`引用。比如地址`http://127.0.0.1:8888/file-review/my-case/save?token=123&isThirdParty=1`。
 
--   `token`：主应用的登录 token，用于获取用户信息
--   `isThirdParty`：是否为第三方应用，用于标识当前应用为第三方应用，并且隐藏头部和侧边栏
+- `token`：主应用的登录 token，用于获取用户信息
+- `isThirdParty`：是否为第三方应用，用于标识当前应用为第三方应用，并且隐藏头部和侧边栏
 
 ## 组件
 
--   全局组件位于`src/components/global`目录下。会自动注册，不需要在`main.ts`中手动注册。组件名称以`my-`开头。
--   其他组件位于`src/components`目录下。不会自动注册，需要手动注册。
+- 全局组件位于`src/components/global`目录下。会自动注册，不需要在`main.ts`中手动注册。组件名称以`my-`开头。
+- 其他组件位于`src/components`目录下。不会自动注册，需要手动注册。
 
 ### 组件命名
 - 组件名使用 PascalCase: MyComponent
