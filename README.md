@@ -70,6 +70,10 @@ graph TD
 
 
 ## 基于cursor的开发
+如果需要调整代码输出目录，只需改动文档最后的Output中内容即可。注意，修改完后清空上下文，然后重新选择规范文档。
+- [PC后台管理代码生成规范](./README_CODING_PC.md)
+- [h5移动端代码生成规范](./README_CODING_H5.md)
+
 ### PC端
 #### PC管理端开发-启动项目
 1、打开项目：项目模板在cursor中打开。
@@ -1054,9 +1058,6 @@ export default class CaseSave extends Vue {
 ### draggable-table 拖拽表格
 [文档地址](./src/components/draggable-table/README.md)
 
-## 实战
-- [PC后台管理系统](./README_CODING_PC.md)
-- [h5移动端](./README_CODING_H5.md)
 
 ## DataV 分享链接生成
 
