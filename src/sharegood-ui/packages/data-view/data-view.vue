@@ -584,6 +584,13 @@ export default {
         }
     },
     methods: {
+        getSelection() {
+            return this.multipleSelection
+        },
+        clearSelection() {
+            this.$refs.table.clearSelection()
+            this.multipleSelection = []
+        },
         exportAll() {
             this.$refs.exportAll.onExportAll()
         },

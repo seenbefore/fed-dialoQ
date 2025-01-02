@@ -1,118 +1,116 @@
 import { ExAxiosRequestConfig } from 'icinfo-request'
+import { http } from '@/scripts/http'
+import { Result, PageResponse } from '@/@types'
 
-export const list = async (
+export interface DictTypeVO {
+    /** id */
+    id: number
+    /** 创建人 */
+    createUserString: string
+    /** 创建时间 */
+    createTime: string
+    /** 更新人 */
+    updateUserString: string | null
+    /** 更新时间 */
+    updateTime: string | null
+    /** 类型名称 */
+    name: string
+    /** 类型编码 */
+    code: string
+    /** 描述 */
+    description: string | null
+    /** 是否系统内置 */
+    isSystem: boolean
+}
+
+export interface DictValueVO {
+    /** id */
+    id: number
+    /** 标签 */
+    name: string
+    /** 值 */
+    value: string
+    /** 排序 */
+    sort: number
+    /** 状态 0停用 1启用 */
+    status: string
+    /** 创建时间 */
+    createTime: string
+}
+
+/**
+ * 获取字典类型列表
+ */
+export function getTypeList(options?: ExAxiosRequestConfig) {
+    return http.request<{
+        code: string
+        msg: string
+        success: boolean
+        timestamp: number
+        data: DictTypeVO[]
+    }>({
+        url: '/dict/type/list',
+        method: 'get',
+        ...options,
+    })
+}
+
+/**
+ * 获取字典值列表
+ */
+export function list(
     data?: {
-        /** 分页参数 页码数 */ pageNum?: number
-        /** 分页参数 每页条数 */ length?: number
-        /** 查询关键字 */ keyword?: string
+        /** 字典类型 */ dictType?: string
     },
     options?: ExAxiosRequestConfig,
-) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            data: [
-                {
-                    id: '1',
-                    name: '本系统',
-                    code: 'system',
-                    type: '系统',
-                    sort: 1,
-                    status: '1',
-                    createTime: '2024-01-01 12:00:00',
-                    children: [
-                        {
-                            id: '2',
-                            name: '网站配置',
-                            code: 'website',
-                            type: '系统',
-                            sort: 1,
-                            status: '1',
-                            createTime: '2024-01-01 12:00:00',
-                            children: [
-                                {
-                                    id: '3',
-                                    name: '基本设置',
-                                    code: 'basic',
-                                    type: '系统',
-                                    sort: 5,
-                                    status: '1',
-                                    createTime: '2024-01-01 12:00:00',
-                                    children: [
-                                        {
-                                            id: '4',
-                                            name: '网站名称',
-                                            code: 'webname',
-                                            type: '系统',
-                                            sort: 2,
-                                            value: '浙江省消防救援总队消防考试平台',
-                                            status: '1',
-                                            createTime: '2024-01-01 12:00:00',
-                                        },
-                                        {
-                                            id: '5',
-                                            name: '网站地址',
-                                            code: 'weburl',
-                                            type: '系统',
-                                            sort: 3,
-                                            value: 'http://kspt.zjxt119.com/',
-                                            status: '1',
-                                            createTime: '2024-01-01 12:00:00',
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                        {
-                            id: '6',
-                            name: '其他设置',
-                            code: 'other',
-                            type: '系统',
-                            sort: 11,
-                            status: '1',
-                            createTime: '2024-01-01 12:00:00',
-                            children: [
-                                {
-                                    id: '7',
-                                    name: '错误显示',
-                                    code: 'diserror',
-                                    type: '系统',
-                                    sort: 4,
-                                    value: 'Y',
-                                    status: '1',
-                                    createTime: '2024-01-01 12:00:00',
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-            recordsTotal: 7,
-        },
-    }
+) {
+    return http.request<
+        Result<{
+            data: DictValueVO[]
+        }>
+    >({
+        url: '/dict/list',
+        method: 'post',
+        data,
+        ...options,
+    })
 }
 
-export const save = async (params?: any) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: true,
-    }
+/**
+ * 保存字典
+ */
+export function save(
+    data?: {
+        /** id */ id?: number
+        /** 字典类型 */ dictType?: string
+        /** 标签 */ name?: string
+        /** 值 */ value?: string
+        /** 排序 */ sort?: number
+        /** 状态 */ status?: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/dict/save',
+        method: 'post',
+        data,
+        ...options,
+    })
 }
 
-export const detail = async (params?: any) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            id: '1',
-            name: '本系统',
-            code: 'system',
-            type: '系统',
-            sort: 1,
-            status: '1',
-            createTime: '2024-01-01 12:00:00',
-        },
-    }
+/**
+ * 删除字典
+ */
+export function remove(
+    data?: {
+        /** id */ id: number
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<any>>({
+        url: '/dict/delete',
+        method: 'post',
+        data,
+        ...options,
+    })
 }
