@@ -555,6 +555,94 @@ export default class ComponentName extends Vue {
     },
 }
 ```
+
+### select 下拉控件
+默认选项
+```typescript
+{
+    tag: 'select',
+    name: 'company',
+    itemAttrs: {
+        label: '单位名称：',
+    },
+    attrs: {
+        placeholder: '请选择',
+        options: ()=> {
+            return [{
+                label: '选项1',
+                value: '1',
+            },{
+                label: '选项2',
+                value: '2',
+            }]
+        }
+    },
+},
+```
+
+默认选项异步加载
+```typescript
+{
+    tag: 'select',
+    name: 'company',
+    itemAttrs: {
+        label: '单位名称：',
+    },
+    attrs: {
+        placeholder: '请选择',
+        options: async ()=> {
+            const { data } = await this.$http.request({
+                url: '/company/query',
+                method: 'post',
+            })
+            const result = data.map((item: any) => {
+                return {
+                    label: item.name,
+                    value: item.id,
+                }
+            })
+            return result
+        }
+    },
+},
+```
+
+下拉选项远程查询
+```typescript
+{
+    tag: 'select',
+    name: 'company',
+    itemAttrs: {
+        label: '单位名称：',
+    },
+    attrs: {
+        placeholder: '请输入进行查询',
+        // 必填 
+        filterable: true,
+        // 必填 搭配remoteMethod
+        remote: true,
+        // 必填 远程查询方法
+        remoteMethod: async (val: any) => {
+            const { data } = await this.$http.request({
+                url: '/company/query',
+                method: 'post',
+                data: {
+                    search: val,
+                },
+            })
+            const result = data.map((item: any) => {
+                return {
+                    label: item.name,
+                    value: item.id,
+                }
+            })
+            return result
+        },
+    },
+},
+
+```
+
 ### 自定义组件配置
 - 如果需要自定义渲染`appendRender`，请使用`custom`标签。
 ```javascript
@@ -1766,42 +1854,6 @@ export default class UserManagement extends Vue {
                         }
                     },
                 },
-            },
-            {
-                // 下拉搜索
-                tag: 'select',
-                name: 'company',
-                itemAttrs: {
-                    label: '单位名称：',
-                },
-                attrs: {
-                    placeholder: '请输入进行查询',
-                    // 是否可搜索
-                    filterable: true,
-                    // 搭配remoteMethod
-                    remote: true,
-                    // 远程查询方法
-                    remoteMethod: async (val: any) => {
-                        const {data} = await this.$http.request({
-                            url: '/company/query',
-                            method: 'post',
-                            data: {
-                                // 搜索条件
-                                search: val
-                            },
-                        })
-                        const result = data.map((item: any) => {
-                            return {
-                                label: item.name,
-                                value: item.id,
-                            }
-                        })
-                        return result
-                    },
-
-                    
-                },
-                
             },
             {
                 tag: 'input',

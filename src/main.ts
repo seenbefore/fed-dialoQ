@@ -33,14 +33,16 @@ Vue.prototype.$back = async function(params: any) {
             name: target.name,
         })
     }
-    await tagsViewStore.delView(this.$route)
+    await tagsViewStore.delView({
+        fullPath: window.location.href.replace(location.origin, ''),
+    })
 
     if (path) {
-        this.$router.push({
+        router.push({
             path,
         })
     } else {
-        this.$router.go(-1)
+        router.go(-1)
     }
 }
 // 自定义确认框风格样式

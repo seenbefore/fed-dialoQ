@@ -7,10 +7,6 @@ export const LocalMenu: UserMenu[] = [
         uri: '',
         children: [
             {
-                label: '测试页面',
-                uri: '/test',
-            },
-            {
                 label: '分析页',
                 uri: '/workbench/analysis',
             },

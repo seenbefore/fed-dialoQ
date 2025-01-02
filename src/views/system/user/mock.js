@@ -68,4 +68,33 @@ export default [
             })
         },
     },
+    {
+        name: '/company/query',
+        method: 'post',
+        description: '',
+        onMock(opt, query, body) {
+            const { search } = body
+            let result = mock([
+                {
+                    id: '1',
+                    name: '@ctitle(5, 10)',
+                },
+                {
+                    id: '2',
+                    name: '@ctitle(10, 20)',
+                },
+            ])
+            result = result.map(item => {
+                return {
+                    ...item,
+                    name: item.name + search,
+                }
+            })
+            return {
+                code: 200,
+                message: '获取成功',
+                data: result,
+            }
+        },
+    },
 ]

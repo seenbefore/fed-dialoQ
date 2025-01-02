@@ -31,3 +31,5 @@ fed-library
 /.t/
 *.local.js
 front-base-vue-template
+
+.codegpt

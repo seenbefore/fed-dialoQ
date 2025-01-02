@@ -52,6 +52,36 @@ export default class UserManage extends Vue {
                     maxlength: 50,
                 },
             },
+            {
+                tag: 'select',
+                name: 'company',
+                itemAttrs: {
+                    label: '单位名称：',
+                },
+                attrs: {
+                    placeholder: '请输入进行查询',
+                    filterable: true,
+                    // 搭配remoteMethod
+                    remote: true,
+                    // 远程查询方法
+                    remoteMethod: async (val: any) => {
+                        const { data } = await this.$http.request({
+                            url: '/company/query',
+                            method: 'post',
+                            data: {
+                                search: val,
+                            },
+                        })
+                        const result = data.map((item: any) => {
+                            return {
+                                label: item.name,
+                                value: item.id,
+                            }
+                        })
+                        return result
+                    },
+                },
+            },
         ]
         return {
             // 是否自动添加查询按钮
