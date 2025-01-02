@@ -7,7 +7,11 @@ export const usePreviews = (srcs: string[]): Promise<void[]> => {
     }
     return Promise.all(srcs.map(usePreview))
 }
-
+/**
+ * 预览文件
+ * @param src 文件地址
+ * @returns
+ */
 export const usePreview = (src: string): Promise<void> => {
     if (!src) {
         return Promise.reject()

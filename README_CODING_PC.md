@@ -178,7 +178,7 @@ const { data } = await list(
     -   `title`：路由标题，用于设置当前路由的标题
     -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
     -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
-    -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
+    -   `activeMenu`：默认不需要配置。当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
     -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`。
     -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
 
@@ -1358,6 +1358,7 @@ export const LocalMenu: UserMenu[] = [
 ## 路由模板 router.js
 - 文件都要按照这个模板创建
 - 路由地址对应匹配文件路径，比如`/system/user-manage/list`对应生成文件目录`system/user-manage/list`
+- `activeMenu`默认不需要配置。只有`path`不在菜单中时才需要配置。
 ```js
 /* eslint-disable */
 const SystemUserManage = () => import(/* webpackChunkName: "SystemUserManage" */ './index.vue')
@@ -1380,18 +1381,6 @@ export default {
 }
 
 ```
-### 路由属性
-
--   `name`：路由名称，用于在`router`中使用
--   `meta`：路由元信息，用于在`router`中使用
-    -   `bodyClass`：设置`body`标签的`class`
-    -   `parent`：父级路由名称，默认值为`Index`，不需要修改。
-    -   `title`：路由标题，用于设置当前路由的标题
-    -   `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
-    -   `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
-    -   `activeMenu`：当前激活菜单，用于设置当前路由激活的菜单。比如进入`文章新增`页面时应该将`文章管理`设置为激活菜单。
-    -   `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`不缓存。
-    -   `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前。
 
 
 ## 接口模板 api.ts 

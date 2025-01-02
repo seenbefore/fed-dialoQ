@@ -26,6 +26,10 @@ export const LocalMenu: UserMenu[] = [
                 uri: '/system/dict',
             },
             {
+                label: '文件管理',
+                uri: '/system/file-manage',
+            },
+            {
                 label: '菜单管理',
                 uri: '/system/menu',
             },

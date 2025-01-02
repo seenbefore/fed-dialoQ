@@ -105,7 +105,7 @@ export default class StudentList extends Vue {
         ]
         return {
             // 是否自动布局
-            autoLayout: false,
+            autoLayout: true,
             // 是否自动添加查询按钮
             autoAppendAction: true,
             fields,

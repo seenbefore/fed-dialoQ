@@ -327,6 +327,62 @@ VUE_APP_BASEURL_API_ADMIN='/@API_ADMIN'
 DEV_PROXY_TARGET_API_ADMIN='http://192.168.1.155:8885/api'
 ```
 
+## 全局配置
+全局配置位于`src/config/index.ts`文件中，用于管理不同环境下的配置项。
+
+### 配置结构
+```typescript
+const defaultConfig = {
+    // 浙政钉配置
+    ZZD_CONFIG: {
+        /** 浙政钉扫码登录地址 */
+        loginUrl: 'xxx',
+        /** 登录域名 */
+        loginDomain: 'xxx',
+    },
+    // 其他配置项...
+}
+```
+
+### 环境区分
+配置文件根据`VUE_APP_ENV`环境变量区分不同环境：
+- `dev`: 本地开发环境
+- `uat`: 测试环境
+- `fat`: 开发环境
+- 默认: 生产环境
+
+### 使用方式
+```typescript
+import config from '@/config'
+
+// 获取浙政钉配置
+const { ZZD_CONFIG } = config
+console.log(ZZD_CONFIG.loginUrl)
+
+// 在组件中使用
+@Component
+export default class MyComponent extends Vue {
+    mounted() {
+        const { ZZD_CONFIG } = config
+        // 使用配置...
+    }
+}
+```
+
+### 添加新配置
+1. 在`defaultConfig`中添加默认配置（生产环境）
+2. 在对应环境判断中覆盖配置
+```typescript
+if (VUE_APP_ENV === 'dev') {
+    Object.assign(defaultConfig, {
+        // 开发环境特定配置
+        NEW_CONFIG: {
+            key: 'value'
+        }
+    })
+}
+```
+
 ### 本地开发
 
 - 基于`.env.development` 复制一份`.env.development.local`
@@ -1177,3 +1233,69 @@ useLightWatermark('水印文字')
 | rootClassName | 根元素类名 | string | '' |
 | gap | 水印之间的间隙 [x, y] | [number, number] | [80, 80] |
 | offset | 水印偏移量 [x, y] | [number, number] | [0, 0] |
+
+
+## 文件预览
+
+项目提供了便捷的文件预览Hook，支持图片和PDF文件的预览功能。
+
+#### usePreview
+用于预览单个文件：
+```typescript
+import { usePreview } from '@/hooks/usePreview'
+
+// 预览图片
+usePreview('image.jpg')
+
+// 预览PDF
+usePreview('document.pdf')
+```
+
+#### usePreviews
+用于批量预览多个文件：
+```typescript
+import { usePreviews } from '@/hooks/usePreview'
+
+// 批量预览文件
+usePreviews(['image1.jpg', 'document.pdf', 'image2.jpg'])
+```
+
+支持的文件类型：
+- 图片文件：使用内置图片预览组件
+- PDF文件：使用浏览器新窗口打开
+- 其他类型：使用浏览器新窗口打开
+
+## 文件下载
+
+项目提供了便捷的文件下载Hook，支持URL下载和Blob数据下载。
+
+### useUrlDownload
+用于从URL下载文件：
+```typescript
+import { useUrlDownload } from '@/hooks/useDownload'
+
+// 使用默认文件名（从URL中获取）
+useUrlDownload('https://example.com/files/document.pdf')
+
+// 指定下载后的文件名
+useUrlDownload('https://example.com/files/document.pdf', 'my-document.pdf')
+```
+
+### useBlobDownload
+用于从Blob数据下载文件：
+```typescript
+import { useBlobDownload } from '@/hooks/useDownload'
+
+// 从Blob数据下载文件
+const blob = new Blob(['Hello World'], { type: 'text/plain' })
+useBlobDownload(blob, 'hello.txt')
+```
+
+功能特点：
+- 支持URL直接下载
+- 支持Blob数据下载
+- 自动处理文件名
+- 支持自定义文件名
+- 自动清理临时资源
+- 异步Promise接口
+- 错误处理机制

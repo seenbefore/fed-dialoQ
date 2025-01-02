@@ -11,7 +11,8 @@
         "**/dist": true,
         "**/static-hash": true,
         "**/libs": true,
-        "public": true
+        "public": true,
+        "node_modules": true
     },
     "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
     // 重新设定tabsize

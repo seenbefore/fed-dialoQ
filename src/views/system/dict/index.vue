@@ -75,29 +75,10 @@ export default class DictManage extends Vue {
                     ],
                 },
             },
-            {
-                span: 24,
-                tag: 'action',
-                buttons: [
-                    {
-                        isSubmit: true,
-                        type: 'primary',
-                        text: '查询',
-                        svgIcon: 'icon-search',
-                        icon: 'search-btn',
-                    },
-                    {
-                        isReset: true,
-                        type: 'reset',
-                        text: '重置',
-                        svgIcon: 'icon-reset',
-                        icon: 'icon-reset',
-                    },
-                ],
-            },
         ]
         return {
-            span: 8,
+            autoLayout: true,
+            autoAppendAction: true,
             fields,
         }
     }
