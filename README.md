@@ -1299,3 +1299,86 @@ useBlobDownload(blob, 'hello.txt')
 - 自动清理临时资源
 - 异步Promise接口
 - 错误处理机制
+
+### 文件上传
+
+文件上传hook，提供文件上传相关功能。
+
+#### 功能特点
+- 支持文件类型限制
+- 支持文件大小限制
+- 支持上传进度监控
+- 支持单文件和多文件上传
+- 内置错误处理机制
+
+#### 使用示例
+
+```typescript
+import { useUpload } from '@/hooks'
+
+const { uploadFile, uploadFiles } = useUpload({
+    // 限制文件类型，例如：'.jpg,.png,.pdf'
+    accept: '.jpg,.png,.pdf',
+    // 限制文件大小(MB)，默认10MB
+    maxSize: 10,
+    // 上传前的钩子函数
+    beforeUpload: (file) => {
+        console.log('before upload:', file)
+        return true
+    },
+    // 上传进度回调
+    onProgress: (percent, file) => {
+        console.log('upload progress:', percent)
+    },
+    // 上传成功回调
+    onSuccess: (response, file) => {
+        console.log('upload success:', response)
+    },
+    // 上传失败回调
+    onError: (error, file) => {
+        console.error('upload error:', error)
+    }
+})
+
+try {   
+    // 上传单个文件
+    await uploadFile(file, '/api/upload')
+} catch (error) {
+    console.error('upload error:', error)
+}
+
+// 上传多个文件
+try {
+    await uploadFiles(files, '/api/upload')
+} catch (error) {
+    console.error('upload error:', error)
+}
+```
+
+#### API说明
+
+##### Options
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| accept | 接受上传的文件类型 | string | - |
+| maxSize | 文件大小限制(MB) | number | 10 |
+| beforeUpload | 上传前的钩子函数 | (file: File) => boolean \| Promise<File> | - |
+| onProgress | 上传进度回调 | (percent: number, file: File) => void | - |
+| onSuccess | 上传成功回调 | (response: any, file: File) => void | - |
+| onError | 上传失败回调 | (error: Error, file: File) => void | - |
+
+##### 返回值
+
+| 方法 | 说明 | 参数 |
+|------|------|------|
+| uploadFile | 上传单个文件 | (file: File, url: string) => Promise<void> |
+| uploadFiles | 上传多个文件 | (files: FileList \| File[], url: string) => void |
+
+#### 注意事项
+1. 文件类型限制支持以下格式：
+   - 文件扩展名：`.jpg,.png,.pdf`
+   - MIME类型：`image/*,application/pdf`
+2. 文件大小限制默认为10MB，可通过maxSize参数调整
+3. beforeUpload钩子返回false或者reject时将停止上传
+4. 上传失败时会自动显示错误提示
