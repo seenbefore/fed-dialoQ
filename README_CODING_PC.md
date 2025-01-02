@@ -643,6 +643,27 @@ export default class ComponentName extends Vue {
 
 ```
 
+### 默认控件后跟随自定义内容
+```typescript
+{
+    tag: 'input',
+    name: 'captcha',
+    label: '',
+    attrs: {
+        placeholder: '请输入图片验证码',
+        // 确保验证码和输入框在同一行并居中
+        class: 'sg-flexbox align-center',
+    },
+    // 跟随图片验证码组件
+    appendRender: () => {
+        return (
+            <div class="sg-ml-3">
+                <Captcha getCaptcha={this.getCaptcha} />
+            </div>
+        )
+    },
+},
+```
 ### 自定义组件配置
 - 如果需要自定义渲染`appendRender`，请使用`custom`标签。
 ```javascript

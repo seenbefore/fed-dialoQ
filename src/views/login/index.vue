@@ -34,19 +34,23 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { FormColumn } from '@/sharegood-ui'
 import { userStore, settingsStore, tagsViewStore } from '@/store/useStore'
+import Captcha from '@/components/captcha/index.vue'
 
 const state = {
     username: 'admin',
     password: '123456',
+    captcha: '',
 }
 type State = typeof state
 @Component({
     name: 'LoginSimple',
-    components: {},
+    components: {
+        Captcha,
+    },
 })
 export default class LoginSimple extends Vue {
     @Prop({ default: '' }) redirect!: string
@@ -63,28 +67,47 @@ export default class LoginSimple extends Vue {
             ...state,
         },
     }
-    private fields: FormColumn[] = [
-        {
-            tag: 'input',
-            name: 'username',
-            label: '',
-            attrs: {
-                placeholder: '请输入账号',
+    get fields() {
+        return [
+            {
+                tag: 'input',
+                name: 'username',
+                label: '',
+                attrs: {
+                    placeholder: '请输入账号',
+                },
             },
-        },
-        {
-            tag: 'input',
-            name: 'password',
-            label: '',
-            attrs: {
-                'show-password': true,
-                type: 'password',
-                placeholder: '请输入密码',
-                isTriggerSubmit: true,
-                clearable: false,
+            {
+                tag: 'input',
+                name: 'password',
+                label: '',
+                attrs: {
+                    'show-password': true,
+                    type: 'password',
+                    placeholder: '请输入密码',
+                    isTriggerSubmit: true,
+                    clearable: false,
+                },
             },
-        },
-    ]
+            {
+                tag: 'input',
+                name: 'captcha',
+                label: '',
+                attrs: {
+                    placeholder: '请输入图片验证码',
+                    // 确保验证码和输入框在同一行
+                    class: 'sg-flexbox align-center',
+                },
+                appendRender: () => {
+                    return (
+                        <div class="sg-ml-3">
+                            <Captcha getCaptcha={this.getCaptcha} />
+                        </div>
+                    )
+                },
+            },
+        ] as FormColumn[]
+    }
     get valid() {
         const { username, password } = this.View.model
         if (username && password) {
@@ -114,6 +137,21 @@ export default class LoginSimple extends Vue {
         let BASE_URL = process.env.BASE_URL
         let redirect = encodeURIComponent(`${location.origin}${BASE_URL}login-free`)
         location.href = `https://cangjie.icinfo.cn/login-library?redirect=${redirect}`
+    }
+
+    /** 获取验证码图片地址 */
+    async getCaptcha() {
+        try {
+            // 这里可以替换为实际的验证码获取接口
+            const { data } = await this.$http.request({
+                url: '/usercenter/captcha/image',
+                method: 'get',
+            })
+            return data.img
+        } catch (error) {
+            console.error('获取验证码失败:', error)
+            throw error
+        }
     }
 }
 </script>

@@ -566,7 +566,7 @@ export default {
             if (col.attrs.appendSlotRender) {
                 return 'inline'
             }
-            return ''
+            return col.attrs?.class || ''
         },
         /**
          * 表单对象数据赋值
