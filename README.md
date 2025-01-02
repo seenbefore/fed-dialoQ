@@ -1107,3 +1107,73 @@ const url2 = generateDataVShareUrl({
 - querystring
 
 更多详细信息请参考 [DataV 官方文档](https://help.aliyun.com/zh/datav/datav-7-0/user-guide/use-signature-authentication-to-verify-token-parameters-of-a-published-datav-project)
+
+## 水印功能
+
+### 功能说明
+用于在页面上添加全局水印，支持文字水印和图片水印，可自定义样式和位置。
+
+### 使用方法
+
+1. 全局水印配置
+```typescript
+// 在 App.vue 中配置 
+// settings.js 中的 watermark 为 true
+if (settingsStore.watermark) {
+    const watermarkContent = `测试水印内容`
+    useWatermark({
+        content: watermarkContent,
+        font: {
+            color: 'rgba(0, 0, 0, 0.12)',
+            fontSize: 16,
+            fontFamily: 'Arial',
+            fontWeight: 'bold',
+        },
+        rotate: -30,
+        width: 300,
+        height: 150,
+        gap: [60, 60],
+        offset: [0, 0],
+        zIndex: 9999,
+    })
+}
+```
+
+2. 自定义水印
+```typescript
+import { useWatermark } from '@/hooks/useWatermark'
+
+// 简单文字水印
+useSimpleWatermark('水印文字')
+
+// 图片水印
+useImageWatermark('图片URL')
+
+// 暗色水印
+useDarkWatermark('水印文字')
+
+// 浅色水印
+useLightWatermark('水印文字')
+```
+
+### 配置参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| content | 水印内容 | string \| string[] | - |
+| zIndex | 水印层级 | number | 9999 |
+| rotate | 旋转角度 | number | -30 |
+| width | 水印宽度 | number \| string | 400 |
+| height | 水印高度 | number \| string | 200 |
+| image | 图片源 | string | '' |
+| font | 字体相关配置 | object | - |
+| font.fontSize | 字体大小 | number | 24 |
+| font.fontFamily | 字体 | string | 'Arial' |
+| font.fontStyle | 字体样式 | string | 'normal' |
+| font.fontWeight | 字体粗细 | string | 'normal' |
+| font.color | 字体颜色 | string | 'rgba(0, 0, 0, 0.08)' |
+| clockwise | 是否顺时针旋转 | boolean | true |
+| opacity | 透明度 | number | 1 |
+| rootClassName | 根元素类名 | string | '' |
+| gap | 水印之间的间隙 [x, y] | [number, number] | [80, 80] |
+| offset | 水印偏移量 [x, y] | [number, number] | [0, 0] |

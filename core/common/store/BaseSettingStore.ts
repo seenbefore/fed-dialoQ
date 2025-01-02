@@ -14,6 +14,8 @@ export interface IBaseSettingStore {
 
 /* 基础的 SettingStore */
 export default class BaseSettingStore<T extends IBaseSettingStore = IBaseSettingStore> extends VuexModule implements IBaseSettingStore {
+    /* 是否需要水印 */
+    public watermark = false
     /* 标题 */
     public title = ''
 

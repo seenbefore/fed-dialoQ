@@ -23,11 +23,13 @@ module.exports = {
         // 内容区是否作为第三方页面 隐藏头部和左侧菜单
         isThirdParty: false,
         // 后台标题 选用
-        title: '主应用',
+        title: '系统名称',
         // 是否使用标签页
         tagsView: true,
         // 后台板式 两种 layout-vertical layout-common
         layout: 'layout-common',
+        // 是否使用水印
+        watermark: false,
     },
     user: {
         // 设置一级菜单为顶部菜单
