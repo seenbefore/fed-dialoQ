@@ -81,7 +81,7 @@ let themeVariables: IDefinedThemeValue = {
     '--color-primary': '#005ff5',
     '--color-success': '#6DD400',
     '--color-warning': '#FF7D00',
-    '--color-danger': '#F4333C',
+    '--color-danger': '#F53F3F',
     '--color-info': '#666666',
 }
 settingsStore.updateThemeVariables(themeVariables)

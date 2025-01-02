@@ -78,6 +78,19 @@
 └── package.json           # npm 配置文件
 ```
 
+## 主题色
+- 主题色请使用`--color-primary`、`--color-success`、`--color-warning`、`--color-danger`、`--color-info`
+- `main.ts`中设置主题色
+```javascript
+let themeVariables = {
+    '--color-primary': '#005ff5',
+    '--color-success': '#6DD400',
+    '--color-warning': '#FF7D00',
+    '--color-danger': '#F53F3F',
+    '--color-info': '#666666',
+}
+```
+
 ## 代码规范
 - 视图中`<template>`标签中禁止使用`?.`（可选链）语法，请使用`||`（或）语法。因为它会导致模板渲染时报错。
 - style中不要使用`:deep`，请使用`::v-deep`。
@@ -3483,7 +3496,35 @@ export default class OtherPage extends Vue {
      // 或者
      await save(this.formModel as any)
      ```
+3. jsx约束
+   - ❌ 禁止在 jsx 中使用`v-model` 
+   - ✅ 推荐使用`props`和`on`
+   - 示例：
+     ```jsx
+     <!-- 错误 -->
+     <el-radio-group v-model={this.dialogForm.radioValue} />
+     
+     <!-- 正确 -->
+    (
+        <div>
+            <el-radio-group
+                props={{
+                    value: this.dialogForm.radioValue,
+                }}
+                on={{
+                    input: (val: string) => {
+                        this.dialogForm.radioValue = val
 
+                        console.log('radio value changed:', val)
+                    },
+                }}
+            >
+                <el-radio props={{ label: '1' }}>男</el-radio>
+                <el-radio props={{ label: '2' }}>女</el-radio>
+            </el-radio-group>
+        </div>
+    )
+     ```
 # 响应约束
 - 除非必要，否则不要删除任何现有代码。
 - 除非必要，否则不要删除我的注释或被注释掉的代码。

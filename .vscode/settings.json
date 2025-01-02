@@ -12,7 +12,8 @@
         "**/static-hash": true,
         "**/libs": true,
         "public": true,
-        "node_modules": true
+        "node_modules": true,
+        "*.min.js": true
     },
     "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
     // 重新设定tabsize

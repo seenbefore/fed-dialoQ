@@ -101,7 +101,11 @@ export default class LoginSimple extends Vue {
                 appendRender: () => {
                     return (
                         <div class="sg-ml-3">
-                            <Captcha getCaptcha={this.getCaptcha} />
+                            <Captcha
+                                props={{
+                                    getCaptcha: this.getCaptcha,
+                                }}
+                            />
                         </div>
                     )
                 },

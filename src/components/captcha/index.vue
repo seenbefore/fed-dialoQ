@@ -12,7 +12,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 })
 export default class Captcha extends Vue {
     /** 获取验证码的异步函数 */
-    @Prop({ type: Function, required: true }) getCaptcha!: () => Promise<string>
+    @Prop({ required: true }) readonly getCaptcha!: () => Promise<string>
 
     private captchaUrl = ''
     private loading = false
