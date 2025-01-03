@@ -7,7 +7,7 @@ export default {
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
         bodyClass: '',
-        parent: 'Index',
+        parent: '',
         rank: 1,
         title: '试卷预览',
         keepAlive: false,

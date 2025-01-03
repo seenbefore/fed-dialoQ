@@ -237,7 +237,14 @@ export default class QuestionPaperList extends Vue {
     }
 
     async handlePreview(row: any) {
-        this.$router.push(`/question-bank/paper/preview?id=${row.id}`)
+        // 改为打开浏览器标签页
+        const { href } = this.$router.resolve({
+            path: '/question-bank/paper/preview',
+            query: {
+                id: row.id,
+            },
+        })
+        window.open(href, '_blank')
     }
 
     mounted() {}

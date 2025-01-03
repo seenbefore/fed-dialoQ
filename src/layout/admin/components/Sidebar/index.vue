@@ -46,6 +46,26 @@ export default class Sidebar extends Vue {
         const { meta = {}, path, query, fullPath } = route
         const alias = query.___
         const key = alias ? path + '?___=' + alias : path
+        const menus = userStore.menus
+        // 在菜单树中查找匹配的路径 兼容router.js中配置了错误的activeMenu
+        // menus结构: [{path: string, children?: Menu[]}]
+        const findMenuPath = (path: string, menuList: any[]): string | undefined => {
+            for (const menu of menuList) {
+                if (menu.path === path) {
+                    return menu.path
+                }
+                if (menu.children?.length) {
+                    const childPath = findMenuPath(path, menu.children)
+                    if (childPath) return childPath
+                }
+            }
+            return undefined
+        }
+
+        const matchedPath = findMenuPath(path, menus)
+        if (matchedPath) {
+            return matchedPath
+        }
 
         // if set path, the sidebar will highlight the path you set
         if (meta.activeMenu) {

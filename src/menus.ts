@@ -123,6 +123,10 @@ export const LocalMenu: UserMenu[] = [
                         label: '试卷列表',
                         uri: '/question-bank/paper',
                     },
+                    {
+                        label: '考场管理',
+                        uri: '/question-bank/exam/room',
+                    },
                 ],
             },
             {

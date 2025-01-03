@@ -89,7 +89,6 @@
         <!-- 底部操作栏 -->
         <div class="paper-footer">
             <el-button type="primary" @click="toggleAnswer">{{ showAnswer ? '隐藏答案' : '显示答案' }}</el-button>
-            <el-button @click="goBack">返回</el-button>
         </div>
     </div>
 </template>
