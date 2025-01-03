@@ -62,3 +62,44 @@ const getFilenameFromUrl = (url: string): string => {
     const filename = filenameWithQuery.split('?')[0]
     return decodeURIComponent(filename)
 }
+
+/**
+ * @description 接收数据流生成 blob，创建链接，下载文件
+ * @param {Function} api 导出表格的api方法 (必传)
+ * @param {string} tempName 导出的文件名 (必传)
+ * @param {object} params 导出的参数 (默认{})
+ * @param {string} fileType 导出的文件格式 (默认为.xlsx)
+ */
+
+export const useDownload = async (api: () => Promise<any>, tempName = '', fileType = '.xlsx') => {
+    try {
+        const res = await api()
+        if (res.headers['content-disposition']) {
+            tempName = decodeURI(res.headers['content-disposition'].split(';')[1].split('=')[1])
+        } else {
+            tempName = tempName || new Date().getTime() + fileType
+        }
+
+        if (res.status !== 200 || res.data == null || !(res.data instanceof Blob)) {
+            throw new Error('导出失败，请稍后再试！')
+        }
+        const blob = new Blob([res.data])
+        // 兼容 edge 不支持 createObjectURL 方法
+        if ('msSaveOrOpenBlob' in ((navigator as unknown) as any)) {
+            ;((window.navigator as unknown) as any).msSaveOrOpenBlob(blob, tempName + fileType)
+        }
+        const blobUrl = window.URL.createObjectURL(blob)
+        const exportFile = document.createElement('a')
+        exportFile.style.display = 'none'
+        exportFile.download = tempName
+        exportFile.href = blobUrl
+        document.body.appendChild(exportFile)
+        exportFile.click()
+        // 去除下载对 url 的影响
+        document.body.removeChild(exportFile)
+        window.URL.revokeObjectURL(blobUrl)
+    } catch (error) {
+        // console.log(error)
+        throw error
+    }
+}

@@ -149,7 +149,7 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'answer',
+                name: 'answer1',
                 label: '答案',
                 attrs: {
                     options: [
@@ -166,9 +166,10 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'checkbox',
-                name: 'answer',
+                name: 'answer2',
                 label: '答案',
                 attrs: {
+                    value: [],
                     options: [
                         { label: 'A', value: 'A' },
                         { label: 'B', value: 'B' },
@@ -181,7 +182,7 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'radio',
-                name: 'answer',
+                name: 'answer3',
                 label: '答案',
                 attrs: {
                     options: [

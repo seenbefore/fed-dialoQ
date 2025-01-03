@@ -79,6 +79,7 @@ export default class PaperDrawer extends Vue {
                     type: 'number',
                     min: 0,
                     placeholder: '请输入考试时长(分钟)',
+                    inputAppendSlotRender: () => <div>分钟</div>,
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请输入考试时长' }],

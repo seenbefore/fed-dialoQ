@@ -1,4 +1,4 @@
-export { useUrlDownload, useBlobDownload } from './useDownload'
+export { useUrlDownload, useBlobDownload, useDownload } from './useDownload'
 export { usePreviews, usePreview } from './usePreview'
 export { useWatermark } from './useWatermark'
 export { useLoadList } from './useLoadList'
