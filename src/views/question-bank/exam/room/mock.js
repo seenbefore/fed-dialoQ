@@ -77,4 +77,32 @@ export default [
             })
         },
     },
+    {
+        name: '/exam/room/detail',
+        method: 'get',
+        description: '考场详情',
+        onMock(opt, query, body) {
+            return mock({
+                code: 200,
+                data: {
+                    id: query.id,
+                    area: '浙江省',
+                    name: '宁波支队AB',
+                    teachers: '@cname,@cname',
+                    startTime: '2024-09-12 15:00:00',
+                    endTime: '2024-09-12 17:00:00',
+                    examName: '2024年第二次协助执法文员考试',
+                    paper: {
+                        id: 1,
+                        name: '2024年第二次协助执法文员考试试卷A',
+                        questionCount: 100,
+                        createTime: '2024-03-12 15:00:00',
+                    },
+                    paperName: '2024年第二次协助执法文员考试试卷A',
+                    questionType: 'random',
+                },
+                message: '请求成功',
+            })
+        },
+    },
 ]

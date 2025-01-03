@@ -76,6 +76,24 @@ export default class PaperDialog extends Vue {
                 prop: 'createTime',
                 minWidth: '170px',
             },
+            {
+                label: '操作',
+                prop: 'action',
+                width: '120px',
+                render: (h: any, { row }: any) => {
+                    return (
+                        <el-button
+                            type="text"
+                            onClick={() => {
+                                this.selected = row
+                                this.confirm()
+                            }}
+                        >
+                            选择
+                        </el-button>
+                    )
+                },
+            },
         ]
         return {
             tableHeaderSticky: {

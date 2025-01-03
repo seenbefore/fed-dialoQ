@@ -17,6 +17,21 @@ export interface RoomVO {
     endTime: string
     /** 考试名称 */
     examName: string
+    /** 试卷 */
+    paper?: {
+        /** ID */
+        id: string
+        /** 试卷名称 */
+        name: string
+        /** 题目数量 */
+        questionCount: number
+        /** 创建时间 */
+        createTime: string
+    }
+    /** 试卷名称 */
+    paperName?: string
+    /** 题库类型 */
+    questionType?: string
 }
 
 export interface StudentVO {
@@ -106,6 +121,23 @@ export function getStudentList(
         url: '/exam/room/student/list',
         method: 'post',
         data,
+        ...options,
+    })
+}
+
+/**
+ * 获取考场详情
+ */
+export function detail(
+    data?: {
+        /** id */ id: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<RoomVO>>({
+        url: '/exam/room/detail',
+        method: 'get',
+        params: data,
         ...options,
     })
 }

@@ -99,6 +99,9 @@ export default class StudentDialog extends Vue {
                     total: data.recordsTotal,
                 }
             },
+            // 导出
+            pageActionLayout: [],
+
             columns,
         }
     }

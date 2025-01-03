@@ -16,7 +16,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, FormRef } from '@/sharegood-ui'
-import { save } from '../../api'
+import { save, detail } from '../../api'
 
 @Component({
     name: 'ExamRoomSave',
@@ -142,9 +142,10 @@ export default class ExamRoomSave extends Vue {
                             label: '试卷',
                             rules: [{ required: true, message: '请选择试卷' }],
                         },
-                        appendRender: () => {
+                        render: () => {
                             return (
-                                <div>
+                                <div class="paper-select">
+                                    <el-input v-model={this.formModel.paperName} placeholder="请选择试卷" readonly></el-input>
                                     <el-button type="primary" onClick={this.handleSelectPaper}>
                                         选择试卷
                                     </el-button>
@@ -199,17 +200,32 @@ export default class ExamRoomSave extends Vue {
     async handleSelectPaper() {
         const result = await this.$modalDialog(() => import('../paper-dialog/index.vue'), {})
         if (result) {
-            this.formModel.paper = result
+            this.$set(this.formModel, 'paper', result)
+            this.$set(this.formModel, 'paperName', result.name)
         }
     }
 
     handleDeletePaper() {
-        this.formModel.paper = null
+        this.$set(this.formModel, 'paper', null)
+        this.$set(this.formModel, 'paperName', '')
     }
 
     async created() {
         if (this.action === 'edit' && this.id) {
-            // 获取详情
+            try {
+                this.loading = true
+                const { data } = await detail({ id: this.id })
+                this.formModel = {
+                    ...data,
+                    paper: data.paper,
+                    paperName: data.paperName,
+                }
+            } catch (error) {
+                console.error(error)
+                this.$message.error('获取详情失败')
+            } finally {
+                this.loading = false
+            }
         }
     }
 
@@ -234,6 +250,16 @@ export default class ExamRoomSave extends Vue {
             flex: 1;
             padding: 15px 20px;
             overflow-y: auto;
+
+            .paper-select {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
+                .el-input {
+                    flex: 1;
+                }
+            }
         }
 
         .drawer-footer {
