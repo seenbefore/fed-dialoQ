@@ -46,30 +46,10 @@ export default class QuestionPaperList extends Vue {
                     placeholder: '请输入试卷名称',
                 },
             },
-            {
-                span: 24,
-                tag: 'action',
-                buttons: [
-                    {
-                        isSubmit: true,
-                        type: 'primary',
-                        text: '查询',
-                        svgIcon: 'icon-search',
-                        icon: 'search-btn',
-                    },
-                    {
-                        isReset: true,
-                        type: 'reset',
-                        text: '重置',
-                        svgIcon: 'icon-reset',
-                        icon: 'icon-reset',
-                    },
-                ],
-            },
         ]
         return {
-            span: 8,
             fields,
+            autoAppendAction: true,
         }
     }
 

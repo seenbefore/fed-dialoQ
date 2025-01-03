@@ -493,7 +493,7 @@ export default class ComponentName extends Vue {
 
 | 事件名称     | 说明     | 回调参数  |
 | ------------ | -------- | --------- |
-| validate     | 校验数据 |           |
+| validate     | 校验数据,isScroll=true时滚动到错误信息 |  (callback, isScroll) |
 | reset        | 重置数据 |           |
 | getFieldProps | 获取field对象 |  |
 | validateField | 校验某个域 | (prop, cb) |
@@ -2492,7 +2492,8 @@ export default class UserDialog extends Vue {
     }
     async submit() {
         try {
-            await this.formRef.validate()
+            // 滚动到错误信息
+            await this.formRef.validate(null, true)
             console.log('submit:>>', this.formModel)
             // 必须保留
             this.confirm()
@@ -2658,7 +2659,7 @@ export default class ImportDrawer extends Vue {
     async submit() {
         try {
             this.loading = true
-            await this.formRef.validate()
+            await this.formRef.validate(null, true)
             // 模拟上传
             await new Promise(resolve => setTimeout(resolve, 1500))
             this.$message.success('导入成功')

@@ -333,7 +333,7 @@ export default class StudentDialog extends Vue {
     async submit() {
         try {
             this.loading = true
-            await this.formRef.validate()
+            await this.formRef.validate(null, true)
             await save(this.formModel)
             this.$message.success('保存成功')
             this.confirm()

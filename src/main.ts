@@ -9,7 +9,10 @@ import defaultSettings from './settings'
 // 状态管理
 import store from './store'
 import { settingsStore, userStore, tagsViewStore } from './store/useStore'
+// 全局样式
 import './styles/index.less'
+// 自定义样式
+import './styles/app.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
 import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme'
 
