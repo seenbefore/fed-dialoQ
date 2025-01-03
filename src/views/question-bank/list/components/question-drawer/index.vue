@@ -16,6 +16,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef } from '@/sharegood-ui'
+import { save, QuestionVO } from '../../api'
 
 @Component({
     name: 'QuestionDrawer',
@@ -96,7 +97,7 @@ export default class QuestionDrawer extends Vue {
                     'show-word-limit': true,
                 },
                 itemAttrs: {
-                    //rules: [{ required: true, message: '请输入题目' }],
+                    rules: [{ required: true, message: '请输入题目' }],
                 },
             },
             {
@@ -107,7 +108,7 @@ export default class QuestionDrawer extends Vue {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    //rules: [{ required: true, message: '请输入选项内容' }],
+                    rules: [{ required: true, message: '请输入选项内容' }],
                 },
                 ifRender: model => model.type !== '2', // 判断题不显示选项
             },
@@ -119,7 +120,7 @@ export default class QuestionDrawer extends Vue {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    //rules: [{ required: true, message: '请输入选项内容' }],
+                    rules: [{ required: true, message: '请输入选项内容' }],
                 },
                 ifRender: model => model.type !== '2',
             },
@@ -131,7 +132,7 @@ export default class QuestionDrawer extends Vue {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    //rules: [{ required: true, message: '请输入选项内容' }],
+                    rules: [{ required: true, message: '请输入选项内容' }],
                 },
                 ifRender: model => model.type === '0', // 仅单选题显示
             },
@@ -143,7 +144,7 @@ export default class QuestionDrawer extends Vue {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    //rules: [{ required: true, message: '请输入选项内容' }],
+                    rules: [{ required: true, message: '请输入选项内容' }],
                 },
                 ifRender: model => model.type === '0', // 仅单选题显示
             },
@@ -206,10 +207,33 @@ export default class QuestionDrawer extends Vue {
         try {
             this.loading = true
             await this.formRef.validate()
+
+            // 构建保存数据
+            const formModel = this.formModel
+            const payload: Partial<QuestionVO> = {
+                id: this.id,
+                kind: formModel.kind,
+                case_name: formModel.category,
+                type: formModel.type,
+                title: formModel.title,
+                option1: formModel.option1,
+                option2: formModel.option2,
+                option3: formModel.option3,
+                option4: formModel.option4,
+                answer: formModel.type === '0' ? formModel.answer1 : formModel.type === '1' ? formModel.answer2.join(',') : formModel.answer3,
+            }
+
+            // 调用保存接口
+            await save(payload)
+
             this.$message.success('保存成功')
             this.confirm()
         } catch (error) {
             console.error(error)
+            // 如果是表单校验错误,不提示
+            if (error?.message) {
+                this.$message.error(error.message)
+            }
         } finally {
             this.loading = false
         }

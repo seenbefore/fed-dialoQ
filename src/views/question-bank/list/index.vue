@@ -19,7 +19,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { list } from './api'
+import { list, save, remove, detail, QuestionVO } from './api'
 
 @Component({
     name: 'QuestionBankList',
@@ -56,7 +56,7 @@ export default class QuestionBankList extends Vue {
                     options: async () => {
                         return [
                             { label: '全部', value: '' },
-                            { label: '2024年全省协助执法文员考试', value: '1' },
+                            { label: '2024年全省协助执法文员考试', value: '6' },
                         ]
                     },
                 },
@@ -170,7 +170,7 @@ export default class QuestionBankList extends Vue {
         ]
 
         return {
-            // 表格滚动吸顶 不要���减
+            // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
                 scrollDom: () => document.querySelector('.QuestionBankList'),
             },
@@ -197,8 +197,7 @@ export default class QuestionBankList extends Vue {
         }
     }
 
-    // 修改handleEdit方法
-    async handleEdit(row: any) {
+    async handleEdit(row: QuestionVO) {
         const result = await this.$modalDialog(() => import('./components/question-drawer/index.vue'), {
             action: 'modify',
             id: row.id,
@@ -209,15 +208,17 @@ export default class QuestionBankList extends Vue {
         }
     }
 
-    async handleDelete(row: any) {
+    async handleDelete(row: QuestionVO) {
         await this.$confirm('确认删除该题目?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
         })
+        await remove({ id: row.id })
         this.$message.success('删除成功')
         this.handleSearch()
     }
+
     async handleImport() {
         const result = await this.$modalDialog(() => import('./components/import-drawer/index.vue'))
         if (result) {

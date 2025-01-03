@@ -1701,6 +1701,14 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { GenderEnum, GenderEnumMap, REIMBURSE_STATUS, REIMBURSE_STATUS_MAP } from './enum'
 import { list, save, remove, removeBatch, detail, VO } from './api'
+
+/*
+ * 描述: 这是一个示例Vue组件，用于展示如何在文件顶部添加说明注释。
+ *
+ * 功能描述:
+ * - 该组件包含一个按钮和一个显示消息的区域。
+ * - 点击按钮时，将显示一条欢迎消息。
+ */
 @Component({
     name: 'UserManagement',
     components: {
@@ -3538,7 +3546,7 @@ export default class OtherPage extends Vue {
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
-    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。
+    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。请在组件顶部添加功能描述注释。
     - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
     - 菜单文件`menus.ts`：根据`router.js`的`path`添加菜单项，不要删减文件的内容。
 - 依次循环
