@@ -8,6 +8,7 @@
         "start": "npm install --registry https://registry.npmmirror.com",
         "dev": "vue-cli-service serve --open",
         "dev:h5-demo": "cross-env VUE_APP_ENTRY=h5 vue-cli-service serve --open --mode=development",
+        "dev:h5-demo:fat": "cross-env VUE_APP_ENTRY=h5 vue-cli-service build --mode=fat",
         "reset": "git reset --hard && git clean -df",
         "save": "node -e \"const now = new Date().toLocaleString('zh-CN', {hour12: false}); require('child_process').execSync('git add . && git commit -m \\\"feat: 保存代码 ' + now + '\\\"', {stdio: 'inherit'})\"",
         "build": "vue-cli-service build --mode=production",
