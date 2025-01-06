@@ -41,13 +41,13 @@ export default class HotModules extends Vue {
 
 <style lang="less" scoped>
 .hot-modules {
-    height: 100%;
+    height: 440px;
     border: none;
-    border-radius: 8px;
+    border-radius: 0;
     background: #fff;
 
     .card-header {
-        margin-bottom: 16px;
+        margin-bottom: 24px;
 
         .title {
             font-size: 16px;
@@ -57,10 +57,27 @@ export default class HotModules extends Vue {
     }
 
     .module-list {
+        height: 360px;
+        overflow-y: auto;
+        padding-right: 4px;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #e5e6eb;
+            border-radius: 2px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         .module-item {
             display: flex;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             height: 22px;
 
             &:last-child {

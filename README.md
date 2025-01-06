@@ -1115,6 +1115,7 @@ export default class CaseSave extends Vue {
 [文档地址](./src/components/draggable-table/README.md)
 
 
+
 ## DataV 分享链接生成
 
 项目提供了一个用于生成 DataV 大屏分享链接的工具函数，该方式通过认证和授权机制，保证了数据看板分享过程的安全，位于 `src/scripts/utils/datav.js`。
@@ -1382,3 +1383,56 @@ try {
 2. 文件大小限制默认为10MB，可通过maxSize参数调整
 3. beforeUpload钩子返回false或者reject时将停止上传
 4. 上传失败时会自动显示错误提示
+
+
+# Chart 图表组件
+
+基于 ECharts 封装的通用图表组件，支持自定义配置和样式。[文档地址](./src/components/Chart/readme.md)
+
+## 功能特点
+
+- 支持所有 ECharts 配置项
+- 支持自定义样式
+- 支持配置合并策略
+- 自动处理图表缩放
+- 支持 keep-alive 组件
+
+## 使用方法
+
+```vue
+<template>
+    <Chart
+        :option="chartOption"
+        :default-option="defaultOption"
+        :chart-style="{ height: '400px' }"
+    />
+</template>
+
+<script>
+import Chart from '@/components/Chart/index.vue'
+export default {
+    components: {
+        Chart,
+    },
+    data() {
+        return {
+            chartOption: {
+                // ECharts 配置项
+                series: [{
+                    type: 'line',
+                    data: [1, 2, 3, 4, 5]
+                }]
+            },
+            defaultOption: {
+                // 默认配置项
+                title: {
+                    text: '图表标题'
+                }
+            }
+        }
+    },
+    methods: {
+    }
+}
+</script>
+```
