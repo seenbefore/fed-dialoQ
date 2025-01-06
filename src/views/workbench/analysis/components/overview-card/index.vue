@@ -158,7 +158,7 @@ export default class OverviewCard extends Vue {
 
     private formatNumber(num: number | string): string {
         if (typeof num === 'string') return num
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
 }
 </script>
