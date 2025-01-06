@@ -58,7 +58,7 @@ export default [
                         {
                             label: '测试页面',
                             icon: 'el-icon-document',
-                            uri: '/test',
+                            uri: '/workbench/analysis',
                         },
                     ],
                 },
@@ -72,7 +72,7 @@ export default [
                 message: '登录成功!',
                 data: {
                     user: {
-                        realName: '马小强',
+                        realName: '楚光',
                         zfHeadPath: '',
                         organizationCode: 'GO_e3765af04ff94125a61dc1182073987c',
                         organizationName: null,

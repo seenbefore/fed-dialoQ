@@ -4,7 +4,7 @@
         <div class="overview-section">
             <el-card shadow="never">
                 <div slot="header">数据总览</div>
-                <el-row :gutter="20">
+                <el-row :gutter="10">
                     <el-col :span="6">
                         <overview-card
                             title="访问次数"

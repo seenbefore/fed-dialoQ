@@ -12,6 +12,7 @@ const { routerInstance, routes, flatRoutes } = baseInitRouter(Vue, require.conte
     userStore: userStore,
     notFoundLayout: LAYOUT,
     notFoundComponent: NotFound,
+    mode: process.env.VUE_APP_MODE || 'history',
 })
 
 export { routes, flatRoutes }

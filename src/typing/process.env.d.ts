@@ -17,7 +17,7 @@ declare let process: {
     env: {
         readonly NODE_ENV: 'development' | 'production' | 'test'
         readonly VUE_APP_ENV: 'dev' | 'fat' | 'uat' | 'prod' | 'fat1' | 'stage'
-
+        readonly VUE_APP_MODE: 'hash' | 'history'
         readonly BASE_URL: string
         readonly VUE_APP_BASEURL_API: '/**/*' | 'http*(s)://**/*'
 

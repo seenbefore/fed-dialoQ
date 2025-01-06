@@ -11,7 +11,7 @@ import scrollBehavior from './utils/scrollBehavior'
 type Component = ComponentOptions<Vue> | typeof Vue | AsyncComponent
 
 export interface ICreateBaseRouterConfig {
-    mode?: RouterMode
+    mode?: 'hash' | 'history'
     base?: string
     notFoundComponent?: Component
     notFoundLayout?: Component
