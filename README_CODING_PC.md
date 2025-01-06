@@ -454,6 +454,68 @@ export default class ComponentName extends Vue {
 </template>
 ```
 
+## 图表组件 Chart
+基于 ECharts 封装的通用图表组件，支持自定义配置和样式。
+
+## 使用方法
+
+```vue
+<template>
+    <Chart
+        :option="chartOption"
+        :default-option="defaultOption"
+        :chart-style="{ height: '400px' }"
+        :get-option="customMergeOption"
+    />
+</template>
+
+<script>
+import Chart from '@/components/Chart/index.vue'
+export default {
+    components: {
+        Chart,
+    },
+    data() {
+        return {
+            chartOption: {
+                // ECharts 配置项
+                series: [{
+                    type: 'line',
+                    data: [1, 2, 3, 4, 5]
+                }]
+            },
+            defaultOption: {
+                // 默认配置项
+                title: {
+                    text: '图表标题'
+                }
+            }
+        }
+    },
+    methods: {
+        customMergeOption(defaultOption, option) {
+            // 自定义配置合并方法
+            return {
+                ...defaultOption,
+                ...option
+            }
+        }
+    }
+}
+</script>
+```
+
+### Props 说明
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| option | ECharts 配置项 | Object | {} |
+| defaultOption | 默认配置项 | Object | {} |
+| chartStyle | 自定义样式 | Object | {} |
+| getOption | 配置合并方法 | Function | (defaultOption, option) => ({...defaultOption, ...option}) |
+
+
+
 ## 表单组件 sg-base-form
 - 全局组件
 - 已内置的组件`tag`包含：
@@ -1369,9 +1431,10 @@ export const LocalMenu: UserMenu[] = [
 ```
 
 ## 路由模板 router.js
+- `path`：路由地址，根据用户提供的菜单路径生成，比如`工作台/分析页`则生成`/workbench/analysis`，同时并生成文件夹`workbench/analysis`。
 - 文件都要按照这个模板创建
 - 路由地址对应匹配文件路径，比如`/system/user-manage/list`对应生成文件目录`system/user-manage/list`
-- `activeMenu`默认不需要配置。只有`path`不在菜单中时才需要配置。
+- `activeMenu`默认不需要配置。
 ```js
 /* eslint-disable */
 const SystemUserManage = () => import(/* webpackChunkName: "SystemUserManage" */ './index.vue')
@@ -1390,6 +1453,7 @@ export default {
         keepAlive: false,
         requireAuth: true,
         aliveOnlyTo: [],
+        activeMenu: '',
     },
 }
 
@@ -2700,679 +2764,10 @@ export default class ImportDrawer extends Vue {
 
 ```
 
-### 数据统计页面模板
-如果类型为数据统计，请使用以下模板
-```html
-<!--  -->
-<template>
-    <div class="sg-page DemoStat">
-        <div class="inner-box">
-            <AnalyticInsightSummary></AnalyticInsightSummary>
-            <LineChart></LineChart>
-            <TableView></TableView>
-        </div>
-    </div>
-</template>
-
-<script lang="tsx">
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-import AnalyticInsightSummary from './components/analytic-insight-summary/index.vue'
-import LineChart from './components/line-chart/index.vue'
-import TableView from './components/table-view/index.vue'
-@Component({
-    name: 'DemoStat',
-    components: {
-        AnalyticInsightSummary,
-        LineChart,
-        TableView,
-    },
-})
-export default class DemoStat extends Vue {
-    mounted() {}
-}
-</script>
-
-<style lang="less" scoped>
-.sg-page {
-    padding: 0 !important;
-}
-.DemoStat ::v-deep {
-    .inner-box {
-        height: 100%;
-        background-color: var(--system-container-background);
-    }
-}
-</style>
-
-```
-
-### 数据概览组件模板
-```html
-<!--  -->
-<template>
-    <div class="AnalyticInsightSummary">
-        <div class="item">
-            <span class="text-desc font-size-md">{{ formModel.other && formModel.other.name }}</span>
-            <span class="text-danger text-number" v-text="formModel.a"></span>
-        </div>
-        <!-- 分割线 不要删除 -->
-        <div class="divider"></div>
-        <div class="item">
-            <span class="text-desc font-size-md">走查总数</span>
-            <span class="text-secondary text-number" v-text="formModel.b"></span>
-        </div>
-        <!-- 分割线 不要删除 -->
-        <div class="divider"></div>
-        <div class="item">
-            <span translate="status.PROGRESS" class="text-desc font-size-md">进行中</span>
-            <span class="text-warning text-number" v-text="formModel.c"></span>
-        </div>
-        <!-- 分割线 不要删除 -->
-        <div class="divider"></div>
-        <div class="item ng-star-inserted">
-            <span class="text-desc font-size-md">已完成</span>
-            <span class="text-success text-number" v-text="formModel.d"></span>
-        </div>
-    </div>
-</template>
-
-<script lang="tsx">
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-@Component({
-    name: 'AnalyticInsightSummary',
-    components: {},
-})
-export default class AnalyticInsightSummary extends Vue {
-    // 必要字段，不要省略
-    formModel: Record<string, any> = {
-        other: {
-            name: '产品覆盖率',
-        },
-    }
-    async mounted() {
-        // 模拟数据 不要删除
-        const { data } = await Promise.resolve({
-            data: {
-                a: 10,
-                b: 20,
-                c: 30,
-                d: 40,
-            },
-        })
-        // 赋值数据到 formModel
-        this.$set(this, 'formModel', data)
-    }
-}
-</script>
-
-<style lang="less" scoped>
-// 以下内容不要删减
-.AnalyticInsightSummary {
-    padding: 10px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    background: #fff;
-    // 不要删除
-    .item {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        .text-number {
-            font-size: 2.5em;
-        }
-    }
-    // 不要删除
-    .divider {
-        width: 1px;
-        background: #eee;
-        height: 76px;
-        overflow: hidden;
-    }
-    // 不要删除
-    .text-success {
-        color: #73d897 !important;
-    }
-    .text-secondary {
-        color: #666 !important;
-    }
-    .text-desc {
-        color: #aaa !important;
-    }
-    .text-warning {
-        color: #ffcd5d !important;
-    }
-    .text-danger {
-        color: #ff7575 !important;
-    }
-}
-</style>
-
-```
-
-### 图表组件模板
-```html
-<template>
-    <el-card class="chart-card">
-        <div slot="header" class="sg-flexbox align-center justify-between">
-            <span class="title">
-                <!-- 标题 -->
-                <span class="sg-title-before-line">标题</span>
-            </span>
-            <div class="meta">
-                <!-- 查询条件 -->
-                <sg-base-form v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch"></sg-base-form>
-            </div>
-        </div>
-        <!-- 基于echarts的图表组件 请不要删除 -->
-        <BaseChart :config="option"></BaseChart>
-    </el-card>
-</template>
-
-<script lang="tsx">
-import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
-// 基于echarts的图表组件 请不要删除
-import BaseChart from '@/sharegood-ui/packages/charts/BaseChart.vue'
-import { FormRow, FormRef } from '@/sharegood-ui'
-import moment from 'moment'
-
-@Component({
-    name: 'AppChart',
-    components: {
-        // 不要删除
-        BaseChart,
-    },
-})
-export default class AppChart extends Vue {
-    formModel: any = {}
-
-    option = this.creatOption({})
-    // 基于echarts的配置，请不要删除，不可以直接写死数据
-    creatOption(data: any) {
-        const { series = [], xAxisData = [] } = data
-
-        return {
-            title: {
-                x: 70,
-                y: 30,
-                textStyle: {
-                    fontSize: 14,
-                },
-            },
-            tooltip: {
-                trigger: 'axis',
-                textStyle: {
-                    color: '#595959',
-                },
-                axisPointer: {
-                    // 坐标轴指示器，坐标轴触发有效
-                    type: 'line', // 默认为直线，可选为：'line' | 'shadow'
-                    lineStyle: {
-                        // 直线指示器样式设置
-                        color: '#A9ACB2',
-                        width: 1,
-                        type: 'solid',
-                    },
-                },
-            },
-            legend: {
-                padding: [30, 68, 0, 0],
-                icon: 'rect',
-                itemHeight: 3, // 设置高度
-                textStyle: {
-                    // color: '#fff',
-                },
-                x: 'right',
-                y: 'top',
-            },
-            color: ['#00b4ff', '#ff9900', '#FD3B3B', '#58F76F', '#973BFD'],
-            grid: {
-                color: '#fff',
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                axisLine: {
-                    lineStyle: {
-                        color: '#9798bc',
-                    },
-                },
-                data: xAxisData,
-            },
-            yAxis: {
-                type: 'value',
-                axisLine: {
-                    lineStyle: {
-                        color: '#b4b4d7',
-                    },
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: 'rgba(165,165,165, 0.2)',
-                        type: 'dashed',
-                    },
-                },
-            },
-            // 不可以直接写死数据
-            series: [
-                {
-                    // 折线图
-                    type: 'line',
-                    name: series[0]?.name,
-                    data: series[0]?.data,
-                    itemStyle: {
-                        normal: {
-                            lineStyle: {
-                                width: 2,
-                            },
-                        },
-                    },
-                    symbolSize: 6,
-                },
-                {
-                    type: 'line',
-                    name: series[1]?.name,
-                    data: series[1]?.data,
-                    itemStyle: {
-                        normal: {
-                            lineStyle: {
-                                width: 2,
-                            },
-                        },
-                    },
-                    symbolSize: 6,
-                },
-            ],
-        }
-    }
-    @Ref('formRef')
-    formRef!: FormRef
-    // 查询条件
-    get getFormAttrs() {
-        let fields: FormRow[] = [
-            {
-                // 不要删除配置 justify gutter
-                justify: 'end',
-                gutter: 8,
-                columns: [
-                    {
-                        // 日期选择器
-                        tag: 'date',
-                        name: 'createdDateRange',
-                        itemAttrs: {
-                            // 不显示标题
-                            label: '',
-                            style: 'width:240px;',
-                        },
-                        attrs: {
-                            value: [moment().subtract(90, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-                            // 日期范围
-                            type: 'daterange',
-                            onInput: (val, { formActionType }) => {
-                                this.$set(this.formModel, 'recent', 0)
-                                this.handleSearch(val)
-                            },
-                            startPlaceholder: '开始日期',
-                            endPlaceholder: '结束日期',
-                            //defaultTime: ['00:00:00', '23:59:59'],
-                            //valueFormat: 'yyyy-MM-dd HH:mm:ss',
-                        },
-                    },
-                    {
-                        // 下拉选择器
-                        tag: 'select',
-                        itemAttrs: {
-                            label: '单位',
-                            labelWidth: 'auto',
-                        },
-                        name: 'jigou',
-                        attrs: {
-                            options: [
-                                {
-                                    label: '全部',
-                                    value: '',
-                                },
-                                {
-                                    label: '市场监管局',
-                                    value: '市场监管局',
-                                },
-                            ],
-                            onInput: (val) => {
-                                this.handleSearch(val)
-                            },
-                        },
-                    },
-                    {
-                        // 单选框
-                        tag: 'radio',
-                        name: 'recent',
-                        itemAttrs: {
-                            label: '',
-                        },
-                        attrs: {
-                            value: 90,
-                            // 按钮组风格
-                            type: 'button',
-                            options: [
-                                {
-                                    label: '最近3个月',
-                                    value: 90,
-                                },
-                                {
-                                    label: '最近半年',
-                                    value: 180,
-                                },
-                                {
-                                    label: '最近1年',
-                                    value: 365,
-                                },
-                            ],
-                            onInput: (val, { formModel, formActionType }) => {
-                                if (val <= 0) {
-                                    return
-                                }
-
-                                const start = moment().subtract(val, 'days').format('YYYY-MM-DD')
-                                const end = moment().format('YYYY-MM-DD')
-
-                                this.$set(this.formModel, 'createdDateRange', [start, end])
-                            },
-                        },
-                    },
-                ],
-            },
-        ]
-        return {
-            // 不要修改此处的 labelWidth
-            labelWidth: 'auto',
-            span: 8,
-            fields,
-        }
-    }
-    // 不要删除此处方法
-    async init(params: any = {}) {
-        console.log(params)
-        // 模拟数据 不要删除
-        const data = await Promise.resolve({
-            series: [
-                {
-                    name: '授权总数',
-                    data: [120, 132, 101, 134, 90, 230, 210],
-                },
-                {
-                    name: '鉴权总数',
-                    data: [220, 182, 191, 234, 290, 330, 310],
-                },
-            ],
-            xAxisData: ['2024/01', '2024/02', '2024/03', '2024/04', '2024/05', '2024/06', '2024/07'],
-        })
-        // 更新图表数据
-        setTimeout(() => {
-            this.option = this.creatOption(data)
-        }, 500)
-    }
-
-    async mounted() {
-        this.init()
-    }
-}
-</script>
-
-<style lang="less" scoped>
-// 以下内容不要删减 保留 el-card ::v-deep {} 整段样式
-.el-card ::v-deep {
-    margin: 10px 0;
-    border: none !important;
-    box-shadow: none !important;
-    // 不要删除此处的 .el-col
-    .el-col {
-        width: auto !important;
-    }
-    .el-card__header {
-        padding: 10px 15px;
-        box-shadow: none !important;
-
-        .meta {
-            flex: 1;
-            display: flex;
-            align-items: center;
-
-            .sg-data-form-container {
-                width: 100%;
-            }
-        }
-    }
-    .el-card__body {
-        padding: 0;
-    }
-    .el-form-item {
-        margin: 0 !important;
-    }
-}
-</style>
-
-```
-
-### 数据列表组件模板
-```html
-<template>
-    <el-card class="chart-card">
-        <div slot="header" class="sg-flexbox align-center justify-between">
-            <span class="title">
-                <!-- 标题 -->
-                <span class="sg-title-before-line">标题</span>
-            </span>
-            <div class="meta">
-                <!-- 查询条件 -->
-                <sg-base-form v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch"></sg-base-form>
-            </div>
-        </div>
-        <!-- 数据列表内容 -->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
-    </el-card>
-</template>
-
-<script lang="tsx">
-import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
-import { FormRow, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
-
-@Component({
-    name: 'AppChart',
-    components: {},
-})
-export default class AppChart extends Vue {
-    formModel: any = {}
-
-    @Ref('formRef')
-    formRef!: FormRef
-    get getFormAttrs() {
-        let fields: FormRow[] = [
-            {
-                // 不要删除配置 justify gutter
-                justify: 'end',
-                gutter: 8,
-                columns: [
-                    {
-                        // 日期选择器
-                        tag: 'date',
-                        name: 'createdDateRange',
-                        itemAttrs: {
-                            label: '',
-                            style: 'width:240px;',
-                        },
-                        attrs: {
-                            value: [],
-                            // 日期范围
-                            type: 'daterange',
-                            onInput: () => {
-                                this.handleSearch()
-                            },
-                            startPlaceholder: '开始日期',
-                            endPlaceholder: '结束日期',
-                            //defaultTime: ['00:00:00', '23:59:59'],
-                            //valueFormat: 'yyyy-MM-dd HH:mm:ss',
-                        },
-                    },
-                    {
-                        // 下拉选择器
-                        tag: 'select',
-                        itemAttrs: {
-                            label: '单位',
-                            labelWidth: 'auto',
-                        },
-                        name: 'jigou',
-                        attrs: {
-                            options: [
-                                {
-                                    label: '全部',
-                                    value: '',
-                                },
-                                {
-                                    label: '市场监管局',
-                                    value: '市场监管局',
-                                },
-                            ],
-                            onInput: (val) => {
-                                this.handleSearch()
-                            },
-                        },
-                    },
-                    {
-                        // 单选框
-                        tag: 'radio',
-                        name: 'recent',
-                        itemAttrs: {
-                            label: '',
-                        },
-                        attrs: {
-                            // 按钮组风格
-                            type: 'button',
-                            options: [
-                                {
-                                    label: '最近3个月',
-                                    value: 90,
-                                },
-                                {
-                                    label: '最近半年',
-                                    value: 180,
-                                },
-                                {
-                                    label: '最近1年',
-                                    value: 365,
-                                },
-                            ],
-                            onInput: () => {
-                                this.handleSearch()
-                            },
-                        },
-                    },
-                ],
-            },
-        ]
-        return {
-            // 不要修改此处的 labelWidth
-            labelWidth: 'auto',
-            span: 8,
-            fields,
-        }
-    }
-    @Ref('tableRef')
-    tableRef!: TableRef
-    /** 列表展示配置项，没有列表展示时不展示 */
-    get getTableAttrs() {
-        const columns: TableColumn[] = [
-            // 列表展示中有序号时展示
-            {
-                label: '序号',
-                type: 'index',
-                prop: 'index',
-                fixed: 'left',
-                width: '50px',
-            },
-            {
-                align: 'left',
-                label: '姓名',
-                prop: 'name',
-                maxWidth: '80px',
-            },
-            {
-                align: 'left',
-                label: '邮箱',
-                prop: 'email',
-                maxWidth: '180px',
-            },
-        ]
-        return {
-            // 返回数据格式要求 { result: [], total: 0 }
-            load: async (params: any = {}) => {
-                const { receiptDate, ...rest } = this.formModel
-                // 日期范围处理
-                const [receiptDateStart, receiptDateEnd] = receiptDate || []
-
-                return {
-                    result: [
-                        { name: '张三', email: '<EMAIL>' },
-                        { name: '李四', email: '<EMAIL>' },
-                    ],
-                    total: 2,
-                }
-            },
-
-            columns,
-        }
-    }
-
-    async handleSearch() {
-        this.tableRef.onLoad({ page: 1 })
-    }
-
-    async mounted() {}
-}
-</script>
-
-<style lang="less" scoped>
-// 以下内容不要删减 保留 el-card ::v-deep {} 整段样式
-.el-card ::v-deep {
-    margin: 10px 0;
-    border: none !important;
-    box-shadow: none !important;
-    // 不要删除此处的 .el-col
-    .el-col {
-        width: auto;
-    }
-    .el-card__header {
-        padding: 10px 15px;
-        box-shadow: none !important;
-
-        .meta {
-            flex: 1;
-            display: flex;
-            align-items: center;
-
-            .sg-data-form-container {
-                width: 100%;
-            }
-        }
-    }
-    .el-card__body {
-        padding: 10px;
-    }
-    .el-form-item {
-        margin: 0 !important;
-    }
-}
-</style>
-
-```
-
 ### 简单页面
 - 用户要求直接展示或者插入图片，请使用以下模板。
 - 图片保存在当前业务目录的`assets`文件夹下
+
 ```html
 <template>
     <!-- 用户详情  -->
@@ -3543,13 +2938,14 @@ export default class OtherPage extends Vue {
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。请严格按照用户提供的菜单路径生成对应的文件夹和路由地址，比如`工作台/分析页`则生成`/workbench/analysis`，同时并生成文件夹`workbench/analysis`，`router.js`要在`index.vue`生成后再生成。
+    - 菜单文件`menus.ts`：先读取菜单文件`menus.ts`，然后根据用户提供的菜单路径确定路由地址，不要修改和删减原先的内容和格式。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
     - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。请在组件顶部添加功能描述注释。
-    - 路由文件`router.js`：默认必须生成，组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。
-    - 菜单文件`menus.ts`：根据`router.js`的`path`添加菜单项，不要删减文件的内容。
+    - 路由文件`router.js`：默认必须生成（为避免编译报错请在`index.vue`后生成），组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。`path`对应菜单路径比如`工作台/分析页`则生成`/workbench/analysis`，并对应生成文件夹`workbench/analysis`。
+    - 菜单文件`menus.ts`：检查一遍，确保`router.js`的`path`添加到了菜单项，不要删减文件的内容。
 - 依次循环
 
 # Output

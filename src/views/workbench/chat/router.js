@@ -1,7 +1,7 @@
 const AiChat = () => import(/* webpackChunkName: "AiChat" */ './index.vue')
 
 export default {
-    path: '/ai-assistant/chat',
+    path: '/workbench/chat',
     name: 'AiAssistantChat',
     component: () => import(/* webpackChunkName: "AiAssistantChat" */ './index.vue'),
     props: ({ query, params }) => ({ ...query, ...params }),

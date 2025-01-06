@@ -1,9 +1,10 @@
 /* eslint-disable */
-const WorkbenchAnalysis = () => import(/* webpackChunkName: "WorkbenchAnalysis" */ './index.vue')
+const Analysis = () => import(/* webpackChunkName: "Analysis" */ './index.vue')
+
 export default {
     path: '/workbench/analysis',
-    name: 'WorkbenchAnalysis',
-    component: WorkbenchAnalysis,
+    name: 'Analysis',
+    component: Analysis,
     props: ({ query, params }) => ({ ...query, ...params }),
     meta: {
         bodyClass: '',
@@ -11,6 +12,8 @@ export default {
         title: '分析页',
         keepAlive: true,
         requireAuth: true,
-        activeMenu: '',
+        activeMenu: '/workbench/analysis',
+        noCache: false,
+        affix: 0,
     },
 }

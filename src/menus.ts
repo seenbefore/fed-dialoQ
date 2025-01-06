@@ -1,9 +1,8 @@
 import { UserMenu } from '@/@types/menu'
-const menu = require('./menu.json')
 export const LocalMenu: UserMenu[] = [
     {
-        label: '我的工作台',
-        icon: 'el-icon-document',
+        label: '工作台',
+        icon: 'el-icon-monitor',
         uri: '',
         children: [
             {
@@ -11,8 +10,8 @@ export const LocalMenu: UserMenu[] = [
                 uri: '/workbench/analysis',
             },
             {
-                label: '聊天室',
-                uri: '/ai-assistant/chat',
+                label: 'AI助手',
+                uri: '/workbench/chat',
             },
         ],
     },
