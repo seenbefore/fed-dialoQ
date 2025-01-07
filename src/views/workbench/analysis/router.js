@@ -12,7 +12,6 @@ export default {
         title: '分析页',
         keepAlive: true,
         requireAuth: true,
-        activeMenu: '/workbench/analysis',
         noCache: false,
         affix: 0,
     },

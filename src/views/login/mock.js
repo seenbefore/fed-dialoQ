@@ -58,7 +58,7 @@ export default [
                         {
                             label: '测试页面',
                             icon: 'el-icon-document',
-                            uri: '/workbench/analysis',
+                            uri: '/system/user',
                         },
                     ],
                 },

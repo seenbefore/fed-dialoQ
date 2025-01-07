@@ -11,7 +11,6 @@ export default {
         title: 'AI助手',
         keepAlive: true,
         requireAuth: true,
-        activeMenu: '/ai-assistant/chat',
         noCache: false,
         affix: 0,
     },
