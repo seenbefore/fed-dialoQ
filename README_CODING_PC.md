@@ -2201,9 +2201,9 @@ export default class UserManagement extends Vue {
             },
         ]
         return {
-            // 表格滚动吸顶 不要删减
+            // 表格滚动吸顶 
             tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.UserManagement'),
+                scrollDom: () => document.querySelector('.admin-page__content'),
             },
             // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
             multipleSelectionAll: [],
@@ -2841,7 +2841,7 @@ export default class OtherPage extends Vue {
 - 不要修改`import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'`。
 - 不要删减引入的内容`import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'`。
 - sg-base-form使用示例：`<sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>`不要删减属性和方法
-- sg-data-view使用示例：`<sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>`，不要删减属性和方法。且配置`getTableAttrs.tableHeaderSticky`属性。
+- sg-data-view使用示例：`<sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>`。若在在`admin-page`组件下则配置`tableHeaderSticky`属性，且固定定位到`.admin-page__content`，其他页面则选择顶级容器的类名。
 - sg-base-form和sg-data-view是当前代码库的全局组件，可以直接使用
 - sg-base-form 是一个表单组件，通过 ref="formRef" 创建了一个引用，以便在组件的 TypeScript 部分中访问这个表单组件的实例。它绑定了 getFormAttrs 对象的属性（使用了 v-bind="getFormAttrs" 来绑定属性），并通过 v-model 绑定了 formModel。表单提交和重置时都会触发 handleSearch 方法
 - sg-data-view 是一个数据视图组件，通过 ref="tableRef" 创建了一个引用。它绑定了 getTableAttrs 对象的属性（使用 v-bind="getTableAttrs" 来绑定属性）

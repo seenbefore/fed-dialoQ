@@ -86,9 +86,6 @@ export default class StudentDialog extends Vue {
             },
         ]
         return {
-            tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.StudentDialog'),
-            },
             load: async (params: any = {}) => {
                 const { data } = await getStudentList({
                     roomId: this.id,

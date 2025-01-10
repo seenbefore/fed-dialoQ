@@ -225,7 +225,7 @@ export default class ArticleManagement extends Vue {
 
         return {
             tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.ArticleManagement'),
+                scrollDom: () => document.querySelector('.admin-page__content'),
             },
             load: async (params: any = {}) => {
                 const { createTime, ...rest } = this.formModel

@@ -187,4 +187,15 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
+    {
+        label: '数据库',
+        icon: 'el-icon-folder',
+        uri: '',
+        children: [
+            {
+                label: '数据库管理',
+                uri: '/database/manage',
+            },
+        ],
+    },
 ]

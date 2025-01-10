@@ -96,9 +96,6 @@ export default class PaperDialog extends Vue {
             },
         ]
         return {
-            tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.PaperDialog'),
-            },
             highlightCurrentRow: true,
             load: async (params: any = {}) => {
                 // 模拟数据

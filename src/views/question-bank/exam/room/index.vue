@@ -202,7 +202,7 @@ export default class ExamRoom extends Vue {
         ]
         return {
             tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.ExamRoom'),
+                scrollDom: () => document.querySelector('.admin-page__content'),
             },
             load: async (params: any = {}) => {
                 const { data } = await list({

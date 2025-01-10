@@ -205,7 +205,7 @@ export default class OperationLog extends Vue {
 
         return {
             tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.OperationLog'),
+                scrollDom: () => document.querySelector('.admin-page__content'),
             },
             pageActionLayout: [
                 {

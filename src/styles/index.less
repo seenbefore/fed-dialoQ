@@ -164,3 +164,29 @@ body #nprogress .spinner-icon {
         }
     }
 }
+.sg-dot {
+    &.success {
+        color: var(--color-success);
+        &::before {
+            background-color: var(--color-success);
+        }
+    }
+    &.danger {
+        color: var(--color-danger);
+        &::before {
+            background-color: var(--color-danger);
+        }
+    }
+    &.warning {
+        color: var(--color-warning);
+        &::before {
+            background-color: var(--color-warning);
+        }
+    }
+    &.info {
+        color: var(--color-info);
+        &::before {
+            background-color: var(--color-info);
+        }
+    }
+}
