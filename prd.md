@@ -1,6 +1,6 @@
-## 数据库管理
+## 数据库
 ### 功能：数据库管理
-菜单路径：系统管理/数据库管理
+菜单路径：数据库/数据库管理
 功能描述：管理系统中的数据库连接、表结构和数据操作。
 
 查询条件：
@@ -49,7 +49,7 @@
 3. "取消"：关闭弹窗
 
 ### 功能：表结构管理
-菜单路径：系统管理/数据库管理/表结构管理
+菜单路径：数据库/表结构管理
 功能描述：查看和管理数据库中的表结构信息
 
 查询条件：
@@ -114,107 +114,7 @@
 2. 管理权限：允许新增、编辑、删除数据库连接
 3. 导出权限：允许导出表结构文档
 
-### 数据库表结构设计
 
-#### 1. 数据库连接表 (db_connection)
-| 字段名 | 类型 | 长度 | 允许空 | 默认值 | 主键 | 说明 |
-|--------|------|------|--------|--------|------|------|
-| id | varchar | 32 | 否 | - | 是 | 主键ID |
-| db_name | varchar | 50 | 否 | - | 否 | 数据库连接名称 |
-| db_type | varchar | 20 | 否 | - | 否 | 数据库类型(MySQL/PostgreSQL/Oracle/SQLServer) |
-| host | varchar | 100 | 否 | - | 否 | 主机地址 |
-| port | int | 11 | 否 | - | 否 | 端口号 |
-| database | varchar | 50 | 否 | - | 否 | 数据库名 |
-| username | varchar | 50 | 否 | - | 否 | 用户名 |
-| password | varchar | 100 | 否 | - | 否 | 密码(加密存储) |
-| status | tinyint | 4 | 否 | 0 | 否 | 连接状态(0:未连接,1:已连接) |
-| remark | varchar | 200 | 是 | null | 否 | 备注说明 |
-| last_connect_time | datetime | - | 是 | null | 否 | 最后连接时间 |
-| create_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 创建时间 |
-| update_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 更新时间 |
-| create_by | varchar | 32 | 否 | - | 否 | 创建人ID |
-| update_by | varchar | 32 | 否 | - | 否 | 更新人ID |
-
-#### 2. 数据库表信息表 (db_table_info)
-| 字段名 | 类型 | 长度 | 允许空 | 默认值 | 主键 | 说明 |
-|--------|------|------|--------|--------|------|------|
-| id | varchar | 32 | 否 | - | 是 | 主键ID |
-| connection_id | varchar | 32 | 否 | - | 否 | 关联的数据库连接ID |
-| table_name | varchar | 100 | 否 | - | 否 | 表名 |
-| table_comment | varchar | 200 | 是 | null | 否 | 表注释 |
-| fields_count | int | 11 | 否 | 0 | 否 | 字段数量 |
-| create_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 创建时间 |
-| update_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 更新时间 |
-
-#### 3. 表字段信息表 (db_field_info)
-| 字段名 | 类型 | 长度 | 允许空 | 默认值 | 主键 | 说明 |
-|--------|------|------|--------|--------|------|------|
-| id | varchar | 32 | 否 | - | 是 | 主键ID |
-| table_id | varchar | 32 | 否 | - | 否 | 关联的表ID |
-| field_name | varchar | 100 | 否 | - | 否 | 字段名 |
-| field_type | varchar | 50 | 否 | - | 否 | 字段类型 |
-| field_length | int | 11 | 是 | null | 否 | 字段长度 |
-| field_decimal | int | 11 | 是 | null | 否 | 小数位数 |
-| is_nullable | tinyint | 4 | 否 | 0 | 否 | 是否允许为空(0:否,1:是) |
-| default_value | varchar | 100 | 是 | null | 否 | 默认值 |
-| is_primary | tinyint | 4 | 否 | 0 | 否 | 是否主键(0:否,1:是) |
-| is_index | tinyint | 4 | 否 | 0 | 否 | 是否索引(0:否,1:是) |
-| field_comment | varchar | 200 | 是 | null | 否 | 字段说明 |
-| create_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 创建时间 |
-| update_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 更新时间 |
-
-#### 4. 导出记录表 (db_export_log)
-| 字段名 | 类型 | 长度 | 允许空 | 默认值 | 主键 | 说明 |
-|--------|------|------|--------|--------|------|------|
-| id | varchar | 32 | 否 | - | 是 | 主键ID |
-| connection_id | varchar | 32 | 否 | - | 否 | 关联的数据库连接ID |
-| export_type | varchar | 20 | 否 | - | 否 | 导出类型(Word/Excel/PDF) |
-| export_content | varchar | 500 | 否 | - | 否 | 导出内容(JSON格式存储选项) |
-| file_path | varchar | 200 | 否 | - | 否 | 导出文件路径 |
-| file_size | bigint | 20 | 否 | 0 | 否 | 文件大小(字节) |
-| status | tinyint | 4 | 否 | 0 | 否 | 导出状态(0:失败,1:成功) |
-| error_msg | varchar | 500 | 是 | null | 否 | 错误信息 |
-| create_time | datetime | - | 否 | CURRENT_TIMESTAMP | 否 | 创建时间 |
-| create_by | varchar | 32 | 否 | - | 否 | 创建人ID |
-
-#### 表关系说明：
-1. `db_connection` 与 `db_table_info` 是一对多关系，一个数据库连接可以包含多个表
-2. `db_table_info` 与 `db_field_info` 是一对多关系，一个表可以包含多个字段
-3. `db_connection` 与 `db_export_log` 是一对多关系，一个数据库连接可以有多个导出记录
-
-#### 索引设计：
-1. db_connection表：
-   - 主键索引：id
-   - 普通索引：db_name, create_time
-
-2. db_table_info表：
-   - 主键索引：id
-   - 外键索引：connection_id
-   - 普通索引：table_name, create_time
-
-3. db_field_info表：
-   - 主键索引：id
-   - 外键索引：table_id
-   - 普通索引：field_name
-
-4. db_export_log表：
-   - 主键索引：id
-   - 外键索引：connection_id
-   - 普通索引：create_time
-
-#### 字段约束：
-1. 所有表的主键id使用UUID格式
-2. 创建时间和更新时间自动维护
-3. 密码字段需要加密存储
-4. 状态字段使用tinyint类型，并设定固定的状态值
-5. 字符串类型字段都设置了最大长度限制
-6. 必填字段都设置了非空约束
-
-#### 数据安全：
-1. 密码等敏感信息需要加密存储
-2. 重要操作需要记录操作日志
-3. 数据库连接信息需要定期备份
-4. 导出的文件需要进行访问权限控制
 
 ### 接口说明
 

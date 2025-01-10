@@ -2866,9 +2866,10 @@ export default class OtherPage extends Vue {
 - 页面中的返回操作请新增一个`handleBack`方法，然后使用`this.$back({ path: '/xxx' })`方法返回上一页。如果需要修改了内容需要刷新上一页，请在`handleBack`方法中调用`this.$back({ reload: true, path: '/xxx' })`。
 - 标签页的标题可以动态修改，比如在路由参数中添加`_=新增`、`_=编辑`、`_=详情`等。
 - `sg-base-form`组件中的`span`属性默认值为`8`，当`span`为`24`时，表单项占整行。如果是新增、修改、详情页面，请使用`span`为`24`。
+- `sg-base-form`组件中默认不使用`componentProps`，请使用`attrs`。
 
 
-# 重要约束
+## 重要约束
 1. 模板语法约束
    - ❌ 禁止在 template 中使用可选链 `?.` 
    - ✅ 应使用 `&&` 或 `||` 运算符
@@ -2929,21 +2930,50 @@ export default class OtherPage extends Vue {
         </div>
     )
      ```
-# 响应约束
+
+## 响应约束
 - 除非必要，否则不要删除任何现有代码。
 - 除非必要，否则不要删除我的注释或被注释掉的代码。
 - 不要改变我的导入格式。
 - 除非对新功能很重要，否则不要改变我的代码格式。
 
+## 接口规范
+- 接口返回格式
+```json
+{
+    "code": "number", // 状态码 200成功 其他 失败
+    "message": "string", // 状态信息
+    "data": "any" // 数据
+}
+```
+- 分页请求
+```json
+{
+    "pageNum": "number", // 当前页码
+    "length": "number" // 每页条数
+}
+```
+- 分页响应
+```json
+{
+    "code": "number", // 状态码
+    "message": "string", // 状态信息
+    "data": {
+        "data": "any[]", // 列表
+        "recordsTotal": "number" // 总数
+    }
+}
+```
+
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
 - 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。请严格按照用户提供的菜单路径生成对应的文件夹和路由地址，比如`工作台/分析页`则生成`/workbench/analysis`，同时并生成文件夹`workbench/analysis`，`router.js`要在`index.vue`生成后再生成。
-    - 菜单文件`menus.ts`：先读取菜单文件`menus.ts`，然后根据用户提供的菜单路径确定路由地址，不要修改和删减原先的内容和格式。
+    - 系统菜单`menus.ts`：根据菜单路径新增菜单项，不要修改和删减原先的内容。记住：菜单的`uri`对应`router.js`的`path`，`label`对应`router.js`的`meta.title`。不要新增多余字段。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
     - 数据模拟文件`mock.js`：按照`api`中的实例和枚举中的值生成对应的模拟数据。
-    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。请在组件顶部添加功能描述注释。
+    - 视图文件`index.vue`：组件属性`@Prop`请添加注释说明如`/** 男 **/`。请在组件顶部添加功能描述注释。如果有弹窗请单独生成弹窗文件，比如`components/detail-dialog/index.vue`。
     - 路由文件`router.js`：默认必须生成（为避免编译报错请在`index.vue`后生成），组件不生成，和视图文件同级，且1个视图对应1个`router.js`，不要在路由文件中创建子路由`children`。当模块之前有父子关系时，请在父文件夹下创建新的`router.js`文件和`index.vue`文件，比如路由`/exam/question/list`对应`exam/question/list/index.vue`和`exam/question/list/router.js`。注意：一般新增和编辑是同一个路由和同一个视图。比如`exam/question/save/index.vue`和`exam/question/save/router.js`。`path`对应菜单路径比如`工作台/分析页`则生成`/workbench/analysis`，并对应生成文件夹`workbench/analysis`。
     - 菜单文件`menus.ts`：检查一遍，确保`router.js`的`path`添加到了菜单项，不要删减文件的内容。
 - 依次循环
