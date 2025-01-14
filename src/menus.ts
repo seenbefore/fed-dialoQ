@@ -188,13 +188,16 @@ export const LocalMenu: UserMenu[] = [
         ],
     },
     {
-        label: '数据库',
-        icon: 'el-icon-folder',
-        uri: '',
+        id: 'test',
+        label: '测试管理',
+        icon: 'el-icon-s-tools',
+        uri: '/test',
         children: [
             {
-                label: '数据库管理',
-                uri: '/database/manage',
+                id: 'test-case',
+                label: '测试用例',
+                icon: 'el-icon-document',
+                uri: '/test/case',
             },
         ],
     },

@@ -54,7 +54,7 @@ export const useConfirm = (userOptions: string | JSX.Element | IUseConfirm) => {
             propsData: {
                 options,
             },
-        })
+        }) as InstanceType<typeof ConfirmDialog>
 
         instance.$on(ConfirmResultEnum.CONFIRM, () => {
             instance.$destroy()
