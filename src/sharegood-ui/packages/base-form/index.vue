@@ -945,7 +945,7 @@ export default {
         reset() {
             console.log('[reset]')
             this.$refs['form'].resetFields()
-            this.$emit('reset')
+            this.$emit('reset', this.formData)
         },
     },
 }

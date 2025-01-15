@@ -19,7 +19,16 @@ const initModalDialog = (options = _options) => {
                 cancel,
                 ...options,
             }).$mount()
-            // 将组建实例加入dom中
+
+            // 注册默认的确认和取消处理
+            vm.$on('confirm', value => {
+                confirm(value)
+            })
+            vm.$on('cancel', value => {
+                cancel(value)
+            })
+
+            // 将组件实例加入dom中
             document.querySelector('body').appendChild(vm.$el)
 
             /**
@@ -39,6 +48,7 @@ const initModalDialog = (options = _options) => {
             }
 
             function destroyDialog() {
+                vm.$off() // 移除所有事件监听
                 vm.$destroy()
                 const flag = vm.$el.ownerDocument.body.contains(vm.$el)
                 if (flag) document.querySelector('body').removeChild(vm.$el)

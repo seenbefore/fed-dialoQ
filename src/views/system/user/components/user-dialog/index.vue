@@ -162,11 +162,11 @@ export default class UserDialog extends Vue {
     }
 
     cancel() {
-        this.$options.cancel?.()
+        this.$emit('cancel')
     }
 
     confirm() {
-        this.$options.confirm?.(true)
+        this.$emit('confirm', true)
     }
 }
 </script>

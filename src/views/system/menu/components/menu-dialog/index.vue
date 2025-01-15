@@ -59,11 +59,11 @@ export default class MenuDialog extends Vue {
                 },
                 appendRender: (h, { row }) => {
                     const onChange = (icon: string) => {
-                        this.formModel.icon = icon
+                        row.icon = icon
                     }
                     return (
                         <div class="icon-select">
-                            <el-input value={this.formModel.icon} placeholder="请选择图标" maxlength={50}>
+                            <el-input value={row.icon} placeholder="请选择图标" maxlength={50}>
                                 <i slot="suffix" class={'el-icon-plus'} style="font-size: 16px"></i>
                             </el-input>
                             <el-popover placement="bottom" width="400" trigger="click">
@@ -79,13 +79,7 @@ export default class MenuDialog extends Vue {
                                         'el-icon-message',
                                         'el-icon-location',
                                     ].map(icon => (
-                                        <el-button
-                                            type="text"
-                                            info={icon !== this.formModel.icon}
-                                            icon={icon}
-                                            style="font-size: 18px; margin: 4px; cursor: pointer"
-                                            onClick={() => onChange(icon)}
-                                        ></el-button>
+                                        <el-button type="text" info={icon !== row.icon} icon={icon} style="font-size: 18px; margin: 4px; cursor: pointer" onClick={() => onChange(icon)}></el-button>
                                     ))}
                                 </div>
                                 <el-button slot="reference" type="text">

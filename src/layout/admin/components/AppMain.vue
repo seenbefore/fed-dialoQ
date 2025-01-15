@@ -8,7 +8,7 @@
         <!-- key 导致热重载失效可能会导致页面空白 重新刷新浏览器 -->
         <div class="app-main-box">
             <keep-alive :include="cachedViews">
-                <router-view :key="key" />
+                <router-view :key="key" :class="'sg-page'" />
             </keep-alive>
             <template v-if="tagsView">
                 <template v-for="item in visitedViews">
