@@ -14,7 +14,6 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn } from '@/sharegood-ui'
 import { PublicityStatusEnum, PublicityStatusEnumMap } from '../../enum'
@@ -22,9 +21,7 @@ import { detail } from '../../api'
 
 @Component({
     name: 'PrePublicityPreview',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class PrePublicityPreview extends Vue {
     /** ID */

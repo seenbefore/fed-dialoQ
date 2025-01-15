@@ -89,7 +89,6 @@
 
 <script lang="tsx">
 import { Component, Vue } from 'vue-property-decorator'
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { getAnalysisData, AnalysisVO } from './api'
 import OverviewCard from './components/overview-card/index.vue'
 import TimeAnalysis from './components/time-analysis/index.vue'
@@ -99,7 +98,6 @@ import DistributionChart from './components/distribution-chart/index.vue'
 @Component({
     name: 'Analysis',
     components: {
-        AdminPage,
         OverviewCard,
         TimeAnalysis,
         HotModules,

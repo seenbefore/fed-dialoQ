@@ -15,7 +15,6 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { ArticleStatusEnum, ArticleStatusEnumMap } from './enum'
@@ -23,9 +22,7 @@ import { list, remove, updateStatus, ArticleVO } from './api'
 
 @Component({
     name: 'ArticleManagement',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class ArticleManagement extends Vue {
     @Ref('formRef')

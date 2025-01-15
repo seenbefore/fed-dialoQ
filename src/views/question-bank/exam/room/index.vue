@@ -15,16 +15,13 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { list, save, remove, RoomVO } from './api'
 
 @Component({
     name: 'ExamRoom',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class ExamRoom extends Vue {
     @Ref('formRef')

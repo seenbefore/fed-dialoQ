@@ -11,6 +11,7 @@
 - `element-ui`组件已全局注册
 - 表单组件`sg-base-form`已全局注册
 - 列表组件`sg-data-view`已全局注册
+- 管理页面组件`admin-page`已全局注册
 
 ## 类型定义
 - `@/@types`中定义了项目中常用的类型
@@ -886,15 +887,11 @@ AdminPage 是一个通用的管理页面布局组件，提供了统一的页面�
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
-
+import { Component, Vue } from 'vue-property-decorator'
 @Component({
-    name: 'PrePublicityPreview',
-    components: {
-        AdminPage,
-    },
+    name: 'Demo',
 })
-export default class PrePublicityPreview extends Vue {
+export default class Demo extends Vue {
    
 }
 </script>
@@ -1639,17 +1636,12 @@ export default class UserManagement extends Vue {
             },
         ]
         return {
-            // 表格滚动吸顶 
+            // 表格滚动吸顶 查询页面中不要删除
             tableHeaderSticky: {
                 // 父级滚动容器 
                 scrollDom: () => document.querySelector('.admin-page__content'),
             },
-            // 跨页勾选数据,仅当有批量操作时需要,默认不不展示，有勾选字样时展示 如 [{ id: 1 }, { id: 4 }, { id: 12 }]
-            multipleSelectionAll: [],
-            // 唯一匹配的字段 仅当有批量操作时需要
-            idKey: 'id',
-        
-            // 数据请求 必要配置
+             // 数据请求 必要配置
             load: async (params: any = {}) => {
                 const { receiptDate, ...rest } = this.formModel
                 // 日期范围处理
@@ -1673,11 +1665,10 @@ export default class UserManagement extends Vue {
         this.fetchTabsCount()
     }
 }
-// 不要遗漏此闭合标签
 </script>
 <style scoped lang="less">
 .UserManagement ::v-deep {
-    padding: 0px;
+   
 }
 </style>
 

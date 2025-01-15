@@ -9,7 +9,6 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { list, OperationLogVO } from './api'
@@ -18,9 +17,7 @@ import moment from 'moment'
 
 @Component({
     name: 'OperationLog',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class OperationLog extends Vue {
     @Ref('formRef')

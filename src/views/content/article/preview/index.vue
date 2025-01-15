@@ -41,15 +41,12 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { detail } from '../api'
 
 @Component({
     name: 'ArticlePreview',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class ArticlePreview extends Vue {
     @Prop() id!: string

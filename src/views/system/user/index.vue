@@ -17,16 +17,13 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, TableColumn, TableRef } from '@/sharegood-ui'
 import { list, save, UserVO } from './api'
 
 @Component({
     name: 'UserManage',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class UserManage extends Vue {
     @Ref('formRef')

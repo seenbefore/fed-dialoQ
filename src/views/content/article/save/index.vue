@@ -17,7 +17,6 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef } from '@/sharegood-ui'
 import { ArticleStatusEnum, ArticleStatusEnumMap } from '../enum'
@@ -27,9 +26,7 @@ import QuillEditor from '@/components/quill-editor'
 
 @Component({
     name: 'ArticleSave',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class ArticleSave extends Vue {
     @Prop() id!: string

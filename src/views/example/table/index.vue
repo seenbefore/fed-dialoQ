@@ -66,7 +66,6 @@
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 // 此处引用不省略
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
@@ -80,9 +79,7 @@ type VO = any
  */
 @Component({
     name: 'UserManagement',
-    components: {
-        AdminPage,
-    },
+    components: {},
 })
 export default class UserManagement extends Vue {
     @Ref('formRef')
