@@ -118,7 +118,7 @@
                                         ></span>
                                     </template> -->
                                     <template slot="appendSlot" v-if="col.appendRender">
-                                        <ex-slot v-if="col.appendRender" :render="col.appendRender" :row="col" :class="suffix"></ex-slot>
+                                        <ex-slot v-if="col.appendRender" :render="col.appendRender" :row="formData" :class="suffix"></ex-slot>
                                     </template>
                                     <template v-if="col.selectRender" slot="selectSlot" slot-scope="{ item }">
                                         <ex-slot :render="col.selectRender" :row="item"></ex-slot>

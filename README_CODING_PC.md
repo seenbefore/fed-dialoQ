@@ -5,6 +5,7 @@
 - 代码过多时不要询问我是否继续，一次性输出完整代码
 - 除非必要，否则不要删除任何现有代码。
 - 除非必要，否则不要删除我的注释或被注释掉的代码。
+- 优先使用项目提供的组件，比如`sg-base-form`、`sg-data-view`、`admin-page`等
 
 # Background
 - 项目技术栈：vue@2.6.12 + typescript@4.1.6 + element-ui@2.13.2 + vue-class-component@7.2.6 + mockjs@1.1.0
@@ -456,10 +457,33 @@ export default class FormExample extends Vue {
 ```
 
 ### 表单控件类型说明
+- 类型是日期范围、时间范围、日期时间范围、多选时，`attrs.value`设置初始数组`[]`
 
 #### 基础输入类
 - `text`: 纯文本展示，不可编辑
 - `input`: 单行文本输入框
+```tsx
+[
+    // 单行文本输入框
+    {
+        tag: 'input',
+        name: 'username',
+    },
+    // 多行文本输入框
+    {
+        tag: 'input',
+        name: 'content',
+        attrs: {
+            type: 'textarea',
+            rows: 4,
+            // 最大长度
+            maxlength: 100,
+            // 是否显示字数统计
+            'show-word-limit': true,
+        },
+    },
+]
+```
 - `input-number`: 数字输入框，支持步进器
 
 #### 选择类
@@ -481,7 +505,18 @@ export default class FormExample extends Vue {
         },{
             label: '选项2',
             value: '2',
-        }]
+        }],
+        onChange: ({ value,label }, { formModel,formActionType }) => {
+            if (value === '1') {
+                formModel.companyCode = value
+                formModel.companyName = label
+            } else {
+                formModel.companyCode = ''
+                formModel.companyName = ''
+            }
+            // 触发表单组的submit事件
+            // formActionType.submit()
+        },
     },
   },
   // options异步加载
@@ -556,6 +591,26 @@ export default class FormExample extends Vue {
 - `timerange`: 时间范围选择器
 - `daterange`: 日期范围选择器
 
+```tsx
+[
+    {
+        tag: 'daterange',
+        name: 'receiptDate',
+        label: '日期范围：',
+        attrs: {
+            // 默认值 [startDate,endDate]
+            value: [],
+            // 日期格式化
+            'value-format': 'yyyy-MM-dd',
+            // 开始时间占位符
+            'start-placeholder': '开始时间',
+            // 结束时间占位符
+            'end-placeholder': '结束时间',
+        },
+    },
+]
+```
+
 #### 其他类型
 - `switch`: 开关选择器
 - `range`: 滑块
@@ -572,8 +627,8 @@ export default class FormExample extends Vue {
     itemAttrs: {
         label: '图标：',
     },
-    // 自定义组件渲染
-    appendRender: (h, { row }) => {
+    // 自定义组件渲染 row为表单数据
+    render: (h, { row }) => {
         const onChange = (icon: string) => {
             row.icon = icon
         }
@@ -605,23 +660,12 @@ export default class FormExample extends Vue {
         )
     },
   },
-  // 动态加载自定义的组件
-  {
-      tag: 'custom',
-      custom: import('@/components/quill-editor'),
-      name: 'content',
-      itemAttrs: {
-          label: '文章内容',
-      },
-      attrs: {
-        // 富文本编辑器配置
-      },
-  },
 ]
 
 ```
 
-### 控件后跟随自定义内容
+### 其他特性
+1. 除了`custom`外，其他控件都可以自定义跟随内容
 ```tsx
 [
   {
@@ -634,18 +678,61 @@ export default class FormExample extends Vue {
         // 确保验证码和输入框在同一行并居中
         class: 'sg-flexbox align-center',
     },
-    // 跟随图片验证码组件
-    appendRender: () => {
+    // 跟随内容 
+    appendRender: (h, { row }) => {
         return (
             <div class="sg-ml-3">
+                <span>{row.captcha}</span>
                 <Captcha getCaptcha={this.getCaptcha} />
             </div>
         )
     },
   },
 ]
-
 ```
+2. 动态显示/隐藏
+```js
+{
+  tag: 'input',
+  name: 'field1',
+  visible: false, // 初始隐藏
+  ifRender(formData) { // 根据条件动态显示
+    return formData.type === '1'
+  }
+}
+```
+3. 动态属性
+```js
+{
+  tag: 'select',
+  name: 'field',
+  componentProps({schema, formModel}) { // 动态设置组件属性
+    return {
+      attrs: {
+        disabled: formModel.type === '1'
+      }
+    }
+  }
+}
+```
+
+4. 表单校验
+```tsx
+import { FormRef } from '@/sharegood-ui'
+import { Component, Vue, Ref } from 'vue-property-decorator'
+@Component
+export default class Demo extends Vue {
+    mounted() {}
+    @Ref('formRef') formRef!: FormRef
+    async submit() {
+        // 表单校验 第二个参数是否滚动到错误位置 勿删
+        await this.formRef.validate(null, true)
+        // 表单校验通过
+        console.log('表单校验通过')
+    }
+}
+```
+
 
 
 
@@ -1151,9 +1238,7 @@ export const GenderEnumMap: Record<string, any> = {
 
 ```
 ## 主视图模板
-
-### 查询页面模板
-- prd中包含`查询条件`、`列表`时使用以下模板
+- 默认页面使用`admin-page`组件
 ```html
 <template>
     <!-- 用户管理  -->
@@ -1674,122 +1759,8 @@ export default class UserManagement extends Vue {
 
 ```
 
-### 详情页面模板
-- 如果prd功能点名称或者菜单路径包含详情，请使用以下模板
-```html
-<template>
-    <!-- 用户详情  -->
-    <admin-page class="UserDetail" component="UserDetail" back-url="/system/user">
-        <!-- 标题 -->
-        <template #title>
-            <span>用户详情</span>
-        </template>
-        <!-- 表单 -->
-        <sg-base-form ref="form" v-model="formModel" v-bind="getFormAttrs"></sg-base-form>
-        <!-- 按钮 -->
-        <template #footer>
-            <div class="sg-flexbox align-center">
-                <el-button type="primary" @click="handleBack">返回</el-button>
-                <el-button type="primary" @click="handleSave">保存</el-button>
-            </div>
-        </template>
-    </admin-page>
-</template>
 
-<script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
-import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
-import { get } from './api'
-@Component({
-    name: 'UserDetail',
-    components: {
-        AdminPage,
-    },
-})
-export default class UserDetail extends Vue {
-    /**
-     * 数据唯一标识
-     */
-    @Prop() id!: string
-
-    // 必须保留
-    formModel: any = {}
-    View = {
-        loading: false,
-    }
-
-    @Ref('form')
-    formRef!: FormRef
-
-    /**表单配置 */
-    get getFormAttrs() {
-        const fields: FormRow[] = [
-            {
-                columns: [
-                    {
-                        // 表单项占整行
-                        span: 24,
-                        name: 'username',
-                        label: '用户名：',
-                        tag: 'text',
-                        attrs: {},
-                    },
-                ],
-            },
-            {
-                columns: [
-                    {
-                        // 表单项占整行
-                        span: 24,
-                        name: 'name',
-                        label: '用户名称：',
-                        tag: 'text',
-                        attrs: {},
-                    },
-                ],
-            },
-        ]
-        return {
-            span: 24,
-            fields,
-        }
-    }
-    async created() {
-        try {
-            const { data } = await get({
-                id: this.id,
-            })
-            this.$set(this, 'formModel', data)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-    async mounted() {}
-    handleBack() {
-        this.$back({
-            path: '/system/user',
-        })
-    }
-    handleSave() {
-        // 保存后刷新列表
-        this.$back({
-            path: '/system/user',
-            reload: true,
-        })
-    }
-}
-</script>
-<style scoped lang="less">
-.UserDetail ::v-deep {
-    padding: 0px;
-}
-</style>
-
-```
-
-### 弹窗组件模板
-如果功能点名称或者菜单路径包含弹窗，请使用以下模板
+### 页面类型是弹窗时
 ```html
 <template>
     <!-- 用户弹窗（visible属性始终为true，不可修改）  -->
@@ -1805,6 +1776,7 @@ export default class UserDetail extends Vue {
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
+import { detail } from './api'
 
 @Component({
     name: 'UserDialog',
@@ -1814,11 +1786,11 @@ export default class UserDialog extends Vue {
     /**
      * 数据唯一标识
      */
-    @Prop() id!: string
+    @Prop({ default: '' }) id!: string
     /**
-     * 操作类型 modify 修改 create 新增
+     * 操作类型 modify 修改 create 新增 detail 详情
      */
-    @Prop({ default: 'modify' }) action!: 'modify' | 'create'
+    @Prop({ default: 'create' }) action!: 'modify' | 'create' | 'detail'
     // 必须保留
     formModel: any = {
         id: this.id,
@@ -1827,10 +1799,22 @@ export default class UserDialog extends Vue {
         loading: false,
     }
 
-    async mounted() {}
+    async mounted() {
+        if (this.action === 'detail' || this.action === 'modify') {
+            this.fetchDetail()
+        }
+    }
+    async fetchDetail() {
+        // 调用接口
+        const { data } = await detail(this.id)
+        this.$set(this, 'formModel', data)
+    }
     get title() {
         if (this.action === 'modify') {
             return '编辑用户'
+        }
+        if (this.action === 'detail') {
+            return '详情'
         }
         return '新增用户'
     }
@@ -1849,7 +1833,7 @@ export default class UserDialog extends Vue {
                         tag: 'input',
                         attrs: {
                             placeholder: '请输入',
-                            disabled: this.id ? true : false,
+                            disabled: this.action === 'detail' ? true : false,
                         },
                         itemAttrs: {
                             label: '名称',
@@ -1869,6 +1853,7 @@ export default class UserDialog extends Vue {
                         name: 'reason',
                         label: '原因',
                         attrs: {
+                            disabled: this.action === 'detail' ? true : false,
                             placeholder: '请输入不予受理原因',
                             maxlength: 1000,
                             // type:textarea 默认是单行输入框
@@ -1903,7 +1888,7 @@ export default class UserDialog extends Vue {
                         tag: 'custom',
                         name: 'file',
                         label: '上传文件',
-                        appendRender: (h, { row }) => {
+                        render: (h, { row }) => {
                             return (
                                 <div>
                                     <el-upload
