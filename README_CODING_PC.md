@@ -468,6 +468,12 @@ export default class FormExample extends Vue {
     {
         tag: 'input',
         name: 'username',
+        attrs: {
+            // 后缀
+            inputSuffixSlotRender: '元',
+            // 前缀
+            inputPrefixSlotRender: '$',
+        },
     },
     // 多行文本输入框
     {
@@ -732,10 +738,36 @@ export default class Demo extends Vue {
     }
 }
 ```
+5. 标题提示词
+```js
+{
+    itemAttrs: {
+        // 标题提示词
+        helpMessage: '请输入用户名',
+        // 标题提示词图标
+        helpIcon: 'el-icon-info',
+    },
+}
+```
 
-
-
-
+6. 校验规则
+```tsx
+{
+    itemAttrs: {
+        // 校验规则
+        rules: [
+        { required: true, message: '请输入用户名', trigger: 'blur' },
+        { validator: (rule: any, value: any, callback: any) => {
+            if (value?.includes('@')) {
+                callback(new Error('请输入正确的邮箱'))
+            } else {
+                // 校验通过
+                callback()
+            }
+        }}],
+    },
+}
+```
 
 ## 全局表格组件 sg-data-view
 - `mounted`中不需要调用表格组件的`onLoad`方法，默认自动触发
@@ -1309,7 +1341,6 @@ export const GenderEnumMap: Record<string, any> = {
 </template>
 
 <script lang="tsx">
-import AdminPage from '@/components/admin/admin-page/index.vue'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 // 此处引用不省略
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
@@ -1321,12 +1352,10 @@ import { list, save, remove, removeBatch, detail, VO } from './api'
  *
  * 功能描述:
  * - 该组件包含一个按钮和一个显示消息的区域。
- * - 点击按钮时，将显示一条欢迎消息。
  */
 @Component({
     name: 'UserManagement',
     components: {
-        AdminPage,
     },
 })
 export default class UserManagement extends Vue {
@@ -1358,14 +1387,8 @@ export default class UserManagement extends Vue {
     onChange(val: any) {
         this.selected = val.map((item: any) => ({ id: item.id }))
     }
-    // 跳转编辑 参数不要省略
-    handleEdit(row: VO) {
-        // 不要删除
-        console.log(row)
-        this.$router.push({
-            path: `/user/save?id=${row.id}&action=edit&_=编辑用户`,
-        })
-    }
+    
+    
     // 删除单个数据 二次确认 row参数不要省略
     async handleDelete(row: VO) {
         console.log(row)
@@ -1382,15 +1405,27 @@ export default class UserManagement extends Vue {
         let val = this.getTableAttrs.multipleSelectionAll
         // todo
     }
-    /** 新增 */
     handleAdd() {
-        // todo
-        this.$router.push({
-            path: `/user/save?action=add&_=新增用户`,
-        })
+        this.openDialog()
     }
-    async openDialog() {
-       // todo
+
+    handleView(row: CustomerVO) {
+        this.openDialog(row.id, 'detail')
+    }
+
+    handleEdit(row: CustomerVO) {
+        this.openDialog(row.id, 'modify')
+    }
+    async openDialog(id = '', action: 'create' | 'modify' | 'detail' = 'create') {
+        // try {
+        //     await this.$modalDialog(() => import('./components/customer-dialog/index.vue'), {
+        //         id,
+        //         action,
+        //     })
+        //     this.handleSearch()
+        // } catch (error) {
+        //     console.error(error)
+        // }
     }
     //  查询条件表单属性设置 name为接口字段名称
     get getFormAttrs() {
@@ -1777,7 +1812,12 @@ export default class UserManagement extends Vue {
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
 import { detail } from './api'
-
+/*
+ * 描述: 这是一个示例Vue组件，用于展示如何在文件顶部添加说明注释。
+ *
+ * 功能描述:
+ * - 该组件包含一个按钮和一个显示消息的区域。
+ */
 @Component({
     name: 'UserDialog',
     components: {},
@@ -2074,6 +2114,8 @@ render(h: any) {
 ```
 
 ## 接口规范
+避免使用 RESTful 风格的接口，统一使用 GET 和 POST 方法
+
 - 接口返回格式
 ```json
 {
@@ -2100,10 +2142,6 @@ render(h: any) {
     }
 }
 ```
-
-## 自定义约束
-
-
 
 # Workflow
 - 用户输入产品prd内容
