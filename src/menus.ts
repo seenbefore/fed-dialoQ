@@ -187,18 +187,4 @@ export const LocalMenu: UserMenu[] = [
             },
         ],
     },
-    {
-        id: 'test',
-        label: '测试管理',
-        icon: 'el-icon-s-tools',
-        uri: '/test',
-        children: [
-            {
-                id: 'test-case',
-                label: '测试用例',
-                icon: 'el-icon-document',
-                uri: '/test/case',
-            },
-        ],
-    },
 ]

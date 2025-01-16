@@ -1597,7 +1597,7 @@ export default class UserManagement extends Vue {
                     }
                     const className = classNameMap[row.reimburseStatus] || ''
                     return (
-                        <span class={['sg-dot', className].join(' ')} style={{ color: className }}>
+                        <span class={['sg-dot', className].join(' ')}>
                             {row.reimburseStatus}
                         </span>
                     )

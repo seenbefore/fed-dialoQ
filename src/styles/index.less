@@ -104,10 +104,6 @@ body #nprogress .spinner-icon {
 .el-form .el-row .el-col .el-form-item__label {
     flex-shrink: 0;
 }
-// TODO: 表单滚动
-.sg-data-form .el-form-item__content {
-    // overflow-y: auto;
-}
 .sg-data-view__header {
     margin-bottom: 7px;
 }
@@ -159,32 +155,6 @@ body #nprogress .spinner-icon {
             &::after {
                 background-color: #fff !important;
             }
-        }
-    }
-}
-.sg-dot {
-    &.success {
-        color: var(--color-success);
-        &::before {
-            background-color: var(--color-success);
-        }
-    }
-    &.danger {
-        color: var(--color-danger);
-        &::before {
-            background-color: var(--color-danger);
-        }
-    }
-    &.warning {
-        color: var(--color-warning);
-        &::before {
-            background-color: var(--color-warning);
-        }
-    }
-    &.info {
-        color: var(--color-info);
-        &::before {
-            background-color: var(--color-info);
         }
     }
 }
