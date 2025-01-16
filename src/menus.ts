@@ -56,6 +56,11 @@ export const LocalMenu: UserMenu[] = [
         uri: '/实战案例',
         children: [
             {
+                label: '文书组件',
+                icon: 'el-icon-document',
+                uri: '/example/document',
+            },
+            {
                 label: '电子卷宗',
                 icon: 'el-icon-document',
                 uri: '/电子卷宗',

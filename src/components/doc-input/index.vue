@@ -115,6 +115,7 @@ export default class DocInput extends Vue {
             // 1、获取文书配置信息
             const { sendData, httpApiName: httpApiBase } = this.assembleInitDocSendData('base')
             const { data: configInfo } = await httpApiBase(sendData)
+            // console.log('configInfo111111', configInfo)
             // 2、文书配置数据处理
             const { templateConfigMap = {}, htmlContent = '' } = configInfo || {}
             Object.values(templateConfigMap).forEach((item: any) => {
@@ -451,7 +452,7 @@ export default class DocInput extends Vue {
         //     sendData.caseAssistId = caseAssistId
         //     httpApiName = saveDocInfo
         // }
-        console.log(sourcePage, SOURCES, isNeedApproval, additionalType)
+        // console.log(sourcePage, SOURCES, isNeedApproval, additionalType)
         if (sourcePage === SOURCES[0] && isNeedApproval !== '1') {
             // 案源
             sendData.caseSourceId = caseId

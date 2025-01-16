@@ -7,7 +7,6 @@
             :custom-get-doc-form="customGetDocForm"
             :get-params-doc-form="getParamsDocForm"
             is-custom-save-http
-            @emitDataMap="emitDataMap"
         ></DocInput>
     </div>
 </template>
