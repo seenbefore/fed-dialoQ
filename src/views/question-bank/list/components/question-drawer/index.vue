@@ -49,7 +49,10 @@ export default class QuestionDrawer extends Vue {
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
-                        return [{ label: '2024年全省协助执法文员考试', value: '1' }]
+                        return [
+                            { label: '2024年全省协助执法文员考试', value: '1' },
+                            { label: '2025年全省协助执法文员考试', value: '2' },
+                        ]
                     },
                 },
                 itemAttrs: {
@@ -60,11 +63,34 @@ export default class QuestionDrawer extends Vue {
                 tag: 'select',
                 name: 'category',
                 label: '所属分类',
-                attrs: {
-                    placeholder: '请选择',
-                    options: async () => {
-                        return [{ label: '法律法规', value: '1' }]
-                    },
+                // attrs: {
+                //     placeholder: '请选择',
+                //     options: async () => {
+                //         return [{ label: '法律法规', value: '1' }]
+                //     },
+                // },
+                componentProps({ formModel }) {
+                    const { kind } = formModel
+                    console.log('kind', kind)
+                    return {
+                        attrs: {
+                            placeholder: '请选择',
+                            options: async () => {
+                                if (kind === '1') {
+                                    return [
+                                        { label: '法律法规1-1', value: '1' },
+                                        { label: '法律法规1-2', value: '2' },
+                                    ]
+                                } else if (kind === '2') {
+                                    return [
+                                        { label: '法律法规2-1', value: '1' },
+                                        { label: '法律法规2-2', value: '2' },
+                                    ]
+                                }
+                                return []
+                            },
+                        },
+                    }
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请选择所属分类' }],
