@@ -1,9 +1,10 @@
 import { Toast } from 'vant'
+import { ExAxiosRequestConfig } from 'icinfo-request'
 let instance: any = null // 单例模式
 let count = 0
 
 export const BaseMobileLoadingHook = Object.freeze({
-    onBefore(config: any) {
+    onBefore(config: ExAxiosRequestConfig) {
         if (config.exShowLoading) {
             if (!instance || instance.value === false) {
                 instance = Toast.loading({})
@@ -12,7 +13,7 @@ export const BaseMobileLoadingHook = Object.freeze({
             config._exShowLoading = true
         }
     },
-    onComplete(config: any) {
+    onComplete(config: ExAxiosRequestConfig) {
         if (config._exShowLoading) {
             if (instance) {
                 count--

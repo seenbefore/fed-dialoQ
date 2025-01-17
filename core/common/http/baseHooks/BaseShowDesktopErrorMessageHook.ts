@@ -1,12 +1,12 @@
 import { Message } from 'element-ui'
-
+import { ExAxiosRequestConfig } from 'icinfo-request'
 interface Raw {
     [propName: string]: any
 }
 const Cache: Raw = {}
 export const BaseShowDesktopErrorMessageHook = Object.freeze({
-    onBefore(config: any) {},
-    onComplete(config: any, isResolve: any, resOrErr: any) {
+    onBefore(config: ExAxiosRequestConfig) {},
+    onComplete(config: ExAxiosRequestConfig, isResolve: boolean, resOrErr: any) {
         const message = resOrErr.message || ''
 
         if (message && !config.exNoErrorMassage && !isResolve) {

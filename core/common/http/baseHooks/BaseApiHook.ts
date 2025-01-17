@@ -1,5 +1,7 @@
+import { ExAxiosRequestConfig } from 'icinfo-request'
+
 export const BaseApiHook = Object.freeze({
-    onBefore(config: any) {
+    onBefore(config: ExAxiosRequestConfig) {
         // 如果是FormData类型的数据(通常用于文件上传)，则跳过处理
         if (config.data instanceof FormData) {
             return

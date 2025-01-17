@@ -1,7 +1,8 @@
+import { ExAxiosRequestConfig } from 'icinfo-request'
 const isGroupOpened = false
 export const BaseConsoleHook = Object.freeze({
-    onBefore(config: any) {},
-    onComplete(config: any, isResolve: any, resOrErr: any) {
+    onBefore(config: ExAxiosRequestConfig) {},
+    onComplete(config: ExAxiosRequestConfig, isResolve: any, resOrErr: any) {
         const { url, description } = config
         if (!isResolve) {
             console.error(config.url, resOrErr.message)
