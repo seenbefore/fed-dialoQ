@@ -177,6 +177,11 @@ export default {
         //         ]
         //     },
         // },
+        // 表单数据
+        value: {
+            type: Array,
+            default: () => ({}),
+        },
         border: {
             type: Boolean,
             default: false,
@@ -750,8 +755,10 @@ export default {
 
             const pageSize$ = params.pageSize
             const page$ = page
-
+            // 排序参数
             Object.assign(params, this.sortParams)
+            // 表单数据
+            Object.assign(params, this.value)
 
             params = paramsSerializer ? paramsSerializer(params) : params
 

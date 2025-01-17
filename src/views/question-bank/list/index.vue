@@ -1,19 +1,16 @@
 <template>
-    <div class="sg-page icinfo-ai QuestionBankList">
+    <admin-page class="QuestionBankList">
         <!-- 查询条件 -->
         <sg-base-form ref="formRef" v-bind="getFormAttrs" v-model="formModel" @submit="handleSearch" @reset="handleSearch"></sg-base-form>
 
-        <!-- 在查询条件和列表之间添加 -->
-        <div class="sg-flexbox align-center justify-between" style="margin-bottom: 7px;">
-            <div>
+        <!-- 列表 -->
+        <sg-data-view v-bind="getTableAttrs" ref="tableRef" v-model="formModel">
+            <template #header>
                 <el-button type="primary" @click="handleAdd">新增题目</el-button>
                 <el-button type="primary" @click="handleImport">导入题库</el-button>
-            </div>
-        </div>
-
-        <!-- 列表 -->
-        <sg-data-view v-bind="getTableAttrs" ref="tableRef"></sg-data-view>
-    </div>
+            </template>
+        </sg-data-view>
+    </admin-page>
 </template>
 
 <script lang="tsx">
@@ -41,15 +38,15 @@ export default class QuestionBankList extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'input',
-                name: 'title',
+                name: 'questionContent',
                 label: '题目',
                 attrs: {
-                    placeholder: '请输入题目',
+                    placeholder: '请输入题目关键字',
                 },
             },
             {
                 tag: 'select',
-                name: 'kind',
+                name: 'categoryCode',
                 label: '所属大类',
                 attrs: {
                     placeholder: '请选择',
@@ -63,7 +60,7 @@ export default class QuestionBankList extends Vue {
             },
             {
                 tag: 'select',
-                name: 'type',
+                name: 'questionTypeCode',
                 label: '题目类型',
                 attrs: {
                     placeholder: '请选择',
@@ -120,23 +117,33 @@ export default class QuestionBankList extends Vue {
             },
             {
                 label: '所属大类',
-                prop: 'kind_name',
+                prop: 'categoryName',
                 minWidth: '180px',
             },
             {
                 label: '所属分类',
-                prop: 'case_name',
+                prop: 'subCategoryName',
                 minWidth: '120px',
             },
             {
                 label: '题目',
-                prop: 'title',
+                prop: 'questionContent',
                 minWidth: '300px',
             },
             {
                 label: '答案',
-                prop: 'answer',
+                prop: 'correctAnswer',
                 minWidth: '80px',
+            },
+            {
+                label: '创建人',
+                prop: 'creatorName',
+                minWidth: '100px',
+            },
+            {
+                label: '创建时间',
+                prop: 'createTime',
+                minWidth: '160px',
             },
             {
                 label: '操作',
@@ -172,17 +179,16 @@ export default class QuestionBankList extends Vue {
         return {
             // 表格滚动吸顶 不要删减
             tableHeaderSticky: {
-                scrollDom: () => document.querySelector('.QuestionBankList'),
+                scrollDom: () => document.querySelector('.admin-page__content'),
             },
             pageActionLayout: [],
             load: async (params: any = {}) => {
                 const { data } = await list({
                     ...params,
-                    ...this.formModel,
                 })
                 return {
                     result: data.data,
-                    total: data.recordsTotal,
+                    total: parseInt(data.total),
                 }
             },
             columns,

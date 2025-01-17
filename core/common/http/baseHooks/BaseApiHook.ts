@@ -18,9 +18,7 @@ export const BaseApiHook = Object.freeze({
                 ...body,
             }
         } else {
-            config.data = {
-                ...body,
-            }
+            config.data = body
         }
 
         // exFilterEmpty 是否过滤空 http.get('/xx',{exFilterEmpty:true})

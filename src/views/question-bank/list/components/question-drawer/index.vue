@@ -236,13 +236,12 @@ export default class QuestionDrawer extends Vue {
 
             // 构建保存数据
             const formModel = this.formModel
-            const payload: Partial<QuestionVO> = {
+            const payload: any = {
                 id: this.id,
-                kind: formModel.kind,
-                case_name: formModel.category,
-                type: formModel.type,
-                title: formModel.title,
-                option1: formModel.option1,
+                categoryCode: formModel.category,
+                questionTypeCode: formModel.type,
+                questionContent: formModel.title,
+                questionOptions: formModel.option1,
                 option2: formModel.option2,
                 option3: formModel.option3,
                 option4: formModel.option4,

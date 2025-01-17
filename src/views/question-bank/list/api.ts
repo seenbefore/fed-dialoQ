@@ -5,48 +5,36 @@ import { Result, PageResponse } from '@/@types'
 export interface QuestionVO {
     /** ID */
     id: string
-    /** 题目 */
-    title: string
-    /** 选项1 */
-    option1: string
-    /** 选项2 */
-    option2: string
-    /** 选项3 */
-    option3: string
-    /** 选项4 */
-    option4: string
-    /** 选项5 */
-    option5: string
-    /** 选项6 */
-    option6: string
-    /** 判断题答案文本 */
-    text: string | null
-    /** 答案 */
-    answer: string
-    /** 题目类型 0单选 1多选 2判断 */
-    type: string
-    /** 题目类型名称 */
-    type_name: string | null
-    /** 是否删除 0否 1是 */
-    is_del: string
-    /** 删除时间 */
-    del_time: string | null
-    /** 创建时间 */
-    posttime: string | null
-    /** 案例标记 */
-    case_flag: string
-    /** 案例ID */
-    caseid: string
-    /** 所属大类 */
-    kind: string
-    /** 分类名称 */
-    className: string | null
+    /** 题目内容 */
+    questionContent: string
+    /** 创建人id */
+    creatorId: string
+    /** 创建人姓名 */
+    creatorName: string
+    /** 所属分类代码 */
+    subCategoryCode: string
+    /** 所属分类名称 */
+    subCategoryName: string
+    /** 更新时间 */
+    updateTime: string
+    /** 备注 */
+    remark: string
+    /** 所属大类代码 */
+    categoryCode: string
     /** 所属大类名称 */
-    kind_name: string
-    /** 所属分类 */
-    case_name: string
-    /** 类型条件 */
-    types: string
+    categoryName: string
+    /** 题目类型代码 */
+    questionTypeCode: string
+    /** 题目类型名称 */
+    questionTypeName: string
+    /** 创建时间 */
+    createTime: string
+    /** 题目答案(json格式) */
+    questionOptions: string
+    /** 题目正确答案 */
+    correctAnswer: string
+    /** 状态(1:正常,0:删除) */
+    status: string
 }
 
 /**
@@ -56,16 +44,17 @@ export interface QuestionVO {
  */
 export function list(
     data?: {
-        /** 题目 */ title?: string
-        /** 所属大类 */ kind?: string
-        /** 题目类型 */ type?: string
-        /** 页码 */ page?: number
-        /** 每页条数 */ pageSize?: number
+        /** 题目关键字 */ questionContent?: string
+        /** 所属大类代码 */ categoryCode?: string
+        /** 所属分类代码 */ subCategoryCode?: string
+        /** 题目类型代码 */ questionTypeCode?: string
+        /** 页码 */ pageNum?: number
+        /** 每页条数 */ length?: number
     },
     options?: ExAxiosRequestConfig,
 ) {
-    return http.request<Result<PageResponse<QuestionVO[]>>>({
-        url: '/question-bank/list',
+    return http.request<Result<{ total: string; pages: number; data: QuestionVO[] }>>({
+        url: '/exam/question/getExamQuestionPageList',
         method: 'post',
         data,
         ...options,
