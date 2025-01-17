@@ -1,5 +1,9 @@
 export const BaseApiHook = Object.freeze({
     onBefore(config: any) {
+        // 如果是FormData类型的数据(通常用于文件上传)，则跳过处理
+        if (config.data instanceof FormData) {
+            return
+        }
         // 支持restful格式的api /news/detail/{id}
         let method = config.type?.toLowerCase() || config.method?.toLowerCase()
         const body = {
@@ -18,7 +22,9 @@ export const BaseApiHook = Object.freeze({
                 ...body,
             }
         } else {
-            config.data = body
+            config.data = {
+                ...body,
+            }
         }
 
         // exFilterEmpty 是否过滤空 http.get('/xx',{exFilterEmpty:true})

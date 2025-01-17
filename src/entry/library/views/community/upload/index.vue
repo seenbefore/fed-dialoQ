@@ -395,7 +395,7 @@ export default class CommunityUpload extends Vue {
                                         data: formData,
                                         method: 'post',
                                         headers: {
-                                            'content-type': 'multipart/form-data',
+                                            'Content-Type': 'multipart/form-data',
                                         },
 
                                         onUploadProgress: (progressEvent: any) => {
@@ -630,7 +630,7 @@ export default class CommunityUpload extends Vue {
                                             //baseURL: 'http://192.168.1.242:8081/devops',
                                             method: 'post',
                                             headers: {
-                                                'content-type': 'multipart/form-data',
+                                                'Content-Type': 'multipart/form-data',
                                             },
                                         })
                                         .then(res => {
@@ -704,7 +704,7 @@ export default class CommunityUpload extends Vue {
                                         data: formData,
                                         method: 'post',
                                         headers: {
-                                            'content-type': 'multipart/form-data',
+                                            'Content-Type': 'multipart/form-data',
                                         },
 
                                         onUploadProgress: (progressEvent: any) => {

@@ -37,7 +37,7 @@ export default class Demo extends Vue {
                     //baseURL: 'http://192.168.1.242:8081/devops',
                     method: 'post',
                     headers: {
-                        'content-type': 'multipart/form-data',
+                        'Content-Type': 'multipart/form-data',
                     },
                     onUploadProgress(event) {
                         data.onProgress({ percent: Math.round((event.loaded / event.total) * 100) })

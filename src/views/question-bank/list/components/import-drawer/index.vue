@@ -54,15 +54,7 @@ export default class ImportDrawer extends Vue {
                 appendRender: (h, { row }) => {
                     return (
                         <div>
-                            <el-upload
-                                action="#"
-                                accept=".xlsx,.xls"
-                                beforeUpload={this.beforeUpload}
-                                onChange={this.handleFileChange}
-                                fileList={this.formModel.fileList || []}
-                                limit={1}
-                                auto-upload={false}
-                            >
+                            <el-upload accept=".xlsx,.xls" onChange={this.handleFileChange} fileList={this.formModel.fileList || []} limit={1} http-request={this.httpRequest} auto-upload={true}>
                                 <el-button size="small" type="primary">
                                     选择文件
                                 </el-button>
@@ -99,6 +91,21 @@ export default class ImportDrawer extends Vue {
             span: 24,
             fields,
         }
+    }
+    async httpRequest({ file, filename, onProgress }: any) {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const { data } = await this.$http.request({
+            url: '/open/upload',
+            data: formData,
+            method: 'post',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+
+        return data.url
     }
 
     // 下载模板

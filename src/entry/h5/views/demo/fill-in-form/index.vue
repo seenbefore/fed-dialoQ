@@ -72,7 +72,7 @@ export default class DemoFillInForm extends Vue {
                                 data: formData,
                                 method: 'post',
                                 headers: {
-                                    'content-type': 'multipart/form-data',
+                                    'Content-Type': 'multipart/form-data',
                                 },
                             })
                             return data.url
