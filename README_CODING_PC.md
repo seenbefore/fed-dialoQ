@@ -512,14 +512,8 @@ export default class FormExample extends Vue {
             label: '选项2',
             value: '2',
         }],
+        // formActionType 表单组实例
         onChange: ({ value,label }, { formModel,formActionType }) => {
-            if (value === '1') {
-                formModel.companyCode = value
-                formModel.companyName = label
-            } else {
-                formModel.companyCode = ''
-                formModel.companyName = ''
-            }
             // 触发表单组的submit事件
             // formActionType.submit()
         },
@@ -599,6 +593,7 @@ export default class FormExample extends Vue {
 
 ```tsx
 [
+    // 日期
     {
         tag: 'daterange',
         name: 'receiptDate',
@@ -608,10 +603,29 @@ export default class FormExample extends Vue {
             value: [],
             // 日期格式化
             'value-format': 'yyyy-MM-dd',
+            // 日期格式化
+            'format': 'yyyy-MM-dd',
             // 开始时间占位符
             'start-placeholder': '开始时间',
             // 结束时间占位符
             'end-placeholder': '结束时间',
+        },
+    },
+    // 精确到时间点
+    {
+        tag: 'daterange',
+        name: 'receiptDate2',
+        label: '时间点范围：',
+        attrs: {
+            // 包含时间点 datetime
+            type: 'datetime',
+            value: [],
+            'value-format': 'yyyy-MM-dd HH:mm:ss',
+            format: 'yyyy-MM-dd HH:mm:ss',
+            'start-placeholder': '开始时间',
+            'end-placeholder': '结束时间',
+            defaultTime: ['09:00:00', '10:00:00'],
+            
         },
     },
 ]
@@ -674,24 +688,23 @@ export default class FormExample extends Vue {
 1. 除了`custom`外，其他控件都可以自定义跟随内容
 ```tsx
 [
+  // input后尾随验证码 appendSlotRender
   {
     tag: 'input',
     name: 'captcha',
     // 不显示label
     label: '',
     attrs: {
-        placeholder: '请输入图片验证码',
-        // 确保验证码和输入框在同一行并居中
+        // 组件样式 保证验证码和输入框在同一行并居中
         class: 'sg-flexbox align-center',
-    },
-    // 跟随内容 
-    appendRender: (h, { row }) => {
-        return (
-            <div class="sg-ml-3">
-                <span>{row.captcha}</span>
-                <Captcha getCaptcha={this.getCaptcha} />
-            </div>
-        )
+        // 跟随内容 
+        appendSlotRender: (h) => {
+            return (
+                <div>
+                    <Captcha getCaptcha={this.getCaptcha} />
+                </div>
+            )
+        },
     },
   },
 ]
@@ -712,7 +725,7 @@ export default class FormExample extends Vue {
 {
   tag: 'select',
   name: 'field',
-  componentProps({schema, formModel}) { // 动态设置组件属性
+  componentProps({formModel}) { // 动态设置组件属性
     return {
       attrs: {
         disabled: formModel.type === '1'
@@ -768,6 +781,41 @@ export default class Demo extends Vue {
     },
 }
 ```
+
+7. 数据变化
+```tsx
+[
+  // onChange or onInput 二选一
+  {
+    tag: 'select',
+    name: 'company',
+    attrs: {
+        options:[{
+            label: '选项1',
+            value: '1',
+        },{
+            label: '选项2',
+            value: '2',
+        }],
+        // 返回value和label 只有包含options的组件才会触发
+        onChange: ({ value,label }, { formModel,formActionType }) => {
+            if (value === '1') {
+                formModel.companyCode = value
+                formModel.companyName = label
+            } else {
+                formModel.companyCode = ''
+                formModel.companyName = ''
+            }
+        },
+        // 直接返回value 所有内置组件都会触发
+        onInput: (value: any, { formModel,formActionType }) => {
+            formModel.companyCode = value
+        },
+    },
+  },
+]
+```
+
 
 ## 全局表格组件 sg-data-view
 - `mounted`中不需要调用表格组件的`onLoad`方法，默认自动触发

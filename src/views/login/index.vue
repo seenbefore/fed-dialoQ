@@ -97,17 +97,17 @@ export default class LoginSimple extends Vue {
                     placeholder: '请输入图片验证码',
                     // 确保验证码和输入框在同一行
                     class: 'sg-flexbox align-center',
-                },
-                appendRender: () => {
-                    return (
-                        <div class="sg-ml-3">
-                            <Captcha
-                                props={{
-                                    getCaptcha: this.getCaptcha,
-                                }}
-                            />
-                        </div>
-                    )
+                    appendSlotRender: () => {
+                        return (
+                            <div>
+                                <Captcha
+                                    props={{
+                                        getCaptcha: this.getCaptcha,
+                                    }}
+                                />
+                            </div>
+                        )
+                    },
                 },
             },
         ] as FormColumn[]
