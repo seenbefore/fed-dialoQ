@@ -17,8 +17,8 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
-import { QuestionBankCategoryEnumMap, QuestionBankCategoryEnum, QuestionTypeEnumMap, QuestionTypeEnum, QuestionBankSubCategoryEnumMap } from '@/views/question-bank/@enum'
-import { getConfig, save } from '../../api'
+import { QuestionBankCategoryEnumMap, QuestionBankCategoryEnum, QuestionTypeEnumMap, QuestionTypeEnum, QuestionBankSubCategoryEnumMap, QuestionBankSubCategoryEnum } from '@/views/question-bank/@enum'
+import { getConfig, save, ExamPaperConfigVO, ExamPaperUpdateDTO, PaperDetailVO, ExamPaperBaseVO } from '../../api'
 
 @Component({
     name: 'PaperDrawer',
@@ -30,25 +30,80 @@ export default class PaperDrawer extends Vue {
     @Prop() id!: string
 
     @Ref('form') formRef!: FormRef
-    @Ref('paperDetailsForm1') paperDetailsForm1!: FormRef
-    @Ref('paperDetailsForm2') paperDetailsForm2!: FormRef
-    @Ref('paperDetailsForm3') paperDetailsForm3!: FormRef
 
     loading = false
-    formModel: Record<string, any> = {
+    formModel: any = {
+        paperName: '',
         paperTypeCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
-        paperTypeName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS],
-        duration: 60,
+        paperTypeName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+        duration: 0,
         totalScore: 100,
         passScore: 60,
         totalQuestions: 0,
-        singleChoiceScore: 0,
-        multipleChoiceScore: 0,
-        judgeScore: 0,
+        singleChoiceScore: 1,
+        multipleChoiceScore: 2,
+        judgeScore: 1,
+        startTime: '',
+        endTime: '',
+
+        examTime: [],
         paperDetails: [
-            { questionTypeName: '单选题', questionCount: 10, questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE },
-            { questionTypeName: '多选题', questionCount: 20, questionTypeCode: QuestionTypeEnum.MULTIPLE_CHOICE },
-            { questionTypeName: '判断题', questionCount: 10, questionTypeCode: QuestionTypeEnum.TRUE_FALSE },
+            // 企业负责人
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.ENTERPRISE_LEADER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER].label,
+                questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.SINGLE_CHOICE].label,
+                questionCount: 20,
+            },
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.ENTERPRISE_LEADER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER].label,
+                questionTypeCode: QuestionTypeEnum.MULTIPLE_CHOICE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.MULTIPLE_CHOICE].label,
+                questionCount: 30,
+            },
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.ENTERPRISE_LEADER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER].label,
+                questionTypeCode: QuestionTypeEnum.TRUE_FALSE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.TRUE_FALSE].label,
+                questionCount: 20,
+            },
+            // 安全管理员
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.SAFETY_MANAGER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.SAFETY_MANAGER].label,
+                questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.SINGLE_CHOICE].label,
+                questionCount: 20,
+            },
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.SAFETY_MANAGER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.SAFETY_MANAGER].label,
+                questionTypeCode: QuestionTypeEnum.MULTIPLE_CHOICE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.MULTIPLE_CHOICE].label,
+                questionCount: 30,
+            },
+            {
+                categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+                categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
+                subCategoryCode: QuestionBankSubCategoryEnum.SAFETY_MANAGER,
+                subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.SAFETY_MANAGER].label,
+                questionTypeCode: QuestionTypeEnum.TRUE_FALSE,
+                questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.TRUE_FALSE].label,
+                questionCount: 20,
+            },
         ],
     }
 
@@ -59,22 +114,27 @@ export default class PaperDrawer extends Vue {
     get getFormAttrs() {
         const fields: FormRow[] = [
             {
+                span: 24,
                 tag: 'select',
-                name: 'kind',
-                label: '所属大类',
+                name: 'paperTypeCode',
+                label: '试卷类型',
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
                         return Object.values(QuestionBankCategoryEnumMap)
                     },
+                    onChange: ({ value, label }: any) => {
+                        this.formModel.paperTypeName = label
+                    },
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请选择所属大类' }],
+                    rules: [{ required: true, message: '请选择试卷类型' }],
                 },
             },
             {
+                span: 24,
                 tag: 'input',
-                name: 'title',
+                name: 'paperName',
                 label: '试卷名称',
                 attrs: {
                     placeholder: '请输入试卷名称',
@@ -84,6 +144,41 @@ export default class PaperDrawer extends Vue {
                 },
             },
             {
+                span: 24,
+                tag: 'daterange',
+                name: 'examTime',
+                label: '考试时间',
+                attrs: {
+                    value: [],
+                    'value-format': 'yyyy-MM-dd HH:mm:ss',
+                    format: 'yyyy-MM-dd HH:mm:ss',
+                    'start-placeholder': '开始时间',
+                    'end-placeholder': '结束时间',
+                    type: 'datetime',
+                    defaultTime: ['09:00:00', '10:00:00'],
+                    style: 'flex: 1',
+                    class: 'sg-flexbox align-center',
+
+                    // appendSlotRender: () => {
+                    //     // 计算考试时长
+                    //     const [startTime, endTime] = this.formModel.examTime || []
+                    //     const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000
+                    //     return <div style="width: 150px;">考试时长: {duration}分钟</div>
+                    // },
+                    onInput: value => {
+                        const [startTime, endTime] = value || []
+                        if (startTime && endTime) {
+                            const duration = (new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000
+                            this.formModel.duration = duration
+                        }
+                    },
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请选择考试时间' }],
+                },
+            },
+
+            {
                 span: 12,
                 tag: 'input',
                 name: 'duration',
@@ -92,6 +187,7 @@ export default class PaperDrawer extends Vue {
                     type: 'number',
                     min: 0,
                     placeholder: '请输入考试时长(分钟)',
+                    disabled: true,
                     inputAppendSlotRender: () => <div>分钟</div>,
                 },
                 itemAttrs: {
@@ -103,56 +199,119 @@ export default class PaperDrawer extends Vue {
                 tag: 'input',
                 name: 'totalScore',
                 label: '总分',
-                render: (h, { row }) => {
-                    return <div>{row.singleChoiceScore + row.multipleChoiceScore + row.judgeScore}</div>
+                attrs: {
+                    type: 'number',
+                    min: 0,
+                    //disabled: true,
                 },
             },
             {
-                span: 6,
+                span: 12,
                 tag: 'input',
                 name: 'passScore',
                 label: '及格分',
                 attrs: {
                     type: 'number',
                     min: 0,
-                    placeholder: '',
+                    placeholder: '请输入及格分',
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请输入及格分' }],
                 },
             },
             {
+                span: 12,
+                tag: 'input',
+                name: 'totalQuestions',
+                label: '总题数',
+                attrs: {
+                    type: 'number',
+                    disabled: true,
+                },
+                render: () => {
+                    // 计算总题数
+                    const totalQuestions = (this.formModel.paperDetails || []).reduce((sum: number, item: PaperDetailVO) => {
+                        return sum + Number(item.questionCount || 0)
+                    }, 0)
+                    return <div>{totalQuestions}</div>
+                },
+            },
+
+            {
+                span: 8,
+                tag: 'input',
+                name: 'singleChoiceScore',
+                label: '单选题分值',
+                attrs: {
+                    type: 'number',
+                    min: 0,
+                    placeholder: '请输入单选题分值',
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请输入单选题分值' }],
+                },
+            },
+            {
+                span: 8,
+                tag: 'input',
+                name: 'multipleChoiceScore',
+                label: '多选题分值',
+                attrs: {
+                    type: 'number',
+                    min: 0,
+                    placeholder: '请输入多选题分值',
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请输入多选题分值' }],
+                },
+            },
+            {
+                span: 8,
+                tag: 'input',
+                name: 'judgeScore',
+                label: '判断题分值',
+                attrs: {
+                    type: 'number',
+                    min: 0,
+                    placeholder: '请输入判断题分值',
+                },
+                itemAttrs: {
+                    rules: [{ required: true, message: '请输入判断题分值' }],
+                },
+            },
+            {
                 span: 24,
                 tag: 'custom',
                 name: 'paperDetails',
-                label: '选题',
+                label: '试题配置',
                 render: () => {
+                    // 按类别分组显示试题配置
+                    const groupedDetails = this.getGroupedPaperDetails()
+
                     return (
-                        <div>
-                            <sg-base-form
-                                ref="paperDetailsForm1"
-                                props={{
-                                    span: 8,
-                                    value: this.formModel.paperDetails[0],
-                                    fields: this.paperDetailsFields,
-                                }}
-                            ></sg-base-form>
-                            <sg-base-form
-                                ref="paperDetailsForm2"
-                                props={{
-                                    span: 8,
-                                    value: this.formModel.paperDetails[1],
-                                    fields: this.paperDetailsFields,
-                                }}
-                            ></sg-base-form>
-                            <sg-base-form
-                                ref="paperDetailsForm3"
-                                props={{
-                                    span: 8,
-                                    value: this.formModel.paperDetails[2],
-                                    fields: this.paperDetailsFields,
-                                }}
-                            ></sg-base-form>
+                        <div class="paper-details">
+                            {Object.entries(groupedDetails).map(([subCategory, items]) => (
+                                <div class="paper-category" key={subCategory}>
+                                    <div class="category-title">{subCategory}</div>
+                                    <div class="category-content">
+                                        {items.map((item: PaperDetailVO) => (
+                                            <div class="paper-detail-item" key={`${item.subCategoryCode}-${item.questionTypeCode}`}>
+                                                <div class="paper-detail-header">
+                                                    <span>{item.questionTypeName}</span>
+                                                    {/* <span class="total-count">共{this.getQuestionBankCount(item.questionTypeCode)}题</span> */}
+                                                </div>
+                                                <el-input-number
+                                                    v-model={item.questionCount}
+                                                    min={0}
+                                                    max={this.getQuestionBankCount(item.questionTypeCode)}
+                                                    placeholder="题目数量"
+                                                    onChange={(val: number) => this.handleQuestionCountChange(val, item)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     )
                 },
@@ -163,73 +322,77 @@ export default class PaperDrawer extends Vue {
             fields,
         }
     }
-    get paperDetailsFields() {
-        return [
-            // {
-            //     tag: 'text',
-            //     name: 'questionTypeCode',
-            //     label: 'questionTypeCode',
-            //     itemAttrs: {},
-            //     visible: false,
-            // },
-            // {
-            //     span: 24,
-            //     tag: 'text',
-            //     name: 'questionTypeName',
-            //     label: 'questionTypeName',
-            //     itemAttrs: {},
-            //     visible: false,
-            // },
 
-            {
-                span: 6,
-                tag: 'select',
-                name: 'subCategoryCode',
-                label: '题目小类',
-                itemAttrs: {
-                    rules: [{ required: true, message: '请选择题目小类' }],
-                },
-                attrs: {
-                    options: async () => {
-                        return Object.values(QuestionBankSubCategoryEnumMap)
-                    },
-                },
-            },
-            {
-                span: 6,
-                tag: 'input',
-                name: 'questionCount',
-                label: '数量',
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入数量' }],
-                },
-            },
-            {
-                span: 6,
-                tag: 'input',
-                name: 'grade',
-                label: '分值',
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入分值' }],
-                },
-            },
-        ]
+    // 获取题库中各类型题目的总数
+    getQuestionBankCount(questionTypeCode: string) {
+        switch (questionTypeCode) {
+            case QuestionTypeEnum.SINGLE_CHOICE: // 单选题
+                return 120
+            case QuestionTypeEnum.MULTIPLE_CHOICE: // 多选题
+                return 90
+            case QuestionTypeEnum.TRUE_FALSE: // 判断题
+                return 90
+            default:
+                return 0
+        }
+    }
+
+    // 按类别分组试题配置
+    getGroupedPaperDetails() {
+        const grouped: Record<string, PaperDetailVO[]> = {}
+        ;(this.formModel.paperDetails || []).forEach((item: PaperDetailVO) => {
+            if (!grouped[item.subCategoryName]) {
+                grouped[item.subCategoryName] = []
+            }
+            grouped[item.subCategoryName].push(item)
+        })
+
+        return grouped
+    }
+
+    handleQuestionCountChange(val: number, item: PaperDetailVO) {
+        this.calculateTotalScore()
+    }
+
+    calculateTotalScore() {
+        let totalScore = 0
+        let totalQuestions = 0
+        ;(this.formModel.paperDetails || []).forEach((item: PaperDetailVO) => {
+            const count = Number(item.questionCount || 0)
+            totalQuestions += count
+
+            if (item.questionTypeCode === QuestionTypeEnum.SINGLE_CHOICE) {
+                totalScore += count * (this.formModel.singleChoiceScore || 0)
+            } else if (item.questionTypeCode === QuestionTypeEnum.MULTIPLE_CHOICE) {
+                totalScore += count * (this.formModel.multipleChoiceScore || 0)
+            } else if (item.questionTypeCode === QuestionTypeEnum.TRUE_FALSE) {
+                totalScore += count * (this.formModel.judgeScore || 0)
+            }
+        })
+
+        //this.formModel.totalScore = totalScore
+        this.formModel.totalQuestions = totalQuestions
     }
 
     async submit() {
         try {
             this.loading = true
-            await Promise.all([this.formRef.validate(), this.paperDetailsForm1?.validate(), this.paperDetailsForm2?.validate(), this.paperDetailsForm3?.validate()])
+            await this.formRef.validate()
 
-            // 计算总题目数
-            const totalQuestions = Number(this.formModel.dan || 0) + Number(this.formModel.duo || 0) + Number(this.formModel.pan || 0) + Number(this.formModel.case || 0)
-            this.formModel.grade_z = totalQuestions
+            const [startTime, endTime] = this.formModel.examTime || []
+            const { examTime, ...rest } = this.formModel
+            const payload: ExamPaperUpdateDTO = {
+                ...rest,
+                id: this.action === 'modify' ? this.id : undefined,
+                startTime,
+                endTime,
+            }
 
+            await save(payload)
             this.$message.success('保存成功')
             this.confirm()
         } catch (error) {
             console.error(error)
-            throw error
         } finally {
             this.loading = false
         }
@@ -243,15 +406,73 @@ export default class PaperDrawer extends Vue {
         this.$options.confirm?.(this.formModel)
     }
 
+    @Watch('formModel', { deep: true })
+    onFormModelChange() {
+        this.calculateTotalScore()
+    }
+
     async mounted() {
         if (this.action === 'modify') {
             const { data } = await getConfig({
                 id: this.data.id,
             })
-            this.$set(this, 'formModel', { ...data })
+            const formData: ExamPaperConfigVO & { examTime: string[] } = {
+                ...data,
+                paperDetails: data.details || [],
+                examTime: data.startTime && data.endTime ? [data.startTime, data.endTime] : [],
+            }
+            console.log(formData.paperDetails)
+            this.$set(this, 'formModel', formData)
         }
     }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.paper-details {
+    .paper-category {
+        margin-bottom: 20px;
+
+        .category-title {
+            font-size: 14px;
+            font-weight: bold;
+            // margin-bottom: 10px;
+            // padding: 8px;
+            // background-color: #f5f7fa;
+            border-radius: 4px;
+        }
+
+        .category-content {
+            padding: 0 10px;
+        }
+    }
+
+    .paper-detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ebeef5;
+        border-radius: 4px;
+
+        .paper-detail-header {
+            flex: 1;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+
+            span {
+                margin-right: 10px;
+                &.total-count {
+                    color: #909399;
+                    font-size: 13px;
+                }
+            }
+        }
+
+        .el-input-number {
+            width: 120px;
+        }
+    }
+}
+</style>

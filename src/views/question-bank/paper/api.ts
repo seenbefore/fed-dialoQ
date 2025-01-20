@@ -69,147 +69,43 @@ export interface ExamPaperDetailDTO {
     subCategoryName: string
 }
 
-/** 考卷更新参数 */
-export interface ExamPaperUpdateDTO {
-    /** 考卷ID */
+export interface PaperDetailVO {
+    categoryCode: string
+    categoryName: string
+    subCategoryCode: string
+    subCategoryName: string
+    questionTypeCode: string
+    questionTypeName: string
+    questionCount: number
+}
+
+export interface ExamPaperBaseVO {
+    paperName: string
+    paperTypeCode: string
+    paperTypeName: string
+    duration: number
+    totalQuestions: number
+    totalScore: number
+    passScore: number
+    singleChoiceScore: number
+    multipleChoiceScore: number
+    judgeScore: number
+    startTime: string
+    endTime: string
+    paperDetails: PaperDetailVO[]
+    details: PaperDetailVO[]
+}
+
+export interface ExamPaperConfigVO extends ExamPaperBaseVO {
+    id: string
+}
+
+export interface ExamPaperUpdateDTO extends ExamPaperBaseVO {
     id?: string
-    /** 考卷名称 */
-    paperName: string
-    /** 考卷描述 */
-    paperDesc?: string
-    /** 考卷类型代码 */
-    paperTypeCode: string
-    /** 考卷类型名称 */
-    paperTypeName: string
-    /** 考试时长(分钟) */
-    duration: number
-    /** 考卷总题数 */
-    totalQuestions: number
-    /** 考卷总分 */
-    totalScore: number
-    /** 考卷及格分 */
-    passScore: number
-    /** 单选题分数 */
-    singleChoiceScore: number
-    /** 多选题分数 */
-    multipleChoiceScore: number
-    /** 判断题分数 */
-    judgeScore: number
-    /** 考试开始时间 */
-    startTime: string
-    /** 考试结束时间 */
-    endTime: string
-    /** 考卷辅助信息列表 */
-    paperDetails: ExamPaperDetailDTO[]
-}
-
-/** 考题信息 */
-export interface QuestionVO {
-    /** 题目ID */
-    id: string
-    /** 题目 */
-    questionContent: string
-    /** 题目答案 */
-    questionOptions: string
-    /** 题目正确答案 */
-    correctAnswer: string
-}
-
-/** 考卷预览信息 */
-export interface ExamPaperPreviewVO {
-    /** 考卷ID */
-    id: string
-    /** 考卷名称 */
-    paperName: string
-    /** 考卷描述 */
-    paperDesc: string
-    /** 考卷类型代码 */
-    paperTypeCode: string
-    /** 考卷类型名称 */
-    paperTypeName: string
-    /** 考试时长(分钟) */
-    duration: number
-    /** 考卷总题数 */
-    totalQuestions: number
-    /** 考卷总分 */
-    totalScore: number
-    /** 考卷及格分 */
-    passScore: number
-    /** 单选题分数 */
-    singleChoiceScore: number
-    /** 多选题分数 */
-    multipleChoiceScore: number
-    /** 判断题分数 */
-    judgeScore: number
-    /** 考试开始时间 */
-    startTime: string
-    /** 考试结束时间 */
-    endTime: string
-    /** 单选题目数 */
-    singleChoiceCount: number
-    /** 多选题目数 */
-    multipleChoiceCount: number
-    /** 判断题目数 */
-    judgeCount: number
-    /** 单选题集合 */
-    singleChoiceQuestions: QuestionVO[]
-    /** 多选题集合 */
-    multipleChoiceQuestions: QuestionVO[]
-    /** 判断题集合 */
-    judgeQuestions: QuestionVO[]
-}
-
-/** 考卷配置信息 */
-export interface ExamPaperConfigVO {
-    /** 考卷总题数 */
-    totalQuestions: number
-    /** 考卷总分 */
-    totalScore: number
-    /** 考卷及格分 */
-    passScore: number
-    /** 考试时长(分钟) */
-    duration: number
-    /** 考卷类型代码 */
-    paperTypeCode: string
-    /** 考卷名称 */
-    paperName: string
-    /** 单选题分数 */
-    singleChoiceScore: number
-    /** 多选题分数 */
-    multipleChoiceScore: number
-    /** 考卷类型名称 */
-    paperTypeName: string
-    /** 考试开始时间 */
-    startTime: string
-    /** 考卷辅助信息列表 */
-    details: Array<{
-        /** 题目数量 */
-        questionCount: number
-        /** 题目类型名称 */
-        questionTypeName: string
-        /** 题目类型代码 */
-        questionTypeCode: string
-        /** 题目分类代码 */
-        subCategoryCode: string
-        /** 题目大类代码 */
-        categoryCode: string
-        /** 题目大类名称 */
-        categoryName: string
-        /** 题目分类名称 */
-        subCategoryName: string
-    }>
-    /** 考卷ID */
-    id: string
-    /** 判断题分数 */
-    judgeScore: number
-    /** 考试结束时间 */
-    endTime: string
 }
 
 /**
- * 获取考卷配置信息详情
- * @param data
- * @param options 附加选项
+ * 获取试卷配置
  */
 export function getConfig(data: { id: string }, options?: ExAxiosRequestConfig) {
     return http.request<Result<ExamPaperConfigVO>>({
@@ -242,14 +138,11 @@ export function list(
 }
 
 /**
- * 更新考卷
- * @param data 要提交给服务器的数据
- * @param options 附加选项
+ * 保存试卷配置
  */
 export function save(data: ExamPaperUpdateDTO, options?: ExAxiosRequestConfig) {
-    const url = data.id ? '/exam/question/editExamPaper' : '/exam/question/saveExamPaper'
     return http.request<Result<void>>({
-        url,
+        url: '/exam/paper/save',
         method: 'post',
         data,
         ...options,
@@ -262,7 +155,7 @@ export function save(data: ExamPaperUpdateDTO, options?: ExAxiosRequestConfig) {
  * @param options 附加选项
  */
 export function preview(id: string, options?: ExAxiosRequestConfig) {
-    return http.request<Result<ExamPaperPreviewVO>>({
+    return http.request<Result<ExamPaperVO>>({
         url: '/exam/question/getExamPaperPreview',
         method: 'get',
         params: { id },

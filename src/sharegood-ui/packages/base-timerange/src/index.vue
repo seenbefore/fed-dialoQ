@@ -64,9 +64,13 @@ export default {
             type: String,
             default: 'yyyy-MM-dd HH:mm',
         },
+        // 时间选择器配置 默认开启24小时制
         pickerOptions: {
             type: Object,
-            default: () => ({}),
+            default: () => {
+                // 返回空函数
+                return () => ({})
+            },
         },
     },
     mixins: [formMixins],

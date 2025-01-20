@@ -36,11 +36,11 @@ export default class QuestionDrawer extends Vue {
     loading = false
     formModel: Record<string, any> = {
         questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE, // 默认单选题
-        questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.SINGLE_CHOICE],
+        questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.SINGLE_CHOICE].label,
         categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS, // 默认安全法规
-        categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS],
+        categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS].label,
         subCategoryCode: QuestionBankSubCategoryEnum.ENTERPRISE_LEADER, // 默认企业负责人
-        subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER],
+        subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER].label,
         correctAnswer: '',
     }
 

@@ -564,7 +564,7 @@ export default {
         },
         getComponentClass(col) {
             if (col.attrs.appendSlotRender) {
-                return 'inline'
+                return 'inline' + ' ' + col.attrs?.class || ''
             }
             return col.attrs?.class || ''
         },
