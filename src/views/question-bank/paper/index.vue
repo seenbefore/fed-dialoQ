@@ -18,7 +18,8 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { list } from './api'
+import { list, ExamPaperVO } from './api'
+import moment from 'moment'
 
 @Component({
     name: 'QuestionPaperList',
@@ -40,7 +41,7 @@ export default class QuestionPaperList extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'input',
-                name: 'title',
+                name: 'paperName',
                 label: '试卷名称',
                 attrs: {
                     placeholder: '请输入试卷名称',
@@ -64,7 +65,7 @@ export default class QuestionPaperList extends Vue {
             },
             {
                 label: '试卷名称',
-                prop: 'title',
+                prop: 'paperName',
                 fixed: 'left',
                 width: '270px',
                 align: 'left',
@@ -76,12 +77,17 @@ export default class QuestionPaperList extends Vue {
             },
             {
                 label: '总分',
-                prop: 'grade_score',
+                prop: 'totalScore',
+                minWidth: '80px',
+            },
+            {
+                label: '及格分',
+                prop: 'passScore',
                 minWidth: '80px',
             },
             {
                 label: '题目数量',
-                prop: 'grade_z',
+                prop: 'totalQuestions',
                 minWidth: '100px',
             },
             {
@@ -90,7 +96,7 @@ export default class QuestionPaperList extends Vue {
                 render: (h, { row }) => {
                     return (
                         <div>
-                            {row.dan}题/{row.dan_grade}分/题
+                            {row.singleChoiceCount}题/{row.singleChoiceScore}分/题
                         </div>
                     )
                 },
@@ -101,7 +107,7 @@ export default class QuestionPaperList extends Vue {
                 render: (h, { row }) => {
                     return (
                         <div>
-                            {row.duo}题/{row.duo_grade}分/题
+                            {row.multipleChoiceCount}题/{row.multipleChoiceScore}分/题
                         </div>
                     )
                 },
@@ -112,20 +118,17 @@ export default class QuestionPaperList extends Vue {
                 render: (h, { row }) => {
                     return (
                         <div>
-                            {row.pan}题/{row.pan_grade}分/题
+                            {row.judgeCount}题/{row.judgeScore}分/题
                         </div>
                     )
                 },
             },
             {
-                label: '案例题',
-                minWidth: '180px',
+                label: '创建时间',
+                prop: 'createTime',
+                minWidth: '170px',
                 render: (h, { row }) => {
-                    return (
-                        <div>
-                            {row.case}题/{row.case_grade}分/题
-                        </div>
-                    )
+                    return <div>{moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                 },
             },
             {
@@ -176,7 +179,7 @@ export default class QuestionPaperList extends Vue {
                 const { data } = await list({
                     ...params,
                     ...this.formModel,
-                })
+                } as any)
                 return {
                     result: data.data,
                     total: data.recordsTotal,
@@ -195,7 +198,7 @@ export default class QuestionPaperList extends Vue {
         }
     }
 
-    async handleEdit(row: any) {
+    async handleEdit(row: ExamPaperVO) {
         const result = await this.$modalDialog(() => import('./components/paper-drawer/index.vue'), {
             action: 'modify',
             id: row.id,
@@ -206,7 +209,7 @@ export default class QuestionPaperList extends Vue {
         }
     }
 
-    async handleDelete(row: any) {
+    async handleDelete(row: ExamPaperVO) {
         await this.$confirm('确认删除该试卷?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -216,7 +219,7 @@ export default class QuestionPaperList extends Vue {
         this.handleSearch()
     }
 
-    async handlePreview(row: any) {
+    async handlePreview(row: ExamPaperVO) {
         // 改为打开浏览器标签页
         const { href } = this.$router.resolve({
             path: '/question-bank/paper/preview',

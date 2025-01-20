@@ -1,7 +1,8 @@
 <template>
-    <el-drawer :title="title" :visible="true" size="600px" @close="cancel" :before-close="cancel" custom-class="my-drawer">
+    <el-drawer :title="title" :visible="true" size="700px" @close="cancel" :before-close="cancel" custom-class="my-drawer">
         <div class="drawer-container">
             <div class="drawer-main">
+                {{ formModel }}
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
             </div>
 
@@ -15,7 +16,9 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { FormColumn, FormRef } from '@/sharegood-ui'
+import { FormColumn, FormRef, FormRow } from '@/sharegood-ui'
+import { QuestionBankCategoryEnumMap, QuestionBankCategoryEnum, QuestionTypeEnumMap, QuestionTypeEnum, QuestionBankSubCategoryEnumMap } from '@/views/question-bank/@enum'
+import { getConfig, save } from '../../api'
 
 @Component({
     name: 'PaperDrawer',
@@ -26,17 +29,27 @@ export default class PaperDrawer extends Vue {
     @Prop({ default: 'create' }) action!: 'create' | 'modify'
     @Prop() id!: string
 
-    @Ref('form')
-    formRef!: FormRef
+    @Ref('form') formRef!: FormRef
+    @Ref('paperDetailsForm1') paperDetailsForm1!: FormRef
+    @Ref('paperDetailsForm2') paperDetailsForm2!: FormRef
+    @Ref('paperDetailsForm3') paperDetailsForm3!: FormRef
 
     loading = false
     formModel: Record<string, any> = {
+        paperTypeCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS,
+        paperTypeName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS],
         duration: 60,
-        grade_score: 100,
-        dan_grade: 1,
-        duo_grade: 2,
-        pan_grade: 1,
-        case_grade: 5,
+        totalScore: 100,
+        passScore: 60,
+        totalQuestions: 0,
+        singleChoiceScore: 0,
+        multipleChoiceScore: 0,
+        judgeScore: 0,
+        paperDetails: [
+            { questionTypeName: '单选题', questionCount: 10, questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE },
+            { questionTypeName: '多选题', questionCount: 20, questionTypeCode: QuestionTypeEnum.MULTIPLE_CHOICE },
+            { questionTypeName: '判断题', questionCount: 10, questionTypeCode: QuestionTypeEnum.TRUE_FALSE },
+        ],
     }
 
     get title() {
@@ -44,7 +57,7 @@ export default class PaperDrawer extends Vue {
     }
 
     get getFormAttrs() {
-        const fields: FormColumn[] = [
+        const fields: FormRow[] = [
             {
                 tag: 'select',
                 name: 'kind',
@@ -52,7 +65,7 @@ export default class PaperDrawer extends Vue {
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
-                        return [{ label: '消防文员执法资格考试', value: '1' }]
+                        return Object.values(QuestionBankCategoryEnumMap)
                     },
                 },
                 itemAttrs: {
@@ -88,102 +101,60 @@ export default class PaperDrawer extends Vue {
             {
                 span: 12,
                 tag: 'input',
-                name: 'grade_score',
+                name: 'totalScore',
                 label: '总分',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    placeholder: '请输入总分',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入总分' }],
+                render: (h, { row }) => {
+                    return <div>{row.singleChoiceScore + row.multipleChoiceScore + row.judgeScore}</div>
                 },
             },
             {
-                span: 12,
+                span: 6,
                 tag: 'input',
-                name: 'dan',
-                label: '单选题数量',
+                name: 'passScore',
+                label: '及格分',
                 attrs: {
                     type: 'number',
                     min: 0,
-                    placeholder: '请输入单选题数量',
+                    placeholder: '',
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请输入单选题数量' }],
+                    rules: [{ required: true, message: '请输入及格分' }],
                 },
             },
             {
-                span: 12,
-                tag: 'input',
-                name: 'dan_grade',
-                label: '单选题分值',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    step: 0.5,
-                    placeholder: '请输入单选题分值',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入单选题分值' }],
-                },
-            },
-            {
-                span: 12,
-                tag: 'input',
-                name: 'duo',
-                label: '多选题数量',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    placeholder: '请输入多选题数量',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入多选题数量' }],
-                },
-            },
-            {
-                span: 12,
-                tag: 'input',
-                name: 'duo_grade',
-                label: '多选题分值',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    step: 0.5,
-                    placeholder: '请输入多选题分值',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入多选题分值' }],
-                },
-            },
-            {
-                span: 12,
-                tag: 'input',
-                name: 'pan',
-                label: '判断题数量',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    placeholder: '请输入判断题数量',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入判断题数量' }],
-                },
-            },
-            {
-                span: 12,
-                tag: 'input',
-                name: 'pan_grade',
-                label: '判断题分值',
-                attrs: {
-                    type: 'number',
-                    min: 0,
-                    step: 0.5,
-                    placeholder: '请输入判断题分值',
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请输入判断题分值' }],
+                span: 24,
+                tag: 'custom',
+                name: 'paperDetails',
+                label: '选题',
+                render: () => {
+                    return (
+                        <div>
+                            <sg-base-form
+                                ref="paperDetailsForm1"
+                                props={{
+                                    span: 8,
+                                    value: this.formModel.paperDetails[0],
+                                    fields: this.paperDetailsFields,
+                                }}
+                            ></sg-base-form>
+                            <sg-base-form
+                                ref="paperDetailsForm2"
+                                props={{
+                                    span: 8,
+                                    value: this.formModel.paperDetails[1],
+                                    fields: this.paperDetailsFields,
+                                }}
+                            ></sg-base-form>
+                            <sg-base-form
+                                ref="paperDetailsForm3"
+                                props={{
+                                    span: 8,
+                                    value: this.formModel.paperDetails[2],
+                                    fields: this.paperDetailsFields,
+                                }}
+                            ></sg-base-form>
+                        </div>
+                    )
                 },
             },
         ]
@@ -192,11 +163,63 @@ export default class PaperDrawer extends Vue {
             fields,
         }
     }
+    get paperDetailsFields() {
+        return [
+            // {
+            //     tag: 'text',
+            //     name: 'questionTypeCode',
+            //     label: 'questionTypeCode',
+            //     itemAttrs: {},
+            //     visible: false,
+            // },
+            // {
+            //     span: 24,
+            //     tag: 'text',
+            //     name: 'questionTypeName',
+            //     label: 'questionTypeName',
+            //     itemAttrs: {},
+            //     visible: false,
+            // },
+
+            {
+                span: 6,
+                tag: 'select',
+                name: 'subCategoryCode',
+                label: '题目小类',
+                itemAttrs: {
+                    rules: [{ required: true, message: '请选择题目小类' }],
+                },
+                attrs: {
+                    options: async () => {
+                        return Object.values(QuestionBankSubCategoryEnumMap)
+                    },
+                },
+            },
+            {
+                span: 6,
+                tag: 'input',
+                name: 'questionCount',
+                label: '数量',
+                itemAttrs: {
+                    rules: [{ required: true, message: '请输入数量' }],
+                },
+            },
+            {
+                span: 6,
+                tag: 'input',
+                name: 'grade',
+                label: '分值',
+                itemAttrs: {
+                    rules: [{ required: true, message: '请输入分值' }],
+                },
+            },
+        ]
+    }
 
     async submit() {
         try {
             this.loading = true
-            await this.formRef.validate()
+            await Promise.all([this.formRef.validate(), this.paperDetailsForm1?.validate(), this.paperDetailsForm2?.validate(), this.paperDetailsForm3?.validate()])
 
             // 计算总题目数
             const totalQuestions = Number(this.formModel.dan || 0) + Number(this.formModel.duo || 0) + Number(this.formModel.pan || 0) + Number(this.formModel.case || 0)
@@ -206,6 +229,7 @@ export default class PaperDrawer extends Vue {
             this.confirm()
         } catch (error) {
             console.error(error)
+            throw error
         } finally {
             this.loading = false
         }
@@ -219,9 +243,12 @@ export default class PaperDrawer extends Vue {
         this.$options.confirm?.(this.formModel)
     }
 
-    mounted() {
+    async mounted() {
         if (this.action === 'modify') {
-            this.$set(this, 'formModel', { ...this.data })
+            const { data } = await getConfig({
+                id: this.data.id,
+            })
+            this.$set(this, 'formModel', { ...data })
         }
     }
 }
