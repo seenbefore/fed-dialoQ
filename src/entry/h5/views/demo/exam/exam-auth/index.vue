@@ -4,7 +4,7 @@
             <app-form ref="formRef" v-model="formData" :fields="formFields" @submit="onSubmit" :show-foot-btns="false"></app-form>
         </div>
         <div class="footer">
-            <van-button round block type="primary" native-type="submit" @click="handleSubmit" :loading="loading" loading-text="认证中..." :disabled="loading">
+            <van-button round block type="primary" native-type="submit" @click="onSubmit" :loading="loading" loading-text="认证中..." :disabled="loading">
                 下一步，实名认证
             </van-button>
         </div>
@@ -22,11 +22,14 @@ import { submitAuth } from './api'
 export default class ExamAuth extends Vue {
     loading = false
     private formData = {
+        userId: '',
         userName: '',
         idCard: '',
         mobile: '',
-        studentId: '',
-        company: '',
+        studentNo: '',
+        orgName: '',
+        isRealName: '0',
+        paperId: '',
     }
 
     private formFields = [
@@ -72,7 +75,7 @@ export default class ExamAuth extends Vue {
         },
         {
             tag: 'input',
-            name: 'studentId',
+            name: 'studentNo',
             label: '学号：',
             required: true,
             props: {
@@ -83,7 +86,7 @@ export default class ExamAuth extends Vue {
         },
         {
             tag: 'input',
-            name: 'company',
+            name: 'orgName',
             label: '单位名称（全称）：',
             required: true,
             props: {
@@ -94,28 +97,20 @@ export default class ExamAuth extends Vue {
         },
     ]
 
-    private async handleSubmit() {
-        this.$router.push({
-            path: `/exam/list`,
-        })
-        // try {
-        //     await (this.$refs.formRef as any).validate()
-        //     this.loading = true
-        //     await this.onSubmit()
-        //     this.loading = false
-
-        // } catch (error) {
-        //     console.error(error)
-        //     this.loading = false
-        // }
-    }
-
     private async onSubmit() {
         try {
-            await submitAuth(this.formData)
-            // this.$router.push({
-            //     path: `/exam/list`,
-            // })
+            // 校验
+            const formRef = this.$refs.formRef as any
+            await formRef.validate()
+            const payload: any = {
+                ...this.formData,
+                paperId: this.$route.query.paperId || '',
+                userId: this.$route.query.userId || '',
+            }
+            await submitAuth(payload)
+            this.$router.push({
+                path: `/exam/list`,
+            })
         } catch (error) {
             this.$toast.fail('认证失败')
         }

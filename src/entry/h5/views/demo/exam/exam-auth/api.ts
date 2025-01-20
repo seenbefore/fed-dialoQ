@@ -1,21 +1,36 @@
-import { http } from '@/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
+import { http } from '@/scripts/http'
+import { Result } from '@/@types'
 
-interface AuthForm {
+export interface ExamUserVO {
+    /** 用户ID */
+    userId: string
+    /** 用户姓名 */
     userName: string
-    idCard: string
+    /** 用户手机号 */
     mobile: string
-    studentId: string
-    company: string
+    /** 用户身份证号 */
+    idCard: string
+    /** 学号 */
+    studentNo?: string
+    /** 单位全称 */
+    orgName?: string
+    /** 是否实名认证 */
+    isRealName?: string
+    /** 考卷ID */
+    paperId: string
 }
 
 /**
- * 提交实名认证
+ * 保存考试用户信息
+ * @param data 要提交给服务器的数据
+ * @param options 附加选项
  */
-export const submitAuth = async (data: AuthForm, options?: ExAxiosRequestConfig) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: null,
-    }
+export function submitAuth(data?: ExamUserVO, options?: ExAxiosRequestConfig) {
+    return http.request<Result<any>>({
+        url: '/exam/manage/saveExamUser',
+        method: 'POST',
+        data,
+        ...options,
+    })
 }
