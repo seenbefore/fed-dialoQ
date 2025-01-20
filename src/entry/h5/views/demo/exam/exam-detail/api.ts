@@ -1,69 +1,78 @@
 import { http } from '@/scripts/http'
 import { ExAxiosRequestConfig } from 'icinfo-request'
+import { Result } from '@/@types'
+
+export interface ExamPaperQuestion {
+    paperDesc: string
+    totalQuestions: number
+    multipleChoiceCount: number
+    singleChoiceCount: number
+    multipleChoiceQuestions: Array<{
+        questionContent: string
+        questionOptions: string
+        id: string
+    }>
+    judgeQuestions: Array<{
+        questionContent: string
+        questionOptions: string
+        id: string
+    }>
+    totalScore: number
+    passScore: number
+    singleChoiceQuestions: Array<{
+        questionContent: string
+        questionOptions: string
+        id: string
+    }>
+    duration: number
+    paperTypeCode: string
+    paperName: string
+    singleChoiceScore: number
+    multipleChoiceScore: number
+    paperTypeName: string
+    startTime: string
+    id: string
+    judgeScore: number
+    endTime: string
+    judgeCount: number
+}
+
+export interface ExamSubmitDTO {
+    userId: string
+    paperId: string
+    startTime: string
+    endTime: string
+    answers: Array<{
+        questionId: string
+        userAnswer: string
+    }>
+    duration: number
+}
+
+export interface ExamSubmitResult {
+    duration: number
+    score: number
+    isPassed: string
+    examStatus: string
+    remark: string
+    userName: string
+    totalAnswered: number
+    userId: string
+    paperId: string
+    isCompleted: string
+    remainingTime: number
+}
 
 /**
  * 获取考试详情
  */
 export const getExamDetail = async (params?: { id: string }, options?: ExAxiosRequestConfig) => {
-    // 模拟数据
-    return {
-        code: 200,
-        message: 'success',
-        data: {
-            id: '20',
-            title: '公共营养师20年考题',
-            questions: [
-                {
-                    id: 1,
-                    type: 'single', // 单选题
-                    title: '以下哪些情况是肌肤敏感的现象?',
-                    options: [
-                        { label: 'A', value: 'A', text: '角质层薄、易出现红血丝' },
-                        { label: 'B', value: 'B', text: '红肿' },
-                        { label: 'C', value: 'C', text: '出疹' },
-                    ],
-                },
-                {
-                    id: 2,
-                    type: 'multiple', // 多选题
-                    title: '以下哪些情况是肌肤敏感的现象222?',
-                    options: [
-                        { label: 'A', value: 'A', text: '角质层薄、易出现红血丝' },
-                        { label: 'B', value: 'B', text: '红肿' },
-                        { label: 'C', value: 'C', text: '出疹' },
-                    ],
-                },
-                {
-                    id: 3,
-                    type: 'judge', // 判断题
-                    title: '以下哪些情况是肌肤敏感的现象?',
-                    options: [
-                        { label: 'A', value: 'A', text: '正确' },
-                        { label: 'B', value: 'B', text: '错误' },
-                    ],
-                },
-            ],
-            duration: 3600, // 考试时长(秒)
-        },
-    }
+    return http.get<Result<ExamPaperQuestion>>('/exam/manage/getExamPaperQuestion', { params, ...options })
 }
 
 /**
  * 提交答案
  */
-export const submitAnswer = async (
-    data: {
-        examId: string
-        answers: Array<{
-            questionId: number
-            answer: string
-        }>
-    },
-    options?: ExAxiosRequestConfig,
-) => {
-    return {
-        code: 200,
-        message: 'success',
-        data: null,
-    }
+export const submitAnswer = async (data: ExamSubmitDTO, options?: ExAxiosRequestConfig) => {
+    return http.post<Result<ExamSubmitResult>>('/exam/manage/submitExam', data, options)
 }

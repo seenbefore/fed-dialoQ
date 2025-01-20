@@ -10,7 +10,7 @@
 
             <!-- 分数 -->
             <div class="score-section" :class="{ fail: !isPassed }">
-                <div class="score">{{ examResult.score }}</div>
+                <div class="score">{{ score }}</div>
                 <div class="score-label">测评得分</div>
             </div>
 
@@ -19,24 +19,24 @@
                 <div class="info-row">
                     <div class="info-item">
                         <div class="label">姓名</div>
-                        <div class="value">{{ examResult.userName }}</div>
+                        <div class="value">{{ userName }}</div>
                     </div>
                     <div class="info-item">
                         <div class="label">用时</div>
-                        <div class="value">{{ examResult.usedTime }}</div>
+                        <div class="value">{{ duration }}分钟</div>
                     </div>
                     <div class="info-item">
                         <div class="label">答题总数</div>
-                        <div class="value">{{ examResult.totalQuestions }}</div>
+                        <div class="value">{{ totalAnswered }}</div>
                     </div>
                 </div>
             </div>
 
             <!-- 倒计时 -->
-            <div class="countdown">
+            <!-- <div class="countdown">
                 <van-icon name="clock-o" />
                 <span>还剩 23:58 测评结束</span>
-            </div>
+            </div> -->
 
             <!-- 按钮 -->
             <div class="action-button" v-if="!isPassed">
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="tsx">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { getExamResult } from './api'
 import { Button, Icon } from 'vant'
 
@@ -59,6 +59,14 @@ import { Button, Icon } from 'vant'
     },
 })
 export default class ExamResult extends Vue {
+    @Prop() id!: string
+    @Prop() score!: string
+    @Prop() isPassed!: boolean
+    @Prop() totalAnswered!: string
+    @Prop() userName!: string
+    @Prop() userId!: string
+    @Prop() duration!: string
+
     private examResult: any = {
         score: 0,
         userName: '',
@@ -68,10 +76,6 @@ export default class ExamResult extends Vue {
 
     // 及格分数线
     private readonly PASS_SCORE = 60
-
-    get isPassed() {
-        return this.examResult.score >= this.PASS_SCORE
-    }
 
     async created() {
         await this.loadExamResult()
@@ -85,10 +89,11 @@ export default class ExamResult extends Vue {
 
     private handleRetry() {
         const examId = this.$route.params.id
-        this.$router.push({
-            path: '/exam/question',
-            query: { examId },
-        })
+        // this.$router.push({
+        //     path: '/exam/question',
+        //     query: { examId },
+        // })
+        this.$router.go(-1)
     }
 }
 </script>

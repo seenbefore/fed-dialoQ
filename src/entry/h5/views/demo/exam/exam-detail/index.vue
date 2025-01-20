@@ -12,7 +12,7 @@
                 <!-- <van-icon name="font" />
                 <span>字号</span> -->
             </div>
-            <div class="score">{{ currentIndex + 1 }}/{{ questions.length }}</div>
+            <div class="score">{{ currentIndex + 1 }}/{{ totalQuestions }}</div>
         </div>
 
         <!-- 题目内容 -->
@@ -20,20 +20,14 @@
             <div class="inner">
                 <div class="question-title">
                     <span class="question-index">{{ currentIndex + 1 }}、</span>
-                    <span class="question-type">{{ questionTypeText }}/2.0分</span>
-                    <div class="title-text">{{ currentQuestion.title }}</div>
+                    <span class="question-type">{{ questionTypeText }}/{{ questionScore }}分</span>
+                    <div class="title-text">{{ currentQuestion.questionContent }}</div>
                 </div>
 
                 <div class="options-list">
-                    <div
-                        v-for="option in currentQuestion.options"
-                        :key="option.value"
-                        class="option-item"
-                        :class="{ active: isOptionSelected(option.value) }"
-                        @click="handleSelectOption(option.value)"
-                    >
-                        <span class="option-label">{{ option.label }}</span>
-                        <span class="option-text">{{ option.text }}</span>
+                    <div v-for="option in parsedOptions" :key="option.code" class="option-item" :class="{ active: isOptionSelected(option.code) }" @click="handleSelectOption(option.code)">
+                        <span class="option-label">{{ option.code }}</span>
+                        <span class="option-text">{{ option.content }}</span>
                     </div>
                 </div>
             </div>
@@ -51,7 +45,7 @@
                 </van-button>
             </div>
             <van-button class="next-btn" block round @click="handleNextQuestion" type="primary">
-                下一题
+                {{ isLastQuestion ? '提交' : '下一题' }}
             </van-button>
         </div>
 
@@ -64,7 +58,7 @@
                 </div>
                 <div class="card-content">
                     <div
-                        v-for="(question, index) in questions"
+                        v-for="(question, index) in allQuestions"
                         :key="question.id"
                         class="question-item"
                         :class="{
@@ -99,30 +93,68 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { getExamDetail, submitAnswer } from './api'
+import { getExamDetail, submitAnswer, ExamPaperQuestion } from './api'
+
+interface QuestionOption {
+    code: string
+    content: string
+}
 
 @Component({
     name: 'ExamDetail',
 })
 export default class ExamDetail extends Vue {
     @Prop() private id!: string
-    private examId = ''
-    private questions: any[] = []
+    private examData: ExamPaperQuestion | null = null
     private currentIndex = 0
-    private answers: Record<string, string | string[]> = {}
+    private answers: Record<string, string> = {}
     private timer = 0
     private remainingTime = 0
     private showAnswerCard = false
-    private correctCount = 0
-    private wrongCount = 0
     private showExamEndDialog = false
+    private startTime = ''
 
-    get currentQuestion() {
-        return this.questions[this.currentIndex]
+    get allQuestions() {
+        if (!this.examData) return []
+        return [...this.examData.singleChoiceQuestions, ...this.examData.multipleChoiceQuestions, ...this.examData.judgeQuestions]
     }
 
-    get selectedAnswer() {
-        return this.currentQuestion ? this.answers[this.currentQuestion.id] : ''
+    get totalQuestions() {
+        return this.examData?.totalQuestions || 0
+    }
+
+    get currentQuestion() {
+        return this.allQuestions[this.currentIndex]
+    }
+
+    get isLastQuestion() {
+        return this.currentIndex === this.allQuestions.length - 1
+    }
+
+    get parsedOptions(): QuestionOption[] {
+        if (!this.currentQuestion) return []
+        try {
+            return JSON.parse(this.currentQuestion.questionOptions)
+        } catch (e) {
+            console.error('Failed to parse options:', e)
+            return []
+        }
+    }
+
+    get questionTypeText() {
+        if (!this.examData) return ''
+        const index = this.currentIndex
+        if (index < this.examData.singleChoiceCount) return '单选'
+        if (index < this.examData.singleChoiceCount + this.examData.multipleChoiceCount) return '多选'
+        return '判断'
+    }
+
+    get questionScore() {
+        if (!this.examData) return 0
+        const index = this.currentIndex
+        if (index < this.examData.singleChoiceCount) return this.examData.singleChoiceScore
+        if (index < this.examData.singleChoiceCount + this.examData.multipleChoiceCount) return this.examData.multipleChoiceScore
+        return this.examData.judgeScore
     }
 
     get formatTime() {
@@ -131,19 +163,8 @@ export default class ExamDetail extends Vue {
         return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
     }
 
-    get questionTypeText() {
-        if (!this.currentQuestion) return ''
-
-        const typeMap: Record<string, string> = {
-            single: '单选',
-            multiple: '多选',
-            judge: '判断',
-        }
-
-        return typeMap[this.currentQuestion.type] || ''
-    }
-
     async created() {
+        this.startTime = new Date().toISOString()
         await this.getExamDetail()
     }
 
@@ -155,10 +176,9 @@ export default class ExamDetail extends Vue {
 
     async getExamDetail() {
         try {
-            const res = await getExamDetail({ id: this.id })
-
-            this.questions = res.data.questions
-            this.remainingTime = res.data.duration
+            const { data } = await getExamDetail({ id: this.id })
+            this.examData = data
+            this.remainingTime = data.duration * 60 // Convert minutes to seconds
             this.startTimer()
         } catch (error) {
             console.error(error)
@@ -179,8 +199,8 @@ export default class ExamDetail extends Vue {
     isOptionSelected(value: string) {
         if (!this.currentQuestion) return false
         const answer = this.answers[this.currentQuestion.id]
-        if (this.currentQuestion.type === 'multiple') {
-            return Array.isArray(answer) && answer.includes(value)
+        if (this.questionTypeText === '多选') {
+            return answer?.includes(value) || false
         }
         return answer === value
     }
@@ -188,20 +208,15 @@ export default class ExamDetail extends Vue {
     handleSelectOption(value: string) {
         if (!this.currentQuestion) return
 
-        if (this.currentQuestion.type === 'multiple') {
-            let currentAnswers = (this.answers[this.currentQuestion.id] as string[]) || []
-            if (!Array.isArray(currentAnswers)) {
-                currentAnswers = []
-            }
-
+        if (this.questionTypeText === '多选') {
+            let currentAnswers = this.answers[this.currentQuestion.id]?.split(',') || []
             const index = currentAnswers.indexOf(value)
             if (index > -1) {
                 currentAnswers.splice(index, 1)
             } else {
                 currentAnswers.push(value)
             }
-
-            this.$set(this.answers, this.currentQuestion.id, currentAnswers)
+            this.$set(this.answers, this.currentQuestion.id, currentAnswers.join(','))
         } else {
             this.$set(this.answers, this.currentQuestion.id, value)
         }
@@ -214,19 +229,18 @@ export default class ExamDetail extends Vue {
     }
 
     handleNextQuestion() {
-        if (this.currentIndex < this.questions.length - 1) {
-            this.currentIndex++
-        } else {
-            // 如果是最后一题，显示提交确认
+        if (this.isLastQuestion) {
             this.$dialog
                 .confirm({
                     title: '提示',
-                    message: '已经是最后一题，是否提交答案？',
+                    message: '确认提交答案？',
                 })
                 .then(() => {
                     this.handleSubmit()
                 })
                 .catch(() => {})
+        } else {
+            this.currentIndex++
         }
     }
 
@@ -240,23 +254,37 @@ export default class ExamDetail extends Vue {
     }
 
     async handleSubmit() {
+        if (!this.examData) return
+
         try {
-            const answerList = Object.entries(this.answers).map(([questionId, answer]) => {
-                const question = this.questions.find(q => q.id.toString() === questionId)
-                return {
-                    questionId: Number(questionId),
-                    answer: Array.isArray(answer) ? answer.join(',') : answer,
-                }
-            })
+            const endTime = new Date().toISOString()
+            const duration = Math.ceil((Date.parse(endTime) - Date.parse(this.startTime)) / 1000 / 60) // Convert to minutes
 
-            await submitAnswer({
-                examId: this.examId,
+            const answerList = Object.entries(this.answers).map(([questionId, answer]) => ({
+                questionId,
+                userAnswer: answer,
+            }))
+
+            const { data } = await submitAnswer({
+                userId: '', // TODO: Get from user context
+                paperId: this.examData.id,
+                startTime: this.startTime,
+                endTime,
                 answers: answerList,
+                duration,
             })
 
-            this.$router.push({
-                name: 'ExamResult',
-                params: { id: this.examId },
+            this.$router.replace({
+                path: '/exam/result',
+                query: {
+                    id: this.examData.id,
+                    score: data.score + '',
+                    isPassed: data.isPassed,
+                    totalAnswered: data.totalAnswered + '',
+                    userName: data.userName,
+                    userId: data.userId,
+                    duration: data.duration + '',
+                },
             })
         } catch (error) {
             console.error(error)
@@ -265,7 +293,7 @@ export default class ExamDetail extends Vue {
 
     private handleExamEnd() {
         this.showExamEndDialog = false
-        this.handleSubmit() // 自动提交答案
+        this.handleSubmit()
     }
 }
 </script>
