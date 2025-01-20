@@ -1,7 +1,7 @@
 const ExamDetail = () => import(/* webpackChunkName: "ExamDetail" */ './index.vue')
 
 export default {
-    path: '/exam/detail/:id',
+    path: '/exam/detail',
     name: 'ExamDetail',
     component: ExamDetail,
     props: ({ query, params }) => ({ ...query, ...params }),

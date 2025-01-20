@@ -85,18 +85,18 @@ export default class ExamList extends Vue {
     }
 
     private async onLoad() {
-        const res = await getExamList({
-            page: this.currentPage,
-            pageSize: this.pageSize,
+        const { data } = await getExamList({
+            pageNum: this.currentPage,
+            length: this.pageSize,
         })
 
         if (this.currentPage === 1) {
-            this.examList = res.data
+            this.examList = data.data
         } else {
-            this.examList.push(...res.data)
+            this.examList.push(...data.data)
         }
 
-        if (res.data.length < this.pageSize) {
+        if (data.data.length < this.pageSize) {
             this.finished = true
         } else {
             this.currentPage += 1
@@ -137,9 +137,9 @@ export default class ExamList extends Vue {
 
         // 跳转到考试页面
         this.$router.push({
-            path: `/exam/detail/${exam.id}`,
+            path: `/exam/detail`,
             query: {
-                examId: exam.id,
+                id: exam.id,
             },
         })
     }

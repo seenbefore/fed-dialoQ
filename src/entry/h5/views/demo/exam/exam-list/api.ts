@@ -9,61 +9,45 @@ export enum ExamStatus {
     FINISHED = 'finished', // 已结束
 }
 
-export interface ExamItem {
+export interface ExamPaperVO {
     id: string
-    title: string
+    paperDesc: string
+    totalQuestions: number
+    multipleChoiceCount: number
+    singleChoiceCount: number
+    creatorId: string
+    creatorName: string
+    updateTime: string
+    remark: string
+    totalScore: number
+    passScore: number
+    duration: number
+    paperTypeCode: string
+    createTime: string
+    paperName: string
+    singleChoiceScore: number
+    multipleChoiceScore: number
+    paperTypeName: string
     startTime: string
+    judgeScore: number
     endTime: string
-    duration: string
-    status: ExamStatus
+    judgeCount: number
+    status: string
 }
-// 考试列表数据
-const EXAM_LIST = [
-    {
-        id: '1',
-        title: '2024年安全法规培训知识测评',
-        startTime: '2024/11/5 9:00:00',
-        endTime: '2024/11/5 10:00:00',
-        duration: '60分钟',
-        status: ExamStatus.NOT_START,
-    },
-    {
-        id: '2',
-        title: '2024年安全法规培训知识测评',
-        startTime: '2024/11/5 9:00:00',
-        endTime: '2024/11/5 10:00:00',
-        duration: '60分钟',
-        status: ExamStatus.IN_PROGRESS,
-    },
-    {
-        id: '3',
-        title: '2024年安全法规培训知识测评',
-        startTime: '2024/11/5 9:00:00',
-        endTime: '2024/11/5 10:00:00',
-        duration: '60分钟',
-        status: ExamStatus.IN_PROGRESS,
-    },
-    {
-        id: '4',
-        title: '2024年安全法规培训知识测评',
-        startTime: '2024/11/5 9:00:00',
-        endTime: '2024/11/5 10:00:00',
-        duration: '60分钟',
-        status: ExamStatus.FINISHED,
-    },
-]
 
 /**
  * 获取考试列表
- * @param params.page 页码，从1开始
- * @param params.pageSize 每页数量
+ * @param params.pageNum 页码，从1开始
+ * @param params.length 每页数量
+ * @param params.paperName 考卷名称关键字
  */
 export const getExamList = async (
     params?: {
-        page?: number
-        pageSize?: number
+        pageNum?: number
+        length?: number
+        paperName?: string
     },
     options?: ExAxiosRequestConfig,
 ) => {
-    return http.post<Result<ExamItem[]>>('/exam/list', params, options)
+    return http.post<Result<PageResponse<ExamPaperVO[]>>>('/exam/question/getExamPaperPageList', params, options)
 }

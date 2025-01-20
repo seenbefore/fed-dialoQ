@@ -98,13 +98,14 @@
 </template>
 
 <script lang="tsx">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { getExamDetail, submitAnswer } from './api'
 
 @Component({
     name: 'ExamDetail',
 })
 export default class ExamDetail extends Vue {
+    @Prop() private id!: string
     private examId = ''
     private questions: any[] = []
     private currentIndex = 0
@@ -143,7 +144,6 @@ export default class ExamDetail extends Vue {
     }
 
     async created() {
-        this.examId = this.$route.params.id
         await this.getExamDetail()
     }
 
@@ -155,7 +155,7 @@ export default class ExamDetail extends Vue {
 
     async getExamDetail() {
         try {
-            const res = await getExamDetail({ id: this.examId })
+            const res = await getExamDetail({ id: this.id })
 
             this.questions = res.data.questions
             this.remainingTime = res.data.duration
