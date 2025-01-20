@@ -7,7 +7,7 @@
         <template v-else>
             <component v-if="isQuery" class="all-check" :is="isButton ? 'el-checkbox-button' : 'el-checkbox'" :value="checkAll" @change="handleCheckAllChange">全部</component>
 
-            <el-checkbox-group v-model="currentValue" @change="onSelectChange">
+            <el-checkbox-group v-model="currentValue" @change="onSelectChange" :min="min" :max="max">
                 <component :is="isButton ? 'el-checkbox-button' : 'el-checkbox'" v-for="(item, index) in dataList" v-bind="getAttrs(item)" :label="item.value" :key="`${item.value}-${index}`">
                     {{ item.label }}
                 </component>
@@ -59,6 +59,14 @@ export default {
         // 全部勾选对应的值 一般传'' 实现全选、取消全选
         selectAllValue: {
             type: [String],
+            default: undefined,
+        },
+        min: {
+            type: Number,
+            default: undefined,
+        },
+        max: {
+            type: Number,
             default: undefined,
         },
     },

@@ -115,6 +115,20 @@ async function bootstrap() {
             ...defaultSettings,
             $ShareGood: {
                 DataView: {
+                    // 分页参数适配接口 pageNum 和 length
+                    paramsSerializer(params: any = {}) {
+                        const result: any = {}
+                        result.pageNum = params.page || 1
+                        result.length = params.pageSize || params.limit || 10
+                        delete params.page
+                        delete params.limit
+                        delete params.pageSize
+
+                        return {
+                            ...result,
+                            ...params,
+                        }
+                    },
                     pagination: { pageSize: 10 },
                     pageActionLayout: [
                         {

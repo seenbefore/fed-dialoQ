@@ -2,39 +2,36 @@ import { ExAxiosRequestConfig } from 'icinfo-request'
 import { http } from '@/scripts/http'
 import { Result, PageResponse } from '@/@types'
 
+/** 题目选项 */
+export interface QuestionOption {
+    /** 选项代码 */
+    code: string
+    /** 选项内容 */
+    content: string
+}
+
+/** 题目数据 */
 export interface QuestionVO {
     /** ID */
-    id: string
-    /** 题目内容 */
-    questionContent: string
-    /** 创建人id */
-    creatorId: string
-    /** 创建人姓名 */
-    creatorName: string
-    /** 所属分类代码 */
-    subCategoryCode: string
-    /** 所属分类名称 */
-    subCategoryName: string
-    /** 更新时间 */
-    updateTime: string
-    /** 备注 */
-    remark: string
+    id?: string
     /** 所属大类代码 */
     categoryCode: string
     /** 所属大类名称 */
     categoryName: string
+    /** 所属分类代码 */
+    subCategoryCode: string
+    /** 所属分类名称 */
+    subCategoryName: string
     /** 题目类型代码 */
     questionTypeCode: string
     /** 题目类型名称 */
     questionTypeName: string
-    /** 创建时间 */
-    createTime: string
-    /** 题目答案(json格式) */
+    /** 题目内容 */
+    questionContent: string
+    /** 题目选项 JSON字符串 */
     questionOptions: string
-    /** 题目正确答案 */
+    /** 正确答案 */
     correctAnswer: string
-    /** 状态(1:正常,0:删除) */
-    status: string
 }
 
 /**
@@ -66,9 +63,10 @@ export function list(
  * @param data 题目数据
  * @param options 请求配置
  */
-export function save(data: Partial<QuestionVO>, options?: ExAxiosRequestConfig) {
-    return http.request<Result<any>>({
-        url: '/question-bank/save',
+export function save(data: QuestionVO, options?: ExAxiosRequestConfig) {
+    const url = data.id ? '/exam/question/editExamQuestion' : '/exam/question/saveExamQuestion'
+    return http.request<Result<void>>({
+        url,
         method: 'post',
         data,
         ...options,

@@ -2,6 +2,7 @@
     <el-drawer :title="title" :visible="true" size="800px" @close="cancel" :before-close="cancel" class="my-drawer" custom-class="my-drawer">
         <div class="drawer-container">
             <div class="drawer-main">
+                {{ formModel }}
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
             </div>
 
@@ -16,7 +17,8 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormColumn, FormRef } from '@/sharegood-ui'
-import { save, QuestionVO } from '../../api'
+import { save, QuestionVO, QuestionOption } from '../../api'
+import { QuestionBankCategoryEnum, QuestionBankCategoryEnumMap, QuestionBankSubCategoryEnum, QuestionBankSubCategoryEnumMap, QuestionTypeEnum, QuestionTypeEnumMap } from '@/views/question-bank/@enum'
 
 @Component({
     name: 'QuestionDrawer',
@@ -33,7 +35,13 @@ export default class QuestionDrawer extends Vue {
 
     loading = false
     formModel: Record<string, any> = {
-        type: '0', // 默认单选题
+        questionTypeCode: QuestionTypeEnum.SINGLE_CHOICE, // 默认单选题
+        questionTypeName: QuestionTypeEnumMap[QuestionTypeEnum.SINGLE_CHOICE],
+        categoryCode: QuestionBankCategoryEnum.SAFETY_REGULATIONS, // 默认安全法规
+        categoryName: QuestionBankCategoryEnumMap[QuestionBankCategoryEnum.SAFETY_REGULATIONS],
+        subCategoryCode: QuestionBankSubCategoryEnum.ENTERPRISE_LEADER, // 默认企业负责人
+        subCategoryName: QuestionBankSubCategoryEnumMap[QuestionBankSubCategoryEnum.ENTERPRISE_LEADER],
+        correctAnswer: '',
     }
 
     get title() {
@@ -44,15 +52,15 @@ export default class QuestionDrawer extends Vue {
         const fields: FormColumn[] = [
             {
                 tag: 'select',
-                name: 'kind',
+                name: 'categoryCode',
                 label: '所属大类',
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
-                        return [
-                            { label: '2024年全省协助执法文员考试', value: '1' },
-                            { label: '2025年全省协助执法文员考试', value: '2' },
-                        ]
+                        return Object.values(QuestionBankCategoryEnumMap)
+                    },
+                    onChange: ({ value, label }: any) => {
+                        this.formModel.categoryName = label
                     },
                 },
                 itemAttrs: {
@@ -61,51 +69,37 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'select',
-                name: 'category',
-                label: '所属分类',
-                // attrs: {
-                //     placeholder: '请选择',
-                //     options: async () => {
-                //         return [{ label: '法律法规', value: '1' }]
-                //     },
-                // },
+                name: 'subCategoryCode',
+                label: '所属小类',
                 componentProps({ formModel }) {
-                    const { kind } = formModel
-                    console.log('kind', kind)
+                    const { categoryCode } = formModel
                     return {
                         attrs: {
                             placeholder: '请选择',
                             options: async () => {
-                                if (kind === '1') {
-                                    return [
-                                        { label: '法律法规1-1', value: '1' },
-                                        { label: '法律法规1-2', value: '2' },
-                                    ]
-                                } else if (kind === '2') {
-                                    return [
-                                        { label: '法律法规2-1', value: '1' },
-                                        { label: '法律法规2-2', value: '2' },
-                                    ]
-                                }
-                                return []
+                                if (!categoryCode) return []
+                                return Object.values(QuestionBankSubCategoryEnumMap).filter((item: any) => item.parentValue === categoryCode)
+                            },
+                            onChange: ({ value, label }: any) => {
+                                this.formModel.subCategoryName = label
                             },
                         },
                     }
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请选择所属分类' }],
+                    rules: [{ required: true, message: '请选择所属小类' }],
                 },
             },
             {
                 tag: 'radio',
-                name: 'type',
+                name: 'questionTypeCode',
                 label: '题目类型',
                 attrs: {
-                    options: [
-                        { label: '单选题', value: '0' },
-                        { label: '多选题', value: '1' },
-                        { label: '判断题', value: '2' },
-                    ],
+                    options: Object.values(QuestionTypeEnumMap),
+                    onChange: ({ value, label }: any) => {
+                        this.formModel.questionTypeCode = value
+                        this.formModel.questionTypeName = label
+                    },
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请选择题目类型' }],
@@ -113,7 +107,7 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'input',
-                name: 'title',
+                name: 'questionContent',
                 label: '题目',
                 attrs: {
                     type: 'textarea',
@@ -128,99 +122,110 @@ export default class QuestionDrawer extends Vue {
             },
             {
                 tag: 'input',
-                name: 'option1',
-                label: '选项一',
+                name: 'A',
+                label: 'A',
                 attrs: {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请输入选项内容' }],
                 },
-                ifRender: model => model.type !== '2', // 判断题不显示选项
             },
             {
                 tag: 'input',
-                name: 'option2',
-                label: '选项二',
+                name: 'B',
+                label: 'B',
                 attrs: {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
                     rules: [{ required: true, message: '请输入选项内容' }],
                 },
-                ifRender: model => model.type !== '2',
             },
             {
                 tag: 'input',
-                name: 'option3',
-                label: '选项三',
+                name: 'C',
+                label: 'C',
                 attrs: {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请输入选项内容' }],
+                    //rules: [{ required: true, message: '请输入选项内容' }],
                 },
-                ifRender: model => model.type === '0', // 仅单选题显示
             },
             {
                 tag: 'input',
-                name: 'option4',
-                label: '选项四',
+                name: 'D',
+                label: 'D',
                 attrs: {
                     placeholder: '请输入选项内容',
                 },
                 itemAttrs: {
-                    rules: [{ required: true, message: '请输入选项内容' }],
+                    //rules: [{ required: true, message: '请输入选项内容' }],
                 },
-                ifRender: model => model.type === '0', // 仅单选题显示
             },
             {
-                tag: 'radio',
-                name: 'answer1',
+                tag: 'input',
+                name: 'E',
+                label: 'E',
+                attrs: {
+                    placeholder: '请输入选项内容',
+                },
+                itemAttrs: {
+                    //rules: [{ required: true, message: '请输入选项内容' }],
+                },
+            },
+            {
+                tag: 'input',
+                name: 'F',
+                label: 'F',
+                attrs: {
+                    placeholder: '请输入选项内容',
+                },
+                itemAttrs: {
+                    //rules: [{ required: true, message: '请输入选项内容' }],
+                },
+            },
+            {
+                tag: 'checkbox',
+                name: 'correctAnswer$',
                 label: '答案',
                 attrs: {
+                    value: [],
+                    // min: 1,
+                    // max: 1,
                     options: [
                         { label: 'A', value: 'A' },
                         { label: 'B', value: 'B' },
                         { label: 'C', value: 'C' },
                         { label: 'D', value: 'D' },
+                        { label: 'E', value: 'E' },
+                        { label: 'F', value: 'F' },
                     ],
                 },
+                // componentProps({ formModel }) {
+                //     const { questionTypeCode } = formModel
+                //     return {
+                //         attrs: {
+                //             value: [],
+                //             min: 1,
+                //             max: questionTypeCode === QuestionTypeEnum.SINGLE_CHOICE ? 1 : null,
+                //             options: [
+                //                 { label: 'A', value: 'A' },
+                //                 { label: 'B', value: 'B' },
+                //                 { label: 'C', value: 'C' },
+                //                 { label: 'D', value: 'D' },
+                //                 { label: 'E', value: 'E' },
+                //                 { label: 'F', value: 'F' },
+                //             ],
+                //         },
+                //     }
+                // },
                 itemAttrs: {
                     rules: [{ required: true, message: '请选择答案' }],
                 },
-                ifRender: model => model.type === '0', // 仅单选题显示
-            },
-            {
-                tag: 'checkbox',
-                name: 'answer2',
-                label: '答案',
-                attrs: {
-                    value: [],
-                    options: [
-                        { label: 'A', value: 'A' },
-                        { label: 'B', value: 'B' },
-                    ],
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请选择答案' }],
-                },
-                ifRender: model => model.type === '1', // 仅多选题显示
-            },
-            {
-                tag: 'radio',
-                name: 'answer3',
-                label: '答案',
-                attrs: {
-                    options: [
-                        { label: '正确', value: '1' },
-                        { label: '错误', value: '0' },
-                    ],
-                },
-                itemAttrs: {
-                    rules: [{ required: true, message: '请选择答案' }],
-                },
-                ifRender: model => model.type === '2', // 仅判断题显示
+
+                //ifRender: model => model.type === QuestionTypeEnum.SINGLE_CHOICE, // 仅单选题显示
             },
         ]
         return {
@@ -236,16 +241,27 @@ export default class QuestionDrawer extends Vue {
 
             // 构建保存数据
             const formModel = this.formModel
-            const payload: any = {
+
+            // 构建选项数据
+            const keys = ['A', 'B', 'C', 'D', 'E', 'F']
+            let options: QuestionOption[] = keys
+                .map((key, index) => ({
+                    code: key,
+                    content: formModel[key],
+                }))
+                .filter(item => item.content !== '')
+
+            const payload: QuestionVO = {
                 id: this.id,
-                categoryCode: formModel.category,
-                questionTypeCode: formModel.type,
-                questionContent: formModel.title,
-                questionOptions: formModel.option1,
-                option2: formModel.option2,
-                option3: formModel.option3,
-                option4: formModel.option4,
-                answer: formModel.type === '0' ? formModel.answer1 : formModel.type === '1' ? formModel.answer2.join(',') : formModel.answer3,
+                categoryCode: formModel.categoryCode,
+                categoryName: formModel.categoryName,
+                subCategoryCode: formModel.subCategoryCode,
+                subCategoryName: formModel.subCategoryName,
+                questionTypeCode: formModel.questionTypeCode,
+                questionTypeName: formModel.questionTypeName,
+                questionContent: formModel.questionContent,
+                questionOptions: JSON.stringify(options),
+                correctAnswer: formModel.correctAnswer$.join(','),
             }
 
             // 调用保存接口
@@ -274,10 +290,39 @@ export default class QuestionDrawer extends Vue {
 
     async mounted() {
         if (this.action === 'modify') {
-            this.$set(this, 'formModel', { ...this.data })
+            const data = { ...this.data }
+            // 解析选项数据
+            if (data.questionOptions) {
+                const options = JSON.parse(data.questionOptions)
+                options.forEach((option: QuestionOption, index: number) => {
+                    data[`${option.code}`] = option.content
+                })
+            }
+            const correctAnswer$ = data.correctAnswer.split(',')
+            this.$set(this, 'formModel', { ...data, correctAnswer$ })
         }
     }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.my-drawer {
+    .drawer-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .drawer-main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .drawer-footer {
+            padding: 20px;
+            text-align: right;
+            border-top: 1px solid #e8e8e8;
+        }
+    }
+}
+</style>

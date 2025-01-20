@@ -7,7 +7,7 @@
         <sg-data-view v-bind="getTableAttrs" ref="tableRef" v-model="formModel">
             <template #header>
                 <el-button type="primary" @click="handleAdd">新增题目</el-button>
-                <el-button type="primary" @click="handleImport">导入题库</el-button>
+                <!-- <el-button type="primary" @click="handleImport">导入题库</el-button> -->
             </template>
         </sg-data-view>
     </admin-page>
@@ -17,6 +17,8 @@
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { list, save, remove, detail, QuestionVO } from './api'
+import { QuestionBankCategoryEnumMap, QuestionTypeEnumMap } from '@/views/question-bank/@enum'
+import moment from 'moment'
 
 @Component({
     name: 'QuestionBankList',
@@ -51,10 +53,7 @@ export default class QuestionBankList extends Vue {
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
-                        return [
-                            { label: '全部', value: '' },
-                            { label: '2024年全省协助执法文员考试', value: '6' },
-                        ]
+                        return [{ label: '全部', value: '' }, ...Object.values(QuestionBankCategoryEnumMap)]
                     },
                 },
             },
@@ -65,12 +64,10 @@ export default class QuestionBankList extends Vue {
                 attrs: {
                     placeholder: '请选择',
                     options: async () => {
-                        return [
-                            { label: '全部', value: '' },
-                            { label: '单选题', value: '0' },
-                            { label: '多选题', value: '1' },
-                            { label: '判断题', value: '2' },
-                        ]
+                        return [{ label: '全部', value: '' }, ...Object.values(QuestionTypeEnumMap)]
+                    },
+                    onChange: ({ value, label }: any) => {
+                        this.handleSearch()
                     },
                 },
             },
@@ -144,6 +141,9 @@ export default class QuestionBankList extends Vue {
                 label: '创建时间',
                 prop: 'createTime',
                 minWidth: '160px',
+                render: (h, { row }) => {
+                    return <span>{moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                },
             },
             {
                 label: '操作',
