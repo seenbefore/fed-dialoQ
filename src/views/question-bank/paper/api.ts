@@ -104,6 +104,41 @@ export interface ExamPaperUpdateDTO extends ExamPaperBaseVO {
     id?: string
 }
 
+export interface QuestionOption {
+    code: string
+    content: string
+}
+
+export interface Question {
+    id: string
+    questionContent: string
+    questionOptions: string
+    correctAnswer: string
+}
+
+export interface PaperPreviewVO {
+    paperDesc: string
+    totalQuestions: number
+    multipleChoiceCount: number
+    singleChoiceCount: number
+    multipleChoiceQuestions: Question[]
+    judgeQuestions: Question[]
+    totalScore: number
+    passScore: number
+    singleChoiceQuestions: Question[]
+    duration: number
+    paperTypeCode: string
+    paperName: string
+    singleChoiceScore: number
+    multipleChoiceScore: number
+    paperTypeName: string
+    startTime: string
+    id: string
+    judgeScore: number
+    endTime: string
+    judgeCount: number
+}
+
 /**
  * 获取试卷配置
  */
@@ -150,14 +185,14 @@ export function save(data: ExamPaperUpdateDTO, options?: ExAxiosRequestConfig) {
 }
 
 /**
- * 预览考卷
- * @param id 考卷ID
+ * 获取试卷预览详情
+ * @param id 试卷ID
  * @param options 附加选项
  */
-export function preview(id: string, options?: ExAxiosRequestConfig) {
-    return http.request<Result<ExamPaperVO>>({
+export function getExamPaperPreview(id: string, options?: ExAxiosRequestConfig) {
+    return http.request<Result<PaperPreviewVO>>({
         url: '/exam/question/getExamPaperPreview',
-        method: 'get',
+        method: 'GET',
         params: { id },
         ...options,
     })

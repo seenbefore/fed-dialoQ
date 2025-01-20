@@ -2,83 +2,71 @@
     <div class="sg-page icinfo-ai QuestionPaperPreview">
         <!-- 试卷头部 -->
         <div class="paper-header">
-            <h2 class="paper-title">{{ paperData.title }}</h2>
+            <h2 class="paper-title">{{ paperData.paperName }}</h2>
             <div class="paper-info">
                 <span>考试时长：{{ paperData.duration }}分钟</span>
-                <span>总分：{{ paperData.grade_score }}分</span>
+                <span>总分：{{ paperData.totalScore }}分</span>
+                <span>及格分：{{ paperData.passScore }}分</span>
             </div>
+            <!-- <div class="paper-desc" v-if="paperData.paperDesc">
+                <p>{{ paperData.paperDesc }}</p>
+            </div> -->
         </div>
         <div class="pager-content">
             <!-- 单选题 -->
-            <div class="question-section" v-if="paperData.danList.length">
-                <h3 class="section-title">一、单选题（每题{{ paperData.dan_grade }}分）</h3>
+            <div class="question-section" v-if="paperData.singleChoiceQuestions && paperData.singleChoiceQuestions.length">
+                <h3 class="section-title">一、单选题（每题{{ paperData.singleChoiceScore }}分）</h3>
                 <div class="question-list">
-                    <div v-for="(item, index) in paperData.danList" :key="item.id" class="question-item">
-                        <div class="question-title">{{ index + 1 }}、{{ item.title }} {{ item.answer }}</div>
+                    <div v-for="(item, index) in paperData.singleChoiceQuestions" :key="item.id" class="question-item">
+                        <div class="question-title">{{ index + 1 }}、{{ item.questionContent }}</div>
                         <div class="options">
-                            <div class="option-item" v-if="item.option1" :class="{ 'correct-answer': showAnswer && item.answer === 'A' }">
-                                <span class="option-label">A.</span>
-                                <span class="option-content">{{ item.option1 }}</span>
-                                <span v-if="showAnswer && item.answer === 'A'" class="correct-icon">✓</span>
-                            </div>
-                            <div class="option-item" v-if="item.option2" :class="{ 'correct-answer': showAnswer && item.answer === 'B' }">
-                                <span class="option-label">B.</span>
-                                <span class="option-content">{{ item.option2 }}</span>
-                                <span v-if="showAnswer && item.answer === 'B'" class="correct-icon">✓</span>
-                            </div>
-                            <div class="option-item" v-if="item.option3" :class="{ 'correct-answer': showAnswer && item.answer === 'C' }">
-                                <span class="option-label">C.</span>
-                                <span class="option-content">{{ item.option3 }}</span>
-                                <span v-if="showAnswer && item.answer === 'C'" class="correct-icon">✓</span>
-                            </div>
-                            <div class="option-item" v-if="item.option4" :class="{ 'correct-answer': showAnswer && item.answer === 'D' }">
-                                <span class="option-label">D.</span>
-                                <span class="option-content">{{ item.option4 }}</span>
-                                <span v-if="showAnswer && item.answer === 'D'" class="correct-icon">✓</span>
-                            </div>
+                            <template v-for="option in parseOptions(item.questionOptions)">
+                                <div :key="option.code" class="option-item" :class="{ 'correct-answer': showAnswer && item.correctAnswer === option.code }">
+                                    <span class="option-label">{{ option.code }}.</span>
+                                    <span class="option-content">{{ option.content }}</span>
+                                    <span v-if="showAnswer && item.correctAnswer === option.code" class="correct-icon">✓</span>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 多选题 -->
-            <div class="question-section" v-if="paperData.duoList.length">
-                <h3 class="section-title">二、多选题（每题{{ paperData.duo_grade }}分）</h3>
+            <div class="question-section" v-if="paperData.multipleChoiceQuestions && paperData.multipleChoiceQuestions.length">
+                <h3 class="section-title">二、多选题（每题{{ paperData.multipleChoiceScore }}分）</h3>
                 <div class="question-list">
-                    <div v-for="(item, index) in paperData.duoList" :key="item.id" class="question-item">
-                        <div class="question-title">{{ index + 1 }}、{{ item.title }}</div>
+                    <div v-for="(item, index) in paperData.multipleChoiceQuestions" :key="item.id" class="question-item">
+                        <div class="question-title">{{ index + 1 }}、{{ item.questionContent }}</div>
                         <div class="options">
-                            <div class="option-item" v-if="item.option1" :class="{ 'correct-answer': showAnswer && item.answer.includes('A') }">
-                                <span class="option-label">A.</span>
-                                <span class="option-content">{{ item.option1 }}</span>
-                                <span v-if="showAnswer && item.answer.includes('A')" class="correct-icon">✓</span>
-                            </div>
-                            <div class="option-item" v-if="item.option2" :class="{ 'correct-answer': showAnswer && item.answer.includes('B') }">
-                                <span class="option-label">B.</span>
-                                <span class="option-content">{{ item.option2 }}</span>
-                                <span v-if="showAnswer && item.answer.includes('B')" class="correct-icon">✓</span>
-                            </div>
+                            <template v-for="option in parseOptions(item.questionOptions)">
+                                <div :key="option.code" class="option-item" :class="{ 'correct-answer': showAnswer && item.correctAnswer.split(',').includes(option.code) }">
+                                    <span class="option-label">{{ option.code }}.</span>
+                                    <span class="option-content">{{ option.content }}</span>
+                                    <span v-if="showAnswer && item.correctAnswer.split(',').includes(option.code)" class="correct-icon">✓</span>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 判断题 -->
-            <div class="question-section" v-if="paperData.panList.length">
-                <h3 class="section-title">三、判断题（每题{{ paperData.pan_grade }}分）</h3>
+            <div class="question-section" v-if="paperData.judgeQuestions && paperData.judgeQuestions.length">
+                <h3 class="section-title">三、判断题（每题{{ paperData.judgeScore }}分）</h3>
                 <div class="question-list">
-                    <div v-for="(item, index) in paperData.panList" :key="item.id" class="question-item">
-                        <div class="question-title">{{ index + 1 }}、{{ item.title }}</div>
-                        <div class="options" v-if="showAnswer">
-                            <div class="option-item" :class="{ 'correct-answer': showAnswer && item.answer === '1' }">
+                    <div v-for="(item, index) in paperData.judgeQuestions" :key="item.id" class="question-item">
+                        <div class="question-title">{{ index + 1 }}、{{ item.questionContent }}</div>
+                        <div class="options">
+                            <div class="option-item" :class="{ 'correct-answer': showAnswer && item.correctAnswer === '1' }">
                                 <span class="option-label">A.</span>
                                 <span class="option-content">正确</span>
-                                <span v-if="showAnswer && item.answer === '1'" class="correct-icon">✓</span>
+                                <span v-if="showAnswer && item.correctAnswer === '1'" class="correct-icon">✓</span>
                             </div>
-                            <div class="option-item" :class="{ 'correct-answer': showAnswer && item.answer === '0' }">
+                            <div class="option-item" :class="{ 'correct-answer': showAnswer && item.correctAnswer === '0' }">
                                 <span class="option-label">B.</span>
                                 <span class="option-content">错误</span>
-                                <span v-if="showAnswer && item.answer === '0'" class="correct-icon">✓</span>
+                                <span v-if="showAnswer && item.correctAnswer === '0'" class="correct-icon">✓</span>
                             </div>
                         </div>
                     </div>
@@ -95,7 +83,7 @@
 
 <script lang="tsx">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { getPaperDetail } from './api'
+import { getExamPaperPreview, PaperPreviewVO, QuestionOption } from '../api'
 
 @Component({
     name: 'QuestionPaperPreview',
@@ -103,7 +91,7 @@ import { getPaperDetail } from './api'
 export default class QuestionPaperPreview extends Vue {
     @Prop() id!: string
 
-    paperData: Record<string, any> = {}
+    paperData: PaperPreviewVO = {} as PaperPreviewVO
     showAnswer = true
 
     async mounted() {
@@ -112,10 +100,19 @@ export default class QuestionPaperPreview extends Vue {
 
     async loadPaperDetail() {
         try {
-            const { data } = await getPaperDetail({ id: this.$route.query.id })
+            const { data } = await getExamPaperPreview(this.$route.query.id as string)
             this.paperData = data
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    parseOptions(optionsStr: string): QuestionOption[] {
+        try {
+            return JSON.parse(optionsStr)
+        } catch (e) {
+            console.error('解析选项失败:', e)
+            return []
         }
     }
 
@@ -152,6 +149,14 @@ export default class QuestionPaperPreview extends Vue {
             span {
                 margin: 0 10px;
             }
+        }
+
+        .paper-desc {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            text-align: left;
+            padding: 0 20px;
         }
     }
 
