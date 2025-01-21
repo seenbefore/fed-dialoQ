@@ -198,9 +198,16 @@ export default class RenderExport {
         const tmpdata = _.cloneDeep(this.renderHeaderObj) // 用来保存转换好的json
         this.handleData(dataList).forEach((v, i) =>
             keyMap.forEach((k, j) => {
-                tmpdata[this.getColName(i + 1 + this.maxLevel, j)] = {
-                    v: v[k],
-                    s: this.getCellStyle(),
+                if (typeof v[k] === 'object') {
+                    tmpdata[this.getColName(i + 1 + this.maxLevel, j)] = {
+                        v: v[k].v,
+                        s: v[k].s,
+                    }
+                } else {
+                    tmpdata[this.getColName(i + 1 + this.maxLevel, j)] = {
+                        v: v[k],
+                        s: this.getCellStyle(),
+                    }
                 }
             }),
         )

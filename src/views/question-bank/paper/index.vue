@@ -20,6 +20,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import { list, ExamPaperVO } from './api'
 import moment from 'moment'
+import RenderExport from '@/sharegood-ui/src/utils/renderExport'
 
 @Component({
     name: 'QuestionPaperList',
@@ -32,6 +33,26 @@ export default class QuestionPaperList extends Vue {
     tableRef!: TableRef
 
     formModel: Record<string, any> = {}
+
+    // 获取单元格基础样式
+    getCellStyle() {
+        return {
+            border: {
+                top: { style: 'thin', color: '#666' },
+                bottom: { style: 'thin', color: '#666' },
+                left: { style: 'thin', color: '#666' },
+                right: { style: 'thin', color: '#666' },
+            },
+            font: {
+                sz: 10,
+                bold: false,
+            },
+            alignment: {
+                horizontal: 'center',
+                vertical: 'center',
+            },
+        }
+    }
 
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
@@ -134,7 +155,7 @@ export default class QuestionPaperList extends Vue {
             {
                 label: '操作',
                 prop: 'action',
-                width: '180px',
+                width: '210px',
                 fixed: 'right',
                 render: (h, { row }) => {
                     return (
@@ -153,7 +174,15 @@ export default class QuestionPaperList extends Vue {
                                     this.handlePreview(row)
                                 }}
                             >
-                                试卷预览
+                                预览
+                            </el-button>
+                            <el-button
+                                type="text"
+                                onClick={() => {
+                                    this.handleExport(row)
+                                }}
+                            >
+                                导出
                             </el-button>
                             <el-button
                                 type="text"
@@ -228,6 +257,133 @@ export default class QuestionPaperList extends Vue {
             },
         })
         window.open(href, '_blank')
+    }
+
+    async handleExport(row: ExamPaperVO) {
+        // 定义基础列配置
+        const baseColumns = [
+            { prop: 'answerCount', label: '答题数', type: 'number', width: 100 },
+            { prop: 'score', label: '得分', type: 'number', width: 100 },
+            { prop: 'result', label: '结果', width: 100 },
+            {
+                prop: 'personalInfo',
+                label: '个人信息',
+                width: 600,
+                children: [
+                    { prop: 'name', label: '姓名', width: 100 },
+                    { prop: 'idCard', label: '身份证号', width: 100 },
+                    { prop: 'phone', label: '手机', width: 100 },
+                    { prop: 'studentId', label: '学号', width: 100 },
+                    { prop: 'gender', label: '性别', width: 100 },
+                    { prop: 'company', label: '单位名称', width: 100 },
+                ],
+            },
+        ]
+
+        // 模拟数据
+        const { data } = await this.$http.get('/exam/question/getExamPaperResult', {
+            id: row.id,
+        })
+
+        // 根据试题数据生成动态列
+        const questionColumns = data[0].pager.map((question, index) => {
+            const questionOptions = JSON.parse(question.questionOptions)
+            const optionsText = questionOptions.map((opt: any) => `${opt.code}.${opt.content}`).join('\n')
+
+            return {
+                prop: `question${index + 1}`,
+                label: question.questionContent,
+                width: 600,
+                children: [
+                    {
+                        prop: `q${index + 1}Result`,
+                        label: '答题结果',
+                        width: 100,
+                        exportRender: (row: any) => {
+                            const value = row.pager[index].result
+                            return value === '正确'
+                                ? {
+                                      v: value,
+                                      s: {
+                                          fill: {
+                                              fgColor: { rgb: '92D050' },
+                                          },
+                                      },
+                                  }
+                                : {
+                                      v: value,
+                                      s: {
+                                          fill: {
+                                              fgColor: { rgb: 'FF0000' },
+                                          },
+                                      },
+                                  }
+                        },
+                    },
+                    {
+                        prop: `q${index + 1}Answer`,
+                        label: '学员答案',
+                        width: 100,
+                        exportRender: (row: any) => ({
+                            v: row.pager[index].userAnswer,
+                        }),
+                    },
+                    {
+                        prop: `q${index + 1}Correct`,
+                        label: '正确答案',
+                        width: 100,
+                        exportRender: (row: any) => ({
+                            v: row.pager[index].correctAnswer,
+                        }),
+                    },
+                    {
+                        prop: `q${index + 1}Options`,
+                        label: '全部选项',
+                        width: 200,
+                        exportRender: (row: any) => ({
+                            v: optionsText,
+                        }),
+                    },
+                    {
+                        prop: `q${index + 1}Score`,
+                        label: '得分',
+                        width: 100,
+                        exportRender: (row: any) => ({
+                            v: row.pager[index].score,
+                        }),
+                    },
+                    {
+                        prop: `q${index + 1}Total`,
+                        label: '总分',
+                        width: 100,
+                        exportRender: (row: any) => ({
+                            v: row.pager[index].totalScore,
+                        }),
+                    },
+                ],
+            }
+        })
+
+        // 定义尾部列配置
+        const endColumns = [
+            { prop: 'startTime', label: '开始时间', width: 150 },
+            { prop: 'submitTime', label: '提交时间', width: 150 },
+            { prop: 'duration', label: '答题时长', width: 100 },
+            { prop: 'ipProvince', label: 'IP省份', width: 100 },
+            { prop: 'ipCity', label: 'IP城市', width: 100 },
+            { prop: 'ipAddress', label: 'IP地址', width: 120 },
+            { prop: 'browser', label: '浏览器', width: 100 },
+            { prop: 'os', label: '操作系统', width: 100 },
+        ]
+
+        // 合并所有列配置
+        const columns = [...baseColumns, ...questionColumns, ...endColumns]
+
+        // 使用RenderExport导出
+        const exporter = new RenderExport(columns, {
+            defaultValue: '-',
+        })
+        exporter.downloadExl(data, `${row.paperName}-答题记录`)
     }
 
     mounted() {}

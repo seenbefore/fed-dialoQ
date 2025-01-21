@@ -127,4 +127,47 @@ export default [
             })
         },
     },
+    {
+        name: '/exam/question/getExamPaperResult',
+        method: 'get',
+        description: '导出试卷结果',
+        onMock(opt, query) {
+            return mock({
+                code: 200,
+                message: '请求成功',
+                'data|10': [
+                    {
+                        answerCount: 10,
+                        score: 85,
+                        result: '通过',
+                        name: '@cname',
+                        idCard: '330************123',
+                        phone: '138****1234',
+                        studentId: '2024001',
+                        'gender|1': ['男', '女'],
+                        company: '某某科技有限公司',
+                        startTime: '2024-03-19 10:00:00',
+                        submitTime: '2024-03-19 10:30:00',
+                        duration: '30分钟',
+                        ipProvince: '浙江省',
+                        ipCity: '杭州市',
+                        ipAddress: '192.168.1.1',
+                        browser: 'Chrome',
+                        os: 'Windows',
+                        'pager|2': [
+                            {
+                                questionContent: '@csentence(20, 50)',
+                                questionOptions: JSON.stringify(questionOptions),
+                                'correctAnswer|1': ['A', 'B', 'C', 'D'],
+                                'userAnswer|1': ['A', 'B', 'C', 'D'],
+                                score: 5,
+                                totalScore: 5,
+                                'result|1': ['正确', '错误'],
+                            },
+                        ],
+                    },
+                ],
+            })
+        },
+    },
 ]
