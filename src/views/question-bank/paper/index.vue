@@ -91,25 +91,24 @@ export default class QuestionPaperList extends Vue {
                 align: 'left',
             },
             {
-                label: '考试时长(分钟)',
-                prop: 'duration',
+                label: '状态',
+                prop: 'status',
                 minWidth: '120px',
+                render: (h, { row }) => {
+                    // 根据考试开始时间、结束时间、当前时间判断状态
+                    const now = moment()
+                    const startTime = moment(row.startTime)
+                    const endTime = moment(row.endTime)
+                    if (now.isBefore(startTime)) {
+                        return <el-tag type="info">未开始</el-tag>
+                    } else if (now.isAfter(endTime)) {
+                        return <el-tag type="success">已结束</el-tag>
+                    } else {
+                        return <el-tag type="primary">进行中</el-tag>
+                    }
+                },
             },
-            {
-                label: '总分',
-                prop: 'totalScore',
-                minWidth: '80px',
-            },
-            {
-                label: '及格分',
-                prop: 'passScore',
-                minWidth: '80px',
-            },
-            {
-                label: '题目数量',
-                prop: 'totalQuestions',
-                minWidth: '100px',
-            },
+
             {
                 label: '单选题',
                 minWidth: '180px',
@@ -144,17 +143,44 @@ export default class QuestionPaperList extends Vue {
                 },
             },
             {
-                label: '创建时间',
-                prop: 'createTime',
+                label: '总题数',
+                prop: 'totalQuestions',
+                minWidth: '100px',
+            },
+            {
+                label: '总分',
+                prop: 'totalScore',
+                minWidth: '80px',
+            },
+            {
+                label: '考试开始时间',
+                prop: 'startTime',
                 minWidth: '170px',
                 render: (h, { row }) => {
-                    return <div>{moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                    return <div>{moment(row.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                 },
             },
             {
+                label: '考试结束时间',
+                prop: 'endTime',
+                minWidth: '170px',
+                render: (h, { row }) => {
+                    return <div>{moment(row.endTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                },
+            },
+            {
+                label: '考试时长',
+                prop: 'duration',
+                minWidth: '100px',
+                render: (h, { row }) => {
+                    return <div>{row.duration}分钟</div>
+                },
+            },
+
+            {
                 label: '操作',
                 prop: 'action',
-                width: '210px',
+                width: '240px',
                 fixed: 'right',
                 render: (h, { row }) => {
                     return (
@@ -173,7 +199,7 @@ export default class QuestionPaperList extends Vue {
                                     this.handlePreview(row)
                                 }}
                             >
-                                预览
+                                试卷预览
                             </el-button>
                             <el-button
                                 type="text"
@@ -181,7 +207,7 @@ export default class QuestionPaperList extends Vue {
                                     this.handleDetail(row)
                                 }}
                             >
-                                试卷详情
+                                答题情况
                             </el-button>
                             <el-button
                                 type="text"

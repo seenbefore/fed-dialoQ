@@ -2,7 +2,7 @@
     <el-drawer :title="title" :visible="true" size="800px" @close="cancel" :before-close="cancel" class="my-drawer" custom-class="my-drawer">
         <div class="drawer-container">
             <div class="drawer-main">
-                {{ formModel }}
+                <!-- {{ formModel }} -->
                 <sg-base-form ref="form" v-bind="getFormAttrs" v-model="formModel"></sg-base-form>
             </div>
 

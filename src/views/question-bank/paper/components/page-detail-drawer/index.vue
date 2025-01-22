@@ -26,7 +26,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { getExamRecordDetail, ExamRecordDetailVO, getExamRecordPageList } from '../../api'
+import { getExamRecordDetail, ExamRecordDetailVO, getExamRecordPageList, getExamRecordExportList } from '../../api'
 import RenderExport from '@/sharegood-ui/src/utils/renderExport'
 import moment from 'moment'
 
@@ -73,37 +73,45 @@ export default class PaperDrawer extends Vue {
     }
 
     async handleExportAll() {
-        // 定义基础列配置
-        const baseColumns = [
-            { prop: 'answerCount', label: '答题数', type: 'number', width: 100 },
-            { prop: 'score', label: '得分', type: 'number', width: 100 },
-            { prop: 'result', label: '结果', width: 100 },
-            {
-                prop: 'personalInfo',
-                label: '个人信息',
-                width: 600,
-                children: [
-                    { prop: 'name', label: '姓名', width: 100 },
-                    { prop: 'idCard', label: '身份证号', width: 100 },
-                    { prop: 'phone', label: '手机', width: 100 },
-                    { prop: 'studentId', label: '学号', width: 100 },
-                    { prop: 'gender', label: '性别', width: 100 },
-                    { prop: 'company', label: '单位名称', width: 100 },
-                ],
-            },
-        ]
-
-        // 模拟数据
-        const { data } = await this.$http.get('/exam/question/getExamPaperResult', {
+        // 获取导出数据
+        const { data } = await getExamRecordExportList({
             paperId: this.paperId,
         })
 
-        // 根据试题数据生成动态列
-        const questionColumns = data[0].pager.map((question, index) => {
-            const questionOptions = JSON.parse(question.questionOptions)
-            const optionsText = questionOptions.map((opt: any) => `${opt.code}.${opt.content}`).join('\n')
+        // 定义基础列配置
+        const baseColumns = [
+            { prop: 'userName', label: '姓名', width: 100 },
+            { prop: 'studentNo', label: '学号', width: 100 },
+            { prop: 'mobile', label: '手机号', width: 120 },
+            { prop: 'idCard', label: '身份证号', width: 150 },
+            { prop: 'orgName', label: '单位名称', width: 200 },
+            { prop: 'answerCount', label: '答题数', width: 80 },
+            {
+                prop: 'score',
+                label: '得分',
+                width: 80,
+                exportRender: (row: any) => ({
+                    v: row.score,
+                    s: {
+                        fill: {
+                            fgColor: { rgb: row.isPass === '1' ? '92D050' : 'FF0000' },
+                        },
+                    },
+                }),
+            },
+            {
+                prop: 'isPass',
+                label: '是否通过',
+                width: 80,
+                exportRender: (row: any) => ({
+                    v: row.isPass === '1' ? '通过' : '未通过',
+                }),
+            },
+        ]
 
-            return {
+        // 根据第一条记录的答题详情生成动态列
+        const questionColumns =
+            data[0]?.answerDetails?.map((question: any, index: number) => ({
                 prop: `question${index + 1}`,
                 label: question.questionContent,
                 width: 600,
@@ -112,33 +120,21 @@ export default class PaperDrawer extends Vue {
                         prop: `q${index + 1}Result`,
                         label: '答题结果',
                         width: 100,
-                        exportRender: (row: any) => {
-                            const value = row.pager[index].result
-                            return value === '正确'
-                                ? {
-                                      v: value,
-                                      s: {
-                                          fill: {
-                                              fgColor: { rgb: '92D050' },
-                                          },
-                                      },
-                                  }
-                                : {
-                                      v: value,
-                                      s: {
-                                          fill: {
-                                              fgColor: { rgb: 'FF0000' },
-                                          },
-                                      },
-                                  }
-                        },
+                        exportRender: (row: any) => ({
+                            v: row.answerDetails[index].isCorrect === '1' ? '正确' : '错误',
+                            s: {
+                                fill: {
+                                    fgColor: { rgb: row.answerDetails[index].isCorrect === '1' ? '92D050' : 'FF0000' },
+                                },
+                            },
+                        }),
                     },
                     {
                         prop: `q${index + 1}Answer`,
-                        label: '学员答案',
+                        label: '考生答案',
                         width: 100,
                         exportRender: (row: any) => ({
-                            v: row.pager[index].userAnswer,
+                            v: row.answerDetails[index].userAnswer,
                         }),
                     },
                     {
@@ -146,47 +142,36 @@ export default class PaperDrawer extends Vue {
                         label: '正确答案',
                         width: 100,
                         exportRender: (row: any) => ({
-                            v: row.pager[index].correctAnswer,
+                            v: row.answerDetails[index].correctAnswer,
                         }),
                     },
                     {
                         prop: `q${index + 1}Options`,
-                        label: '全部选项',
+                        label: '选项',
                         width: 200,
                         exportRender: (row: any) => ({
-                            v: optionsText,
+                            v: row.answerDetails[index].questionOptions,
                         }),
                     },
                     {
                         prop: `q${index + 1}Score`,
                         label: '得分',
-                        width: 100,
+                        width: 80,
                         exportRender: (row: any) => ({
-                            v: row.pager[index].score,
-                        }),
-                    },
-                    {
-                        prop: `q${index + 1}Total`,
-                        label: '总分',
-                        width: 100,
-                        exportRender: (row: any) => ({
-                            v: row.pager[index].totalScore,
+                            v: row.answerDetails[index].questionScore,
                         }),
                     },
                 ],
-            }
-        })
+            })) || []
 
         // 定义尾部列配置
         const endColumns = [
-            { prop: 'startTime', label: '开始时间', width: 150 },
-            { prop: 'submitTime', label: '提交时间', width: 150 },
-            { prop: 'duration', label: '答题时长', width: 100 },
-            { prop: 'ipProvince', label: 'IP省份', width: 100 },
-            { prop: 'ipCity', label: 'IP城市', width: 100 },
-            { prop: 'ipAddress', label: 'IP地址', width: 120 },
-            { prop: 'browser', label: '浏览器', width: 100 },
-            { prop: 'os', label: '操作系统', width: 100 },
+            { prop: 'actualStartTime', label: '开始时间', width: 150 },
+            { prop: 'actualEndTime', label: '结束时间', width: 150 },
+            { prop: 'duration', label: '答题时长(分钟)', width: 120 },
+            { prop: 'userIp', label: 'IP地址', width: 120 },
+            { prop: 'browserInfo', label: '浏览器', width: 100 },
+            { prop: 'osInfo', label: '操作系统', width: 100 },
         ]
 
         // 合并所有列配置

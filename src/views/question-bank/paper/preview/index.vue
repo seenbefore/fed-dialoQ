@@ -100,7 +100,7 @@ export default class QuestionPaperPreview extends Vue {
 
     async loadPaperDetail() {
         try {
-            const { data } = await getExamPaperPreview(this.$route.query.id as string)
+            const { data } = await getExamPaperPreview({ id: this.id })
             this.paperData = data
         } catch (error) {
             console.error(error)

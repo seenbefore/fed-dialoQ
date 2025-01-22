@@ -189,11 +189,11 @@ export function save(data: ExamPaperUpdateDTO, options?: ExAxiosRequestConfig) {
  * @param id 试卷ID
  * @param options 附加选项
  */
-export function getExamPaperPreview(id: string, options?: ExAxiosRequestConfig) {
+export function getExamPaperPreview(data: { id: string }, options?: ExAxiosRequestConfig) {
     return http.request<Result<PaperPreviewVO>>({
         url: '/exam/question/getExamPaperPreview',
         method: 'GET',
-        params: { id },
+        params: data,
         ...options,
     })
 }
@@ -296,6 +296,27 @@ export function getExamRecordDetail(
 ) {
     return http.request<Result<ExamRecordDetailVO>>({
         url: '/exam/manage/getExamRecordDetail',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
+
+/**
+ * 获取单场考试的所有用户答卷情况信息列表(用于导出)
+ * @param data 请求参数
+ * @param options 附加选项
+ */
+export function getExamRecordExportList(
+    data: {
+        /** 考卷ID */
+
+        paperId: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<ExamRecordDetailVO[]>>({
+        url: '/exam/manage/getExamRecordExportList',
         method: 'post',
         data,
         ...options,

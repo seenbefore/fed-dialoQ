@@ -63,7 +63,7 @@ export default [
         },
     },
     {
-        name: '/exam/question/editExamPaper',
+        name: '/mock/exam/question/editExamPaper',
         method: 'post',
         description: '更新考卷',
         onMock(opt, query, body) {
@@ -74,7 +74,7 @@ export default [
         },
     },
     {
-        name: '/exam/question/getExamPaperPreview',
+        name: '/mock/exam/question/getExamPaperPreview',
         method: 'get',
         description: '获取试卷预览详情',
         onMock(opt, query) {
@@ -128,7 +128,7 @@ export default [
         },
     },
     {
-        name: '/exam/question/getExamPaperResult',
+        name: '/mock/exam/question/getExamPaperResult',
         method: 'get',
         description: '导出试卷结果',
         onMock(opt, query) {
