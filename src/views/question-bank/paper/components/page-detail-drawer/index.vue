@@ -404,11 +404,11 @@ export default class PaperDrawer extends Vue {
         this.$options.cancel?.()
     }
     handleDetail(row: any) {
-        // this.$modalDialog(() => import('./index.vue'), {
-        //     action: 'detail',
-        //     paperId: this.paperId,
-        //     data: row,
-        // })
+        this.$modalDialog(() => import('./answer-detail-dialog/index.vue'), {
+            paperId: this.paperId,
+            userId: row.userId,
+            data: row,
+        })
     }
 }
 </script>
