@@ -21,7 +21,7 @@ const questionOptions = [
 
 export default [
     {
-        name: '/exam/question/getExamPaperPageList',
+        name: '/mock/exam/question/getExamPaperPageList',
         method: 'post',
         description: '获取考卷分页列表',
         onMock(opt, query, body) {

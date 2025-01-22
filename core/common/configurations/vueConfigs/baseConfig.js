@@ -73,31 +73,35 @@ if (isDev) {
 
 const outputDir = env.outputDir || 'dist'
 
-/* 自动生成代理配置 */
+/* 自动生成代理配置 按proxyPath长度降序排序 */
 function generateProxyConfig() {
     const proxyConfig = {}
 
     // 获取所有环境变量
     const envVars = process.env
 
-    // 查找所有 VUE_APP_BASEURL_ 开头的环境变量
-    Object.keys(envVars).forEach(key => {
-        if (key.startsWith('VUE_APP_BASEURL_')) {
+    // 收集所有代理配置并按路径长度排序
+    const proxyPaths = Object.keys(envVars)
+        .filter(key => key.startsWith('VUE_APP_BASEURL_'))
+        .map(key => {
             const suffix = key.replace('VUE_APP_BASEURL_', '')
             const targetKey = `DEV_PROXY_TARGET_${suffix}`
-            const proxyPath = envVars[key]
-            const targetUrl = envVars[targetKey]
+            return {
+                proxyPath: envVars[key],
+                targetUrl: envVars[targetKey],
+                length: envVars[key] ? envVars[key].length : 0,
+            }
+        })
+        // 按proxyPath长度降序排序
+        .sort((a, b) => b.length - a.length)
 
-            // 只有当代理路径和目标URL都存在时才添加配置
-            if (proxyPath && targetUrl) {
-                proxyConfig[proxyPath] = {
-                    changeOrigin: true,
-                    pathRewrite: { [`^${proxyPath}`]: '' },
-                    target: targetUrl,
-                }
-
-                // 输出代理配置信息
-                Log.info(`配置代理: ${proxyPath} -> ${targetUrl}`)
+    // 按排序后的顺序生成代理配置
+    proxyPaths.forEach(({ proxyPath, targetUrl }) => {
+        if (proxyPath && targetUrl) {
+            proxyConfig[proxyPath] = {
+                changeOrigin: true,
+                pathRewrite: { [`^${proxyPath}`]: '' },
+                target: targetUrl,
             }
         }
     })
@@ -130,6 +134,7 @@ module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
             proxy: generateProxyConfig(),
         },
     }
+    console.log(devServerOptions, JSON.stringify(devServerOptions, null, 2))
     return {
         ...entry,
         outputDir,

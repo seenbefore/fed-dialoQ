@@ -197,3 +197,107 @@ export function getExamPaperPreview(id: string, options?: ExAxiosRequestConfig) 
         ...options,
     })
 }
+/** 答题记录 */
+export interface ExamRecordVO {
+    /** 单位全称 */
+    orgName: string
+    /** 考试实际开始时间 */
+    actualStartTime: string
+    /** 是否实名认证 */
+    isVerified: string
+    /** 用户身份证号 */
+    idCard: string
+    /** 用户手机号 */
+    mobile: string
+    /** 用户姓名 */
+    userName: string
+    /** 用户ID */
+    userId: string
+    /** 考试用时 */
+    duration: number
+    /** 考试得分 */
+    score: number
+    /** 答题总数 */
+    answerCount: number
+    /** 操作系统 */
+    osInfo: string
+    /** 创建时间 */
+    createTime: string
+    /** 考试实际结束时间 */
+    actualEndTime: string
+    /** 用户ip */
+    userIp: string
+    /** 学号 */
+    studentNo: string
+    /** 考试是否通过 */
+    isPass: string
+    /** 考卷ID */
+    paperId: string
+    /** 浏览器 */
+    browserInfo: string
+    /** 考试状态 */
+    status: string
+    /** 考试是否完成 */
+    isCompleted: string
+}
+/** 答题详情 */
+export interface ExamRecordDetailVO extends ExamRecordVO {
+    /** 答题情况集合 */
+    answerDetails: {
+        /** 题目 */
+        questionContent: string
+        /** 题目类型名称 */
+        questionTypeName: string
+        /** 题目用户答案 */
+        userAnswer: string
+        /** 题目类型代码 */
+        questionTypeCode: string
+        /** 题目得分 */
+        questionScore: number
+        /** 题目答案 */
+        questionOptions: string
+        /** 题目正确答案 */
+        correctAnswer: string
+        /** 答题是否正确 */
+        isCorrect: string
+    }[]
+}
+/**
+ * 获取答题情况分页列表
+ */
+export function getExamRecordPageList(
+    data?: {
+        /** 分页页码 */ pageNum?: number
+        /** 分页长度 */ length?: number
+        /** 考卷ID */ paperId: string
+        /** 关键字 */ keyword?: string
+        /** 更新日期-开始日期 */ startDate?: string
+        /** 更新日期-结束日期 */ endDate?: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<PageResponse<ExamRecordVO[]>>>({
+        url: '/exam/manage/getExamRecordPageList',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
+
+/**
+ * 获取用户答卷详情信息
+ */
+export function getExamRecordDetail(
+    data: {
+        /** 考卷ID */ paperId: string
+        /** 用户ID */ userId: string
+    },
+    options?: ExAxiosRequestConfig,
+) {
+    return http.request<Result<ExamRecordDetailVO>>({
+        url: '/exam/manage/getExamRecordDetail',
+        method: 'post',
+        data,
+        ...options,
+    })
+}
