@@ -215,12 +215,8 @@ export default class QuestionBankList extends Vue {
     }
 
     async handleDelete(row: QuestionVO) {
-        await this.$confirm('确认删除该题目?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-        })
-        await remove({ id: row.id })
+        await this.$confirm('确认删除该题目?')
+        await remove({ questionId: row.id })
         this.$message.success('删除成功')
         this.handleSearch()
     }

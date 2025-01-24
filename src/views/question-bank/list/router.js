@@ -11,7 +11,7 @@ export default {
         rank: 1,
         title: '题库列表',
         keepAlive: false,
-        requireAuth: true,
+        requireAuth: false,
         aliveOnlyTo: [],
     },
 }

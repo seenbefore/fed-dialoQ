@@ -78,11 +78,11 @@ export function save(data: QuestionVO, options?: ExAxiosRequestConfig) {
  * @param data 题目ID
  * @param options 请求配置
  */
-export function remove(data: { id: string }, options?: ExAxiosRequestConfig) {
+export function remove(data: { questionId: string }, options?: ExAxiosRequestConfig) {
     return http.request<Result<any>>({
-        url: '/question-bank/delete',
-        method: 'post',
-        data,
+        url: '/exam/question/removeQuestion',
+        method: 'get',
+        params: data,
         ...options,
     })
 }

@@ -11,7 +11,7 @@ export default {
         rank: 1,
         title: '考卷列表',
         keepAlive: false,
-        requireAuth: true,
+        requireAuth: false,
         aliveOnlyTo: [],
     },
 }

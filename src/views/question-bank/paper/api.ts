@@ -322,3 +322,17 @@ export function getExamRecordExportList(
         ...options,
     })
 }
+
+/**
+ * 删除试卷
+ * @param data 试卷ID
+ * @param options 请求配置
+ */
+export function remove(data: { paperId: string }, options?: ExAxiosRequestConfig) {
+    return http.request<Result<any>>({
+        url: '/exam/question/removeExamPaper',
+        method: 'get',
+        params: data,
+        ...options,
+    })
+}

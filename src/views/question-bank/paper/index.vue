@@ -18,7 +18,7 @@
 <script lang="tsx">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { FormRow, FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
-import { list, ExamPaperVO } from './api'
+import { list, ExamPaperVO, remove } from './api'
 import moment from 'moment'
 
 @Component({
@@ -269,6 +269,7 @@ export default class QuestionPaperList extends Vue {
             cancelButtonText: '取消',
             type: 'warning',
         })
+        await remove({ paperId: row.id })
         this.$message.success('删除成功')
         this.handleSearch()
     }

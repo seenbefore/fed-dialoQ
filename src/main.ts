@@ -79,15 +79,25 @@ Vue.prototype.$postMessage = function(data: any) {
 /**
  * 设置自定义主题名称和色系
  */
-settingsStore.updateThemeName('blue')
-let themeVariables: IDefinedThemeValue = {
-    '--color-primary': '#005ff5',
-    '--color-success': '#6DD400',
-    '--color-warning': '#FF7D00',
-    '--color-danger': '#F53F3F',
-    '--color-info': '#666666',
+const definedTheme = {
+    /* 法助 */
+    fz: {
+        '--color-primary': '#588ffa',
+        '--color-success': '#6DD400',
+        '--color-warning': '#FF7D00',
+        '--color-danger': '#F4333C',
+        '--color-info': '#666666',
+    },
+    /* 默认 */
+    default: {
+        '--color-primary': '#005ff5',
+        '--color-success': '#6DD400',
+        '--color-warning': '#FF7D00',
+        '--color-danger': '#F53F3F',
+        '--color-info': '#666666',
+    },
 }
-settingsStore.updateThemeVariables(themeVariables)
+
 /* 条件编译 (必须是运行时可用的环境变量，并且变量值不能为 undefined，否则模块必定会打包) */
 if (process.env.VUE_APP_MOCK === 'true') {
     require('./mock')
@@ -95,7 +105,11 @@ if (process.env.VUE_APP_MOCK === 'true') {
 
 async function bootstrap() {
     // 如果token存在，则通过token登录
-    let { token } = getURLParameters(location.href)
+    let { token, theme } = getURLParameters(location.href)
+    const themeName = theme || settingsStore.theme?.name || 'default'
+    settingsStore.updateThemeName(themeName)
+    settingsStore.updateThemeVariables(definedTheme[themeName])
+
     console.log('token :>> ', token)
     if (token) {
         await userStore.syncLoginWithToken(token)
