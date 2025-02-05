@@ -33,8 +33,8 @@ function loadEnv(context = process.cwd()) {
         }
     }
     if (mode.indexOf('development') > -1) {
-        load(localPath)
         load(basePath)
+        load(localPath)
     } else {
         load(basePath)
     }

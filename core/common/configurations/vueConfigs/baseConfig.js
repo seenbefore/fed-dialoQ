@@ -112,6 +112,13 @@ function generateProxyConfig() {
  * @return {import('@vue/cli-service').ConfigFunction}
  */
 module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
+    // 修改 devServerOptions 的生成逻辑
+    const devServerOptions = {
+        devServer: {
+            host: '0.0.0.0',
+            proxy: generateProxyConfig(),
+        },
+    }
     configOptions.showLogInfo &&
         Log.info(
             [
@@ -124,17 +131,11 @@ module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
                 `\t打包路径 ${outputDir}`,
                 `\t代理地址 ${process.env.DEV_PROXY_TARGET_API}`,
                 `\t本地缓存 ${process.env.VUE_APP_STORAGE_VERSION}`,
+                `\t本地mock ${process.env.VUE_APP_MOCK}`,
+                `\tdevServerOptions ${JSON.stringify(devServerOptions, null, 2)}`,
             ].join('\n'),
         )
 
-    // 修改 devServerOptions 的生成逻辑
-    const devServerOptions = {
-        devServer: {
-            host: '0.0.0.0',
-            proxy: generateProxyConfig(),
-        },
-    }
-    console.log(devServerOptions, JSON.stringify(devServerOptions, null, 2))
     return {
         ...entry,
         outputDir,
