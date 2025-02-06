@@ -91,6 +91,7 @@ export default class RenderExport {
                 label: column.label,
                 type: column.type,
                 children: this.recursionColumn(column.children),
+                width: column.exportWidth || column.width || column.minWidth,
                 $render:
                     typeof column.exportRender === 'function'
                         ? column.exportRender
@@ -184,8 +185,9 @@ export default class RenderExport {
             this.leafList
                 .filter(opt => opt.type !== 'selection')
                 .forEach(col => {
-                    const { prop, label, type, $render } = col
-                    res[label] = type === 'index' ? index + 1 : $render ? $render(item, index) : voidValue(item[prop])
+                    const { prop, type, $render } = col
+                    if (!prop) return
+                    res[prop] = type === 'index' ? index + 1 : $render ? $render(item, index) : voidValue(item[prop])
                 })
             return res
         })
@@ -194,7 +196,7 @@ export default class RenderExport {
     /* 写入excel并下载 */
     downloadExl(dataList, downName, type = 'xlsx') {
         // 导出到excel
-        const keyMap = this.leafList.map(i => i.label)
+        const keyMap = this.leafList.map(i => i.prop).filter(Boolean)
         const tmpdata = _.cloneDeep(this.renderHeaderObj) // 用来保存转换好的json
         this.handleData(dataList).forEach((v, i) =>
             keyMap.forEach((k, j) => {
@@ -212,6 +214,7 @@ export default class RenderExport {
             }),
         )
         const outputPos = Object.keys(tmpdata) // 设置区域,比如表格从A1到D10
+        // console.log('this.leafList', this.leafList)
         const tmpWB = {
             SheetNames: ['mySheet'], // 保存的表标题
             Sheets: {
@@ -219,9 +222,14 @@ export default class RenderExport {
                     ...tmpdata, // 内容
                     '!ref': outputPos[0] + ':' + outputPos[outputPos.length - 1], // 设置填充区域
                     '!merges': this.merges,
-                    '!cols': this.leafList.map(i => ({
-                        wpx: i.width ? parseInt(i.width) : 100,
-                    })),
+                    '!cols': keyMap.map((k, index) => {
+                        const leaf = this.leafList.find(i => i.prop === k)
+                        const wpx = this.parseWidth(leaf?.width)
+                        // console.log(leaf.prop, leaf.width, wpx)
+                        return {
+                            wpx,
+                        }
+                    }),
                 },
             },
         }
@@ -253,6 +261,15 @@ export default class RenderExport {
             URL.revokeObjectURL(href)
             a.remove()
         }, 100)
+    }
+
+    /* 解析宽度值，处理可能带有单位的情况 */
+    parseWidth(width) {
+        if (!width) return 100
+        if (typeof width === 'number') return width
+        // 移除所有非数字字符（如：px, em等）
+        const numWidth = parseInt(width.toString().replace(/[^\d]/g, ''))
+        return numWidth || 100
     }
 
     /* 字符串转字符流 */
