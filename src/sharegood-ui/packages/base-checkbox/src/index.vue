@@ -74,12 +74,15 @@ export default {
     watch: {
         currentValue(value) {
             this.$emit('input', value)
+            const target = this.dataList.find(item => item.value == value)
 
             this.onChange &&
                 this.onChange(
                     {
                         name: this.name,
                         value: value,
+                        option: target,
+                        label: target?.label,
                     },
                     {
                         schema: this.schema,

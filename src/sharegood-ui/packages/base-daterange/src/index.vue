@@ -68,6 +68,13 @@ export default {
                 return []
             },
         },
+        /**
+         * 不校验时间范围
+         */
+        disableValidateRange: {
+            type: Boolean,
+            default: false,
+        },
     },
     mixins: [formMixins],
     data() {
@@ -108,19 +115,22 @@ export default {
         onChange(val) {
             let startDate = this.startDate || ''
             let endDate = this.endDate || ''
-            if (startDate && endDate) {
-                let startDateValue = new Date(startDate).valueOf()
-                let endDateValue = new Date(endDate).valueOf()
-                if (startDateValue > endDateValue) {
-                    if (startDate === val) {
-                        startDate = ''
-                        this.$message.warning('开始日期不得大于结束日期')
-                    } else {
-                        endDate = ''
-                        this.$message.warning('结束日期不得小于开始日期')
+            if (!this.disableValidateRange) {
+                if (startDate && endDate) {
+                    let startDateValue = new Date(startDate).valueOf()
+                    let endDateValue = new Date(endDate).valueOf()
+                    if (startDateValue > endDateValue) {
+                        if (startDate === val) {
+                            startDate = ''
+                            this.$message.warning('开始日期不得大于结束日期')
+                        } else {
+                            endDate = ''
+                            this.$message.warning('结束日期不得小于开始日期')
+                        }
                     }
                 }
             }
+
             this.$emit('input', [startDate, endDate])
         },
     },

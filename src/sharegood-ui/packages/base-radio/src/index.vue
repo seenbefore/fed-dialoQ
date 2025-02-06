@@ -74,6 +74,7 @@ export default {
                         name: this.name,
                         value: value,
                         option: target,
+                        label: target?.label,
                     },
                     {
                         schema: this.schema,
