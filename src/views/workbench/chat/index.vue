@@ -162,7 +162,7 @@ export default class AiChat extends Vue {
     inputMessage = ''
     showSettings = false
     settings = {
-        model: 'gpt-3.5-turbo',
+        model: 'deepseek-chat',
         temperature: 0.7,
         maxLength: 2000,
         contextLength: 5,
@@ -196,8 +196,8 @@ export default class AiChat extends Vue {
                 label: 'AI模型',
                 attrs: {
                     options: [
-                        { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
-                        { label: 'GPT-4', value: 'gpt-4' },
+                        { label: 'DeepSeek Chat', value: 'deepseek-chat' },
+                        { label: 'DeepSeek Code', value: 'deepseek-code' },
                     ],
                 },
             },
@@ -234,6 +234,7 @@ export default class AiChat extends Vue {
             },
         ]
         return {
+            span: 24,
             fields,
         }
     }
@@ -251,7 +252,7 @@ export default class AiChat extends Vue {
                         sessionId: 'default',
                         sender: 'ai',
                         content:
-                            '您好！我是智谱AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 解决问题和技术支持\n\n请问有什么我可以帮您的吗？',
+                            '您好！我是DeepSeek AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 代码开发和技术支持\n\n请问有什么我可以帮您的吗？',
                         createTime: new Date().toLocaleString('zh-CN'),
                         status: MessageStatusEnum.COMPLETED,
                     },
@@ -338,7 +339,7 @@ export default class AiChat extends Vue {
 
     async handleDeleteSession(session: ChatSession) {
         try {
-            await this.$confirm('确认删除该会话���', '提示', {
+            await this.$confirm('确认删除该会话？', '提示', {
                 type: 'warning',
             })
             await deleteSession({ sessionId: session.id })
@@ -362,7 +363,7 @@ export default class AiChat extends Vue {
                 id: String(Date.now()),
                 sessionId: 'default',
                 sender: 'ai',
-                content: '您好！我是智谱AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 解决问题和技术支持\n\n请问有什么我可以帮您的吗？',
+                content: '您好！我是DeepSeek AI助手，很高兴为您服务。我可以帮您：\n\n1. 回答问题和解释概念\n2. 提供建议和分析\n3. 协助写作和创作\n4. 代码开发和技术支持\n\n请问有什么我可以帮您的吗？',
                 createTime: new Date().toLocaleString('zh-CN'),
                 status: MessageStatusEnum.COMPLETED,
             },
@@ -475,7 +476,7 @@ export default class AiChat extends Vue {
     }
 
     /**
-     * ��音输入
+     * 语音输入
      */
     async handleVoiceInput() {
         try {

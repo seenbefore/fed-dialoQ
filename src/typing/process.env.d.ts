@@ -23,19 +23,21 @@ declare let process: {
 
         readonly VUE_APP_MOCK: 'true' | 'false'
 
-        /* 是否为浙里办开发环境 */
+        /** 是否为浙里办开发环境 */
         readonly VUE_APP_IS_ZLB_DEV_ENV: string
 
-        /* 是否为浙里办环境 */
+        /** 是否为浙里办环境 */
         readonly VUE_APP_ZLB_APP: string
         readonly VUE_APP_BASEURL_LOGIN_API: string
-        /* 埋点ID */
+        /** 埋点ID */
         readonly VUE_APP_CLIENTID: string
-        /* 埋点秘钥 */
+        /** 埋点秘钥 */
         readonly VUE_APP_CLIENTSECRET: string
-        /* pdf地址 */
+        /** pdf地址 */
         readonly VUE_APP_PDF_API: string
-        /* 文书接口地址 */
+        /** 文书接口地址 */
         readonly VUE_APP_BASEURL_API_DOC: string
+        /** DeepSeek API Key */
+        VUE_APP_DEEPSEEK_API_KEY: string
     }
 }
