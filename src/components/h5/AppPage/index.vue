@@ -11,6 +11,8 @@
         <!-- 底部插槽 -->
         <div v-if="$slots.footer" class="app-page__footer">
             <slot name="footer"></slot>
+            <!-- ios底部安全距离适配 -->
+            <div class="sg-ios-bottom-adapt"></div>
         </div>
     </div>
 </template>
@@ -46,6 +48,16 @@ export default class AppPage extends Vue {}
         flex-shrink: 0;
         background: #fff;
         border-top: 1px solid #e5e5e5;
+    }
+    /** ios底部安全距离适配 */
+    .sg-ios-bottom-adapt {
+        padding-bottom: constant(safe-area-inset-bottom);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .sg-ios-top-adapt {
+        padding-top: constant(safe-area-inset-top);
+        padding-top: env(safe-area-inset-top);
     }
 }
 </style>
