@@ -607,13 +607,58 @@
         <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.js) { %>
         <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
         <% } %>
-        <div data-123="<%= VUE_APP_ERUDA %>"></div>
-        <% if (VUE_APP_ERUDA === 'true') { %>
-        <script src="<%= BASE_URL %>static/assets/lib/eruda/1.5.2/eruda.min.js"></script>
-        <script>
-            // window.eruda.init()
-        </script>
-        <% } %>
+        
+       
         <!-- built files will be auto injected -->
+
+
+        <script>
+            // 手机调试
+            ;(function() {
+                var isTouchDevice = 'ontouchstart' in document.documentElement
+                // 非触摸设备不开启调试
+                if(!isTouchDevice) {
+                    return
+                }
+                var clickCount = 0;
+                var lastClickTime = Date.now();
+                var isErudaLoaded = false;
+
+                document.addEventListener('click', function() {
+                    const now = Date.now();
+                    
+                    // 如果距离上次点击超过3秒，重置计数
+                    if (now - lastClickTime > 3000) {
+                        clickCount = 1;
+                    } else {
+                        clickCount++;
+                    }
+                    //console.log(clickCount)
+                    lastClickTime = now;
+
+                    // 处理eruda的加载和隐藏
+                    if (clickCount === 10) {
+                        if (!isErudaLoaded) {
+                            // 加载eruda
+                            const script = document.createElement('script');
+                            script.src = '<%= BASE_URL %>static/assets/lib/eruda/1.5.2/eruda.min.js';
+                            script.onload = function() {
+                                window.eruda.init();
+                                isErudaLoaded = true;
+                            };
+                            document.body.appendChild(script);
+                        } else {
+                            //alert('eruda已加载')
+                            // 隐藏eruda
+                            // window.eruda.hide();
+                            location.reload()
+                        }
+                        // 重置点击计数
+                        clickCount = 0;
+                    }
+                });
+            })();
+            
+        </script>
     </body>
 </html>

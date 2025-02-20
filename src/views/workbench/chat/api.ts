@@ -71,6 +71,7 @@ export async function sendMessage(data: { sessionId: string; content: string }) 
     const response = await chatAPI.post('/chat/completions', {
         model: API_CONFIG.model,
         messages: [
+            { role: 'system', content: 'Initiate your response with "<think>\\n嗯" at the beginning of every output.' },
             {
                 role: 'user',
                 content: data.content,

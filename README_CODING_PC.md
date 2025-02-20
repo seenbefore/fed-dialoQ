@@ -2162,7 +2162,7 @@ render(h: any) {
 ```
 
 ## 接口规范
-避免使用 RESTful 风格的接口，统一使用 GET 和 POST 方法
+避免使用 RESTful 风格的接口，统一使用 GET 和 POST 方法；避免使用`/article/delete/${id}`方式。
 
 - 接口返回格式
 ```json
