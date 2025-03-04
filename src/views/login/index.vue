@@ -23,6 +23,9 @@
 
                         <div slot="footer" class="my-login-form-footer">
                             <el-button :loading="View.loading" type="primary" class="my-login-form-submit" size="large" @click="onSubmit">登录</el-button>
+                            <div style="margin-top: 10px">
+                                <el-button type="text" size="mini" @click="onSubmitByAnonymous" style="font-size: 16px;">匿名登录（本地调试）</el-button>
+                            </div>
                         </div>
                     </sg-base-form>
                 </div>
@@ -39,6 +42,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { FormColumn } from '@/sharegood-ui'
 import { userStore, settingsStore, tagsViewStore } from '@/store/useStore'
 import Captcha from '@/components/captcha/index.vue'
+import { LocalMenu } from '@/menus'
 
 const state = {
     username: 'admin',
@@ -118,6 +122,19 @@ export default class LoginSimple extends Vue {
             return true
         }
         return false
+    }
+    // 匿名登录
+    async onSubmitByAnonymous() {
+        userStore.setPermissionMenus(LocalMenu)
+        userStore.login('123456')
+        userStore.setUserInfo({
+            name: '匿名用户',
+            username: 'anonymous',
+        })
+        let redirect = this.redirect || userStore.redirect || userStore.defaultPath || '/'
+        // 登录后清除所有标签
+        await tagsViewStore.delAllViews()
+        this.$router.push(redirect).catch(() => {})
     }
     async onSubmit() {
         try {
