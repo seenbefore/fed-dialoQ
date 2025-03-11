@@ -6,8 +6,31 @@ const { removeDirSync } = require('../../utils/file')
 const { baseRootPath } = require('../../utils/path')
 // 获取参数
 const args = process.argv.slice(2)
-const name = args.find((arg, index) => arg === '--name' && args[index + 1])?.split('=')[1] || args[args.findIndex(arg => arg === '--name') + 1] || ''
-const description = args.find((arg, index) => arg === '--description' && args[index + 1])?.split('=')[1] || args[args.findIndex(arg => arg === '--description') + 1] || ''
+
+/**
+ * 获取命令行参数值
+ * @param {string[]} args 命令行参数数组
+ * @param {string} key 参数名
+ * @returns {string} 参数值
+ */
+const getArgValue = (args, key) => {
+    // 查找 --key=value 格式
+    const equalArg = args.find(arg => arg.startsWith(`${key}=`))
+    if (equalArg) {
+        return equalArg.split('=')[1]
+    }
+
+    // 查找 --key value 格式
+    const index = args.indexOf(key)
+    if (index !== -1 && index + 1 < args.length) {
+        return args[index + 1]
+    }
+
+    return ''
+}
+
+const name = getArgValue(args, '--name')
+const description = getArgValue(args, '--description')
 console.log(`参数 name:${name}，description:${description}`)
 
 /* 删除 src/entry 目录。由业务自己决定使用那些项目模板 */
