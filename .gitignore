@@ -23,15 +23,20 @@ private
 *.log
 *.local
 md
-fed-component-library
 build-zip
 /*.zip
 public/json
-fed-library
 /.t/
 *.local.js
-front-base-vue-template
-front-base-vue-template-h5
 
 .codegpt
 zero
+# 构建目录
+dist_*
+dist-*
+front_*
+front-*
+fed-*
+fed_*
+build_*
+build-*
