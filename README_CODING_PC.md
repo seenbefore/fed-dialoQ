@@ -1284,7 +1284,7 @@ export default [
                             'isAdmin|1': [0, 1],
                         },
                     ],
-                    recordsTotal: 198,
+                    total: 198,
                 },
                 message: '请求成功',
             })
@@ -1822,7 +1822,7 @@ export default class UserManagement extends Vue {
                 } as any)
                 return {
                     result: data.data,
-                    total: data.recordsTotal,
+                    total: data.total,
                 }
             },
             // 列表展示 必要配置
@@ -2186,7 +2186,7 @@ render(h: any) {
     "message": "string", // 状态信息
     "data": {
         "data": "any[]", // 列表
-        "recordsTotal": "number" // 总数
+        "total": "number" // 总数
     }
 }
 ```

@@ -34,6 +34,7 @@ export interface Result<T> {
      * 错误信息
      */
     errors: ErrorInfo[]
+    [key: string]: any
 }
 export interface PageResponse<T> {
     /**
@@ -50,6 +51,10 @@ export interface PageResponse<T> {
      * 返回的分页数据对象
      */
     data: T[]
+    /**
+     * 返回的分页数据对象
+     */
+    list: T[]
 
     /**
      * 请求次数计数器
@@ -76,4 +81,5 @@ export interface PageResponse<T> {
      * 表头
      */
     tableHead: any
+    [key: string]: any
 }

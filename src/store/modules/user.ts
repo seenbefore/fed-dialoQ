@@ -26,7 +26,7 @@ export const encrypt = async (message: string) => {
     stateFactory: true,
 })
 export default class MyModule extends BaseUserStore<PermissionMenu | UserMenu, UserInfo> {
-    @Mutation
+    @Action
     public getDefaultPath(uri: string): string {
         return getDefaultPathUtil(uri, this.topMenus)
     }

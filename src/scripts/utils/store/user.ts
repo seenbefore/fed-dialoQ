@@ -177,9 +177,10 @@ function findUserMenu(LocalMenus: Array<UserMenu>, path: string): UserMenu | nul
 
 export const getDefaultPathUtil = (uri: string, topMenus: Array<PermissionMenu | UserMenu>): string => {
     const topMenu = topMenus.find(item => item.path === uri)
-    if (topMenus) {
+    if (topMenu) {
         const children = topMenu?.children ?? []
-        return getIndexUri(children)
+        const result = getIndexUri(children)
+        return result
     }
     return ''
 }

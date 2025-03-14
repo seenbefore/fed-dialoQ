@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康类App界面预览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 隐藏滚动条但保持可滚动 */
+        .scroll-hidden::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-hidden {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">健康类App界面预览</h1>
+    <!-- 滚动容器 网格布局 -->
+    <div class="flex flex-wrap gap-6 pb-8 overflow-y-auto scroll-hidden">
+        <!-- 首页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">首页</h2>
+            <iframe src="home.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+
+        <!-- 健康数据页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">健康数据</h2>
+            <iframe src="health-data.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+
+        <!-- 运动计划页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">运动计划</h2>
+            <iframe src="workout.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+
+        <!-- 饮食管理页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">饮食管理</h2>
+            <iframe src="diet.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+
+        <!-- 社区页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">健康社区</h2>
+            <iframe src="community.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+
+        <!-- 个人中心页 -->
+        <div class="flex-none">
+            <h2 class="text-lg font-semibold mb-2 text-gray-700">个人中心</h2>
+            <iframe src="profile.html" class="w-[375px] h-[812px] border-8 border-gray-800 rounded-[48px] shadow-xl bg-white"></iframe>
+        </div>
+    </div>
+</body>
+</html>
