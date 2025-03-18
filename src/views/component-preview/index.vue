@@ -1,6 +1,6 @@
 <template>
     <div class="component-preview">
-        <div class="component-preview__sidebar">
+        <div class="component-preview__sidebar" v-if="!name">
             <el-menu :default-active="activeComponentName" class="component-menu" @select="handleSelect">
                 <!-- <el-submenu index="1">
                     <template slot="title">国际化</template>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import DocPreview from '@/components/DocPreview.vue'
 
 interface ComponentInfo {
@@ -80,7 +80,11 @@ interface ComponentInfo {
     },
 })
 export default class ComponentPreview extends Vue {
-    private activeComponentName = ''
+    /**
+     * 显示的组件名称
+     */
+    @Prop({ type: String, default: '' }) readonly name!: string
+    activeComponentName = ''
 
     private components: ComponentInfo[] = [
         {
@@ -163,7 +167,8 @@ export default class ComponentPreview extends Vue {
     }
 
     mounted() {
-        this.activeComponentName = this.components[0].name
+        console.log(this.name)
+        this.activeComponentName = this.name || this.components[0].name
     }
 }
 </script>

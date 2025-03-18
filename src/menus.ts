@@ -1,4 +1,5 @@
 import { UserMenu } from '@/@types/menu'
+const host = `${location.origin}${process.env.BASE_URL}`
 export const LocalMenu: UserMenu[] = [
     {
         label: '工作台',
@@ -53,7 +54,7 @@ export const LocalMenu: UserMenu[] = [
     {
         label: '组件清单',
         icon: 'el-icon-document',
-        uri: '/component-preview',
+        uri: `${host}component-preview`,
     },
     {
         label: '实战案例',

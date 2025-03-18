@@ -93,7 +93,7 @@ export interface LoginDTO {
     - `parent`：父级路由名称，默认值为`Index`，不需要修改
     - `title`：路由标题，用于设置当前路由的标题
     - `keepAlive`：是否缓存页面，用于设置当前路由是否缓存页面
-    - `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`true`
+    - `requireAuth`：是否需要登录，用于设置当前路由是否需要登录。默认`false`
     - `activeMenu`：默认不需要配置。当前激活菜单路由
     - `noCache`：当前路由组件强制不缓存。默认`false`。一般新增编辑页面设置为`true`
     - `affix`：是否固定在标签页中。默认`0`不固定，数字越大越靠前
@@ -1216,7 +1216,7 @@ export default {
         rank: 1,
         title: '',
         keepAlive: false,
-        requireAuth: true,
+        requireAuth: false,
         aliveOnlyTo: [],
         activeMenu: '',
     },
