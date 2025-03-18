@@ -1,6 +1,5 @@
 import '@/components/directives/copy'
 import '@/components/registerAdminComp'
-import '@/components/registerGlobalComp'
 import modalDialog from '@/scripts/ModalDialog'
 import { desktopInit } from '@@core/common/configurations/initConfig/desktopInit'
 import BaseSettingStore from '@@core/common/store/BaseSettingStore'

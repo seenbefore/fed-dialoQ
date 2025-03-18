@@ -176,7 +176,7 @@ module.exports = (configOptions = { staticResource, showLogInfo: true }) => {
                         },
                     },
                     {
-                        loader: path.resolve(__dirname, '../../build/md-loader/index.js'),
+                        loader: path.resolve(__dirname, '../../../build/md-loader/index.js'),
                     },
                 ],
             })

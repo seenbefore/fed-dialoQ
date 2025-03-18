@@ -14,7 +14,6 @@ import './styles/index.less'
 // 自定义样式
 import './styles/app.less'
 import { useConfirm, IUseConfirm } from '@/components/confirmDialog/useConfirm'
-import { IDefinedThemeValue } from 'icinfo-ui/packages/helper/theme/definedTheme'
 
 /**
  * 关闭当前标签页

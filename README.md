@@ -143,3 +143,50 @@ npm run build:prd
 4. 提交代码前需要执行代码检查和格式化
 5. 更新核心模块时需要注意版本兼容性
 
+## 组件文档系统
+
+为了方便开发者使用和维护组件，本项目包含了一个轻量级的组件文档系统。
+
+### 目录结构
+
+```
+src/components/
+├── basic/                # 基础组件
+│   └── ComponentName/    # 组件目录
+│       ├── index.vue    # 组件主文件
+│       ├── index.d.ts   # 类型定义
+│       ├── README.md    # 组件文档
+│       └── demo/        # 示例目录
+│           └── demo1.vue # 示例文件
+└── business/            # 业务组件
+```
+
+### 创建新组件
+
+使用以下命令创建一个新组件：
+
+```bash
+# 创建基础组件
+npm run create:component ComponentName
+
+# 创建业务组件
+npm run create:component ComponentName business
+```
+
+这将自动创建组件所需的所有文件和目录结构。
+
+### 组件文档规范
+
+每个组件都应该包含以下文档内容：
+
+1. 组件介绍
+2. 基础用法
+3. Props 说明
+4. Events 说明
+5. Slots 说明
+6. 更新日志
+
+### 预览组件文档
+
+访问 `/component-preview` 路由可以查看所有组件的文档和示例。
+

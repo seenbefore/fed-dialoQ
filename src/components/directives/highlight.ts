@@ -20,6 +20,8 @@ hljs.registerLanguage('typescript', hljs_typescript)
 hljs.registerLanguage('json', hljs_json)
 hljs.registerLanguage('bash', hljs_bash)
 hljs.registerLanguage('java', hljs_java)
+hljs.registerLanguage('vue', hljs_javascript)
+
 const highlightHandle = function(el: any) {
     el.classList.add('highlight-box')
     const blocks = el.querySelectorAll('pre >code')

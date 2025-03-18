@@ -1,0 +1,7 @@
+{
+	"name": "pinyin",
+	"version": "0.0.1",
+	"author": "Fangyangchun<fangyangchun@icinfo.com.cn>",
+	"displayName": "汉字转拼音",
+	"types": "./pinyin.ts"
+}

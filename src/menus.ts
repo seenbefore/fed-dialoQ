@@ -51,6 +51,11 @@ export const LocalMenu: UserMenu[] = [
         ],
     },
     {
+        label: '组件清单',
+        icon: 'el-icon-document',
+        uri: '/component-preview',
+    },
+    {
         label: '实战案例',
         icon: 'el-icon-document',
         uri: '/实战案例',

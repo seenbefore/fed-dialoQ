@@ -1,0 +1,6 @@
+{
+  "displayName": "HTML 编码",
+  "version": "0.0.1",
+  "author": "Fangyangchun<fangyangchun@icinfo.com.cn>",
+  "types": "./html.ts"
+}
