@@ -261,7 +261,7 @@ export interface TableColumn {
     label?: string
     type?: string
     prop?: string
-    width?: string
+    width?: string | number
     fixed?: 'left' | 'right'
     align?: 'left' | 'center' | 'right'
     class?: string

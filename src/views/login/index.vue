@@ -125,8 +125,14 @@ export default class LoginSimple extends Vue {
     }
     // 匿名登录
     async onSubmitByAnonymous() {
+        let token = '123456'
+        try {
+            const { data } = await this.$http.get(`http://192.168.1.200/api/v2/auth/users/getXzzfTokenByAccountId?accountId=78012198`)
+            token = data.token
+        } catch (error) {}
+
         userStore.setPermissionMenus(LocalMenu)
-        userStore.login('123456')
+        userStore.login(token)
         userStore.setUserInfo({
             name: '匿名用户',
             username: 'anonymous',

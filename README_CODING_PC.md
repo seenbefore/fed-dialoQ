@@ -2194,7 +2194,7 @@ render(h: any) {
 # Workflow
 - 用户输入产品prd内容
 - 先学习[README.md](./README.md)中的内容
-- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。请严格按照用户提供的菜单路径生成对应的文件夹和路由地址，比如`工作台/分析页`则生成`/workbench/analysis`，同时并生成文件夹`workbench/analysis`，`router.js`要在`index.vue`生成后再生成。
+- 根据prd创建对应文件，除非提供了接口文档或者强调说明需要枚举文件，否则请不要生成枚举文件`enum.ts`；请按照以下顺序生成，并尽可能的多加注释。如果要求插入图片请先保存图片到项目，并在`index.vue`中插入此图片，不要生成`api.ts`、`mock.js`、`enum.ts`文件。请严格按照用户提供的菜单路径生成对应的文件夹和路由地址，比如`工作台/分析页`则生成`/workbench/analysis`，同时并生成文件夹`workbench/analysis`，`router.js`要在`index.vue`生成后再生成。图标尽可能使用`svg`、图片尽可能使用在线图片地址。
     - 系统菜单`menus.ts`：根据菜单路径新增菜单项，不要修改和删减原先的内容。记住：菜单的`uri`对应`router.js`的`path`，`label`对应`router.js`的`meta.title`。不要新增多余字段。
     - 枚举文件`enum.ts`：请使用注释如`/** 男 **/`，且只针对表单项的字段生成。按照Example的示例生成枚举内容。
     - 接口文件`api.ts`：生成实例`interface`和对应的接口函数。
