@@ -13,6 +13,7 @@
 - 表单组件`sg-base-form`已全局注册
 - 列表组件`sg-data-view`已全局注册
 - 管理页面组件`admin-page`已全局注册
+- 日期处理使用`moment.js`
 
 ## 类型定义
 - `@/@types`中定义了项目中常用的类型
@@ -28,17 +29,11 @@ let themeVariables = {
     '--color-info': '#666666',
 }
 ```
-- 使用
-```html
-<div class="text-success">成功状态文本</div>
-<div class="text-warning">警告状态文本</div>
-<div class="text-danger">危险状态文本</div>
-<div class="text-info">信息状态文本</div>
-<div class="bg-primary">主题色背景</div>
-<div class="bg-success">成功状态背景</div>
-<div class="bg-warning">警告状态背景</div>
-<div class="bg-danger">危险状态背景</div>
-<div class="bg-info">信息状态背景</div>
+- 使用`--color-primary`、`--color-success`、`--color-warning`、`--color-danger`、`--color-info`等变量来设置主题色
+```css
+.el-button.danger {
+    color: var(--color-danger);
+}
 ```
 ## HTTP 请求封装
 - `@/scripts/http`中定义了项目中常用的HTTP请求封装，包含请求成功、失败、错误处理
@@ -836,6 +831,19 @@ export default class TableDemo extends Vue {
         return {
             columns: this.getColumns,
             load: this.loadData,
+            // 默认显示分页
+            pageVisible: true,
+            // 表格导出操作 默认2个操作
+            pageActionLayout: [
+                {
+                    key: 'export',
+                    label: '导出',
+                },
+                {
+                    key: 'exportAll',
+                    label: '导出全部',
+                },
+            ],
         }
     }
 

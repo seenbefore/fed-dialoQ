@@ -8,7 +8,7 @@ const { removeDirSync } = require('../../utils/file')
 const { validateGitEmail } = require('../../utils/validate')
 
 /* 需要额外更新的文件列表 */
-const additionalFiles = ['README_CODING_PC.md', 'README_CODING_H5.md']
+const additionalFiles = ['README_CODING_PC.md', 'README_CODING_H5.md', 'PRD']
 
 validateGitEmail().then(async email => {
     try {
