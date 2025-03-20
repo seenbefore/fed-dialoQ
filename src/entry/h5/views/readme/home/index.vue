@@ -12,7 +12,7 @@
 <script lang="tsx">
 import { Component, Vue } from 'vue-property-decorator'
 import MobileNav from './MobileNav.vue'
-import { LocalMenu } from '../../../menu'
+import { LocalMenu } from '../../../menus'
 
 // 添加一个获取叶子节点的辅助函数
 function getLeafNodes(menu: any[]): any[] {

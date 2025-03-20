@@ -14,4 +14,9 @@ export const LocalMenu = [
             },
         ],
     },
+    {
+        label: '活动报名',
+        uri: '/activity/signup?id=100002',
+        icon: 'calendar-o',
+    },
 ]
