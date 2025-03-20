@@ -7,6 +7,9 @@ const { inspectConfig } = require('./inspectConfig.js')
 const { removeDirSync } = require('../../utils/file')
 const { validateGitEmail } = require('../../utils/validate')
 
+/* 需要额外更新的文件列表 */
+const additionalFiles = ['README_CODING_PC.md', 'README_CODING_H5.md']
+
 validateGitEmail().then(async email => {
     try {
         /* 获取脚本的参数 */
@@ -14,7 +17,19 @@ validateGitEmail().then(async email => {
         const [force] = args
 
         const cover = async () => {
+            /* 更新core文件夹 */
             await extractFromRemote(defaultRemoteUrl, 'master', 'core', baseRootPath)
+
+            /* 更新额外的文件 */
+            for (const file of additionalFiles) {
+                try {
+                    Log.info(`开始更新文件: ${file}`)
+                    await extractFromRemote(defaultRemoteUrl, 'master', file, baseRootPath)
+                    Log.success(`文件 ${file} 更新成功`)
+                } catch (error) {
+                    Log.error(`文件 ${file} 更新失败: ${error.message}`)
+                }
+            }
         }
 
         /* 如果版本大于或者等于版本不修改配置文件。 */
