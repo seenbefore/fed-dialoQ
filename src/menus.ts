@@ -1,5 +1,6 @@
 import { UserMenu } from '@/@types/menu'
-const host = `${location.origin}${process.env.BASE_URL}`
+let host = `${location.origin}${process.env.BASE_URL}`
+host = process.env.VUE_APP_MODE === 'hash' ? `${host}#/` : host
 export const LocalMenu: UserMenu[] = [
     {
         label: '工作台',
