@@ -35,7 +35,11 @@
 </template>
 
 <script>
+import CustomList from '@/components/custom-list/index.vue'
 export default {
+  components: {
+    CustomList,
+  },
   data() {
     return {
       currentPage: 1,
@@ -94,7 +98,11 @@ export default {
 </template>
 
 <script>
+import CustomList from '@/components/custom-list/index.vue'
 export default {
+  components: {
+    CustomList,
+  },
   data() {
     return {
       View: {
@@ -170,53 +178,7 @@ export default {
 </script>
 ```
 
-### ComponentItem 组件使用说明
 
-ComponentItem 是一个用于展示组件信息的卡片式组件，通常与 CustomList 配合使用。
-
-#### 基础用法
-
-```vue
-<component-item 
-  :data="componentData"
-  @select="handleSelect"
-  class="dark"
->
-  <template #footer>
-    <!-- 自定义底部内容 -->
-  </template>
-</component-item>
-```
-
-#### Props
-
-| 参数 | 说明 | 类型 | 必填 |
-|------|------|------|------|
-| data | 组件数据对象 | IComponentItem | 是 |
-| value | 选中值 | string | 否 |
-
-#### Events
-
-| 事件名 | 说明 | 回调参数 |
-|--------|------|----------|
-| select | 点击组件时触发 | component: IComponentItem |
-| change | 选中值改变时触发 | value: string |
-
-#### Slots
-
-| 插槽名 | 说明 |
-|--------|------|
-| footer | 自定义底部内容 |
-
-#### 样式类名
-
-- `dark`: 暗色主题样式
-- `component-item`: 组件根容器
-- `component-content`: 内容区域
-- `component-header`: 头部区域
-- `component-meta`: 元信息区域
-- `component-desc`: 描述区域
-- `component-footer`: 底部区域
 
 ## Props
 
