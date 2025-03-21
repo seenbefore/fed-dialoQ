@@ -1,5 +1,6 @@
 # 项目说明文档
 
+
 ## 1. 项目概述
 
 本项目是一个基于 Vue CLI 4 + TypeScript 搭建的后台管理系统模板，支持多个子项目入口（管理后台、H5、大屏等），提供了完整的开发框架和最佳实践。
@@ -144,36 +145,9 @@ npm run build:prd
 5. 更新核心模块时需要注意版本兼容性
 
 ## 组件文档系统
+目录`src/views/component-preview/index.vue`。访问 `/component-preview` 路由可以查看所有组件的文档和示例。单独访问某个组件页面[http://localhost:8080/component-preview?name=ElEmpty](http://localhost:8080/component-preview?name=ElEmpty)
 
 为了方便开发者使用和维护组件，本项目包含了一个轻量级的组件文档系统。
-
-### 目录结构
-
-```
-src/components/
-├── basic/                # 基础组件
-│   └── ComponentName/    # 组件目录
-│       ├── index.vue    # 组件主文件
-│       ├── index.d.ts   # 类型定义
-│       ├── README.md    # 组件文档
-│       └── demo/        # 示例目录
-│           └── demo1.vue # 示例文件
-└── business/            # 业务组件
-```
-
-### 创建新组件
-
-使用以下命令创建一个新组件：
-
-```bash
-# 创建基础组件
-npm run create:component ComponentName
-
-# 创建业务组件
-npm run create:component ComponentName business
-```
-
-这将自动创建组件所需的所有文件和目录结构。
 
 ### 组件文档规范
 
@@ -186,7 +160,65 @@ npm run create:component ComponentName business
 5. Slots 说明
 6. 更新日志
 
+目录结构
+```
+├── index.vue                   # 核心功能模块
+├── README.md                  # 文档
+├── assets         # 资源
+├── demo/
+│   ├── demo1.vue           # 案例
+```
+
 ### 预览组件文档
 
-访问 `/component-preview` 路由可以查看所有组件的文档和示例。
+DocPreview 是一个功能强大的文档预览组件，支持 Markdown 渲染和组件示例展示。它可以帮助你轻松创建组件文档、API 文档或其他技术文档。
+
+
+#### 组件属性
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| name | 组件名称 | string | - |
+| code | 是否显示示例代码 | boolean | false |
+| demos | 示例列表 | array | [] |
+| docRaw | Markdown 文档内容 | string | '' |
+
+#### Markdown 特性
+
+1. 标题锚点
+组件会自动为各级标题生成锚点链接，方便文档内导航。
+
+2. 代码高亮
+支持代码块语法高亮：
+
+```javascript
+const example = {
+    name: 'demo',
+    value: 123
+};
+```
+
+3. 提示框
+支持 tip 和 warning 类型的提示框：
+
+::: tip
+这是一个提示信息
+:::
+
+::: warning
+这是一个警告信息
+:::
+
+4. 表格
+支持标准 Markdown 表格语法：
+
+| 列1 | 列2 |
+|-----|-----|
+| 内容1 | 内容2 |
+
+5. 图片
+支持图片自适应布局：
+
+![图片描述](图片链接)
+
 

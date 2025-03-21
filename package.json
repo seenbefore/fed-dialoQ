@@ -33,8 +33,7 @@
         "base:init": "node core/developmentTools/init/index.js",
         "gen:report": "node core/developmentTools/generatePage/report.js",
         "gen:form": "node core/developmentTools/generatePage/form.js",
-        "gen:detail": "node core/developmentTools/generatePage/detail.js",
-        "create:component": "node scripts/create-component.js"
+        "gen:detail": "node core/developmentTools/generatePage/detail.js"
     },
     "dependencies": {
         "@vue/compiler-sfc": "^3.4.27",

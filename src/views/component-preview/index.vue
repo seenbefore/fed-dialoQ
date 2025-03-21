@@ -53,7 +53,7 @@
             </el-menu>
         </div>
         <div class="component-preview__content">
-            <doc-preview v-if="activeComponentName" :name="activeComponentName" :code="true" :demos="activeComponent.demos" :doc="activeComponent.doc" :key="activeComponentName"></doc-preview>
+            <doc-preview v-if="activeComponentName" :name="activeComponentName" :code="true" :demos="activeComponent.demos" :key="activeComponentName" :doc-raw="activeComponent.docRaw"></doc-preview>
             <div v-else class="component-preview__empty">
                 <i class="el-icon-document"></i>
                 <p>请选择要预览的组件</p>
@@ -91,7 +91,7 @@ export default class ComponentPreview extends Vue {
             name: 'MyTreeSelect',
             title: '树形选择器',
             group: 'basic',
-            doc: () => import('@/components/global/my-tree-select/README.md'),
+            docRaw: require(`!!raw-loader!@/components/global/my-tree-select/README.md`),
             demos: [
                 {
                     name: 'DomainAndRegionExample',
@@ -105,7 +105,7 @@ export default class ComponentPreview extends Vue {
             name: 'ElEmpty',
             title: '空状态',
             group: 'basic',
-            doc: () => import('@/components/global/el-empty/README.md'),
+            docRaw: require(`!!raw-loader!@/components/global/el-empty/README.md`),
             demos: [
                 {
                     name: 'demo1',
@@ -116,10 +116,38 @@ export default class ComponentPreview extends Vue {
             ],
         },
         {
+            name: 'ElSkeleton',
+            title: '骨架屏',
+            group: 'basic',
+            docRaw: require(`!!raw-loader!@/components/global/el-skeleton/README.md`),
+            demos: [
+                {
+                    name: 'demo1',
+                    title: '基础用法',
+                    component: () => import('@/components/global/el-skeleton/demo/demo1.vue'),
+                    raw: require(`!!raw-loader!@/components/global/el-skeleton/demo/demo1.vue`),
+                },
+            ],
+        },
+        {
+            name: 'CustomList',
+            title: '自定义列表',
+            group: 'basic',
+            docRaw: require(`!!raw-loader!@/components/custom-list/README.md`),
+            demos: [
+                {
+                    name: 'demo1',
+                    title: '基础用法',
+                    component: () => import('@/components/custom-list/demo/demo1.vue'),
+                    raw: require(`!!raw-loader!@/components/custom-list/demo/demo1.vue`),
+                },
+            ],
+        },
+        {
             name: 'BaseButton',
             title: '按钮',
             group: 'basic',
-            doc: () => import('@/components/basic/BaseButton/README.md'),
+            docRaw: require(`!!raw-loader!@/components/basic/BaseButton/README.md`),
             demos: [
                 {
                     name: 'demo1',

@@ -13,15 +13,16 @@
             </el-tabs>
         </div>
 
-        <div class="doc-preview__content">
-            <component :is="docComponent" v-highlight></component>
-        </div>
+        <div class="doc-preview__content element-doc" v-html="renderedContent" v-highlight v-if="renderedContent"></div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import DemoBlock from '@/components/global/demo-block/index.vue'
+import MarkdownIt from 'markdown-it'
+import anchor from 'markdown-it-anchor'
+import container from 'markdown-it-container'
 
 @Component({
     name: 'DocPreview',
@@ -35,14 +36,30 @@ export default class DocPreview extends Vue {
     @Prop({ type: Array, default: () => [] }) readonly demos!: any[]
     @Prop({ type: String, default: '' }) readonly docPath!: string
     @Prop({ type: Function, default: null }) readonly doc!: () => Promise<string>
+    @Prop({ type: String, default: '' }) readonly docRaw!: any
 
     private activeDemo = ''
+    private md: any = null
 
     created() {
         // 设置默认激活的 demo
         if (this.demos.length > 0) {
             this.activeDemo = this.demos[0].name
         }
+
+        // 初始化markdown-it实例
+        this.md = new MarkdownIt({
+            html: true,
+            linkify: true,
+            typographer: true,
+        })
+            .use(anchor, {
+                permalink: true,
+                permalinkBefore: true,
+                permalinkSymbol: '#',
+            })
+            .use(container, 'tip')
+            .use(container, 'warning')
     }
 
     getDemoComponent(demo: any) {
@@ -64,8 +81,13 @@ export default class DocPreview extends Vue {
         }
     }
 
-    get docComponent() {
-        return this.doc
+    get renderedContent() {
+        if (this.docRaw) {
+            const content = typeof this.docRaw === 'string' ? this.docRaw : this.docRaw.default
+
+            return this.md.render(content)
+        }
+        return ''
     }
 }
 </script>
@@ -85,6 +107,39 @@ export default class DocPreview extends Vue {
         background-color: #fff;
         border-radius: 4px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        .tip,
+        .warning {
+            padding: 12px 24px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+
+            &::before {
+                font-weight: 600;
+                display: block;
+                margin-bottom: 8px;
+            }
+        }
+
+        .tip {
+            background-color: #f3f5f7;
+            border-left: 4px solid #42b983;
+
+            &::before {
+                content: 'TIP';
+                color: #42b983;
+            }
+        }
+
+        .warning {
+            background-color: rgba(255, 229, 100, 0.3);
+            border-left: 4px solid #e7c000;
+
+            &::before {
+                content: 'WARNING';
+                color: #e7c000;
+            }
+        }
     }
 }
 
