@@ -144,6 +144,9 @@ npm run build:prd
 4. 提交代码前需要执行代码检查和格式化
 5. 更新核心模块时需要注意版本兼容性
 
+## 12. process.env 变量
+- 定义文件：`src/typing/process.env.d.ts`
+
 ## 组件文档系统
 目录`src/views/component-preview/index.vue`。访问 `/component-preview` 路由可以查看所有组件的文档和示例。单独访问某个组件页面[http://localhost:8080/component-preview?name=ElEmpty](http://localhost:8080/component-preview?name=ElEmpty)
 

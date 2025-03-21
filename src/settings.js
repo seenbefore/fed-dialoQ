@@ -35,4 +35,14 @@ module.exports = {
         // 设置一级菜单为顶部菜单
         mode: 1,
     },
+    theme: {
+        name: 'default',
+        variables: {
+            '--color-primary': '#005ff5',
+            '--color-success': '#6DD400',
+            '--color-warning': '#FF7D00',
+            '--color-danger': '#F53F3F',
+            '--color-info': '#666666',
+        },
+    },
 }

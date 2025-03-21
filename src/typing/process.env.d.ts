@@ -39,5 +39,6 @@ declare let process: {
         readonly VUE_APP_BASEURL_API_DOC: string
         /** DeepSeek API Key */
         VUE_APP_DEEPSEEK_API_KEY: string
+        readonly VUE_APP_APP_ID: string
     }
 }
