@@ -31,6 +31,7 @@
 │   │   ├── admin/        # 管理后台入口
 │   │   ├── h5/          # H5入口
 │   │   ├── bigScreen/   # 大屏入口
+│   │   └── ...         # 其他入口
 │   ├── hooks/            # Vue Hooks
 │   ├── layout/           # 布局组件
 │   ├── router/           # 路由配置
@@ -223,5 +224,102 @@ const example = {
 支持图片自适应布局：
 
 ![图片描述](图片链接)
+
+## 13. 个性化打包方案
+
+本项目支持多应用个性化打包配置，通过 `src/config/index.ts` 文件进行管理。
+
+### 13.1 配置说明
+
+在 `src/config/index.ts` 中，我们通过 `AppConfigMap` 对象来管理不同应用的配置：
+
+```typescript
+const AppConfigMap = {
+    default: {
+        title: '主应用',
+        key: VUE_APP_APP_ID,
+        settings: {
+            title: '主应用',
+        },
+    },
+    fz: {
+        key: VUE_APP_APP_ID,
+        title: '法助应用',
+        settings: {
+            title: '法助应用',
+        },
+        theme: {
+            name: 'fz',
+            variables: {
+                '--color-primary': '#588ffa',
+                '--color-success': '#6DD400',
+                '--color-warning': '#FF7D00',
+                '--color-danger': '#F4333C',
+                '--color-info': '#666666',
+            },
+        },
+    },
+}
+```
+
+### 13.2 配置项说明
+
+每个应用配置包含以下属性：
+
+1. `key`: 应用标识，对应环境变量 VUE_APP_APP_ID
+2. `title`: 应用标题
+3. `settings`: 应用设置
+   - `title`: 应用显示名称
+4. `theme`: 主题配置（可选）
+   - `name`: 主题名称
+   - `variables`: CSS变量配置
+     - `--color-primary`: 主色调
+     - `--color-success`: 成功状态色
+     - `--color-warning`: 警告状态色
+     - `--color-danger`: 危险状态色
+     - `--color-info`: 信息状态色
+
+### 13.3 使用方法
+
+1. 在 `.env.development.fz`、`.env.production.fz` 文件中设置 `VUE_APP_APP_ID`：
+```bash
+VUE_APP_APP_ID=fz
+```
+
+2. 构建命令：
+在`package.json`中新增命令
+```bash
+# 开发环境 
+npm run dev:fz
+
+# 生产环境
+npm run build:fz
+```
+
+系统会根据 `VUE_APP_APP_ID` 自动加载对应的配置。
+
+
+### 13.4 新增应用配置
+
+要添加新的应用配置，只需在 `AppConfigMap` 中添加新的配置项：
+
+```typescript
+const AppConfigMap = {
+    // ... 现有配置 ...
+    newApp: {
+        key: 'newApp',
+        title: '新应用',
+        settings: {
+            title: '新应用',
+        },
+        theme: {
+            name: 'newApp',
+            variables: {
+                // 自定义主题变量
+            },
+        },
+    },
+}
+```
 
 
