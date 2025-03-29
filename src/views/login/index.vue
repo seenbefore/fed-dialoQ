@@ -31,9 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="copyright">
-            Copyright © 2022 - 浙江汇信科技 版权所有 · 浙ICP备20025217号-1
-        </div>
+        <div class="copyright"></div>
     </div>
 </template>
 
