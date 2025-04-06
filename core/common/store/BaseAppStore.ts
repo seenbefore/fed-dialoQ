@@ -22,8 +22,8 @@ export interface IBaseAppStore {
 
 export default class BaseAppStore extends VuexModule implements IBaseAppStore {
     public sidebar = {
-        opened: true,
-        withoutAnimation: false,
+        opened: false,
+        withoutAnimation: true,
     }
 
     public device = AppDeviceType.DESKTOP
