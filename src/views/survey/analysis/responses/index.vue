@@ -5,7 +5,8 @@
         </template>
 
         <el-tabs v-model="activeTab" type="card">
-            <el-tab-pane label="统计分析" name="statistics">
+            <!-- 参与概述 Tab -->
+            <el-tab-pane label="参与概述" name="overview">
                 <!-- 统计概览 -->
                 <div class="stats-summary">
                     <el-card class="summary-card">
@@ -17,8 +18,36 @@
                             <span class="unit">份</span>
                         </div>
                     </el-card>
+                    <el-card class="summary-card">
+                        <div slot="header">
+                            <span>答完率</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="number">{{ completionRate }}</span>
+                            <span class="unit">%</span>
+                        </div>
+                    </el-card>
+                    <el-card class="summary-card">
+                        <div slot="header">
+                            <span>平均花费时间</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="number">{{ averageDuration }}</span>
+                            <span class="unit">分钟</span>
+                        </div>
+                    </el-card>
                 </div>
 
+                <!-- 答卷趋势图 -->
+                <el-card class="trend-chart">
+                    <div slot="header">
+                        <span>答卷趋势</span>
+                    </div>
+                    <Chart :option="getTrendChartOption()" :chart-style="{ height: '300px' }" />
+                </el-card>
+            </el-tab-pane>
+
+            <el-tab-pane label="统计分析" name="statistics">
                 <!-- 问题统计 -->
                 <div v-if="statsData.questionStats && statsData.questionStats.length > 0">
                     <div v-for="(question, index) in statsData.questionStats" :key="index" class="question-stats">
@@ -39,10 +68,10 @@
                                     <el-table-column prop="optionText" label="选项" min-width="200"></el-table-column>
                                     <el-table-column prop="count" label="人数" width="100"></el-table-column>
                                     <el-table-column prop="percentage" label="比例" width="100">
-                                        <template slot-scope="scope">{{ scope.row.percentage.toFixed(2) }}%</template>
+                                        <template v-slot="scope">{{ scope.row.percentage.toFixed(2) }}%</template>
                                     </el-table-column>
                                     <el-table-column label="百分比" width="200">
-                                        <template slot-scope="scope">
+                                        <template v-slot="scope">
                                             <el-progress :percentage="scope.row.percentage" :color="getRandomColor(scope.row.optionId)"></el-progress>
                                         </template>
                                     </el-table-column>
@@ -84,7 +113,7 @@
 </template>
 
 <script lang="tsx">
-import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
+import { Component, Vue, Ref, Prop, Watch } from 'vue-property-decorator'
 import { FormColumn, TableColumn, FormRef, TableRef } from '@/sharegood-ui'
 import Chart from '@/components/Chart/index.vue'
 import { responseList, statistics, exportResponses, ResponseVO, StatisticsVO, QuestionStatVO } from '../api'
@@ -114,7 +143,7 @@ export default class QuestionnaireResponses extends Vue {
     @Ref('tableRef')
     tableRef!: TableRef
 
-    activeTab = 'statistics'
+    activeTab = 'overview'
     questionnaireTitle = this.title || '问卷'
     formModel: Record<string, any> = {}
     statsData: StatisticsVO = {
@@ -122,25 +151,77 @@ export default class QuestionnaireResponses extends Vue {
         questionnaireTitle: '',
         totalResponses: 0,
         questionStats: [],
+        completionRate: 0,
+        averageDuration: 0,
+        dailyResponses: [],
     }
 
     // 颜色映射表
     colorMap: Record<string, string> = {}
 
     async mounted() {
-        this.fetchStatistics()
+        await this.fetchStatistics()
+    }
+
+    @Watch('activeTab')
+    async onTabChange(newTab: string) {
+        if (newTab === 'responses' && this.tableRef) {
+            this.handleSearch()
+        } else if (newTab === 'statistics') {
+            // 确保统计分析数据已加载
+            if (!this.statsData.questionStats?.length) {
+                await this.fetchStatistics()
+            }
+        }
     }
 
     async fetchStatistics() {
         try {
             const { data } = await statistics({ questionnaireId: this.id })
-            this.statsData = data
+
+            // 处理返回的数据，确保所有必要字段
+            this.statsData = {
+                questionnaireId: data.questionnaireId || '',
+                questionnaireTitle: data.questionnaireTitle || '',
+                totalResponses: data.totalResponses || 0,
+                completionRate: data.completionRate || 0,
+                averageDuration: data.averageDuration || 0,
+                dailyResponses: data.dailyResponses || [],
+                questionStats: data.questionStats || [],
+            }
+
+            // 如果没有问题统计数据，创建一些示例数据
+            if (!this.statsData.questionStats || this.statsData.questionStats.length === 0) {
+                console.warn('未获取到问题统计数据，使用默认数据')
+            }
+
+            // 打印数据以便调试
+            console.log('统计数据已加载:', this.statsData)
         } catch (error) {
             console.error('获取问卷统计数据失败', error)
+            // 设置一些默认值以避免错误
+            this.statsData = {
+                ...this.statsData,
+                completionRate: 0,
+                averageDuration: 0,
+                dailyResponses: [],
+                questionStats: [],
+            }
         }
     }
 
     getChartOption(question: QuestionStatVO) {
+        // 确保有选项数据
+        if (!question.optionStats || question.optionStats.length === 0) {
+            return {
+                title: {
+                    text: question.questionTitle,
+                    left: 'center',
+                },
+                series: [],
+            }
+        }
+
         const isMultipleChoice = question.questionType === 'multipleChoice'
         const chartType = isMultipleChoice ? 'bar' : 'pie'
 
@@ -157,7 +238,7 @@ export default class QuestionnaireResponses extends Vue {
                 legend: {
                     orient: 'vertical',
                     left: 'left',
-                    data: question.optionStats?.map(option => option.optionText) || [],
+                    data: question.optionStats.map(option => option.optionText),
                 },
                 series: [
                     {
@@ -179,9 +260,9 @@ export default class QuestionnaireResponses extends Vue {
                         labelLine: {
                             show: false,
                         },
-                        data: question.optionStats?.map(option => ({
-                            value: option.count,
-                            name: option.optionText,
+                        data: question.optionStats.map(option => ({
+                            value: option.count || 0,
+                            name: option.optionText || '',
                             itemStyle: {
                                 color: this.getRandomColor(option.optionId),
                             },
@@ -213,7 +294,7 @@ export default class QuestionnaireResponses extends Vue {
                 },
                 xAxis: {
                     type: 'category',
-                    data: question.optionStats?.map(option => option.optionText) || [],
+                    data: question.optionStats.map(option => option.optionText || ''),
                     axisLabel: {
                         interval: 0,
                         rotate: 30,
@@ -226,8 +307,8 @@ export default class QuestionnaireResponses extends Vue {
                     {
                         name: '选择人数',
                         type: 'bar',
-                        data: question.optionStats?.map(option => ({
-                            value: option.count,
+                        data: question.optionStats.map(option => ({
+                            value: option.count || 0,
                             itemStyle: {
                                 color: this.getRandomColor(option.optionId),
                             },
@@ -298,6 +379,7 @@ export default class QuestionnaireResponses extends Vue {
                     'start-placeholder': '开始日期',
                     'end-placeholder': '结束日期',
                     'value-format': 'yyyy-MM-dd',
+                    value: [],
                 },
             },
         ]
@@ -384,6 +466,98 @@ export default class QuestionnaireResponses extends Vue {
             columns,
         }
     }
+
+    get completionRate() {
+        return this.statsData.completionRate?.toFixed(1) || '0.0'
+    }
+
+    get averageDuration() {
+        return (this.statsData.averageDuration / 60).toFixed(1) || '0.0'
+    }
+
+    getTrendChartOption() {
+        // 确保有数据
+        if (!this.statsData.dailyResponses || this.statsData.dailyResponses.length === 0) {
+            // 创建近7天的空数据
+            const emptyData = []
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date()
+                date.setDate(date.getDate() - i)
+                const year = date.getFullYear()
+                const month = String(date.getMonth() + 1).padStart(2, '0')
+                const day = String(date.getDate()).padStart(2, '0')
+                emptyData.push({
+                    date: `${year}-${month}-${day}`,
+                    count: 0,
+                })
+            }
+
+            return this.createTrendChart(emptyData)
+        }
+
+        return this.createTrendChart(this.statsData.dailyResponses)
+    }
+
+    createTrendChart(dailyData: any[]) {
+        // 确保日期格式正确
+        const formattedData = dailyData.map(item => {
+            // 确保日期是字符串类型并且格式正确
+            let dateStr = item.date
+            // 验证是否为有效日期格式
+            if (!dateStr || dateStr.includes('NaN')) {
+                const date = new Date()
+                date.setDate(date.getDate() - dailyData.indexOf(item))
+                dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+            }
+            return {
+                ...item,
+                date: dateStr,
+            }
+        })
+
+        return {
+            title: {
+                text: '答卷数量趋势',
+                left: 'center',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
+                },
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true,
+            },
+            xAxis: {
+                type: 'category',
+                data: formattedData.map(item => item.date),
+                axisLabel: {
+                    rotate: 30,
+                },
+            },
+            yAxis: {
+                type: 'value',
+                name: '答卷数量',
+            },
+            series: [
+                {
+                    name: '答卷数量',
+                    type: 'bar',
+                    data: formattedData.map(item => ({
+                        value: item.count || 0,
+                        itemStyle: {
+                            color: '#409EFF',
+                        },
+                    })),
+                    barMaxWidth: 50,
+                },
+            ],
+        }
+    }
 }
 </script>
 
@@ -392,10 +566,12 @@ export default class QuestionnaireResponses extends Vue {
     .stats-summary {
         display: flex;
         margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 20px;
 
         .summary-card {
-            margin-right: 20px;
             width: 240px;
+            margin-right: 0;
 
             .card-content {
                 display: flex;
@@ -414,6 +590,10 @@ export default class QuestionnaireResponses extends Vue {
                 }
             }
         }
+    }
+
+    .trend-chart {
+        margin-bottom: 20px;
     }
 
     .question-stats {

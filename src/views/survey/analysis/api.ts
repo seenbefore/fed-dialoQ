@@ -55,6 +55,12 @@ export interface StatisticsVO {
     totalResponses: number
     /** 问题统计 */
     questionStats: QuestionStatVO[]
+    /** 答完率 */
+    completionRate: number
+    /** 平均花费时间(秒) */
+    averageDuration: number
+    /** 每日答卷数量统计 */
+    dailyResponses: DailyResponseVO[]
 }
 
 export interface QuestionStatVO {
@@ -79,6 +85,13 @@ export interface OptionStatVO {
     count: number
     /** 选择百分比 */
     percentage: number
+}
+
+export interface DailyResponseVO {
+    /** 日期 */
+    date: string
+    /** 答卷数量 */
+    count: number
 }
 
 /**
