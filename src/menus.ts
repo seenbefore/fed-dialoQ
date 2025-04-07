@@ -52,15 +52,15 @@ export const LocalMenu: UserMenu[] = [
     //         },
     //     ],
     // },
-    // {
-    //     label: '组件清单',
-    //     icon: 'el-icon-document',
-    //     uri: `${host}component-preview`,
-    // },
     {
-        label: '实战案例',
+        label: '组件清单',
         icon: 'el-icon-document',
-        uri: '/实战案例',
+        uri: `${host}component-preview`,
+    },
+    {
+        label: '调研管理',
+        icon: 'el-icon-document',
+        uri: '/调研管理',
         children: [
             // {
             //     label: '文书组件',
@@ -186,7 +186,7 @@ export const LocalMenu: UserMenu[] = [
             //     ],
             // },
             {
-                label: '调研管理',
+                label: '问卷管理',
                 icon: 'el-icon-document',
                 uri: '/survey/questionnaire',
             },
