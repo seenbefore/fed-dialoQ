@@ -12,6 +12,7 @@
                         :questionnaire-data="formData"
                         :questions-list="questions"
                         :loading="loading"
+                        @form-data-change="onFormDataChange"
                         @questions-change="onQuestionsChange"
                         @add-question="onQuestionsChange"
                         @remove-question="onQuestionsChange"
@@ -120,6 +121,10 @@ export default class QuestionnaireSavePreview extends Vue {
                 this.loading = false
             }
         }
+    }
+
+    onFormDataChange(data: Partial<QuestionnaireVO>) {
+        this.formData = { ...data }
     }
 
     onQuestionsChange(questions: Question[]) {

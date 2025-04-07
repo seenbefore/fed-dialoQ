@@ -4,16 +4,16 @@
             <el-card class="mb-20">
                 <div slot="header">基本信息</div>
                 <el-form-item label="问卷标题" prop="title">
-                    <el-input v-model="formData.title" placeholder="请输入问卷标题"></el-input>
+                    <el-input v-model="formData.title" placeholder="请输入问卷标题" @input="onFormDataChange"></el-input>
                 </el-form-item>
                 <el-form-item label="问卷描述" prop="description">
-                    <el-input v-model="formData.description" type="textarea" :rows="3" placeholder="请输入问卷描述"></el-input>
+                    <el-input v-model="formData.description" type="textarea" :rows="3" placeholder="请输入问卷描述" @input="onFormDataChange"></el-input>
                 </el-form-item>
                 <el-form-item label="截止时间" prop="endTime">
-                    <el-date-picker v-model="formData.endTime" type="datetime" placeholder="选择截止时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                    <el-date-picker v-model="formData.endTime" type="datetime" placeholder="选择截止时间" value-format="yyyy-MM-dd HH:mm:ss" @change="onFormDataChange"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="匿名填写" prop="isAnonymous">
-                    <el-switch v-model="formData.isAnonymous"></el-switch>
+                    <el-switch v-model="formData.isAnonymous" @change="onFormDataChange"></el-switch>
                 </el-form-item>
             </el-card>
 
@@ -119,6 +119,14 @@ export default class QuestionnaireEditor extends Vue {
 
         // 初始化问题数据
         this.questions = JSON.parse(JSON.stringify(this.questionsList))
+    }
+
+    /**
+     * 基本信息变更时触发
+     */
+    @Emit('form-data-change')
+    onFormDataChange() {
+        return { ...this.formData }
     }
 
     @Emit('questions-change')
