@@ -7,7 +7,7 @@
         <div class="page-content" v-loading="loading">
             <el-row :gutter="20">
                 <!-- 左侧编辑区域 -->
-                <el-col :span="12" class="editor-col">
+                <el-col :span="8" class="editor-col">
                     <questionnaire-editor
                         :questionnaire-data="formData"
                         :questions-list="questions"
@@ -22,13 +22,23 @@
                     />
                 </el-col>
 
-                <!-- 右侧预览区域 -->
-                <el-col :span="12" class="preview-col">
+                <!-- 中间预览区域 -->
+                <el-col :span="8" class="preview-col">
                     <div class="preview-header">
                         <span class="preview-title">预览效果</span>
                     </div>
                     <div class="preview-container">
                         <questionnaire-preview :questionnaire="{}" :form-data="formData" :questions="questions" :loading="loading" />
+                    </div>
+                </el-col>
+
+                <!-- 右侧AI对话区域 -->
+                <el-col :span="8" class="chat-col">
+                    <div class="chat-header">
+                        <span class="chat-title">AI助手</span>
+                    </div>
+                    <div class="chat-container">
+                        <my-chat model-name="问卷设计助手" :welcome-message="welcomeMessage" />
                     </div>
                 </el-col>
             </el-row>
@@ -42,12 +52,14 @@ import { detail, save, QuestionnaireVO } from '../api'
 import { QuestionnaireStatusEnum } from '../enum'
 import QuestionnaireEditor, { Question } from '../components/QuestionnaireEditor.vue'
 import QuestionnairePreview from '../components/QuestionnairePreview.vue'
+import MyChat from '@/components/global/my-chat/index.vue'
 
 @Component({
     name: 'QuestionnaireSavePreview',
     components: {
         QuestionnaireEditor,
         QuestionnairePreview,
+        MyChat,
     },
 })
 export default class QuestionnaireSavePreview extends Vue {
@@ -59,6 +71,7 @@ export default class QuestionnaireSavePreview extends Vue {
         endTime: '',
     }
     private questions: Question[] = []
+    private welcomeMessage = '您好！我是问卷设计助手，可以帮您：\n\n1. 设计有效的问卷问题\n2. 提供问卷设计建议\n3. 优化问题和选项\n4. 分析问卷结构\n\n请告诉我您需要设计什么类型的问卷？'
 
     get pageTitle() {
         if (this.isEdit) {
@@ -142,8 +155,11 @@ export default class QuestionnaireSavePreview extends Vue {
     }
 
     .editor-col,
-    .preview-col {
+    .preview-col,
+    .chat-col {
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .editor-col {
@@ -152,8 +168,7 @@ export default class QuestionnaireSavePreview extends Vue {
     }
 
     .preview-col {
-        display: flex;
-        flex-direction: column;
+        border-right: 1px solid #eee;
 
         .preview-header {
             padding: 10px 0;
@@ -169,6 +184,24 @@ export default class QuestionnaireSavePreview extends Vue {
         .preview-container {
             flex: 1;
             overflow: auto;
+        }
+    }
+
+    .chat-col {
+        .chat-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+
+            .chat-title {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow: hidden;
         }
     }
 }
