@@ -28,22 +28,24 @@ export interface QuestionnaireVO {
 }
 
 export interface ResponseVO {
-    /** ID */
+    /** 答卷ID */
     id: string
     /** 问卷ID */
     questionnaireId: string
     /** 问卷标题 */
     questionnaireTitle: string
-    /** 答卷内容 */
+    /** 答卷内容JSON字符串 */
     content: string
     /** 提交时间 */
     submitTime: string
     /** 提交人 */
-    submitter?: string
+    submitter: string
     /** 提交人ID */
-    submitterId?: string
-    /** 答题耗时(秒) */
-    duration?: number
+    submitterId: string
+    /** 答题时长(秒) */
+    duration: number
+    /** AI总结内容 */
+    aiSummary: string
 }
 
 export interface StatisticsVO {
@@ -134,18 +136,19 @@ export function detail(
 }
 
 /**
- * 获取问卷答卷列表
+ * 获取答卷列表
+ * @param data 参数
  */
 export function responseList(
     data?: {
-        /** 问卷ID */ questionnaireId: string
+        /** 问卷ID */ questionnaireId?: string
+        /** 提交人 */ submitter?: string
         /** 提交开始时间 */ submitTimeStart?: string
         /** 提交结束时间 */ submitTimeEnd?: string
-        /** 提交人 */ submitter?: string
         /** 页码 */ page?: number
-        /** 每页条数 */ pageSize?: number
+        /** 每页数量 */ pageSize?: number
     },
-    options?: ExAxiosRequestConfig,
+    options?: any,
 ) {
     return http.request<Result<PageResponse<ResponseVO[]>>>({
         url: '/survey/response/list',
@@ -157,17 +160,13 @@ export function responseList(
 
 /**
  * 获取答卷详情
+ * @param id 答卷ID
  */
-export function responseDetail(
-    data?: {
-        /** id */ id: string
-    },
-    options?: ExAxiosRequestConfig,
-) {
+export function responseDetail(id: string, options?: any) {
     return http.request<Result<ResponseVO>>({
         url: '/survey/response/detail',
         method: 'get',
-        params: data,
+        params: { id },
         ...options,
     })
 }

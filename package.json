@@ -61,6 +61,7 @@
         "jspdf": "^2.5.1",
         "jsrsasign": "^10.1.13",
         "lodash": "4.17.20",
+        "marked": "^4.3.0",
         "mavon-editor": "^2.10.4",
         "mockjs": "1.1.0",
         "moment": "^2.29.4",

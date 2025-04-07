@@ -429,6 +429,25 @@ export default class QuestionnaireResponses extends Vue {
                 },
             },
             {
+                label: 'AI总结',
+                prop: 'aiSummary',
+                minWidth: '250px',
+                render: (h, { row }) => {
+                    // 展示AI总结的前50个字符，超出则显示省略号
+                    const summary = row.aiSummary || '暂无AI总结'
+                    const displayText = summary.length > 50 ? summary.substring(0, 50) + '...' : summary
+
+                    return (
+                        <el-tooltip placement="top" effect="light" width="400" disabled={!row.aiSummary}>
+                            <div slot="content" style="white-space: pre-wrap">
+                                {row.aiSummary}
+                            </div>
+                            <div class="ellipsis">{displayText}</div>
+                        </el-tooltip>
+                    )
+                },
+            },
+            {
                 label: '操作',
                 fixed: 'right',
                 width: '120px',
@@ -614,6 +633,12 @@ export default class QuestionnaireResponses extends Vue {
                 }
             }
         }
+    }
+
+    .ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 </style>

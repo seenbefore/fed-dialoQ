@@ -111,6 +111,9 @@ export default [
                             submitter: '@cname',
                             submitterId: '@id',
                             'duration|60-3600': 120,
+                            aiSummary: function() {
+                                return `该用户为女性，喜欢阅读和旅游。对产品的主要建议是：${mock('@cparagraph(1, 2)')}。总体满意度较高，期待更多功能更新。`
+                            },
                         },
                     ],
                     total: 100,
@@ -141,6 +144,13 @@ export default [
                     submitter: '@cname',
                     submitterId: '@id',
                     'duration|60-3600': 120,
+                    aiSummary: function() {
+                        return `# AI分析总结\n\n## 用户画像\n该用户为女性，喜欢阅读和旅游活动，这表明用户可能偏好文化类和探索类体验。\n\n## 反馈要点\n用户对产品提出了以下主要建议：\n1. ${mock(
+                            '@csentence(10, 20)',
+                        )}\n2. ${mock('@csentence(10, 20)')}\n3. ${mock('@csentence(10, 20)')}\n\n## 情感分析\n整体上，用户的反馈呈现${mock(
+                            '@pick(["积极", "中性", "较积极", "较为满意"])',
+                        )}态度，满意度评分约为${mock('@integer(7, 9)')}/10。\n\n## 建议跟进\n可以考虑邀请该用户参与后续的${mock('@pick(["产品测试", "用户访谈", "专题调研"])')}，深入了解其需求和反馈。`
+                    },
                 },
                 message: '请求成功',
             })
