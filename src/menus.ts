@@ -174,16 +174,21 @@ export const LocalMenu: UserMenu[] = [
             //         },
             //     ],
             // },
+            // {
+            //     label: '内容管理',
+            //     icon: 'el-icon-document',
+            //     uri: '/content',
+            //     children: [
+            //         {
+            //             label: '文章管理',
+            //             uri: '/content/article',
+            //         },
+            //     ],
+            // },
             {
-                label: '内容管理',
+                label: '调研管理',
                 icon: 'el-icon-document',
-                uri: '/content',
-                children: [
-                    {
-                        label: '文章管理',
-                        uri: '/content/article',
-                    },
-                ],
+                uri: '/survey/questionnaire',
             },
         ],
     },
