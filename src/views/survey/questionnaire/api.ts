@@ -27,6 +27,13 @@ export interface QuestionnaireVO {
     endTime?: string
 }
 
+export interface ResponseDTO {
+    questionnaireId: string
+    submitter: string
+    content: string
+    duration: number
+}
+
 /**
  * 获取问卷列表
  */
@@ -121,5 +128,16 @@ export function updateStatus(
         method: 'post',
         data,
         ...options,
+    })
+}
+
+/**
+ * 提交问卷答卷
+ */
+export function submitResponse(data: ResponseDTO) {
+    return http.request<Result<any>>({
+        url: '/survey/response/submit',
+        method: 'post',
+        data,
     })
 }

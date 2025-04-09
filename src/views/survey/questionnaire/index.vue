@@ -58,6 +58,28 @@ export default class QuestionnaireManagement extends Vue {
         window.open(`/survey/questionnaire/preview?id=${row.id}`)
     }
 
+    handleShare(row: QuestionnaireVO) {
+        if (row.status !== QuestionnaireStatusEnum.PUBLISHED) {
+            this.$message.warning('只有已发布的问卷才能分享')
+            return
+        }
+
+        const shareUrl = `${window.location.origin}/survey/questionnaire/fill?id=${row.id}`
+
+        this.copyToClipboard(shareUrl)
+
+        this.$message.success('分享链接已复制到剪贴板')
+    }
+
+    copyToClipboard(text: string) {
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+    }
+
     async handleDelete(row: QuestionnaireVO) {
         await this.$confirm('确认删除该问卷吗？', '提示', {
             type: 'warning',
@@ -167,7 +189,7 @@ export default class QuestionnaireManagement extends Vue {
             {
                 label: '操作',
                 fixed: 'right',
-                width: '280px',
+                width: '320px',
                 render: (h, { row }) => {
                     const isPublished = row.status === QuestionnaireStatusEnum.PUBLISHED
                     return (
@@ -180,6 +202,9 @@ export default class QuestionnaireManagement extends Vue {
                             </el-button>
                             <el-button type="text" onClick={() => this.handleUpdateStatus(row)}>
                                 {isPublished ? '下线' : '发布'}
+                            </el-button>
+                            <el-button type="text" onClick={() => this.handleShare(row)}>
+                                分享
                             </el-button>
                             <el-button type="text" class="text-danger" onClick={() => this.handleDelete(row)}>
                                 删除
