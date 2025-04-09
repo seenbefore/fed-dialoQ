@@ -160,13 +160,60 @@ export default class QuestionnaireResponses extends Vue {
     colorMap: Record<string, string> = {}
 
     private refreshTimer: number | null = null
+    private actualQuestionnaireId = ''
+
+    created() {
+        // 尝试从sessionStorage中获取问卷信息
+        const storedId = sessionStorage.getItem('currentQuestionnaireId')
+        const storedTitle = sessionStorage.getItem('currentQuestionnaireTitle')
+
+        // 如果有存储的问卷信息，优先使用
+        if (storedId) {
+            this.actualQuestionnaireId = storedId
+            if (storedTitle) {
+                this.questionnaireTitle = storedTitle
+            }
+            console.log('从sessionStorage获取问卷信息:', storedId, storedTitle)
+        } else {
+            // 否则使用路由参数
+            this.actualQuestionnaireId = this.id
+        }
+
+        // 立即获取数据
+        this.fetchStatistics()
+    }
 
     async mounted() {
-        await this.fetchStatistics()
+        // 已在created中获取，这里不再重复
+    }
+
+    // 监听问卷ID变化，确保切换问卷时刷新数据
+    @Watch('id', { immediate: true })
+    onQuestionnaireIdChange(newId: string, oldId: string) {
+        if (newId && newId !== oldId) {
+            this.actualQuestionnaireId = newId
+            this.fetchStatistics()
+            // 如果当前是答卷列表，也刷新列表数据
+            if (this.activeTab === 'responses' && this.tableRef) {
+                this.handleSearch()
+            }
+        }
     }
 
     // 页面激活时刷新数据（从其他页面返回时）
     activated() {
+        // 再次检查sessionStorage，确保有最新数据
+        const storedId = sessionStorage.getItem('currentQuestionnaireId')
+        if (storedId && storedId !== this.actualQuestionnaireId) {
+            this.actualQuestionnaireId = storedId
+            const storedTitle = sessionStorage.getItem('currentQuestionnaireTitle')
+            if (storedTitle) {
+                this.questionnaireTitle = storedTitle
+            }
+            console.log('activated: 从sessionStorage更新问卷信息:', storedId, storedTitle)
+        }
+
+        // 强制刷新最新数据
         this.fetchStatistics()
         // 设置定时刷新
         this.startAutoRefresh()
@@ -180,6 +227,23 @@ export default class QuestionnaireResponses extends Vue {
     // 组件销毁时清除定时器
     beforeDestroy() {
         this.stopAutoRefresh()
+    }
+
+    // 监听路由变化，确保通过左侧导航进入页面时刷新
+    @Watch('$route', { immediate: true, deep: true })
+    onRouteChange(newRoute: any) {
+        // 判断是否通过左侧导航进入数据分析页面
+        if (newRoute.path.includes('/survey/statistics/questionnaire') || newRoute.path.includes('/survey/analysis/responses')) {
+            this.$nextTick(() => {
+                // 强制刷新统计数据
+                this.fetchStatistics()
+                // 如果当前是答卷列表，也刷新列表数据
+                if (this.activeTab === 'responses' && this.tableRef) {
+                    this.handleSearch()
+                }
+                console.log('路由切换，刷新数据分析数据')
+            })
+        }
     }
 
     // 启动定时刷新（每20秒刷新一次）
@@ -203,16 +267,19 @@ export default class QuestionnaireResponses extends Vue {
         if (newTab === 'responses' && this.tableRef) {
             this.handleSearch()
         } else if (newTab === 'statistics') {
-            // 确保统计分析数据已加载
-            if (!this.statsData.questionStats?.length) {
-                await this.fetchStatistics()
-            }
+            // 无条件刷新统计数据，确保数据最新
+            await this.fetchStatistics()
         }
     }
 
     async fetchStatistics() {
+        const questionnaireId = this.actualQuestionnaireId || this.id
+        if (!questionnaireId) return // 避免无效请求
+
+        console.log('fetchStatistics: 获取问卷ID:', questionnaireId)
+
         try {
-            const { data } = await statistics({ questionnaireId: this.id })
+            const { data } = await statistics({ questionnaireId: questionnaireId })
 
             // 处理返回的数据，确保所有必要字段
             this.statsData = {
@@ -376,7 +443,8 @@ export default class QuestionnaireResponses extends Vue {
 
     async handleExport() {
         try {
-            const response = await exportResponses({ questionnaireId: this.id })
+            const questionnaireId = this.actualQuestionnaireId || this.id
+            const response = await exportResponses({ questionnaireId: questionnaireId })
             // 创建下载链接
             const url = window.URL.createObjectURL(new Blob([response]))
             const link = document.createElement('a')
@@ -505,10 +573,11 @@ export default class QuestionnaireResponses extends Vue {
             load: async (params: any = {}) => {
                 const { submitTime, ...rest } = this.formModel
                 const [submitTimeStart, submitTimeEnd] = submitTime || []
+                const questionnaireId = this.actualQuestionnaireId || this.id
                 const { data } = await responseList({
                     ...params,
                     ...rest,
-                    questionnaireId: this.id,
+                    questionnaireId: questionnaireId,
                     submitTimeStart,
                     submitTimeEnd,
                 } as any)

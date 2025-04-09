@@ -209,9 +209,11 @@ export default class QuestionnaireManagement extends Vue {
                             <el-button type="text" onClick={() => this.handleUpdateStatus(row)}>
                                 {isPublished ? '下线' : '发布'}
                             </el-button>
-                            <el-button type="text" onClick={() => this.handleShare(row)}>
-                                分享
-                            </el-button>
+                            {isPublished && (
+                                <el-button type="text" onClick={() => this.handleShare(row)}>
+                                    分享
+                                </el-button>
+                            )}
                             <el-button type="text" class="text-danger" onClick={() => this.handleDelete(row)}>
                                 删除
                             </el-button>

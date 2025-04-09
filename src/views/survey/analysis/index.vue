@@ -38,6 +38,12 @@ export default class QuestionnaireAnalysis extends Vue {
 
     formModel: Record<string, any> = {}
 
+    // 添加activated生命周期钩子，当页面从缓存中被激活时触发刷新
+    activated() {
+        // 当从其他页面返回时，刷新列表数据
+        this.tableRef && this.tableRef.onLoad()
+    }
+
     handleSearch() {
         this.tableRef.onLoad({ page: 1 })
     }
