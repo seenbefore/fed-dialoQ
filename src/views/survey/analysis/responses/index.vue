@@ -159,8 +159,43 @@ export default class QuestionnaireResponses extends Vue {
     // 颜色映射表
     colorMap: Record<string, string> = {}
 
+    private refreshTimer: number | null = null
+
     async mounted() {
         await this.fetchStatistics()
+    }
+
+    // 页面激活时刷新数据（从其他页面返回时）
+    activated() {
+        this.fetchStatistics()
+        // 设置定时刷新
+        this.startAutoRefresh()
+    }
+
+    // 页面停用时清除定时器
+    deactivated() {
+        this.stopAutoRefresh()
+    }
+
+    // 组件销毁时清除定时器
+    beforeDestroy() {
+        this.stopAutoRefresh()
+    }
+
+    // 启动定时刷新（每20秒刷新一次）
+    startAutoRefresh() {
+        this.stopAutoRefresh() // 先清除可能存在的定时器
+        this.refreshTimer = window.setInterval(() => {
+            this.fetchStatistics()
+        }, 20000) // 20秒刷新一次
+    }
+
+    // 停止定时刷新
+    stopAutoRefresh() {
+        if (this.refreshTimer) {
+            clearInterval(this.refreshTimer)
+            this.refreshTimer = null
+        }
     }
 
     @Watch('activeTab')
