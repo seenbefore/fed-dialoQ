@@ -5,10 +5,10 @@ import { deepMerge } from '@/utils/merge'
 
 const AppConfigMap = {
     default: {
-        title: '主应用',
+        title: 'dialoQ',
         key: VUE_APP_APP_ID,
         settings: {
-            title: '主应用',
+            title: 'dialoQ',
         },
     },
     fz: {

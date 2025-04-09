@@ -10,12 +10,12 @@
                 </div>
 
                 <div class="login-form-right">
-                    <div class="login-switch" @click="toQrcodeLogin">
+                    <!-- <div class="login-switch" @click="toQrcodeLogin">
                         <div class="tip_layer">
                             扫码登录
                         </div>
                         <div class="mark_layer"></div>
-                    </div>
+                    </div> -->
                     <sg-base-form class="my-login-form" :fields="fields" v-model="View.model" :span="24" ref="form" size="medium" @submit="onSubmit">
                         <div class="header" slot="header">
                             <span>登录</span>
@@ -23,17 +23,15 @@
 
                         <div slot="footer" class="my-login-form-footer">
                             <el-button :loading="View.loading" type="primary" class="my-login-form-submit" size="large" @click="onSubmit">登录</el-button>
-                            <div style="margin-top: 10px">
+                            <!-- <div style="margin-top: 10px">
                                 <el-button type="text" size="mini" @click="onSubmitByAnonymous" style="font-size: 16px;">匿名登录（本地调试）</el-button>
-                            </div>
+                            </div> -->
                         </div>
                     </sg-base-form>
                 </div>
             </div>
         </div>
-        <div class="copyright">
-            Copyright © 2022 - 浙江汇信科技 版权所有 · 浙ICP备20025217号-1
-        </div>
+        <div class="copyright"></div>
     </div>
 </template>
 
@@ -93,27 +91,27 @@ export default class LoginSimple extends Vue {
                     clearable: false,
                 },
             },
-            {
-                tag: 'input',
-                name: 'captcha',
-                label: '',
-                attrs: {
-                    placeholder: '请输入图片验证码',
-                    // 确保验证码和输入框在同一行
-                    class: 'sg-flexbox align-center',
-                    appendSlotRender: () => {
-                        return (
-                            <div>
-                                <Captcha
-                                    props={{
-                                        getCaptcha: this.getCaptcha,
-                                    }}
-                                />
-                            </div>
-                        )
-                    },
-                },
-            },
+            // {
+            //     tag: 'input',
+            //     name: 'captcha',
+            //     label: '',
+            //     attrs: {
+            //         placeholder: '请输入图片验证码',
+            //         // 确保验证码和输入框在同一行
+            //         class: 'sg-flexbox align-center',
+            //         appendSlotRender: () => {
+            //             return (
+            //                 <div>
+            //                     <Captcha
+            //                         props={{
+            //                             getCaptcha: this.getCaptcha,
+            //                         }}
+            //                     />
+            //                 </div>
+            //             )
+            //         },
+            //     },
+            // },
         ] as FormColumn[]
     }
     get valid() {

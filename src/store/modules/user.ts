@@ -57,14 +57,14 @@ export default class MyModule extends BaseUserStore<PermissionMenu | UserMenu, U
     @Action
     public async syncLogin(parmas: { username: string; password: string }) {
         const { password, username } = parmas
-        const encryptPasswor = await encrypt(password)
+        // const encryptPasswor = await encrypt(password)
 
         const { data } = await http.request({
             url: '/usercenter/user/login',
             method: 'post',
             data: {
                 username,
-                password: encryptPasswor,
+                password: password,
             },
         })
         const { user, token, applicationMenuList } = data

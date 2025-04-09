@@ -4,7 +4,7 @@ module.exports = {
     // 项目标识 用于vuex 本地存储
     key: 'src',
     // index.html SEO title
-    title: '主应用',
+    title: 'dialoQ',
     // index.html SEO keywords
     keywords: '',
     // index.html SEO description

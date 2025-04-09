@@ -2,7 +2,7 @@
     <div class="component-preview">
         <div class="component-preview__sidebar" v-if="!name">
             <el-menu :default-active="activeComponentName" class="component-menu" @select="handleSelect">
-                <!-- <el-submenu index="1">
+                <el-submenu index="1">
                     <template slot="title">国际化</template>
                     <el-menu-item v-for="item in groupedComponents['i18n']" :key="item.name" :index="item.name">
                         {{ item.title }}
@@ -19,14 +19,14 @@
                     <el-menu-item v-for="item in groupedComponents['transition']" :key="item.name" :index="item.name">
                         {{ item.title }}
                     </el-menu-item>
-                </el-submenu> -->
+                </el-submenu>
                 <el-submenu index="4">
                     <template slot="title">Basic</template>
                     <el-menu-item v-for="item in groupedComponents['basic']" :key="item.name" :index="item.name">
                         {{ item.title }}
                     </el-menu-item>
                 </el-submenu>
-                <!-- <el-submenu index="5">
+                <el-submenu index="5">
                     <template slot="title">Layout 布局</template>
                     <el-menu-item v-for="item in groupedComponents['layout']" :key="item.name" :index="item.name">
                         {{ item.title }}
@@ -49,7 +49,7 @@
                     <el-menu-item v-for="item in groupedComponents['typography']" :key="item.name" :index="item.name">
                         {{ item.title }}
                     </el-menu-item>
-                </el-submenu> -->
+                </el-submenu>
             </el-menu>
         </div>
         <div class="component-preview__content">
@@ -87,6 +87,26 @@ export default class ComponentPreview extends Vue {
     activeComponentName = ''
 
     private components: ComponentInfo[] = [
+        {
+            name: 'MyChat',
+            title: '聊天组件',
+            group: 'basic',
+            docRaw: require(`!!raw-loader!@/components/global/my-chat/README.md`),
+            demos: [
+                {
+                    name: 'demo1',
+                    title: '基础用法',
+                    component: () => import('@/components/global/my-chat/examples/demo1.vue'),
+                    raw: require(`!!raw-loader!@/components/global/my-chat/examples/demo1.vue`),
+                },
+                {
+                    name: 'customDemo',
+                    title: '自定义配置',
+                    component: () => import('@/components/global/my-chat/examples/customDemo.vue'),
+                    raw: require(`!!raw-loader!@/components/global/my-chat/examples/customDemo.vue`),
+                },
+            ],
+        },
         {
             name: 'MyTreeSelect',
             title: '树形选择器',
